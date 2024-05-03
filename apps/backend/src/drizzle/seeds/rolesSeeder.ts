@@ -1,4 +1,4 @@
-import exportedRoleData from "@/data/roles";
+import exportedRoleData from "../..//data/roles";
 import { rolesSchema } from "../schema/roles";
 import db from "..";
 import { permissionsToRoles } from "../schema/permissionsToRoles";

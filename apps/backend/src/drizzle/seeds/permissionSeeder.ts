@@ -1,5 +1,5 @@
-import permissionsData from "@/data/permissions";
 import db from "..";
+import permissionsData from "../../data/permissions";
 import { permissionsSchema } from "../schema/permissions";
 
 const permissionSeeder = async () => {

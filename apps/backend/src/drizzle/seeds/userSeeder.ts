@@ -1,4 +1,4 @@
-import { hashPassword } from "@/utils/passwordUtils";
+import { hashPassword } from "../..//utils/passwordUtils";
 import { users } from "../schema/users";
 import db from "..";
 import { rolesSchema } from "../schema/roles";
