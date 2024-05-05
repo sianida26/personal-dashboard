@@ -14,6 +14,7 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as DashboardLayoutImport } from './routes/_dashboardLayout'
+import { Route as LogoutIndexImport } from './routes/logout/index'
 import { Route as LoginIndexImport } from './routes/login/index'
 import { Route as DashboardLayoutDashboardIndexImport } from './routes/_dashboardLayout/dashboard/index'
 
@@ -35,6 +36,11 @@ const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+
+const LogoutIndexRoute = LogoutIndexImport.update({
+  path: '/logout/',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const LoginIndexRoute = LoginIndexImport.update({
   path: '/login/',
@@ -71,6 +77,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginIndexImport
       parentRoute: typeof rootRoute
     }
+    '/logout/': {
+      preLoaderRoute: typeof LogoutIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/_dashboardLayout/dashboard/': {
       preLoaderRoute: typeof DashboardLayoutDashboardIndexImport
       parentRoute: typeof DashboardLayoutImport
@@ -91,6 +101,7 @@ export const routeTree = rootRoute.addChildren([
     DashboardLayoutUsersIndexLazyRoute,
   ]),
   LoginIndexRoute,
+  LogoutIndexRoute,
 ])
 
 /* prettier-ignore-end */
