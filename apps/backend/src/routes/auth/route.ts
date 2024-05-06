@@ -4,7 +4,6 @@ import { Hono } from "hono";
 import { deleteCookie } from "hono/cookie";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
-import { HonoVariables } from "../..";
 import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
 import { checkPassword } from "../../utils/passwordUtils";
@@ -15,8 +14,9 @@ import {
 } from "../../utils/authUtils";
 import { rolesSchema } from "../../drizzle/schema/roles";
 import { rolesToUsers } from "../../drizzle/schema/rolesToUsers";
+import HonoEnv from "../../types/HonoEnv";
 
-const authRoutes = new Hono<{ Variables: HonoVariables }>()
+const authRoutes = new Hono<HonoEnv>()
 	.post(
 		"/login",
 		zValidator(

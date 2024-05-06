@@ -12,14 +12,11 @@ import dashboardRoutes from "./routes/dashboard/routes";
 import rolesRoute from "./routes/roles/route";
 import { logger } from "hono/logger";
 import DashboardError from "./errors/DashboardError";
+import HonoEnv from "./types/HonoEnv";
 
 configDotenv();
 
-export type HonoVariables = {
-	uid?: string;
-};
-
-const app = new Hono<{ Variables: HonoVariables }>();
+const app = new Hono<HonoEnv>();
 
 const routes = app
 	.use(logger())

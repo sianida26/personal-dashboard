@@ -10,9 +10,9 @@ import { SidebarMenu } from "../../types";
 import { forbidden } from "../../utils/httpErrors";
 import { and, eq, or } from "drizzle-orm";
 import { Hono } from "hono";
-import { HonoVariables } from "../..";
+import HonoEnv from "../../types/HonoEnv";
 
-const router = new Hono<{ Variables: HonoVariables }>();
+const router = new Hono<HonoEnv>();
 
 const dashboardRoutes = router.get("/getSidebarItems", async (c) => {
 	const uid = c.var.uid;

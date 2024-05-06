@@ -6,10 +6,10 @@ import { z } from "zod";
 import { HTTPException } from "hono/http-exception";
 import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
-import { HonoVariables } from "../..";
 import { hashPassword } from "../../utils/passwordUtils";
 import { rolesToUsers } from "../../drizzle/schema/rolesToUsers";
 import { rolesSchema } from "../../drizzle/schema/roles";
+import HonoEnv from "../../types/HonoEnv";
 
 const userFormSchema = z.object({
 	name: z.string().min(1).max(255),
@@ -40,7 +40,7 @@ const userUpdateSchema = userFormSchema.extend({
 	password: z.string().min(6).optional().or(z.literal("")),
 });
 
-const usersRoute = new Hono<{ Variables: HonoVariables }>()
+const usersRoute = new Hono<HonoEnv>()
 	.use(async (c, next) => {
 		const uid = c.get("uid");
 
