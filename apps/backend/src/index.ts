@@ -11,6 +11,7 @@ import { getSignedCookie } from "hono/cookie";
 import dashboardRoutes from "./routes/dashboard/routes";
 import rolesRoute from "./routes/roles/route";
 import { logger } from "hono/logger";
+import DashboardError from "./errors/DashboardError";
 
 configDotenv();
 
@@ -19,19 +20,6 @@ export type HonoVariables = {
 };
 
 const app = new Hono<{ Variables: HonoVariables }>();
-
-// app.use(async (c, next) => {
-// 	const authHeader = c.req.header("Authorization");
-
-// 	if (authHeader && authHeader.startsWith("Bearer ")) {
-// 		const token = authHeader.substring(7);
-// 		const payload = await verifyAccessToken(token);
-
-// 		if (payload) c.set("uid", payload.uid);
-// 	}
-
-// 	await next();
-// });
 
 const routes = app
 	.use(logger())
@@ -91,6 +79,16 @@ const routes = app
 	.route("/dashboard", dashboardRoutes)
 	.route("/roles", rolesRoute)
 	.onError((err, c) => {
+		if (err instanceof DashboardError) {
+			return c.json(
+				{
+					message: err.message,
+					errorCode: err.errorCode,
+					formErrors: err.formErrors,
+				},
+				err.statusCode
+			);
+		}
 		if (err instanceof HTTPException) {
 			console.log(err);
 			return c.json(
