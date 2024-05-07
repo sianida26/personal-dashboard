@@ -10,6 +10,7 @@ import { hashPassword } from "../../utils/passwordUtils";
 import { rolesToUsers } from "../../drizzle/schema/rolesToUsers";
 import { rolesSchema } from "../../drizzle/schema/roles";
 import HonoEnv from "../../types/HonoEnv";
+import requestValidator from "../../utils/requestValidator";
 
 const userFormSchema = z.object({
 	name: z.string().min(1).max(255),
@@ -54,7 +55,7 @@ const usersRoute = new Hono<HonoEnv>()
 	})
 	.get(
 		"/",
-		zValidator(
+		requestValidator(
 			"query",
 			z.object({
 				includeTrashed: z.string().default("false"),
@@ -86,7 +87,7 @@ const usersRoute = new Hono<HonoEnv>()
 	//get user by id
 	.get(
 		"/:id",
-		zValidator(
+		requestValidator(
 			"query",
 			z.object({
 				includeTrashed: z.string().default("false"),
@@ -144,111 +145,75 @@ const usersRoute = new Hono<HonoEnv>()
 		}
 	)
 	//create user
-	.post(
-		"/",
-		zValidator("form", userFormSchema, (result) => {
-			if (!result.success) {
-				let errors = result.error.flatten().fieldErrors as Record<
-					string,
-					string[]
-				>;
-				let firstErrors: Record<string, string> = {};
-				for (let field in errors) {
-					firstErrors[field] = errors[field][0]; // Grabbing the first error message for each field
-				}
-				throw new HTTPException(422, {
-					message: JSON.stringify(firstErrors),
-				});
+	.post("/", requestValidator("form", userFormSchema), async (c) => {
+		const userData = c.req.valid("form");
+
+		const user = await db
+			.insert(users)
+			.values({
+				name: userData.name,
+				username: userData.username,
+				email: userData.email,
+				password: await hashPassword(userData.password),
+				isEnabled: userData.isEnabled.toLowerCase() === "true",
+			})
+			.returning();
+
+		if (userData.roles) {
+			const roles = JSON.parse(userData.roles) as string[];
+			console.log(roles);
+
+			if (roles.length) {
+				await db.insert(rolesToUsers).values(
+					roles.map((role) => ({
+						userId: user[0].id,
+						roleId: role,
+					}))
+				);
 			}
-		}),
-		async (c) => {
-			const userData = c.req.valid("form");
-
-			const user = await db
-				.insert(users)
-				.values({
-					name: userData.name,
-					username: userData.username,
-					email: userData.email,
-					password: await hashPassword(userData.password),
-					isEnabled: userData.isEnabled.toLowerCase() === "true",
-				})
-				.returning();
-
-			if (userData.roles) {
-				const roles = JSON.parse(userData.roles) as string[];
-				console.log(roles);
-
-				if (roles.length) {
-					await db.insert(rolesToUsers).values(
-						roles.map((role) => ({
-							userId: user[0].id,
-							roleId: role,
-						}))
-					);
-				}
-			}
-
-			return c.json(
-				{
-					message: "User created successfully",
-				},
-				201
-			);
 		}
-	)
+
+		return c.json(
+			{
+				message: "User created successfully",
+			},
+			201
+		);
+	})
 
 	//update user
-	.patch(
-		"/:id",
-		zValidator("form", userUpdateSchema, (result) => {
-			if (!result.success) {
-				let errors = result.error.flatten().fieldErrors as Record<
-					string,
-					string[]
-				>;
-				let firstErrors: Record<string, string> = {};
-				for (let field in errors) {
-					firstErrors[field] = errors[field][0]; // Grabbing the first error message for each field
-				}
-				throw new HTTPException(422, {
-					message: JSON.stringify(firstErrors),
-				});
-			}
-		}),
-		async (c) => {
-			const userId = c.req.param("id");
-			const userData = c.req.valid("form");
+	.patch("/:id", requestValidator("form", userUpdateSchema), async (c) => {
+		const userId = c.req.param("id");
+		const userData = c.req.valid("form");
 
-			const user = await db
-				.select()
-				.from(users)
-				.where(and(eq(users.id, userId), isNull(users.deletedAt)));
+		const user = await db
+			.select()
+			.from(users)
+			.where(and(eq(users.id, userId), isNull(users.deletedAt)));
 
-			if (!user[0]) return c.notFound();
+		if (!user[0]) return c.notFound();
 
-			await db
-				.update(users)
-				.set({
-					...userData,
-					...(userData.password
-						? { password: await hashPassword(userData.password) }
-						: {}),
-					updatedAt: new Date(),
-					isEnabled: userData.isEnabled.toLowerCase() === "true",
-				})
-				.where(eq(users.id, userId));
+		await db
+			.update(users)
+			.set({
+				...userData,
+				...(userData.password
+					? { password: await hashPassword(userData.password) }
+					: {}),
+				updatedAt: new Date(),
+				isEnabled: userData.isEnabled.toLowerCase() === "true",
+			})
+			.where(eq(users.id, userId));
 
-			return c.json({
-				message: "User updated successfully",
-			});
-		}
-	)
+		return c.json({
+			message: "User updated successfully",
+		});
+	})
 
 	//delete user
 	.delete(
 		"/:id",
-		zValidator(
+		requestValidator(
 			"form",
 			z.object({
 				skipTrash: z.string().default("false"),
