@@ -30,26 +30,19 @@ const authRoutes = new Hono<HonoEnv>()
 		async (c) => {
 			const formData = c.req.valid("form");
 
-			const user = (
-				await db
-					.select({
-						id: users.id,
-						username: users.username,
-						email: users.email,
-						password: users.password,
-					})
-					.from(users)
-					.where(
-						and(
-							isNull(users.deletedAt),
-							eq(users.isEnabled, true),
-							or(
-								eq(users.username, formData.username),
-								eq(users.email, formData.username)
-							)
+			const [user] = await db
+				.select()
+				.from(users)
+				.where(
+					and(
+						isNull(users.deletedAt),
+						eq(users.isEnabled, true),
+						or(
+							eq(users.username, formData.username),
+							eq(users.email, formData.username)
 						)
 					)
-			)[0];
+				);
 
 			if (!user) {
 				throw new HTTPException(400, {
@@ -99,6 +92,11 @@ const authRoutes = new Hono<HonoEnv>()
 			return c.json({
 				accessToken,
 				refreshToken,
+				user: {
+					id: user.id,
+					name: user.name,
+					permissions: [] as string[],
+				},
 			});
 		}
 	)

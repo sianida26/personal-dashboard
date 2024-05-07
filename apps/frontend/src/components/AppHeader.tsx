@@ -13,6 +13,8 @@ import logo from "@/assets/logos/logo.png";
 import cx from "clsx";
 import classNames from "./styles/appHeader.module.css";
 import { TbChevronDown } from "react-icons/tb";
+import { Link } from "@tanstack/react-router";
+import useAuth from "@/hooks/useAuth";
 // import getUserMenus from "../actions/getUserMenus";
 // import { useAuth } from "@/modules/auth/contexts/AuthContext";
 // import UserMenuItem from "./UserMenuItem";
@@ -31,7 +33,7 @@ interface Props {
 export default function AppHeader(props: Props) {
 	const [userMenuOpened, setUserMenuOpened] = useState(false);
 
-	// const { user } = useAuth();
+	const { user } = useAuth();
 
 	// const userMenus = getUserMenus().map((item, i) => (
 	// 	<UserMenuItem item={item} key={i} />
@@ -66,11 +68,11 @@ export default function AppHeader(props: Props) {
 									// src={user?.photoProfile}
 									// alt={user?.name}
 									radius="xl"
-									size={20}
+									size={30}
 								/>
 								<Text fw={500} size="sm" lh={1} mr={3}>
 									{/* {user?.name} */}
-									Username
+									{user?.name ?? "Anonymous"}
 								</Text>
 								<TbChevronDown
 									style={{ width: rem(12), height: rem(12) }}
@@ -81,7 +83,9 @@ export default function AppHeader(props: Props) {
 					</Menu.Target>
 
 					<Menu.Dropdown>
-						<Menu.Label>Settings</Menu.Label>
+						<Menu.Item component={Link} to="/logout">
+							Logout
+						</Menu.Item>
 
 						{/* {userMenus} */}
 					</Menu.Dropdown>

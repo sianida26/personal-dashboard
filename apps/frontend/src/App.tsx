@@ -8,6 +8,7 @@ import { routeTree } from "./routeTree.gen";
 
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
+import { AuthProvider } from "./contexts/AuthContext";
 
 const queryClient = new QueryClient();
 
@@ -28,7 +29,9 @@ function App() {
 		<MantineProvider>
 			<Notifications />
 			<QueryClientProvider client={queryClient}>
-				<RouterProvider router={router} />
+				<AuthProvider>
+					<RouterProvider router={router} />
+				</AuthProvider>
 			</QueryClientProvider>
 		</MantineProvider>
 	);

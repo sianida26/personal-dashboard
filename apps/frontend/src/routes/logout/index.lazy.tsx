@@ -1,4 +1,4 @@
-import isAuthenticated from "@/utils/isAuthenticated";
+import useAuth from "@/hooks/useAuth";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 
@@ -7,18 +7,19 @@ export const Route = createFileRoute("/logout/")({
 });
 
 export default function LogoutPage() {
+	const { isAuthenticated, clearAuthData } = useAuth();
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (isAuthenticated()) {
-			localStorage.removeItem("accessToken");
+		if (isAuthenticated) {
+			clearAuthData();
 		}
 
 		navigate({
 			to: "/login",
 			replace: true,
 		});
-	}, [navigate]);
+	}, [navigate, isAuthenticated, clearAuthData]);
 
 	return <div>Logging out...</div>;
 }

@@ -1,10 +1,9 @@
 import { AppShell } from "@mantine/core";
-import { Outlet, createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Navigate, Outlet, createFileRoute } from "@tanstack/react-router";
 import { useDisclosure } from "@mantine/hooks";
 import AppHeader from "../components/AppHeader";
 import AppNavbar from "../components/AppNavbar";
-import isAuthenticated from "@/utils/isAuthenticated";
-import { useEffect } from "react";
+import useAuth from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/_dashboardLayout")({
 	component: DashboardLayout,
@@ -19,17 +18,11 @@ export const Route = createFileRoute("/_dashboardLayout")({
 });
 
 function DashboardLayout() {
+	const { isAuthenticated } = useAuth();
+
 	const [openNavbar, { toggle }] = useDisclosure(false);
 
-	const navigate = useNavigate();
-
-	useEffect(() => {
-		if (!isAuthenticated()) {
-			navigate({ to: "/login", replace: true });
-		}
-	}, [navigate]);
-
-	return (
+	return isAuthenticated ? (
 		<AppShell
 			padding="md"
 			header={{ height: 70 }}
@@ -50,5 +43,7 @@ function DashboardLayout() {
 				<Outlet />
 			</AppShell.Main>
 		</AppShell>
+	) : (
+		<Navigate to="/login" />
 	);
 }

@@ -15,7 +15,7 @@ import { useForm } from "@mantine/form";
 import { z } from "zod";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { useEffect, useState } from "react";
-import isAuthenticated from "@/utils/isAuthenticated";
+import useAuth from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/login/")({
 	component: LoginPage,
@@ -35,6 +35,8 @@ export default function LoginPage() {
 	const [errorMessage, setErrorMessage] = useState("");
 	const navigate = useNavigate();
 
+	const { isAuthenticated, saveAuthData } = useAuth();
+
 	const form = useForm<FormSchema>({
 		initialValues: {
 			username: "",
@@ -44,13 +46,13 @@ export default function LoginPage() {
 	});
 
 	useEffect(() => {
-		if (isAuthenticated()) {
+		if (isAuthenticated) {
 			navigate({
 				to: "/dashboard",
 				replace: true,
 			});
 		}
-	}, [navigate]);
+	}, [navigate, isAuthenticated]);
 
 	const loginMutation = useMutation({
 		mutationFn: async (values: FormSchema) => {
@@ -66,13 +68,14 @@ export default function LoginPage() {
 		},
 
 		onSuccess: (data) => {
-			console.log(data);
-
-			localStorage.setItem("accessToken", data.accessToken);
-
-			navigate({
-				to: "/dashboard",
-			});
+			saveAuthData(
+				{
+					id: data.user.id,
+					name: data.user.name,
+					permissions: data.user.permissions,
+				},
+				data.accessToken
+			);
 		},
 
 		onError: async (error) => {
