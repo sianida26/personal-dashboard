@@ -13,6 +13,7 @@ import rolesRoute from "./routes/roles/route";
 import { logger } from "hono/logger";
 import DashboardError from "./errors/DashboardError";
 import HonoEnv from "./types/HonoEnv";
+import devRoutes from "./routes/dev/route";
 
 configDotenv();
 
@@ -75,6 +76,7 @@ const routes = app
 	.route("/permissions", permissionRoutes)
 	.route("/dashboard", dashboardRoutes)
 	.route("/roles", rolesRoute)
+	.route("/dev", devRoutes)
 	.onError((err, c) => {
 		if (err instanceof DashboardError) {
 			return c.json(

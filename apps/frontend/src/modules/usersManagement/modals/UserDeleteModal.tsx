@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getRouteApi, useSearch } from "@tanstack/react-router";
 import { deleteUser } from "../queries/userQueries";
 import { notifications } from "@mantine/notifications";
+import fetchRPC from "@/utils/fetchRPC";
 
 const routeApi = getRouteApi("/_dashboardLayout/users/");
 
@@ -21,19 +22,14 @@ export default function UserDeleteModal() {
 		queryKey: ["users", userId],
 		queryFn: async () => {
 			if (!userId) return null;
-			const res = await client.users[":id"].$get({
-				param: {
-					id: userId,
-				},
-				query: {},
-			});
-
-			if (res.ok) {
-				console.log("ok");
-				return await res.json();
-			}
-			console.log("not ok");
-			throw new Error(await res.text());
+			return await fetchRPC(
+				client.users[":id"].$get({
+					param: {
+						id: userId,
+					},
+					query: {},
+				})
+			);
 		},
 	});
 

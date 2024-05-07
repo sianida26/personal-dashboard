@@ -133,6 +133,7 @@ export default function UserFormModal() {
 		});
 
 		form.setErrors({});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [userQuery.data]);
 
 	const handleSubmit = async (values: typeof form.values) => {
