@@ -19,6 +19,7 @@ import { TbDeviceFloppy } from "react-icons/tb";
 import client from "../../../honoClient";
 import { useEffect } from "react";
 import { notifications } from "@mantine/notifications";
+import FormResponseError from "@/errors/FormResponseError";
 
 const routeApi = getRouteApi("/_dashboardLayout/users/");
 
@@ -82,11 +83,19 @@ export default function UserFormModal() {
 				? await updateUser(options.data)
 				: await createUser(options.data);
 		},
-		onError: (error) => {
-			try {
-				form.setErrors(JSON.parse(JSON.parse(error.message).message));
-			} catch (e) {
-				console.error(e);
+		onError: (error: unknown) => {
+			console.log(error);
+
+			if (error instanceof FormResponseError) {
+				form.setErrors(error.formErrors);
+				return;
+			}
+
+			if (error instanceof Error) {
+				notifications.show({
+					message: error.message,
+					color: "red",
+				});
 			}
 		},
 	});

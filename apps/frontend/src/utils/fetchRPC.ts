@@ -1,3 +1,4 @@
+import FormResponseError from "@/errors/FormResponseError";
 import { ClientResponse } from "hono/client";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,7 +22,17 @@ async function fetchRPC<T>(
 
 	//TODO: Add error reporting
 
-	const data = (await res.json()) as unknown as { message?: string };
+	const data = (await res.json()) as unknown as {
+		message?: string;
+		formErrors?: Record<string, string>;
+	};
+
+	if (res.status === 422 && data.formErrors) {
+		throw new FormResponseError(
+			data.message ?? "Something is gone wrong",
+			data.formErrors
+		);
+	}
 
 	throw new Error(data.message ?? "Something is gone wrong");
 }

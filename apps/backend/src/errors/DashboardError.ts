@@ -10,7 +10,7 @@ class DashboardError extends Error {
 		"CRITICAL";
 
 	constructor(options: DashboardErrorParameter) {
-		super();
+		super(options.message);
 
 		this.errorCode = options.errorCode;
 		this.statusCode = options.statusCode ?? this.statusCode;
