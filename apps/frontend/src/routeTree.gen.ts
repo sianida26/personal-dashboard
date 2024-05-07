@@ -14,13 +14,13 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as DashboardLayoutImport } from './routes/_dashboardLayout'
-import { Route as LogoutIndexImport } from './routes/logout/index'
-import { Route as LoginIndexImport } from './routes/login/index'
 import { Route as DashboardLayoutDashboardIndexImport } from './routes/_dashboardLayout/dashboard/index'
 
 // Create Virtual Routes
 
 const IndexLazyImport = createFileRoute('/')()
+const LogoutIndexLazyImport = createFileRoute('/logout/')()
+const LoginIndexLazyImport = createFileRoute('/login/')()
 const DashboardLayoutUsersIndexLazyImport = createFileRoute(
   '/_dashboardLayout/users/',
 )()
@@ -37,15 +37,15 @@ const IndexLazyRoute = IndexLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
 
-const LogoutIndexRoute = LogoutIndexImport.update({
+const LogoutIndexLazyRoute = LogoutIndexLazyImport.update({
   path: '/logout/',
   getParentRoute: () => rootRoute,
-} as any)
+} as any).lazy(() => import('./routes/logout/index.lazy').then((d) => d.Route))
 
-const LoginIndexRoute = LoginIndexImport.update({
+const LoginIndexLazyRoute = LoginIndexLazyImport.update({
   path: '/login/',
   getParentRoute: () => rootRoute,
-} as any)
+} as any).lazy(() => import('./routes/login/index.lazy').then((d) => d.Route))
 
 const DashboardLayoutUsersIndexLazyRoute =
   DashboardLayoutUsersIndexLazyImport.update({
@@ -74,11 +74,11 @@ declare module '@tanstack/react-router' {
       parentRoute: typeof rootRoute
     }
     '/login/': {
-      preLoaderRoute: typeof LoginIndexImport
+      preLoaderRoute: typeof LoginIndexLazyImport
       parentRoute: typeof rootRoute
     }
     '/logout/': {
-      preLoaderRoute: typeof LogoutIndexImport
+      preLoaderRoute: typeof LogoutIndexLazyImport
       parentRoute: typeof rootRoute
     }
     '/_dashboardLayout/dashboard/': {
@@ -100,8 +100,8 @@ export const routeTree = rootRoute.addChildren([
     DashboardLayoutDashboardIndexRoute,
     DashboardLayoutUsersIndexLazyRoute,
   ]),
-  LoginIndexRoute,
-  LogoutIndexRoute,
+  LoginIndexLazyRoute,
+  LogoutIndexLazyRoute,
 ])
 
 /* prettier-ignore-end */
