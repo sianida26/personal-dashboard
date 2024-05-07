@@ -50,7 +50,7 @@ export default function LoginPage() {
 				replace: true,
 			});
 		}
-	}, []);
+	}, [navigate]);
 
 	const loginMutation = useMutation({
 		mutationFn: async (values: FormSchema) => {
