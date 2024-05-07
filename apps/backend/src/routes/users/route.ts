@@ -1,7 +1,6 @@
 import { and, eq, isNull } from "drizzle-orm";
 import { Hono } from "hono";
 
-import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { HTTPException } from "hono/http-exception";
 import db from "../../drizzle";
