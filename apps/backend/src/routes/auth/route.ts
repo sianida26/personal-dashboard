@@ -15,6 +15,12 @@ import {
 import { rolesSchema } from "../../drizzle/schema/roles";
 import { rolesToUsers } from "../../drizzle/schema/rolesToUsers";
 import HonoEnv from "../../types/HonoEnv";
+import { permissionsToUsers } from "../../drizzle/schema/permissionsToUsers";
+import { permissionsToRoles } from "../../drizzle/schema/permissionsToRoles";
+import { permissionsSchema } from "../../drizzle/schema/permissions";
+import { SpecificPermissionCode } from "../../data/permissions";
+import authInfo from "../../middlewares/authInfo";
+import { unauthorized } from "../../errors/DashboardError";
 
 const authRoutes = new Hono<HonoEnv>()
 	.post(
@@ -30,7 +36,7 @@ const authRoutes = new Hono<HonoEnv>()
 		async (c) => {
 			const formData = c.req.valid("form");
 
-			const [user] = await db
+			const user = await db
 				.select()
 				.from(users)
 				.where(
@@ -42,9 +48,32 @@ const authRoutes = new Hono<HonoEnv>()
 							eq(users.email, formData.username)
 						)
 					)
+				)
+				.leftJoin(
+					permissionsToUsers,
+					eq(permissionsToUsers.userId, users.id)
+				)
+				.leftJoin(rolesToUsers, eq(rolesToUsers.userId, users.id))
+				.leftJoin(rolesSchema, eq(rolesToUsers.roleId, rolesSchema.id))
+				.leftJoin(
+					permissionsToRoles,
+					eq(permissionsToRoles.roleId, rolesSchema.id)
+				)
+				.leftJoin(
+					permissionsSchema,
+					or(
+						eq(
+							permissionsSchema.id,
+							permissionsToUsers.permissionId
+						),
+						eq(
+							permissionsSchema.id,
+							permissionsToRoles.permissionId
+						)
+					)
 				);
 
-			if (!user) {
+			if (!user.length) {
 				throw new HTTPException(400, {
 					message: "Invalid username or password",
 				});
@@ -52,7 +81,7 @@ const authRoutes = new Hono<HonoEnv>()
 
 			const isSuccess = await checkPassword(
 				formData.password,
-				user.password
+				user[0].users.password
 			);
 
 			if (!isSuccess) {
@@ -62,11 +91,11 @@ const authRoutes = new Hono<HonoEnv>()
 			}
 
 			const accessToken = await generateAccessToken({
-				uid: user.id,
+				uid: user[0].users.id,
 			});
 
 			const refreshToken = await generateRefreshToken({
-				uid: user.id,
+				uid: user[0].users.id,
 			});
 
 			const cookieSecret = process.env.COOKIE_SECRET;
@@ -89,13 +118,22 @@ const authRoutes = new Hono<HonoEnv>()
 			// 	}
 			// );
 
+			const permissions = new Set<SpecificPermissionCode>();
+			user.forEach((user) => {
+				if (user.permissions?.code) {
+					permissions.add(
+						user.permissions.code as SpecificPermissionCode
+					);
+				}
+			});
+
 			return c.json({
 				accessToken,
 				refreshToken,
 				user: {
-					id: user.id,
-					name: user.name,
-					permissions: [] as string[],
+					id: user[0].users.id,
+					name: user[0].users.name,
+					permissions: Array.from(permissions),
 				},
 			});
 		}
@@ -128,44 +166,14 @@ const authRoutes = new Hono<HonoEnv>()
 			});
 		}
 	)
-	.get("/my-profile", async (c) => {
-		const uid = c.var.uid;
+	.get("/my-profile", authInfo, async (c) => {
+		const currentUser = c.var.currentUser;
 
-		if (!uid) {
-			throw new HTTPException(401, { message: "Unauthorized" });
+		if (!currentUser) {
+			throw unauthorized();
 		}
 
-		const user = await db
-			.select({
-				id: users.id,
-				username: users.username,
-				email: users.email,
-				roles: rolesSchema.code,
-			})
-			.from(rolesToUsers)
-			.innerJoin(users, eq(users.id, rolesToUsers.userId))
-			.innerJoin(rolesSchema, eq(rolesToUsers.roleId, rolesSchema.id))
-			.where(eq(users.id, uid))
-			.then((userData) => {
-				return userData.reduce(
-					(prev, curr) => ({
-						...prev,
-						roles: [...prev.roles, curr.roles],
-					}),
-					{
-						id: uid,
-						username: userData[0].username,
-						email: userData[0].email,
-						roles: [] as string[],
-					}
-				);
-			});
-
-		if (!user) {
-			throw new HTTPException(401, { message: "Unauthorized" });
-		}
-
-		return c.json(user);
+		return c.json({ ...currentUser, id: c.var.uid! });
 	})
 	.get("/logout", (c) => {
 		const uid = c.var.uid;

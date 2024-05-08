@@ -10,7 +10,7 @@ interface AuthContextType {
 	accessToken: string | null;
 	saveAuthData: (
 		userData: NonNullable<AuthContextType["user"]>,
-		accessToken: NonNullable<AuthContextType["accessToken"]>
+		accessToken?: NonNullable<AuthContextType["accessToken"]>
 	) => void;
 	clearAuthData: () => void;
 	isAuthenticated: boolean;
@@ -30,13 +30,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 	const saveAuthData = (
 		userData: NonNullable<AuthContextType["user"]>,
-		accessToken: NonNullable<AuthContextType["accessToken"]>
+		accessToken?: NonNullable<AuthContextType["accessToken"]>
 	) => {
 		setUserId(userData.id);
 		setUserName(userData.name);
 		setPermissions(userData.permissions);
-		setAccessToken(accessToken);
-		localStorage.setItem("accessToken", accessToken);
+		if (accessToken) {
+			setAccessToken(accessToken);
+			localStorage.setItem("accessToken", accessToken);
+		}
 	};
 
 	const clearAuthData = () => {

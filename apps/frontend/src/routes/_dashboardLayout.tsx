@@ -4,6 +4,9 @@ import { useDisclosure } from "@mantine/hooks";
 import AppHeader from "../components/AppHeader";
 import AppNavbar from "../components/AppNavbar";
 import useAuth from "@/hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
+import fetchRPC from "@/utils/fetchRPC";
+import client from "@/honoClient";
 
 export const Route = createFileRoute("/_dashboardLayout")({
 	component: DashboardLayout,
@@ -18,7 +21,23 @@ export const Route = createFileRoute("/_dashboardLayout")({
 });
 
 function DashboardLayout() {
-	const { isAuthenticated } = useAuth();
+	const { isAuthenticated, saveAuthData } = useAuth();
+
+	useQuery({
+		queryKey: ["my-profile"],
+		queryFn: async () => {
+			const response = await fetchRPC(client.auth["my-profile"].$get());
+
+			saveAuthData({
+				id: response.id,
+				name: response.name,
+				permissions: response.permissions,
+			});
+
+			return response;
+		},
+		enabled: isAuthenticated,
+	});
 
 	const [openNavbar, { toggle }] = useDisclosure(false);
 
