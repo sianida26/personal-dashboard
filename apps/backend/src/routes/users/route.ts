@@ -10,6 +10,8 @@ import { rolesToUsers } from "../../drizzle/schema/rolesToUsers";
 import { rolesSchema } from "../../drizzle/schema/roles";
 import HonoEnv from "../../types/HonoEnv";
 import requestValidator from "../../utils/requestValidator";
+import authInfo from "../../middlewares/authInfo";
+import checkPermission from "../../middlewares/checkPermission";
 
 const userFormSchema = z.object({
 	name: z.string().min(1).max(255),
@@ -41,19 +43,10 @@ const userUpdateSchema = userFormSchema.extend({
 });
 
 const usersRoute = new Hono<HonoEnv>()
-	.use(async (c, next) => {
-		const uid = c.get("uid");
-
-		if (uid) {
-			await next();
-		} else {
-			throw new HTTPException(401, {
-				message: "Unauthorized",
-			});
-		}
-	})
+	.use(authInfo)
 	.get(
 		"/",
+		checkPermission("users.readAll"),
 		requestValidator(
 			"query",
 			z.object({
@@ -86,6 +79,7 @@ const usersRoute = new Hono<HonoEnv>()
 	//get user by id
 	.get(
 		"/:id",
+		checkPermission("users.readAll"),
 		requestValidator(
 			"query",
 			z.object({
@@ -144,74 +138,85 @@ const usersRoute = new Hono<HonoEnv>()
 		}
 	)
 	//create user
-	.post("/", requestValidator("form", userFormSchema), async (c) => {
-		const userData = c.req.valid("form");
+	.post(
+		"/",
+		checkPermission("users.create"),
+		requestValidator("form", userFormSchema),
+		async (c) => {
+			const userData = c.req.valid("form");
 
-		const user = await db
-			.insert(users)
-			.values({
-				name: userData.name,
-				username: userData.username,
-				email: userData.email,
-				password: await hashPassword(userData.password),
-				isEnabled: userData.isEnabled.toLowerCase() === "true",
-			})
-			.returning();
+			const user = await db
+				.insert(users)
+				.values({
+					name: userData.name,
+					username: userData.username,
+					email: userData.email,
+					password: await hashPassword(userData.password),
+					isEnabled: userData.isEnabled.toLowerCase() === "true",
+				})
+				.returning();
 
-		if (userData.roles) {
-			const roles = JSON.parse(userData.roles) as string[];
-			console.log(roles);
+			if (userData.roles) {
+				const roles = JSON.parse(userData.roles) as string[];
+				console.log(roles);
 
-			if (roles.length) {
-				await db.insert(rolesToUsers).values(
-					roles.map((role) => ({
-						userId: user[0].id,
-						roleId: role,
-					}))
-				);
+				if (roles.length) {
+					await db.insert(rolesToUsers).values(
+						roles.map((role) => ({
+							userId: user[0].id,
+							roleId: role,
+						}))
+					);
+				}
 			}
-		}
 
-		return c.json(
-			{
-				message: "User created successfully",
-			},
-			201
-		);
-	})
+			return c.json(
+				{
+					message: "User created successfully",
+				},
+				201
+			);
+		}
+	)
 
 	//update user
-	.patch("/:id", requestValidator("form", userUpdateSchema), async (c) => {
-		const userId = c.req.param("id");
-		const userData = c.req.valid("form");
+	.patch(
+		"/:id",
+		checkPermission("users.update"),
+		requestValidator("form", userUpdateSchema),
+		async (c) => {
+			const userId = c.req.param("id");
+			const userData = c.req.valid("form");
 
-		const user = await db
-			.select()
-			.from(users)
-			.where(and(eq(users.id, userId), isNull(users.deletedAt)));
+			const user = await db
+				.select()
+				.from(users)
+				.where(and(eq(users.id, userId), isNull(users.deletedAt)));
 
-		if (!user[0]) return c.notFound();
+			if (!user[0]) return c.notFound();
 
-		await db
-			.update(users)
-			.set({
-				...userData,
-				...(userData.password
-					? { password: await hashPassword(userData.password) }
-					: {}),
-				updatedAt: new Date(),
-				isEnabled: userData.isEnabled.toLowerCase() === "true",
-			})
-			.where(eq(users.id, userId));
+			await db
+				.update(users)
+				.set({
+					...userData,
+					...(userData.password
+						? { password: await hashPassword(userData.password) }
+						: {}),
+					updatedAt: new Date(),
+					isEnabled: userData.isEnabled.toLowerCase() === "true",
+				})
+				.where(eq(users.id, userId));
 
-		return c.json({
-			message: "User updated successfully",
-		});
-	})
+			return c.json({
+				message: "User updated successfully",
+			});
+		}
+	)
 
 	//delete user
 	.delete(
 		"/:id",
+		checkPermission("users.delete"),
 		requestValidator(
 			"form",
 			z.object({
@@ -263,7 +268,7 @@ const usersRoute = new Hono<HonoEnv>()
 	)
 
 	//undo delete
-	.patch("/restore/:id", async (c) => {
+	.patch("/restore/:id", checkPermission("users.restore"), async (c) => {
 		const userId = c.req.param("id");
 
 		const user = (

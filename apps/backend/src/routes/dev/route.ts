@@ -1,16 +1,14 @@
 import { Hono } from "hono";
 import DashboardError from "../../errors/DashboardError";
+import authInfo from "../../middlewares/authInfo";
+import HonoEnv from "../../types/HonoEnv";
 
-const devRoutes = new Hono().get("/error", async () => {
-	throw new DashboardError({
-		errorCode: "TEST_ERROR",
-		message: "Test error",
-		severity: "LOW",
-		statusCode: 400,
-		formErrors: {
-			someField: "error",
-		},
+const devRoutes = new Hono<HonoEnv>()
+	.use(authInfo)
+	.get("/middleware", async (c) => {
+		return c.json({
+			message: "Middleware works!",
+		});
 	});
-});
 
 export default devRoutes;
