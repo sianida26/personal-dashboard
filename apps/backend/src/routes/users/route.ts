@@ -13,7 +13,7 @@ import requestValidator from "../../utils/requestValidator";
 import authInfo from "../../middlewares/authInfo";
 import checkPermission from "../../middlewares/checkPermission";
 
-const userFormSchema = z.object({
+export const userFormSchema = z.object({
 	name: z.string().min(1).max(255),
 	username: z.string().min(1).max(255),
 	email: z.string().email().optional().or(z.literal("")),
@@ -38,7 +38,7 @@ const userFormSchema = z.object({
 		.optional(),
 });
 
-const userUpdateSchema = userFormSchema.extend({
+export const userUpdateSchema = userFormSchema.extend({
 	password: z.string().min(6).optional().or(z.literal("")),
 });
 
