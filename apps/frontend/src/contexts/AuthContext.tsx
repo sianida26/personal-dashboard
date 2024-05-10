@@ -13,6 +13,7 @@ interface AuthContextType {
 		accessToken?: NonNullable<AuthContextType["accessToken"]>
 	) => void;
 	clearAuthData: () => void;
+	checkPermission: (permission: string) => boolean;
 	isAuthenticated: boolean;
 }
 
@@ -49,6 +50,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		localStorage.removeItem("accessToken");
 	};
 
+	const checkPermission = (permission: string) => {
+		return permissions?.includes(permission) ?? false;
+	};
+
 	const isAuthenticated = Boolean(accessToken);
 
 	return (
@@ -61,6 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 				saveAuthData,
 				clearAuthData,
 				isAuthenticated,
+				checkPermission,
 			}}
 		>
 			{children}
