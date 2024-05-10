@@ -9,7 +9,7 @@ import React from "react";
 
 interface Action {
 	label: string;
-	action?: () => void | string;
+	action?: (() => void) | string;
 	variant?: ActionIconVariant;
 	permission?: boolean;
 	icon: React.ReactNode;
