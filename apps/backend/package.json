@@ -2,8 +2,8 @@
 	"name": "backend",
 	"scripts": {
 		"dev": "tsx watch src/index.ts",
-		"db:generate": "drizzle-kit generate:pg",
-		"db:push": "drizzle-kit push:pg",
+		"db:generate": "drizzle-kit generate",
+		"db:push": "drizzle-kit push",
 		"db:seed": "tsx src/drizzle/seed.ts",
 		"db:migrate": "tsx src/drizzle/migration.ts",
 		"db:studio": "drizzle-kit studio"
