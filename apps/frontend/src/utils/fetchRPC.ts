@@ -17,7 +17,7 @@ async function fetchRPC<T>(
 
 	if (res.ok) {
 		const data = await res.json();
-		return data;
+		return data as BlankRecordToNever<T>;
 	}
 
 	//TODO: Add error reporting

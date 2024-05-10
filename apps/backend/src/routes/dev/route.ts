@@ -1,5 +1,4 @@
 import { Hono } from "hono";
-import DashboardError from "../../errors/DashboardError";
 import authInfo from "../../middlewares/authInfo";
 import HonoEnv from "../../types/HonoEnv";
 
