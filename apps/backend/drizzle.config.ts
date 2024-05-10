@@ -10,8 +10,8 @@ if (!databaseUrl) {
 export default {
 	schema: "./src/drizzle/schema/*",
 	out: "./src/drizzle/migrations",
-	driver: "pg",
+	dialect: "postgresql",
 	dbCredentials: {
-		connectionString: databaseUrl,
+		url: databaseUrl,
 	},
 } satisfies Config;
