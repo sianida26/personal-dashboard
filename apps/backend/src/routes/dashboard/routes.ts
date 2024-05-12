@@ -7,10 +7,10 @@ import { rolesSchema } from "../../drizzle/schema/roles";
 import { rolesToUsers } from "../../drizzle/schema/rolesToUsers";
 import { users } from "../../drizzle/schema/users";
 import { SidebarMenu } from "../../types";
-import { forbidden } from "../../utils/httpErrors";
 import { and, eq, or } from "drizzle-orm";
 import { Hono } from "hono";
 import HonoEnv from "../../types/HonoEnv";
+import { forbidden } from "../../errors/DashboardError";
 
 const router = new Hono<HonoEnv>();
 
