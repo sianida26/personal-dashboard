@@ -10,8 +10,8 @@ import { unauthorized } from "../errors/DashboardError";
  * permissions required to proceed. It allows proceeding if the user has the requisite
  * permissions or denies access by triggering an unauthorized error.
  *
- * @param {PermissionCode[]} permissions - An array of permissions to check against the current user's permissions.
- * @returns {import('hono').Middleware<HonoEnv>} A middleware function for the Hono framework.
+ * @param permissions - An array of permissions to check against the current user's permissions.
+ * @returns A middleware function for the Hono framework.
  */
 const checkPermission = (...permissions: PermissionCode[]) =>
 	createMiddleware<HonoEnv>(async (c, next) => {
