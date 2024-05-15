@@ -1,5 +1,8 @@
 const permissionsData = [
 	{
+		code: "dev-routes",
+	},
+	{
 		code: "users.readAll",
 	},
 	{
