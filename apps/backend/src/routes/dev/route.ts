@@ -25,7 +25,6 @@ const devRoutes = new Hono<HonoEnv>()
 
 		const buffer = await compressImage({
 			inputFile: file,
-			outputPath: "./images",
 			targetSize: 500 * 1024,
 		});
 

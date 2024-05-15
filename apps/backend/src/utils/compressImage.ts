@@ -3,16 +3,12 @@ import sharp from "sharp";
 /**
  * Options for compressing an image
  * @property inputFile - The input file to compress
- * @property outputPath - The output path for the compressed image
  * @property targetSize - The target size for the compressed image (optional)
- * @property filename - The filename for the compressed image (optional)
  * @property minQuality - The minimum quality for the compressed image (optional)
  */
 interface CompressImageOptions {
 	inputFile: File;
-	outputPath: string;
 	targetSize?: number;
-	filename?: string;
 	minQuality?: number;
 }
 
