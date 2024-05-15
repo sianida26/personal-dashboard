@@ -76,19 +76,14 @@ const dashboardRoutes = router.get("/getSidebarItems", async (c) => {
 			}
 
 			//if menu has no children, check if permission match
-			else {
-				if (
-					menu.allowedPermissions?.some((perm) =>
-						permissions.includes(perm)
-					) ||
-					menu.allowedPermissions?.includes("*")
-				) {
-					//add menu and hide the allowed permissions field
-					return [
-						...prev,
-						{ ...menu, allowedPermissions: undefined },
-					];
-				}
+			else if (
+				menu.allowedPermissions?.some((perm) =>
+					permissions.includes(perm)
+				) ||
+				menu.allowedPermissions?.includes("*")
+			) {
+				//add menu and hide the allowed permissions field
+				return [...prev, { ...menu, allowedPermissions: undefined }];
 			}
 
 			//dont add permission to menu if it doesnt match
