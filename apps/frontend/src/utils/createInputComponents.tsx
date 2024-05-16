@@ -88,6 +88,8 @@ function createInputComponents(options: Options) {
 				break;
 		}
 	}
+
+	return <>{components}</>;
 }
 
 export default createInputComponents;
