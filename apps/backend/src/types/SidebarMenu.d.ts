@@ -1,4 +1,4 @@
-import { PermissionCode } from "@/data/permissions";
+import { PermissionCode } from "../data/permissions";
 
 interface SidebarMenu {
 	label: string;
