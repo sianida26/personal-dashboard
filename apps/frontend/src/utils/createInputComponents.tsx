@@ -1,4 +1,6 @@
 import {
+	Fieldset,
+	FieldsetProps,
 	MultiSelect,
 	MultiSelectProps,
 	NumberInput,
@@ -36,55 +38,58 @@ type SelectType = {
 	type: "select";
 } & SelectProps;
 
+type Group = {
+	type: "group";
+	inputs: AcceptedInput[];
+} & FieldsetProps;
+
+type AcceptedInput = (
+	| TextInputType
+	| MultiSelectInputType
+	| PasswordInputType
+	| NumberInputType
+	| SelectType
+	| Group
+) &
+	GeneralInputProps;
+
 interface Options {
 	disableAll?: boolean;
 	readonlyAll?: boolean;
-	inputs: ((
-		| TextInputType
-		| MultiSelectInputType
-		| PasswordInputType
-		| NumberInputType
-		| SelectType
-	) &
-		GeneralInputProps)[];
+	inputs: AcceptedInput[];
 }
 
 function createInputComponents(options: Options) {
 	const components = [] as ReactNode[];
 
-	for (const input of options.inputs) {
-		if (input.hidden) continue;
-
+	const createComponent = (input: AcceptedInput) => {
 		switch (input.type) {
 			case "text":
-				components.push(
+				return (
 					<TextInput
 						{...input}
 						readOnly={options.readonlyAll || input.readOnly}
 						disabled={options.disableAll || input.disabled}
 					/>
 				);
-				break;
 			case "multi-select":
-				components.push(
+				return (
 					<MultiSelect
 						{...input}
 						readOnly={options.readonlyAll || input.readOnly}
 						disabled={options.disableAll || input.disabled}
 					/>
 				);
-				break;
 			case "password":
-				components.push(
+				return (
 					<PasswordInput
 						{...input}
 						readOnly={options.readonlyAll || input.readOnly}
 						disabled={options.disableAll || input.disabled}
 					/>
 				);
-				break;
 			case "number":
-				components.push(
+				return (
 					<NumberInput
 						{...input}
 						type="text"
@@ -92,16 +97,33 @@ function createInputComponents(options: Options) {
 						disabled={options.disableAll || input.disabled}
 					/>
 				);
-				break;
 			case "select":
-				components.push(
+				return (
 					<Select
 						{...input}
 						readOnly={options.readonlyAll || input.readOnly}
 						disabled={options.disableAll || input.disabled}
 					/>
 				);
+
+			case "group": {
+				const localComponents: ReactNode[] = [];
+
+				for (const child of input.inputs) {
+					if (child.hidden) continue;
+
+					localComponents.push(createComponent(child));
+				}
+
+				return <Fieldset {...input}>{localComponents}</Fieldset>;
+			}
 		}
+	};
+
+	for (const input of options.inputs) {
+		if (input.hidden) continue;
+
+		components.push(createComponent(input));
 	}
 
 	return <>{components}</>;
