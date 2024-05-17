@@ -1,4 +1,6 @@
 import {
+	Chip,
+	ChipProps,
 	Fieldset,
 	FieldsetProps,
 	MultiSelect,
@@ -43,12 +45,17 @@ type Group = {
 	inputs: AcceptedInput[];
 } & FieldsetProps;
 
+type ChipType = {
+	type: "chip";
+} & Omit<ChipProps, "type">;
+
 type AcceptedInput = (
 	| TextInputType
 	| MultiSelectInputType
 	| PasswordInputType
 	| NumberInputType
 	| SelectType
+	| ChipType
 	| Group
 ) &
 	GeneralInputProps;
@@ -116,6 +123,17 @@ function createInputComponents(options: Options) {
 				}
 
 				return <Fieldset {...input}>{localComponents}</Fieldset>;
+			}
+
+			case "chip": {
+				return (
+					<Chip
+						{...input}
+						type="checkbox"
+						readOnly={options.readonlyAll || input.readOnly}
+						disabled={options.disableAll || input.disabled}
+					/>
+				);
 			}
 		}
 	};
