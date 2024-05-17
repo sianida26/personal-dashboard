@@ -15,6 +15,8 @@ import {
 	SelectProps,
 	TextInput,
 	TextInputProps,
+	Textarea,
+	TextareaProps,
 } from "@mantine/core";
 import { ReactNode } from "@tanstack/react-router";
 
@@ -55,6 +57,10 @@ type CheckboxType = {
 	type: "checkbox";
 } & CheckboxProps;
 
+type TextareaType = {
+	type: "textarea";
+} & TextareaProps;
+
 type AcceptedInput = (
 	| TextInputType
 	| MultiSelectInputType
@@ -64,6 +70,7 @@ type AcceptedInput = (
 	| ChipType
 	| Group
 	| CheckboxType
+	| TextareaType
 ) &
 	GeneralInputProps;
 
@@ -146,6 +153,16 @@ function createInputComponents(options: Options) {
 			case "checkbox": {
 				return (
 					<Checkbox
+						{...input}
+						readOnly={options.readonlyAll || input.readOnly}
+						disabled={options.disableAll || input.disabled}
+					/>
+				);
+			}
+
+			case "textarea": {
+				return (
+					<Textarea
 						{...input}
 						readOnly={options.readonlyAll || input.readOnly}
 						disabled={options.disableAll || input.disabled}
