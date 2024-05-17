@@ -1,4 +1,6 @@
 import {
+	Checkbox,
+	CheckboxProps,
 	Chip,
 	ChipProps,
 	Fieldset,
@@ -49,6 +51,10 @@ type ChipType = {
 	type: "chip";
 } & Omit<ChipProps, "type">;
 
+type CheckboxType = {
+	type: "checkbox";
+} & CheckboxProps;
+
 type AcceptedInput = (
 	| TextInputType
 	| MultiSelectInputType
@@ -57,6 +63,7 @@ type AcceptedInput = (
 	| SelectType
 	| ChipType
 	| Group
+	| CheckboxType
 ) &
 	GeneralInputProps;
 
@@ -130,6 +137,16 @@ function createInputComponents(options: Options) {
 					<Chip
 						{...input}
 						type="checkbox"
+						readOnly={options.readonlyAll || input.readOnly}
+						disabled={options.disableAll || input.disabled}
+					/>
+				);
+			}
+
+			case "checkbox": {
+				return (
+					<Checkbox
+						{...input}
 						readOnly={options.readonlyAll || input.readOnly}
 						disabled={options.disableAll || input.disabled}
 					/>
