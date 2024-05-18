@@ -24,11 +24,11 @@ importers:
   apps/backend:
     dependencies:
       '@hono/node-server':
-        specifier: ^1.11.0
-        version: 1.11.0
+        specifier: ^1.11.1
+        version: 1.11.1
       '@hono/zod-validator':
         specifier: ^0.2.1
-        version: 0.2.1(hono@4.3.6)(zod@3.23.4)
+        version: 0.2.1(hono@4.3.7)(zod@3.23.4)
       '@paralleldrive/cuid2':
         specifier: ^2.2.2
         version: 2.2.2
@@ -42,8 +42,8 @@ importers:
         specifier: ^0.30.10
         version: 0.30.10(pg@8.11.5)(postgres@3.4.4)
       hono:
-        specifier: ^4.3.6
-        version: 4.3.6
+        specifier: ^4.3.7
+        version: 4.3.7
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
@@ -85,23 +85,23 @@ importers:
         specifier: ^11.11.4
         version: 11.11.4(@types/react@18.2.79)(react@18.2.0)
       '@mantine/core':
-        specifier: ^7.9.1
-        version: 7.9.1(@mantine/hooks@7.9.1)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^7.9.2
+        version: 7.9.2(@mantine/hooks@7.9.2)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)
       '@mantine/form':
-        specifier: ^7.9.1
-        version: 7.9.1(react@18.2.0)
+        specifier: ^7.9.2
+        version: 7.9.2(react@18.2.0)
       '@mantine/hooks':
-        specifier: ^7.9.1
-        version: 7.9.1(react@18.2.0)
+        specifier: ^7.9.2
+        version: 7.9.2(react@18.2.0)
       '@mantine/notifications':
-        specifier: ^7.9.1
-        version: 7.9.1(@mantine/core@7.9.1)(@mantine/hooks@7.9.1)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^7.9.2
+        version: 7.9.2(@mantine/core@7.9.2)(@mantine/hooks@7.9.2)(react-dom@18.2.0)(react@18.2.0)
       '@tanstack/react-query':
-        specifier: ^5.36.0
-        version: 5.36.0(react@18.2.0)
+        specifier: ^5.36.2
+        version: 5.36.2(react@18.2.0)
       '@tanstack/react-router':
-        specifier: ^1.32.5
-        version: 1.32.5(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.32.13
+        version: 1.32.13(react-dom@18.2.0)(react@18.2.0)
       '@tanstack/react-table':
         specifier: ^8.17.3
         version: 8.17.3(react-dom@18.2.0)(react@18.2.0)
@@ -112,11 +112,11 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       hono:
-        specifier: ^4.3.6
-        version: 4.3.6
+        specifier: ^4.3.7
+        version: 4.3.7
       mantine-form-zod-resolver:
         specifier: ^1.1.0
-        version: 1.1.0(@mantine/form@7.9.1)(zod@3.23.4)
+        version: 1.1.0(@mantine/form@7.9.2)(zod@3.23.4)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -134,11 +134,11 @@ importers:
         specifier: ^5.35.6
         version: 5.35.6(eslint@8.57.0)(typescript@5.3.3)
       '@tanstack/router-devtools':
-        specifier: ^1.32.5
-        version: 1.32.5(csstype@3.1.2)(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^1.32.14
+        version: 1.32.14(csstype@3.1.2)(react-dom@18.2.0)(react@18.2.0)
       '@tanstack/router-vite-plugin':
-        specifier: ^1.32.2
-        version: 1.32.2(vite@5.2.10)
+        specifier: ^1.32.10
+        version: 1.32.10(vite@5.2.10)
       '@types/node':
         specifier: ^20.11.24
         version: 20.11.24
@@ -1563,18 +1563,18 @@ packages:
     resolution: {integrity: sha512-J4yDIIthosAsRZ5CPYP/jQvUAQtlZTTD/4suA08/FEnlxqW3sKS9iAhgsa9VYLZ6vDHn/ixJgIqRQPotoBjxIw==}
     dev: false
 
-  /@hono/node-server@1.11.0:
-    resolution: {integrity: sha512-TLIJq9TMtD1NEG1mVoqNUn1Ita0qSaB5XboZErjFBcO/GJYXwWY4dVdTi9G0lbxtu0x+hJXDItcLaFHb7rlFTw==}
+  /@hono/node-server@1.11.1:
+    resolution: {integrity: sha512-GW1Iomhmm1o4Z+X57xGby8A35Cu9UZLL7pSMdqDBkD99U5cywff8F+8hLk5aBTzNubnsFAvWQ/fZjNwPsEn9lA==}
     engines: {node: '>=18.14.1'}
     dev: false
 
-  /@hono/zod-validator@0.2.1(hono@4.3.6)(zod@3.23.4):
+  /@hono/zod-validator@0.2.1(hono@4.3.7)(zod@3.23.4):
     resolution: {integrity: sha512-HFoxln7Q6JsE64qz2WBS28SD33UB2alp3aRKmcWnNLDzEL1BLsWfbdX6e1HIiUprHYTIXf5y7ax8eYidKUwyaA==}
     peerDependencies:
       hono: '>=3.9.0'
       zod: ^3.19.1
     dependencies:
-      hono: 4.3.6
+      hono: 4.3.7
       zod: 3.23.4
     dev: false
 
@@ -1856,15 +1856,15 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
 
-  /@mantine/core@7.9.1(@mantine/hooks@7.9.1)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-UXK11t1fAQ2ROQ9HTIZfyU52XdwS8sFJ2SRUh5uHMWSahJo3wTdKzaCvYN7wg+ONM9p6ENT0hC0dfv5qXoKU4w==}
+  /@mantine/core@7.9.2(@mantine/hooks@7.9.2)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-ARNEiREF70tikW6at8QwFFcDbtennPjnhPOifaDL1sQurO3ORN/iOUFxiH1npWoqNydUZHxhsfFVpte8NNf/oQ==}
     peerDependencies:
-      '@mantine/hooks': 7.9.1
+      '@mantine/hooks': 7.9.2
       react: ^18.2.0
       react-dom: ^18.2.0
     dependencies:
       '@floating-ui/react': 0.26.13(react-dom@18.2.0)(react@18.2.0)
-      '@mantine/hooks': 7.9.1(react@18.2.0)
+      '@mantine/hooks': 7.9.2(react@18.2.0)
       clsx: 2.1.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -1876,8 +1876,8 @@ packages:
       - '@types/react'
     dev: false
 
-  /@mantine/form@7.9.1(react@18.2.0):
-    resolution: {integrity: sha512-6Z4LkACT1ouoTvtI9hH/rT+L7qvfKnCypUyaCtYpPkA57ANamK7qkmeXXBmbGGOf8mJB+ZSgOvpDVKKRz5iH3Q==}
+  /@mantine/form@7.9.2(react@18.2.0):
+    resolution: {integrity: sha512-G3n4VcK8LksJG9NncOwROXwxIJPXhpFF5FNemU+mCyuqzYI2bj8qsLh12e3wf9m1eZ2kmYjK4UpqP/AOptHHCQ==}
     peerDependencies:
       react: ^18.2.0
     dependencies:
@@ -1886,32 +1886,32 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@mantine/hooks@7.9.1(react@18.2.0):
-    resolution: {integrity: sha512-nb2Ar+2HfGxLjGZgObapeUeqcQsUWJ+rvj4X2KNTUy3+YpvLIMD3CqREowWHF7/5OTGh4BCyBqQNZ9JFpnMeHQ==}
+  /@mantine/hooks@7.9.2(react@18.2.0):
+    resolution: {integrity: sha512-qT8vvHZ8K/qFXSSIyq/NHpKgtEs1Vas4Z2tPPtMTN7oyibjsel09XebPAt59nkJS/SACQbja0GZ4lUXI2+AFFw==}
     peerDependencies:
       react: ^18.2.0
     dependencies:
       react: 18.2.0
     dev: false
 
-  /@mantine/notifications@7.9.1(@mantine/core@7.9.1)(@mantine/hooks@7.9.1)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-+fzc/+conYQMqE72eaKcxaOrLijsWExRO6Rp+QVgsmp3Hf57yksRdEbVE259PrWq3jaVI8G4XIMeKdYK0tB5Pw==}
+  /@mantine/notifications@7.9.2(@mantine/core@7.9.2)(@mantine/hooks@7.9.2)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-ERgmPLkiVPOqPjCVfSSK2QcRb/2W9wJVPpIlkSyMNYUWosceAH9uPhZCtnWxyRqH/PLhYtOOflxq2i4hiArEJQ==}
     peerDependencies:
-      '@mantine/core': 7.9.1
-      '@mantine/hooks': 7.9.1
+      '@mantine/core': 7.9.2
+      '@mantine/hooks': 7.9.2
       react: ^18.2.0
       react-dom: ^18.2.0
     dependencies:
-      '@mantine/core': 7.9.1(@mantine/hooks@7.9.1)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)
-      '@mantine/hooks': 7.9.1(react@18.2.0)
-      '@mantine/store': 7.9.1(react@18.2.0)
+      '@mantine/core': 7.9.2(@mantine/hooks@7.9.2)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)
+      '@mantine/hooks': 7.9.2(react@18.2.0)
+      '@mantine/store': 7.9.2(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       react-transition-group: 4.4.5(react-dom@18.2.0)(react@18.2.0)
     dev: false
 
-  /@mantine/store@7.9.1(react@18.2.0):
-    resolution: {integrity: sha512-m15k51F4n6R08Iii+TWG64lofiYB9hhEGS+3y+9DZHuY+hSmTmQX9J5WKVNYJ3jmV24QG96EjEQNuLBcG2atSg==}
+  /@mantine/store@7.9.2(react@18.2.0):
+    resolution: {integrity: sha512-oqCjse3cAp0DQI1fT5AWLW+Me6Mu4b2DVPpoRRwm7Ptw8gzUEmxb/9Brx2rkhaAym+S9sGe8IdEpNVLXaZyGXw==}
     peerDependencies:
       react: ^18.2.0
     dependencies:
@@ -2279,21 +2279,21 @@ packages:
     resolution: {integrity: sha512-rahAZXlR879P7dngDH7BZwGYiODA9D5Hqo6nUHn9GAURcqZU5IW0ZiT54dPtV5EPES7muZZmknReYueDHs7FFQ==}
     engines: {node: '>=12'}
 
-  /@tanstack/query-core@5.36.0:
-    resolution: {integrity: sha512-B5BD3pg/mztDR36i77hGcyySKKeYrbM5mnogOROTBi1SUml5ByRK7PGUUl16vvubvQC+mSnqziFG/VIy/DE3FQ==}
+  /@tanstack/query-core@5.36.1:
+    resolution: {integrity: sha512-BteWYEPUcucEu3NBcDAgKuI4U25R9aPrHSP6YSf2NvaD2pSlIQTdqOfLRsxH9WdRYg7k0Uom35Uacb6nvbIMJg==}
     dev: false
 
-  /@tanstack/react-query@5.36.0(react@18.2.0):
-    resolution: {integrity: sha512-BATvtM0rohwg7pRHUnxgeDiwLWRGZ8OM/4y8LImHVpecQWoH6Uhytu3Z8YV6V7hQ1sMQBFcUrGE1/e4MxR6YiA==}
+  /@tanstack/react-query@5.36.2(react@18.2.0):
+    resolution: {integrity: sha512-bHNa+5dead+j6SA8WVlEOPxcGfteVFgdyFTCFcxBgjnPf0fFpHUc7aNZBCnvmPXqy/BeQa9zTuU9ectb7i8ZXA==}
     peerDependencies:
       react: ^18.0.0
     dependencies:
-      '@tanstack/query-core': 5.36.0
+      '@tanstack/query-core': 5.36.1
       react: 18.2.0
     dev: false
 
-  /@tanstack/react-router@1.32.5(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-3W8db+P2KAJRY+zwxDzVUS99SFbs0wT8/je8yS1i3OExXm9BRCPD8EQX8+wk3EDxrEJ0SYjkGExutzSb7m58jA==}
+  /@tanstack/react-router@1.32.13(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-J6tiMRsFt91kkczEiuzHidePcPU62GuWGc2gSb9eqRKV17+TRofE4AJ1kM111F5wgDiPTsx4RwFVPU68+JVfAQ==}
     engines: {node: '>=12'}
     peerDependencies:
       react: '>=16.8'
@@ -2329,14 +2329,14 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@tanstack/router-devtools@1.32.5(csstype@3.1.2)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-f02dogfO1s041Fuk7pbRKNjYfEkWkWe2lZJd6ZLwICZ2HkQwRPVzVO41gX7462hKtqnPccavu0ATpboJt44W2Q==}
+  /@tanstack/router-devtools@1.32.14(csstype@3.1.2)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-l8IMFWoackmUI11g7EMtB56rVo5VFE5ILCt+ke1Y1xEz7UtS1bn8yktKDn2gTHmp6kUp3noT2h3+haZwaHA/yg==}
     engines: {node: '>=12'}
     peerDependencies:
       react: '>=16.8'
       react-dom: '>=16.8'
     dependencies:
-      '@tanstack/react-router': 1.32.5(react-dom@18.2.0)(react@18.2.0)
+      '@tanstack/react-router': 1.32.13(react-dom@18.2.0)(react@18.2.0)
       clsx: 2.1.1
       date-fns: 2.30.0
       goober: 2.1.14(csstype@3.1.2)
@@ -2346,16 +2346,16 @@ packages:
       - csstype
     dev: true
 
-  /@tanstack/router-generator@1.32.2:
-    resolution: {integrity: sha512-x/IZSAoqjzfBA4B3VI5kjp7Uu+6JMYvrM827LwG/EhEt+/SXTFgy5IFwK6huFRz/pkExy68pFDyA5vp8ghCHeA==}
+  /@tanstack/router-generator@1.32.10:
+    resolution: {integrity: sha512-WYGYnbZxJRM5JvP1VyQCA7IQneUPx9clviRIy8NbpKytxKK5eln5pvzBfPmwCKfV+s4pEGD8SDZ8JxcuP+bnfA==}
     engines: {node: '>=12'}
     dependencies:
       prettier: 3.2.5
       zod: 3.23.4
     dev: true
 
-  /@tanstack/router-vite-plugin@1.32.2(vite@5.2.10):
-    resolution: {integrity: sha512-1djQJlCyPIWai1SvaBCoWuJoanzgcyywLPzPVYB//kXn/iLde1xBunQT09vTJk5EXt1amqQ82htS6z3ECM0Z0g==}
+  /@tanstack/router-vite-plugin@1.32.10(vite@5.2.10):
+    resolution: {integrity: sha512-lVrVhtOO4fJArl01+n4Id5/MS9f6ELq+pcrgGKBCG/dawFx5p2b7N9RKy+LlKBmxAbSQQL5+PQwuy6yJLKFmTA==}
     engines: {node: '>=12'}
     dependencies:
       '@babel/core': 7.24.4
@@ -2367,7 +2367,7 @@ packages:
       '@babel/template': 7.24.0
       '@babel/traverse': 7.24.1
       '@babel/types': 7.24.0
-      '@tanstack/router-generator': 1.32.2
+      '@tanstack/router-generator': 1.32.10
       '@types/babel__core': 7.20.5
       '@types/babel__generator': 7.6.8
       '@types/babel__template': 7.4.4
@@ -3211,6 +3211,7 @@ packages:
   /acorn@8.10.0:
     resolution: {integrity: sha512-F0SAmZ8iUtS//m8DmCTA0jlh6TDKkHQyK6xc6V4KDTyZKA9dnvX9/3sRTVQrWm79glUAZbnmmNcdYwUIHWVybw==}
     engines: {node: '>=0.4.0'}
+    hasBin: true
     dev: true
 
   /agent-base@6.0.2:
@@ -4825,6 +4826,7 @@ packages:
   /eslint@8.57.0:
     resolution: {integrity: sha512-dZ6+mexnaTIbSBZWgou51U6OmzIhYM2VcNdtiTtI7qPNZm35Akpr0f6vtw3w1Kmn5PYo+tZVfh13WrhpS6oLqQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    hasBin: true
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.0)
       '@eslint-community/regexpp': 4.10.0
@@ -5414,8 +5416,8 @@ packages:
       react-is: 16.13.1
     dev: false
 
-  /hono@4.3.6:
-    resolution: {integrity: sha512-2IqXwrxWF4tG2AR7b5tMYn+KEnWK8UvdC/NUSbOKWj/Kj11OJqel58FxyiXLK5CcKLiL8aGtTe4lkBKXyaHMBQ==}
+  /hono@4.3.7:
+    resolution: {integrity: sha512-GXlsGnCAwGosu+COwYyYC8MwOY2L6Ihg9V1znYdMD8DHCJl+13Nk4o8dsBYJpae4oujjw24jBaITuYWVq2+V8Q==}
     engines: {node: '>=16.0.0'}
     dev: false
 
@@ -5866,6 +5868,7 @@ packages:
 
   /js-yaml@4.1.0:
     resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
+    hasBin: true
     dependencies:
       argparse: 2.0.1
     dev: true
@@ -6082,6 +6085,7 @@ packages:
 
   /loose-envify@1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
+    hasBin: true
     dependencies:
       js-tokens: 4.0.0
 
@@ -6134,14 +6138,14 @@ packages:
     resolution: {integrity: sha512-s8UhlNe7vPKomQhC1qFelMokr/Sc3AgNbso3n74mVPA5LTZwkB9NlXf4XPamLxJE8h0gh73rM94xvwRT2CVInw==}
     dev: true
 
-  /mantine-form-zod-resolver@1.1.0(@mantine/form@7.9.1)(zod@3.23.4):
+  /mantine-form-zod-resolver@1.1.0(@mantine/form@7.9.2)(zod@3.23.4):
     resolution: {integrity: sha512-hidTuYq6agSF5XbkcVVcr0mkGs9ki/x8OC9ldZMxGLVGja6bdl+x4k1hCNrigCG90DBoMDnu0bo3hprGBBlUZA==}
     engines: {node: '>=16.6.0'}
     peerDependencies:
       '@mantine/form': '>=7.0.0'
       zod: '>=3.0.0'
     dependencies:
-      '@mantine/form': 7.9.1(react@18.2.0)
+      '@mantine/form': 7.9.2(react@18.2.0)
       zod: 3.23.4
     dev: false
 
@@ -7878,6 +7882,7 @@ packages:
 
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+    requiresBuild: true
 
   /tsutils@3.21.0(typescript@5.3.3):
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
@@ -8037,6 +8042,7 @@ packages:
   /typescript@5.3.3:
     resolution: {integrity: sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==}
     engines: {node: '>=14.17'}
+    hasBin: true
     dev: true
 
   /uglify-js@3.17.4:
@@ -8317,6 +8323,7 @@ packages:
   /which@2.0.2:
     resolution: {integrity: sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==}
     engines: {node: '>= 8'}
+    hasBin: true
     dependencies:
       isexe: 2.0.0
     dev: true
