@@ -66,26 +66,44 @@ const DashboardLayoutDashboardIndexRoute =
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
     '/_dashboardLayout': {
+      id: '/_dashboardLayout'
+      path: ''
+      fullPath: ''
       preLoaderRoute: typeof DashboardLayoutImport
       parentRoute: typeof rootRoute
     }
     '/login/': {
+      id: '/login/'
+      path: '/login'
+      fullPath: '/login'
       preLoaderRoute: typeof LoginIndexLazyImport
       parentRoute: typeof rootRoute
     }
     '/logout/': {
+      id: '/logout/'
+      path: '/logout'
+      fullPath: '/logout'
       preLoaderRoute: typeof LogoutIndexLazyImport
       parentRoute: typeof rootRoute
     }
     '/_dashboardLayout/dashboard/': {
+      id: '/_dashboardLayout/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardLayoutDashboardIndexImport
       parentRoute: typeof DashboardLayoutImport
     }
     '/_dashboardLayout/users/': {
+      id: '/_dashboardLayout/users/'
+      path: '/users'
+      fullPath: '/users'
       preLoaderRoute: typeof DashboardLayoutUsersIndexLazyImport
       parentRoute: typeof DashboardLayoutImport
     }
@@ -94,14 +112,14 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren([
+export const routeTree = rootRoute.addChildren({
   IndexLazyRoute,
-  DashboardLayoutRoute.addChildren([
+  DashboardLayoutRoute: DashboardLayoutRoute.addChildren({
     DashboardLayoutDashboardIndexRoute,
     DashboardLayoutUsersIndexLazyRoute,
-  ]),
+  }),
   LoginIndexLazyRoute,
   LogoutIndexLazyRoute,
-])
+})
 
 /* prettier-ignore-end */
