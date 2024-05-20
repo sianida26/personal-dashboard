@@ -8,7 +8,14 @@ interface Props<TData> {
 export default function DashboardTable<T>({ table }: Props<T>) {
 	return (
 		<ScrollArea.Autosize>
-			<Table verticalSpacing="xs" horizontalSpacing="xs">
+			<Table
+				verticalSpacing="xs"
+				horizontalSpacing="xs"
+				striped
+				highlightOnHover
+				withColumnBorders
+				withRowBorders
+			>
 				{/* Thead */}
 				<Table.Thead>
 					{table.getHeaderGroups().map((headerGroup) => (
