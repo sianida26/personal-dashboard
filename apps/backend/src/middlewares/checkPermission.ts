@@ -27,11 +27,13 @@ const checkPermission = (...permissions: PermissionCode[]) =>
 			const hasPermission = currentUser.permissions.some((p) =>
 				permissions.includes(p)
 			);
-			if (hasPermission) {
+			if (hasPermission || permissions.includes("authenticated-only")) {
 				await next();
 			} else {
 				unauthorized();
 			}
+		} else if (permissions.includes("guest-only")) {
+			await next();
 		} else {
 			// No current user found, trigger unauthorized error
 			unauthorized();
