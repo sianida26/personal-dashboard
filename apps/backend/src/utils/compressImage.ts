@@ -1,15 +1,18 @@
 import sharp from "sharp";
+import { fileURLToPath } from "url";
 
 /**
- * Options for compressing an image
- * @property inputFile - The input file to compress
- * @property targetSize - The target size for the compressed image (optional)
- * @property minQuality - The minimum quality for the compressed image (optional)
+ * Options for compressing an image.
  */
-interface CompressImageOptions {
+export interface CompressImageOptions {
+	/** The input file to compress */
 	inputFile: File;
+	/** The target size for the compressed image in bytes (optional) */
 	targetSize?: number;
+	/** The minimum quality for the compressed image (optional, default is 10) */
 	minQuality?: number;
+	/** Flag to force compression even if not necessary (optional, default is true) */
+	forceCompress?: boolean;
 }
 
 /**
@@ -20,6 +23,7 @@ interface CompressImageOptions {
  */
 async function compressImage(options: CompressImageOptions) {
 	let quality = 80;
+	const forceCompress = options.forceCompress ?? true;
 
 	/**
 	 * Processes the image compression
@@ -32,7 +36,9 @@ async function compressImage(options: CompressImageOptions) {
 			.toBuffer();
 	}
 
-	let buffer = await processImage();
+	let buffer = forceCompress
+		? await processImage()
+		: Buffer.from(await options.inputFile.arrayBuffer());
 
 	if (options.targetSize) {
 		while (
