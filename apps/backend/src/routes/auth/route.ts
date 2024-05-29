@@ -21,6 +21,7 @@ import { permissionsSchema } from "../../drizzle/schema/permissions";
 import { SpecificPermissionCode } from "../../data/permissions";
 import authInfo from "../../middlewares/authInfo";
 import { unauthorized } from "../../errors/DashboardError";
+import appEnv from "../../appEnv";
 
 const authRoutes = new Hono<HonoEnv>()
 	.post(
@@ -98,7 +99,7 @@ const authRoutes = new Hono<HonoEnv>()
 				uid: user[0].users.id,
 			});
 
-			const cookieSecret = process.env.COOKIE_SECRET;
+			const cookieSecret = appEnv.COOKIE_SECRET;
 
 			if (!cookieSecret)
 				throw new HTTPException(500, {

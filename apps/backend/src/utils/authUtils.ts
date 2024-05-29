@@ -1,10 +1,9 @@
 import jwt from "jsonwebtoken";
+import appEnv from "../appEnv";
 
 // Environment variables for secrets, defaulting to a random secret if not set.
-const accessTokenSecret =
-	process.env.ACCESS_TOKEN_SECRET ?? "some-random-secret";
-const refreshTokenSecret =
-	process.env.REFRESH_TOKEN_SECRET ?? "some-very-random-secret";
+const accessTokenSecret = appEnv.ACCESS_TOKEN_SECRET;
+const refreshTokenSecret = appEnv.REFRESH_TOKEN_SECRET;
 
 // Algorithm to be used for JWT encoding.
 const algorithm: jwt.Algorithm = "HS256";

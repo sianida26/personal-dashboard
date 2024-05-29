@@ -14,6 +14,7 @@ import { logger } from "hono/logger";
 import DashboardError from "./errors/DashboardError";
 import HonoEnv from "./types/HonoEnv";
 import devRoutes from "./routes/dev/route";
+import appEnv from "./appEnv";
 
 configDotenv();
 
@@ -27,7 +28,7 @@ const routes = app
 		})
 	)
 	.use(async (c, next) => {
-		const cookieSecret = process.env.COOKIE_SECRET;
+		const cookieSecret = appEnv.COOKIE_SECRET;
 
 		if (!cookieSecret)
 			throw new HTTPException(500, {
@@ -108,7 +109,7 @@ const routes = app
 		}
 	});
 
-const port = +(process.env.APP_PORT ?? 3000);
+const port = appEnv.APP_PORT;
 console.log(`Server is running on port ${port}`);
 
 serve({

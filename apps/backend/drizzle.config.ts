@@ -1,11 +1,8 @@
 import "dotenv/config";
 import type { Config } from "drizzle-kit";
+import appEnv from "./src/appEnv";
 
-const databaseUrl = process.env.DATABASE_URL;
-
-if (!databaseUrl) {
-	throw new Error("DATABASE_URL is not set");
-}
+const databaseUrl = appEnv.DATABASE_URL;
 
 export default {
 	schema: "./src/drizzle/schema/*",

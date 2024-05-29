@@ -7,10 +7,11 @@ import * as rolesSchema from "./schema/roles";
 import * as permissionsToRolesSchema from "./schema/permissionsToRoles";
 import * as permissionsToUsersSchema from "./schema/permissionsToUsers";
 import * as rolesToUsersSchema from "./schema/rolesToUsers";
+import appEnv from "../appEnv";
 
 configDotenv();
 
-const dbUrl = process.env.DATABASE_URL;
+const dbUrl = appEnv.DATABASE_URL;
 
 if (!dbUrl) throw new Error("DATABASE_URL is not set");
 
