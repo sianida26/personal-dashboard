@@ -14,6 +14,7 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as DashboardLayoutImport } from './routes/_dashboardLayout'
+import { Route as DashboardLayoutUsersIndexImport } from './routes/_dashboardLayout/users/index'
 import { Route as DashboardLayoutDashboardIndexImport } from './routes/_dashboardLayout/dashboard/index'
 
 // Create Virtual Routes
@@ -21,9 +22,6 @@ import { Route as DashboardLayoutDashboardIndexImport } from './routes/_dashboar
 const IndexLazyImport = createFileRoute('/')()
 const LogoutIndexLazyImport = createFileRoute('/logout/')()
 const LoginIndexLazyImport = createFileRoute('/login/')()
-const DashboardLayoutUsersIndexLazyImport = createFileRoute(
-  '/_dashboardLayout/users/',
-)()
 
 // Create/Update Routes
 
@@ -47,13 +45,12 @@ const LoginIndexLazyRoute = LoginIndexLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/login/index.lazy').then((d) => d.Route))
 
-const DashboardLayoutUsersIndexLazyRoute =
-  DashboardLayoutUsersIndexLazyImport.update({
-    path: '/users/',
-    getParentRoute: () => DashboardLayoutRoute,
-  } as any).lazy(() =>
-    import('./routes/_dashboardLayout/users/index.lazy').then((d) => d.Route),
-  )
+const DashboardLayoutUsersIndexRoute = DashboardLayoutUsersIndexImport.update({
+  path: '/users/',
+  getParentRoute: () => DashboardLayoutRoute,
+} as any).lazy(() =>
+  import('./routes/_dashboardLayout/users/index.lazy').then((d) => d.Route),
+)
 
 const DashboardLayoutDashboardIndexRoute =
   DashboardLayoutDashboardIndexImport.update({
@@ -104,7 +101,7 @@ declare module '@tanstack/react-router' {
       id: '/_dashboardLayout/users/'
       path: '/users'
       fullPath: '/users'
-      preLoaderRoute: typeof DashboardLayoutUsersIndexLazyImport
+      preLoaderRoute: typeof DashboardLayoutUsersIndexImport
       parentRoute: typeof DashboardLayoutImport
     }
   }
@@ -116,10 +113,50 @@ export const routeTree = rootRoute.addChildren({
   IndexLazyRoute,
   DashboardLayoutRoute: DashboardLayoutRoute.addChildren({
     DashboardLayoutDashboardIndexRoute,
-    DashboardLayoutUsersIndexLazyRoute,
+    DashboardLayoutUsersIndexRoute,
   }),
   LoginIndexLazyRoute,
   LogoutIndexLazyRoute,
 })
 
 /* prettier-ignore-end */
+
+/* ROUTE_MANIFEST_START
+{
+  "routes": {
+    "__root__": {
+      "filePath": "__root.tsx",
+      "children": [
+        "/",
+        "/_dashboardLayout",
+        "/login/",
+        "/logout/"
+      ]
+    },
+    "/": {
+      "filePath": "index.lazy.tsx"
+    },
+    "/_dashboardLayout": {
+      "filePath": "_dashboardLayout.tsx",
+      "children": [
+        "/_dashboardLayout/dashboard/",
+        "/_dashboardLayout/users/"
+      ]
+    },
+    "/login/": {
+      "filePath": "login/index.lazy.tsx"
+    },
+    "/logout/": {
+      "filePath": "logout/index.lazy.tsx"
+    },
+    "/_dashboardLayout/dashboard/": {
+      "filePath": "_dashboardLayout/dashboard/index.tsx",
+      "parent": "/_dashboardLayout"
+    },
+    "/_dashboardLayout/users/": {
+      "filePath": "_dashboardLayout/users/index.tsx",
+      "parent": "/_dashboardLayout"
+    }
+  }
+}
+ROUTE_MANIFEST_END */

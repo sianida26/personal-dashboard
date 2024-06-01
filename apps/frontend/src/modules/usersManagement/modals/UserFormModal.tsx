@@ -5,71 +5,87 @@ import {
 	Center,
 	Flex,
 	Modal,
-	MultiSelect,
-	PasswordInput,
 	ScrollArea,
 	Stack,
-	TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getRouteApi, useSearch } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 import { createUser, updateUser } from "../queries/userQueries";
 import { TbDeviceFloppy } from "react-icons/tb";
 import client from "../../../honoClient";
+import { getUserByIdQueryOptions } from "../queries/userQueries";
 import { useEffect } from "react";
 import { notifications } from "@mantine/notifications";
 import FormResponseError from "@/errors/FormResponseError";
+import createInputComponents from "@/utils/createInputComponents";
 
+/**
+ * Change this
+ */
 const routeApi = getRouteApi("/_dashboardLayout/users/");
 
 export default function UserFormModal() {
-	const searchParams = useSearch({ from: "/_dashboardLayout/users/" }) as {
-		detail: string;
-		edit: string;
-		create: boolean;
-	};
-
+	/**
+	 * DON'T CHANGE FOLLOWING:
+	 */
 	const queryClient = useQueryClient();
 
-	const userId = searchParams.detail || searchParams.edit;
+	const navigate = routeApi.useNavigate();
 
-	const rolesQuery = useQuery({
-		queryKey: ["roles"],
-		queryFn: async () => {
-			const res = await client.roles.$get();
+	const searchParams = routeApi.useSearch();
 
-			if (res.ok) {
-				return await res.json();
-			}
+	const dataId = searchParams.detail || searchParams.edit;
 
-			throw new Error(await res.text());
+	const isModalOpen = Boolean(dataId || searchParams.create);
+
+	const detailId = searchParams.detail;
+	const editId = searchParams.edit;
+
+	const formType = detailId ? "detail" : editId ? "edit" : "create";
+
+	/**
+	 * CHANGE FOLLOWING:
+	 */
+
+	const userQuery = useQuery(getUserByIdQueryOptions(dataId));
+
+	const modalTitle =
+		formType.charAt(0).toUpperCase() + formType.slice(1) + " User";
+
+	const form = useForm({
+		initialValues: {
+			id: "",
+			email: "",
+			name: "",
+			username: "",
+			photoProfileUrl: "",
+			password: "",
+			roles: [] as string[],
 		},
 	});
 
-	const userQuery = useQuery({
-		queryKey: ["users", userId],
-		enabled: Boolean(userId),
-		queryFn: async () => {
-			if (!userId) return null;
-			const res = await client.users[":id"].$get({
-				param: {
-					id: userId,
-				},
-				query: {},
-			});
+	useEffect(() => {
+		const data = userQuery.data;
 
-			if (res.ok) {
-				console.log("ok");
-				return await res.json();
-			}
-			console.log("not ok");
-			throw new Error(await res.text());
-		},
-	});
+		if (!data) {
+			form.reset();
+			return;
+		}
 
-	const isModalOpen =
-		Boolean(userId && userQuery.data) || searchParams.create;
+		form.setValues({
+			id: data.id,
+			email: data.email ?? "",
+			name: data.name,
+			photoProfileUrl: "",
+			username: data.username,
+			password: "",
+			roles: data.roles.map((v) => v.id), //only extract the id
+		});
+
+		form.setErrors({});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [userQuery.data]);
 
 	const mutation = useMutation({
 		mutationKey: ["usersMutation"],
@@ -99,51 +115,6 @@ export default function UserFormModal() {
 			}
 		},
 	});
-
-	const navigate = routeApi.useNavigate();
-
-	const detailId = searchParams.detail;
-	const editId = searchParams.edit;
-
-	const formType = detailId ? "detail" : editId ? "edit" : "create";
-	const modalTitle =
-		formType.charAt(0).toUpperCase() + formType.slice(1) + " User";
-
-	const form = useForm({
-		initialValues: {
-			id: "",
-			email: "",
-			name: "",
-			username: "",
-			photoProfileUrl: "",
-			password: "",
-			roles: [] as string[],
-		},
-		// validate: zodResolver(userFormDataSchema),
-		// validateInputOnChange: false,
-	});
-
-	useEffect(() => {
-		const data = userQuery.data;
-
-		if (!data) {
-			form.reset();
-			return;
-		}
-
-		form.setValues({
-			id: data.id,
-			email: data.email ?? "",
-			name: data.name,
-			photoProfileUrl: "",
-			username: data.username,
-			password: "",
-			roles: data.roles.map((v) => v.id), //only extract the id
-		});
-
-		form.setErrors({});
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [userQuery.data]);
 
 	const handleSubmit = async (values: typeof form.values) => {
 		if (formType === "detail") return;
@@ -183,6 +154,22 @@ export default function UserFormModal() {
 		navigate({ search: {} });
 	};
 
+	/**
+	 * YOU MIGHT NOT NEED FOLLOWING:
+	 */
+	const rolesQuery = useQuery({
+		queryKey: ["roles"],
+		queryFn: async () => {
+			const res = await client.roles.$get();
+
+			if (res.ok) {
+				return await res.json();
+			}
+
+			throw new Error(await res.text());
+		},
+	});
+
 	return (
 		<Modal
 			opened={isModalOpen}
@@ -205,59 +192,51 @@ export default function UserFormModal() {
 					</Center>
 				</Stack>
 
-				{form.values.id && (
-					<TextInput
-						label="ID"
-						readOnly
-						variant="filled"
-						disabled={mutation.isPending}
-						{...form.getInputProps("id")}
-					/>
-				)}
-
-				<TextInput
-					data-autofocus
-					label="Name"
-					readOnly={formType === "detail"}
-					disabled={mutation.isPending}
-					{...form.getInputProps("name")}
-				/>
-
-				<TextInput
-					label="Username"
-					readOnly={formType === "detail"}
-					disabled={mutation.isPending}
-					{...form.getInputProps("username")}
-				/>
-
-				<TextInput
-					label="Email"
-					readOnly={formType === "detail"}
-					disabled={mutation.isPending}
-					{...form.getInputProps("email")}
-				/>
-
-				{formType === "create" && (
-					<PasswordInput
-						label="Password"
-						disabled={mutation.isPending}
-						{...form.getInputProps("password")}
-					/>
-				)}
-
-				{/* Role */}
-				<MultiSelect
-					label="Roles"
-					readOnly={formType === "detail"}
-					disabled={mutation.isPending}
-					value={form.values.roles}
-					onChange={(values) => form.setFieldValue("roles", values)}
-					data={rolesQuery.data?.map((role) => ({
-						value: role.id,
-						label: role.name,
-					}))}
-					error={form.errors.roles}
-				/>
+				{createInputComponents({
+					disableAll: mutation.isPending,
+					readonlyAll: formType === "detail",
+					inputs: [
+						{
+							type: "text",
+							readOnly: true,
+							variant: "filled",
+							...form.getInputProps("id"),
+							hidden: !form.values.id,
+						},
+						{
+							type: "text",
+							label: "Name",
+							...form.getInputProps("name"),
+						},
+						{
+							type: "text",
+							label: "Username",
+							...form.getInputProps("username"),
+						},
+						{
+							type: "text",
+							label: "Email",
+							...form.getInputProps("email"),
+						},
+						{
+							type: "password",
+							label: "Password",
+							hidden: formType !== "create",
+						},
+						{
+							type: "multi-select",
+							label: "Roles",
+							value: form.values.roles,
+							onChange: (values) =>
+								form.setFieldValue("roles", values),
+							data: rolesQuery.data?.map((role) => ({
+								value: role.id,
+								label: role.name,
+							})),
+							error: form.errors.roles,
+						},
+					],
+				})}
 
 				{/* Buttons */}
 				<Flex justify="flex-end" align="center" gap="lg" mt="lg">

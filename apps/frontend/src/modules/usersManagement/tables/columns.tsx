@@ -10,17 +10,12 @@ import { Link } from "@tanstack/react-router";
 
 interface ColumnOptions {
 	permissions: Partial<CrudPermission>;
-	actions: {
-		detail: (id: string) => void;
-		edit: (id: string) => void;
-		delete: (id: string, name: string) => void;
-	};
 }
 
 const createColumns = (options: ColumnOptions) => {
 	const columnHelper =
 		createColumnHelper<
-			InferResponseType<typeof client.users.$get>[number]
+			InferResponseType<typeof client.users.$get>["data"][number]
 		>();
 
 	const columns = [
@@ -70,7 +65,11 @@ const createColumns = (options: ColumnOptions) => {
 		columnHelper.display({
 			id: "status",
 			header: "Status",
-			cell: () => <Badge color="green">Active</Badge>,
+			cell: (props) => (
+				<Badge color={props.row.original.isEnabled ? "green" : "gray"}>
+					{props.row.original.isEnabled ? "Active" : "Inactive"}
+				</Badge>
+			),
 		}),
 
 		columnHelper.display({
@@ -86,27 +85,21 @@ const createColumns = (options: ColumnOptions) => {
 						{
 							label: "Detail",
 							permission: options.permissions.read,
-							action: () =>
-								options.actions.detail(props.row.original.id),
+							action: `?detail=${props.row.original.id}`,
 							color: "green",
 							icon: <TbEye />,
 						},
 						{
 							label: "Edit",
 							permission: options.permissions.update,
-							action: () =>
-								options.actions.edit(props.row.original.id),
+							action: `?edit=${props.row.original.id}`,
 							color: "yellow",
 							icon: <TbPencil />,
 						},
 						{
 							label: "Delete",
 							permission: options.permissions.delete,
-							action: () =>
-								options.actions.delete(
-									props.row.original.id,
-									props.row.original.name ?? ""
-								),
+							action: `?delete=${props.row.original.id}`,
 							color: "red",
 							icon: <TbTrash />,
 						},

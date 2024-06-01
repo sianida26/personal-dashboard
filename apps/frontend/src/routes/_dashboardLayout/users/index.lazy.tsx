@@ -1,33 +1,40 @@
-import { Card, Stack, Title } from "@mantine/core";
-import { createFileRoute } from "@tanstack/react-router";
-import UsersTable from "../../../modules/usersManagement/tables/UsersTable";
-import { z } from "zod";
 import { userQueryOptions } from "@/modules/usersManagement/queries/userQueries";
+import PageTemplate from "@/components/PageTemplate";
+import { createLazyFileRoute } from "@tanstack/react-router";
+import UserFormModal from "@/modules/usersManagement/modals/UserFormModal";
+import { createColumnHelper } from "@tanstack/react-table";
+import ExtractQueryDataType from "@/types/ExtractQueryDataType";
 
-const searchParamSchema = z.object({
-	create: z.boolean().default(false).optional(),
-	edit: z.string().default("").optional(),
-	delete: z.string().default("").optional(),
-	detail: z.string().default("").optional(),
-});
-
-export const Route = createFileRoute("/_dashboardLayout/users/")({
+export const Route = createLazyFileRoute("/_dashboardLayout/users/")({
 	component: UsersPage,
-
-	validateSearch: searchParamSchema,
-
-	loader: ({ context: { queryClient } }) => {
-		queryClient.ensureQueryData(userQueryOptions);
-	},
 });
+
+type DataType = ExtractQueryDataType<typeof userQueryOptions>;
+
+const columnHelper = createColumnHelper<DataType>();
 
 export default function UsersPage() {
 	return (
-		<Stack>
-			<Title order={1}>Users</Title>
-			<Card>
-				<UsersTable />
-			</Card>
-		</Stack>
+		<PageTemplate
+			title="Users"
+			queryOptions={userQueryOptions}
+			modals={[<UserFormModal />]}
+			columnDefs={[
+				columnHelper.display({
+					id: "sequence",
+					header: "#",
+					cell: (props) => props.row.index + 1,
+					size: 1,
+				}),
+
+				columnHelper.accessor("email", {
+					header: "Email",
+				}),
+
+				columnHelper.accessor("email", {
+					header: "Email",
+				}),
+			]}
+		/>
 	);
 }

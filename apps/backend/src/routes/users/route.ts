@@ -1,4 +1,4 @@
-import { and, eq, isNull } from "drizzle-orm";
+import { and, count, eq, ilike, isNull, or, sql } from "drizzle-orm";
 import { Hono } from "hono";
 
 import { z } from "zod";
@@ -12,6 +12,7 @@ import HonoEnv from "../../types/HonoEnv";
 import requestValidator from "../../utils/requestValidator";
 import authInfo from "../../middlewares/authInfo";
 import checkPermission from "../../middlewares/checkPermission";
+import { unionAll } from "drizzle-orm/mysql-core";
 
 export const userFormSchema = z.object({
 	name: z.string().min(1).max(255),
@@ -44,20 +45,40 @@ export const userUpdateSchema = userFormSchema.extend({
 
 const usersRoute = new Hono<HonoEnv>()
 	.use(authInfo)
+	/**
+	 * Get All Users (With Metadata)
+	 *
+	 * Query params:
+	 * - includeTrashed: boolean (default: false)\
+	 * - withMetadata: boolean
+	 */
 	.get(
 		"/",
 		checkPermission("users.readAll"),
 		requestValidator(
 			"query",
 			z.object({
-				includeTrashed: z.string().default("false"),
+				includeTrashed: z
+					.string()
+					.optional()
+					.transform((v) => v?.toLowerCase() === "true"),
+				withMetadata: z
+					.string()
+					.optional()
+					.transform((v) => v?.toLowerCase() === "true"),
+				page: z.coerce.number().int().min(0).default(0),
+				limit: z.coerce.number().int().min(1).max(1000).default(1),
+				q: z.string().default(""),
 			})
 		),
 		async (c) => {
-			const includeTrashed =
-				c.req.query("includeTrashed")?.toLowerCase() === "true";
+			const { includeTrashed, page, limit, q } = c.req.valid("query");
 
-			let usersData = await db
+			const totalCountQuery = includeTrashed
+				? sql<number>`(SELECT count(*) FROM ${users})`
+				: sql<number>`(SELECT count(*) FROM ${users} WHERE ${users.deletedAt} IS NULL)`;
+
+			const result = await db
 				.select({
 					id: users.id,
 					name: users.name,
@@ -67,13 +88,34 @@ const usersRoute = new Hono<HonoEnv>()
 					createdAt: users.createdAt,
 					updatedAt: users.updatedAt,
 					...(includeTrashed ? { deletedAt: users.deletedAt } : {}),
-
-					// password: users.password,
+					fullCount: totalCountQuery,
 				})
 				.from(users)
-				.where(!includeTrashed ? isNull(users.deletedAt) : undefined);
+				.where(
+					and(
+						includeTrashed ? undefined : isNull(users.deletedAt),
+						q
+							? or(
+									ilike(users.name, q),
+									ilike(users.username, q),
+									ilike(users.email, q),
+									eq(users.id, q)
+								)
+							: undefined
+					)
+				)
+				.offset(page * limit)
+				.limit(limit);
 
-			return c.json(usersData);
+			return c.json({
+				data: result.map((d) => ({ ...d, fullCount: undefined })),
+				_metadata: {
+					currentPage: page,
+					totalPages: Math.ceil(result[0]?.fullCount ?? 0 / limit),
+					totalItems: Number(result[0]?.fullCount) ?? 0,
+					perPage: limit,
+				},
+			});
 		}
 	)
 	//get user by id
@@ -292,5 +334,4 @@ const usersRoute = new Hono<HonoEnv>()
 			message: "User restored successfully",
 		});
 	});
-
 export default usersRoute;
