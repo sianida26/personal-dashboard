@@ -1,4 +1,4 @@
-import { and, count, eq, ilike, isNull, or, sql } from "drizzle-orm";
+import { and, eq, ilike, isNull, or, sql } from "drizzle-orm";
 import { Hono } from "hono";
 
 import { z } from "zod";
@@ -12,7 +12,6 @@ import HonoEnv from "../../types/HonoEnv";
 import requestValidator from "../../utils/requestValidator";
 import authInfo from "../../middlewares/authInfo";
 import checkPermission from "../../middlewares/checkPermission";
-import { unionAll } from "drizzle-orm/mysql-core";
 
 export const userFormSchema = z.object({
 	name: z.string().min(1).max(255),
@@ -111,7 +110,9 @@ const usersRoute = new Hono<HonoEnv>()
 				data: result.map((d) => ({ ...d, fullCount: undefined })),
 				_metadata: {
 					currentPage: page,
-					totalPages: Math.ceil(result[0]?.fullCount ?? 0 / limit),
+					totalPages: Math.ceil(
+						(Number(result[0]?.fullCount) ?? 0) / limit
+					),
 					totalItems: Number(result[0]?.fullCount) ?? 0,
 					perPage: limit,
 				},

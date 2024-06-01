@@ -1,5 +1,4 @@
 import sharp from "sharp";
-import { fileURLToPath } from "url";
 
 /**
  * Options for compressing an image.

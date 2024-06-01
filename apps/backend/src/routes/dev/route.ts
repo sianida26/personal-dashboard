@@ -3,18 +3,11 @@ import authInfo from "../../middlewares/authInfo";
 import HonoEnv from "../../types/HonoEnv";
 import { z } from "zod";
 import requestValidator from "../../utils/requestValidator";
-import compressImage from "../../utils/compressImage";
 import checkPermission from "../../middlewares/checkPermission";
-import { createId } from "@paralleldrive/cuid2";
-import { writeFileSync } from "fs";
 import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
-import { isNull, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { unionAll } from "drizzle-orm/pg-core";
-
-const fileSchema = z.object({
-	file: z.instanceof(File),
-});
 
 const devRoutes = new Hono<HonoEnv>()
 	.use(authInfo)
