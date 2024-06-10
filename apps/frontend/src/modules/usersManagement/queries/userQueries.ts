@@ -59,8 +59,10 @@ export const updateUser = async (
 };
 
 export const deleteUser = async (id: string) => {
-	return await client.users[":id"].$delete({
-		param: { id },
-		form: {},
-	});
+	return await fetchRPC(
+		client.users[":id"].$delete({
+			param: { id },
+			form: {},
+		})
+	);
 };

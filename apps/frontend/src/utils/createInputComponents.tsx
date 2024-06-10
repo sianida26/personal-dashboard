@@ -22,6 +22,7 @@ import { ReactNode } from "@tanstack/react-router";
 
 type GeneralInputProps = {
 	hidden?: boolean;
+	key?: string | number;
 };
 
 type TextInputType = {
@@ -83,12 +84,13 @@ interface Options {
 function createInputComponents(options: Options) {
 	const components = [] as ReactNode[];
 
-	const createComponent = (input: AcceptedInput) => {
+	const createComponent = ({ key, ...input }: AcceptedInput) => {
 		switch (input.type) {
 			case "text":
 				return (
 					<TextInput
 						{...input}
+						key={key}
 						readOnly={options.readonlyAll || input.readOnly}
 						disabled={options.disableAll || input.disabled}
 					/>
@@ -97,6 +99,7 @@ function createInputComponents(options: Options) {
 				return (
 					<MultiSelect
 						{...input}
+						key={key}
 						readOnly={options.readonlyAll || input.readOnly}
 						disabled={options.disableAll || input.disabled}
 					/>
@@ -105,6 +108,7 @@ function createInputComponents(options: Options) {
 				return (
 					<PasswordInput
 						{...input}
+						key={key}
 						readOnly={options.readonlyAll || input.readOnly}
 						disabled={options.disableAll || input.disabled}
 					/>
@@ -113,6 +117,7 @@ function createInputComponents(options: Options) {
 				return (
 					<NumberInput
 						{...input}
+						key={key}
 						type="text"
 						readOnly={options.readonlyAll || input.readOnly}
 						disabled={options.disableAll || input.disabled}
@@ -122,6 +127,7 @@ function createInputComponents(options: Options) {
 				return (
 					<Select
 						{...input}
+						key={key}
 						readOnly={options.readonlyAll || input.readOnly}
 						disabled={options.disableAll || input.disabled}
 					/>
@@ -130,19 +136,24 @@ function createInputComponents(options: Options) {
 			case "group": {
 				const localComponents: ReactNode[] = [];
 
-				for (const child of input.inputs) {
+				for (const [key, child] of input.inputs.entries()) {
 					if (child.hidden) continue;
 
-					localComponents.push(createComponent(child));
+					localComponents.push(createComponent({ ...child, key }));
 				}
 
-				return <Fieldset {...input}>{localComponents}</Fieldset>;
+				return (
+					<Fieldset key={key} {...input}>
+						{localComponents}
+					</Fieldset>
+				);
 			}
 
 			case "chip": {
 				return (
 					<Chip
 						{...input}
+						key={key}
 						type="checkbox"
 						readOnly={options.readonlyAll || input.readOnly}
 						disabled={options.disableAll || input.disabled}
@@ -154,6 +165,7 @@ function createInputComponents(options: Options) {
 				return (
 					<Checkbox
 						{...input}
+						key={key}
 						readOnly={options.readonlyAll || input.readOnly}
 						disabled={options.disableAll || input.disabled}
 					/>
@@ -164,6 +176,7 @@ function createInputComponents(options: Options) {
 				return (
 					<Textarea
 						{...input}
+						key={key}
 						readOnly={options.readonlyAll || input.readOnly}
 						disabled={options.disableAll || input.disabled}
 					/>
@@ -172,10 +185,10 @@ function createInputComponents(options: Options) {
 		}
 	};
 
-	for (const input of options.inputs) {
+	for (const [index, input] of options.inputs.entries()) {
 		if (input.hidden) continue;
 
-		components.push(createComponent(input));
+		components.push(createComponent({ ...input, key: index }));
 	}
 
 	return <>{components}</>;

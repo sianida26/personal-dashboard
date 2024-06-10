@@ -38,15 +38,12 @@ export default function UserDeleteModal() {
 		mutationFn: async ({ id }: { id: string }) => {
 			return await deleteUser(id);
 		},
-		onError: (error) => {
-			try {
-				const message = JSON.parse(error.message);
+		onError: (error: unknown) => {
+			if (error instanceof Error) {
 				notifications.show({
-					message: message.message ?? "Failed to delete User.",
+					message: error.message,
 					color: "red",
 				});
-			} catch (e) {
-				console.log(error);
 			}
 		},
 		onSuccess: () => {
