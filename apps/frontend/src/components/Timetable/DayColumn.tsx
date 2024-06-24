@@ -30,7 +30,7 @@ export default function DayColumn({
 			{/* Column Header */}
 			<div className="flex flex-col h-20 p-2 relative">
 				{isToday && (
-					<div className="w-full h-1 bg-primary-500 top-0 left-0 absolute" />
+					<div className="w-full h-1 bg-primary-500 top-0 left-0 absolute rounded-t-lg" />
 				)}
 				<p className="text-2xl font-bold">{day.date()}</p>
 				<p>{day.format("dddd")}</p>
