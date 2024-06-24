@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import {
 	Paper,
@@ -17,7 +17,7 @@ import { zodResolver } from "mantine-form-zod-resolver";
 import { useEffect, useState } from "react";
 import useAuth from "@/hooks/useAuth";
 
-export const Route = createFileRoute("/login/")({
+export const Route = createLazyFileRoute("/login/")({
 	component: LoginPage,
 });
 

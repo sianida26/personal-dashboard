@@ -8,6 +8,7 @@ import { routeTree } from "./routeTree.gen";
 
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
+import "@mantine/dates/styles.css";
 import { AuthProvider } from "./contexts/AuthContext";
 
 const queryClient = new QueryClient();

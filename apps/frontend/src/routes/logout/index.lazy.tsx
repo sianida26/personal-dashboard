@@ -1,9 +1,9 @@
 import useAuth from "@/hooks/useAuth";
 import { useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 
-export const Route = createFileRoute("/logout/")({
+export const Route = createLazyFileRoute("/logout/")({
 	component: LogoutPage,
 });
 

@@ -8,9 +8,9 @@ interface RouteContext {
 
 export const Route = createRootRouteWithContext<RouteContext>()({
 	component: () => (
-		<>
+		<div className="font-manrope">
 			<Outlet />
 			<TanStackRouterDevtools />
-		</>
+		</div>
 	),
 });

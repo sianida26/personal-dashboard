@@ -15,6 +15,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRoute } from './routes/__root'
 import { Route as DashboardLayoutImport } from './routes/_dashboardLayout'
 import { Route as DashboardLayoutUsersIndexImport } from './routes/_dashboardLayout/users/index'
+import { Route as DashboardLayoutTimetableIndexImport } from './routes/_dashboardLayout/timetable/index'
 import { Route as DashboardLayoutDashboardIndexImport } from './routes/_dashboardLayout/dashboard/index'
 
 // Create Virtual Routes
@@ -51,6 +52,12 @@ const DashboardLayoutUsersIndexRoute = DashboardLayoutUsersIndexImport.update({
 } as any).lazy(() =>
   import('./routes/_dashboardLayout/users/index.lazy').then((d) => d.Route),
 )
+
+const DashboardLayoutTimetableIndexRoute =
+  DashboardLayoutTimetableIndexImport.update({
+    path: '/timetable/',
+    getParentRoute: () => DashboardLayoutRoute,
+  } as any)
 
 const DashboardLayoutDashboardIndexRoute =
   DashboardLayoutDashboardIndexImport.update({
@@ -97,6 +104,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutDashboardIndexImport
       parentRoute: typeof DashboardLayoutImport
     }
+    '/_dashboardLayout/timetable/': {
+      id: '/_dashboardLayout/timetable/'
+      path: '/timetable'
+      fullPath: '/timetable'
+      preLoaderRoute: typeof DashboardLayoutTimetableIndexImport
+      parentRoute: typeof DashboardLayoutImport
+    }
     '/_dashboardLayout/users/': {
       id: '/_dashboardLayout/users/'
       path: '/users'
@@ -113,6 +127,7 @@ export const routeTree = rootRoute.addChildren({
   IndexLazyRoute,
   DashboardLayoutRoute: DashboardLayoutRoute.addChildren({
     DashboardLayoutDashboardIndexRoute,
+    DashboardLayoutTimetableIndexRoute,
     DashboardLayoutUsersIndexRoute,
   }),
   LoginIndexLazyRoute,
@@ -140,6 +155,7 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "_dashboardLayout.tsx",
       "children": [
         "/_dashboardLayout/dashboard/",
+        "/_dashboardLayout/timetable/",
         "/_dashboardLayout/users/"
       ]
     },
@@ -151,6 +167,10 @@ export const routeTree = rootRoute.addChildren({
     },
     "/_dashboardLayout/dashboard/": {
       "filePath": "_dashboardLayout/dashboard/index.tsx",
+      "parent": "/_dashboardLayout"
+    },
+    "/_dashboardLayout/timetable/": {
+      "filePath": "_dashboardLayout/timetable/index.tsx",
       "parent": "/_dashboardLayout"
     },
     "/_dashboardLayout/users/": {
