@@ -1,5 +1,5 @@
-import dayjs from "dayjs";
-import { useMemo, useState } from "react";
+import dayjs, { Dayjs } from "dayjs";
+import { useEffect, useMemo, useState } from "react";
 
 import isoWeek from "dayjs/plugin/isoWeek";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -18,6 +18,7 @@ type Props = {
 	events: Event[];
 	renderCell?: (date: dayjs.Dayjs) => JSX.Element;
 	renderEvent?: (event: Event) => JSX.Element;
+	onDateChange?: (date: Dayjs) => void;
 };
 
 export default function Timetable({ events, ...props }: Props) {
@@ -46,6 +47,10 @@ export default function Timetable({ events, ...props }: Props) {
 			});
 		});
 	}, [currentDate, events]);
+
+	useEffect(() => {
+		props.onDateChange?.(currentDate);
+	}, [currentDate, props]);
 
 	return (
 		<div className="w-full h-full flex flex-col gap-4">
