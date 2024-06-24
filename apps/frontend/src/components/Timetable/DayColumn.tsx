@@ -11,7 +11,7 @@ type Props = {
 	startTime: dayjs.Dayjs;
 	endTime: dayjs.Dayjs;
 	events: Event[];
-	renderCell?: (events: Event[]) => JSX.Element;
+	renderCell?: (date: dayjs.Dayjs) => JSX.Element;
 	renderEvent?: (event: Event) => JSX.Element;
 };
 
@@ -45,27 +45,7 @@ export default function DayColumn({
 					<div key={i} className="border-t h-20 relative">
 						{renderCell ? (
 							<div className="w-full h-full relative">
-								{renderCell(
-									events.filter((event) => {
-										// return event.start.isSame(
-										// 	startTime.add(i, "h"),
-										// 	"hour"
-										// );
-
-										return (
-											currentDateTime.isSame(
-												event.start,
-												"hour"
-											) ||
-											(currentDateTime.isAfter(
-												event.start
-											) &&
-												currentDateTime.isBefore(
-													event.end
-												))
-										);
-									})
-								)}
+								{renderCell(currentDateTime)}
 							</div>
 						) : (
 							<button className="flex pr-1.5 w-full gap-1 relative hover:bg-gray-100 h-full"></button>

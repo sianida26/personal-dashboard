@@ -16,7 +16,7 @@ type Props = {
 	startTime?: dayjs.Dayjs;
 	endTime?: dayjs.Dayjs;
 	events: Event[];
-	renderCell?: (events: Event[]) => JSX.Element;
+	renderCell?: (date: dayjs.Dayjs) => JSX.Element;
 	renderEvent?: (event: Event) => JSX.Element;
 };
 
