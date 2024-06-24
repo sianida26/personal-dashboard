@@ -12,6 +12,7 @@ type Props = {
 	endTime: dayjs.Dayjs;
 	events: Event[];
 	renderCell?: (events: Event[]) => JSX.Element;
+	renderEvent?: (event: Event) => JSX.Element;
 };
 
 export default function DayColumn({
@@ -20,6 +21,7 @@ export default function DayColumn({
 	endTime,
 	events,
 	renderCell,
+	renderEvent,
 }: Props) {
 	const isToday = day.isSame(dayjs(), "day");
 
@@ -40,7 +42,7 @@ export default function DayColumn({
 
 				return (
 					// Base Cell
-					<div key={i} className="border-t h-20">
+					<div key={i} className="border-t h-20 relative">
 						{renderCell ? (
 							<div className="w-full h-full relative">
 								{renderCell(
@@ -66,56 +68,61 @@ export default function DayColumn({
 								)}
 							</div>
 						) : (
-							<div className="flex pr-1.5 w-full gap-1 relative hover:bg-gray-100 h-full">
-								{events
-									.filter((event) => {
-										return (
-											currentDateTime.isSame(
-												event.start,
-												"hour"
-											) ||
-											(currentDateTime.isAfter(
-												event.start
-											) &&
-												currentDateTime.isBefore(
-													event.end
-												))
-										);
-									})
-									.map((event, i) =>
+							<button className="flex pr-1.5 w-full gap-1 relative hover:bg-gray-100 h-full"></button>
+						)}
+
+						{/* Events Container */}
+						<div className="absolute w-full h-full top-0 left-0 flex gap-1 pr-1.5 pointer-events-none">
+							{events
+								.filter((event) => {
+									return (
 										currentDateTime.isSame(
 											event.start,
 											"hour"
-										) ? (
-											<div
-												key={i}
-												className="bg-primary-100 rounded-sm text-sm text-left pl-1 text-primary-800 font-medium w-full z-10 relative"
-												style={{
-													minHeight: "min-content",
+										) ||
+										(currentDateTime.isAfter(event.start) &&
+											currentDateTime.isBefore(event.end))
+									);
+								})
+								.map((event, i) =>
+									currentDateTime.isSame(
+										event.start,
+										"hour"
+									) ? (
+										<div
+											key={i}
+											className="w-full z-10 relative pointer-events-auto"
+											style={{
+												minHeight: "min-content",
 
-													// The height is calculated from the duration of the event in minutes, converted to a percentage of an hour,
-													// plus an additional number of pixels equivalent to the number of hours in the event duration
-													height: `calc(${
-														(event.end.diff(
-															event.start,
-															"minute"
-														) *
-															100) /
-														60
-													}% + ${event.end.diff(event.start, "hour")}px)`,
+												// The height is calculated from the duration of the event in minutes, converted to a percentage of an hour,
+												// plus an additional number of pixels equivalent to the number of hours in the event duration
+												height: `calc(${
+													(event.end.diff(
+														event.start,
+														"minute"
+													) *
+														100) /
+													60
+												}% + ${event.end.diff(event.start, "hour")}px)`,
 
-													// The top position is calculated from the start minute of the event, converted to a percentage of an hour
-													top: `${(event.start.minute() * 100) / 60}%`,
-												}}
-											>
-												{event.title}
-											</div>
-										) : (
-											<div className="w-full"></div>
-										)
-									)}
-							</div>
-						)}
+												// The top position is calculated from the start minute of the event, converted to a percentage of an hour
+												top: `${(event.start.minute() * 100) / 60}%`,
+											}}
+										>
+											{renderEvent ? (
+												renderEvent(event)
+											) : (
+												<button className="bg-primary-100 rounded-sm text-sm text-left pl-1 text-primary-800 font-medium w-full h-full flex items-start justify-start">
+													{event.title}
+												</button>
+											)}
+										</div>
+									) : (
+										<div className="w-full"></div>
+									)
+								)}
+						</div>
 					</div>
 				);
 			})}

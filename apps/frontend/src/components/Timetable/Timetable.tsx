@@ -17,6 +17,7 @@ type Props = {
 	endTime?: dayjs.Dayjs;
 	events: Event[];
 	renderCell?: (events: Event[]) => JSX.Element;
+	renderEvent?: (event: Event) => JSX.Element;
 };
 
 export default function Timetable({ events, ...props }: Props) {
@@ -94,6 +95,7 @@ export default function Timetable({ events, ...props }: Props) {
 						startTime={startTime}
 						endTime={endTime}
 						renderCell={props.renderCell}
+						renderEvent={props.renderEvent}
 					/>
 				))}
 			</div>
