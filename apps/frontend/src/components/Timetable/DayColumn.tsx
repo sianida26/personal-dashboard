@@ -11,9 +11,16 @@ type Props = {
 	startTime: dayjs.Dayjs;
 	endTime: dayjs.Dayjs;
 	events: Event[];
+	renderCell?: (events: Event[]) => JSX.Element;
 };
 
-export default function DayColumn({ day, startTime, endTime, events }: Props) {
+export default function DayColumn({
+	day,
+	startTime,
+	endTime,
+	events,
+	renderCell,
+}: Props) {
 	const isToday = day.isSame(dayjs(), "day");
 
 	return (
@@ -32,62 +39,84 @@ export default function DayColumn({ day, startTime, endTime, events }: Props) {
 				const currentDateTime = day.hour(startTime.hour() + i);
 
 				return (
-					<button
-						key={i}
-						className="border-t h-20 hover:bg-gray-100 flex pr-1.5 gap-1 relative"
-					>
-						{/* <div className="absolute top-1 right-1 text-sm text-gray-500 rounded-full size-6 bg-gray-100 flex items-center justify-center">
-							5
-						</div> */}
-						{events
-							.filter((event) => {
-								// return event.start.isSame(
-								// 	startTime.add(i, "h"),
-								// 	"hour"
-								// );
+					// Base Cell
+					<div key={i} className="border-t h-20">
+						{renderCell ? (
+							<div className="w-full h-full relative">
+								{renderCell(
+									events.filter((event) => {
+										// return event.start.isSame(
+										// 	startTime.add(i, "h"),
+										// 	"hour"
+										// );
 
-								return (
-									currentDateTime.isSame(
-										event.start,
-										"hour"
-									) ||
-									(currentDateTime.isAfter(event.start) &&
-										currentDateTime.isBefore(event.end))
-								);
-							})
-							.map((event, i) =>
-								currentDateTime.isSame(event.start, "hour") ? (
-									<div
-										key={i}
-										className="bg-primary-100 rounded-sm text-sm text-left pl-1 text-primary-800 font-medium w-full z-10 relative"
-										style={{
-											minHeight: "min-content",
+										return (
+											currentDateTime.isSame(
+												event.start,
+												"hour"
+											) ||
+											(currentDateTime.isAfter(
+												event.start
+											) &&
+												currentDateTime.isBefore(
+													event.end
+												))
+										);
+									})
+								)}
+							</div>
+						) : (
+							<div className="flex pr-1.5 w-full gap-1 relative hover:bg-gray-100 h-full">
+								{events
+									.filter((event) => {
+										return (
+											currentDateTime.isSame(
+												event.start,
+												"hour"
+											) ||
+											(currentDateTime.isAfter(
+												event.start
+											) &&
+												currentDateTime.isBefore(
+													event.end
+												))
+										);
+									})
+									.map((event, i) =>
+										currentDateTime.isSame(
+											event.start,
+											"hour"
+										) ? (
+											<div
+												key={i}
+												className="bg-primary-100 rounded-sm text-sm text-left pl-1 text-primary-800 font-medium w-full z-10 relative"
+												style={{
+													minHeight: "min-content",
 
-											// The height is calculated from the duration of the event in minutes, converted to a percentage of an hour,
-											// plus an additional number of pixels equivalent to the number of hours in the event duration
-											height: `calc(${
-												(event.end.diff(
-													event.start,
-													"minute"
-												) *
-													100) /
-												60
-											}% + ${event.end.diff(event.start, "hour")}px)`,
+													// The height is calculated from the duration of the event in minutes, converted to a percentage of an hour,
+													// plus an additional number of pixels equivalent to the number of hours in the event duration
+													height: `calc(${
+														(event.end.diff(
+															event.start,
+															"minute"
+														) *
+															100) /
+														60
+													}% + ${event.end.diff(event.start, "hour")}px)`,
 
-											// The top position is calculated from the start minute of the event, converted to a percentage of an hour
-											top: `${(event.start.minute() * 100) / 60}%`,
-										}}
-									>
-										{event.title}
-									</div>
-								) : (
-									<div className="w-full"></div>
-								)
-							)}
-						{/* {Math.random() < 0.1 && (
-							<div className="bg-purple-200/80 rounded-md w-full h-full"></div>
-						)} */}
-					</button>
+													// The top position is calculated from the start minute of the event, converted to a percentage of an hour
+													top: `${(event.start.minute() * 100) / 60}%`,
+												}}
+											>
+												{event.title}
+											</div>
+										) : (
+											<div className="w-full"></div>
+										)
+									)}
+							</div>
+						)}
+					</div>
 				);
 			})}
 		</div>

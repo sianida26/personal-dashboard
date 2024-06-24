@@ -13,14 +13,17 @@ dayjs.extend(isoWeek);
 dayjs.extend(customParseFormat);
 
 type Props = {
+	startTime?: dayjs.Dayjs;
+	endTime?: dayjs.Dayjs;
 	events: Event[];
+	renderCell?: (events: Event[]) => JSX.Element;
 };
 
-export default function Timetable({ events }: Props) {
+export default function Timetable({ events, ...props }: Props) {
 	const [currentDate, setCurrentDate] = useState(dayjs());
 
-	const startTime = dayjs("08:00", "HH:mm");
-	const endTime = dayjs("18:00", "HH:mm");
+	const startTime = props.startTime ?? dayjs("08:00", "HH:mm");
+	const endTime = props.endTime ?? dayjs("18:00", "HH:mm");
 
 	const weekDays = useMemo(() => {
 		const startOfWeek = currentDate.startOf("isoWeek");
@@ -90,6 +93,7 @@ export default function Timetable({ events }: Props) {
 						events={eventPerDay[i]}
 						startTime={startTime}
 						endTime={endTime}
+						renderCell={props.renderCell}
 					/>
 				))}
 			</div>
