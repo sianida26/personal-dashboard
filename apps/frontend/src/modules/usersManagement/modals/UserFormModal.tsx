@@ -222,6 +222,7 @@ export default function UserFormModal() {
 							type: "password",
 							label: "Password",
 							hidden: formType !== "create",
+							...form.getInputProps("password"),
 						},
 						{
 							type: "multi-select",
