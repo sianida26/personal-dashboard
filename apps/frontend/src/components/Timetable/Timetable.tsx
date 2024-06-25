@@ -19,6 +19,10 @@ type Props = {
 	renderCell?: (date: dayjs.Dayjs) => JSX.Element;
 	renderEvent?: (event: Event) => JSX.Element;
 	onDateChange?: (date: Dayjs) => void;
+	header?: {
+		center?: JSX.Element;
+		right?: JSX.Element;
+	};
 };
 
 export default function Timetable({ events, ...props }: Props) {
@@ -86,6 +90,16 @@ export default function Timetable({ events, ...props }: Props) {
 						currentDate={currentDate}
 						onChange={(date) => setCurrentDate(dayjs(date))}
 					/>
+				</div>
+
+				{/* Center */}
+				<div className="">
+					{props.header?.center && props.header.center}
+				</div>
+
+				{/* Right */}
+				<div className="">
+					{props.header?.right && props.header.right}
 				</div>
 			</div>
 			{/* The Table */}
