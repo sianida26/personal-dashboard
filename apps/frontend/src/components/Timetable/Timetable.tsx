@@ -17,7 +17,7 @@ type Props<T extends Record<string, unknown> & Event> = {
 	endTime?: dayjs.Dayjs;
 	events: T[];
 	renderCell?: (date: dayjs.Dayjs) => JSX.Element;
-	renderEvent?: (event: Event) => JSX.Element;
+	renderEvent?: (event: T) => JSX.Element;
 	onDateChange?: (date: Dayjs) => void;
 	header?: {
 		center?: JSX.Element;

@@ -6,23 +6,23 @@ import Event from "./types/Event";
 dayjs.extend(isoWeek);
 dayjs.extend(customParseFormat);
 
-type Props = {
+type Props<T extends Record<string, unknown> & Event> = {
 	day: dayjs.Dayjs;
 	startTime: dayjs.Dayjs;
 	endTime: dayjs.Dayjs;
-	events: Event[];
+	events: T[];
 	renderCell?: (date: dayjs.Dayjs) => JSX.Element;
-	renderEvent?: (event: Event) => JSX.Element;
+	renderEvent?: (event: T) => JSX.Element;
 };
 
-export default function DayColumn({
+export default function DayColumn<T extends Record<string, unknown> & Event>({
 	day,
 	startTime,
 	endTime,
 	events,
 	renderCell,
 	renderEvent,
-}: Props) {
+}: Props<T>) {
 	const isToday = day.isSame(dayjs(), "day");
 
 	return (
