@@ -12,10 +12,10 @@ import WeekPicker from "./WeekPicker";
 dayjs.extend(isoWeek);
 dayjs.extend(customParseFormat);
 
-type Props = {
+type Props<T extends Event> = {
 	startTime?: dayjs.Dayjs;
 	endTime?: dayjs.Dayjs;
-	events: Event[];
+	events: T[];
 	renderCell?: (date: dayjs.Dayjs) => JSX.Element;
 	renderEvent?: (event: Event) => JSX.Element;
 	onDateChange?: (date: Dayjs) => void;
@@ -25,7 +25,10 @@ type Props = {
 	};
 };
 
-export default function Timetable({ events, ...props }: Props) {
+export default function Timetable<T extends Event>({
+	events,
+	...props
+}: Props<T>) {
 	const [currentDate, setCurrentDate] = useState(dayjs());
 
 	const startTime = props.startTime ?? dayjs("08:00", "HH:mm");
