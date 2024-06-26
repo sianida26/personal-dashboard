@@ -12,7 +12,7 @@ import WeekPicker from "./WeekPicker";
 dayjs.extend(isoWeek);
 dayjs.extend(customParseFormat);
 
-type Props<T extends Event> = {
+type Props<T extends Record<string, unknown> & Event> = {
 	startTime?: dayjs.Dayjs;
 	endTime?: dayjs.Dayjs;
 	events: T[];
@@ -25,7 +25,7 @@ type Props<T extends Event> = {
 	};
 };
 
-export default function Timetable<T extends Event>({
+export default function Timetable<T extends Record<string, unknown> & Event>({
 	events,
 	...props
 }: Props<T>) {
