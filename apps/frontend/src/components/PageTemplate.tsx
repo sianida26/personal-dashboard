@@ -57,6 +57,7 @@ type Props<
 		PaginatedResponse<TData>,
 		TQueryKey
 	>;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	columnDefs: ColumnDef<any>[];
 };
 
