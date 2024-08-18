@@ -78,7 +78,7 @@ class Logger {
 
 		if (error instanceof DashboardError) {
 			this.log(
-				`DASHBOARD ERROR: ${error.errorCode} (${error.statusCode}) ${c?.req.method ?? "-"} ${c?.req.path ?? "-"} ${c?.var.uid ?? "-"} ${c?.var.requestId ?? "-"}\n	${error.severity}\n    ${error.message} ${["CRITICAL", "HIGH"].includes(error.severity) ? `\n    ${error.stack}` : ""}`,
+				`DASHBOARD ERROR: ${error.errorCode} (${error.statusCode}) ${c?.req.method ?? "-"} ${c?.req.path ?? "-"} ${c?.var.uid ?? "-"} ${c?.var.requestId ?? "-"} ${error.severity} ${error.message} ${["CRITICAL", "HIGH"].includes(error.severity) ? `\n    ${error.stack}` : ""}`,
 				"error"
 			);
 		} else if (error instanceof HTTPException) {
@@ -88,7 +88,7 @@ class Logger {
 			);
 		} else {
 			this.log(
-				`ERROR: ${error.name} ${c?.req.method ?? "-"} ${c?.req.path ?? "-"} ${c?.var.uid ?? "-"} ${c?.var.requestId ?? "-"}\n    ${error.message}\n    ${error.stack}`,
+				`ERROR: ${error.name} ${c?.req.method ?? "-"} ${c?.req.path ?? "-"} ${c?.var.uid ?? "-"} ${c?.var.requestId ?? "-"} ${error.message}\n    ${error.stack}`,
 				"error"
 			);
 		}
