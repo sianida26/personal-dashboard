@@ -16,17 +16,27 @@ import HonoEnv from "./types/HonoEnv";
 import devRoutes from "./routes/dev/route";
 import appEnv from "./appEnv";
 import { createId } from "@paralleldrive/cuid2";
+import appLogger from "./utils/logger";
 
 configDotenv();
 
 const app = new Hono<HonoEnv>();
 
 const routes = app
+	// request logger
 	.use(async (c, next) => {
-		c.set("requestId", createId());
-		await next();
+		if (appEnv.LOG_REQUEST) {
+			const startTime = performance.now();
+			c.set("requestId", createId());
+			await next();
+			const endTime = performance.now();
+			const responseTime = Math.floor(endTime - startTime);
+			appLogger.request(c, responseTime);
+		} else {
+			c.set("requestId", createId());
+			await next();
+		}
 	})
-	.use(logger())
 	.use(
 		cors({
 			origin: "*",
@@ -84,6 +94,7 @@ const routes = app
 	.route("/roles", rolesRoute)
 	.route("/dev", devRoutes)
 	.onError((err, c) => {
+		appLogger.error(err, c);
 		if (err instanceof DashboardError) {
 			return c.json(
 				{
@@ -95,7 +106,6 @@ const routes = app
 			);
 		}
 		if (err instanceof HTTPException) {
-			console.log(err);
 			return c.json(
 				{
 					message: err.message,
@@ -103,7 +113,6 @@ const routes = app
 				err.status
 			);
 		} else {
-			console.error(err);
 			return c.json(
 				{
 					message:
@@ -115,8 +124,8 @@ const routes = app
 	});
 
 const port = appEnv.APP_PORT;
-console.log(`Server is running on port ${port}`);
-console.log(
+appLogger.info(`Server is running on port ${port}`);
+appLogger.info(
 	`Application is running on ${appEnv.APP_ENV.toUpperCase()} environment`
 );
 

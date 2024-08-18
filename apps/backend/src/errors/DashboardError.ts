@@ -10,8 +10,7 @@ class DashboardError extends Error {
 	public readonly errorCode: string;
 	public readonly statusCode: StatusCode = 500;
 	public readonly formErrors?: Record<string, string>;
-	public readonly severity: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW" =
-		"CRITICAL";
+	public readonly severity: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
 
 	/**
 	 * Creates an instance of DashboardError.
@@ -20,6 +19,7 @@ class DashboardError extends Error {
 	constructor(options: DashboardErrorParameter) {
 		super(options.message);
 
+		this.severity = options.severity ?? "CRITICAL";
 		this.errorCode = options.errorCode;
 		this.statusCode = options.statusCode ?? this.statusCode;
 		this.formErrors = options.formErrors;
