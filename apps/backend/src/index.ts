@@ -111,6 +111,9 @@ const routes = app
 
 const port = appEnv.APP_PORT;
 console.log(`Server is running on port ${port}`);
+console.log(
+	`Application is running on ${appEnv.APP_ENV.toUpperCase()} environment`
+);
 
 serve({
 	fetch: app.fetch,
