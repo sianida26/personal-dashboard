@@ -6,6 +6,7 @@ dotenv.config();
 const envSchema = z.object({
 	APP_ENV: z.enum(["development", "production"]),
 	APP_PORT: z.coerce.number().int(),
+	BASE_URL: z.string(),
 	DATABASE_URL: z.string(),
 	ACCESS_TOKEN_SECRET: z.string(),
 	REFRESH_TOKEN_SECRET: z.string(),
