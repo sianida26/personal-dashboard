@@ -10,7 +10,6 @@ import { HTTPException } from "hono/http-exception";
 import { getSignedCookie } from "hono/cookie";
 import dashboardRoutes from "./routes/dashboard/routes";
 import rolesRoute from "./routes/roles/route";
-import { logger } from "hono/logger";
 import DashboardError from "./errors/DashboardError";
 import HonoEnv from "./types/HonoEnv";
 import devRoutes from "./routes/dev/route";
