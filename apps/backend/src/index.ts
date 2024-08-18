@@ -15,12 +15,17 @@ import DashboardError from "./errors/DashboardError";
 import HonoEnv from "./types/HonoEnv";
 import devRoutes from "./routes/dev/route";
 import appEnv from "./appEnv";
+import { createId } from "@paralleldrive/cuid2";
 
 configDotenv();
 
 const app = new Hono<HonoEnv>();
 
 const routes = app
+	.use(async (c, next) => {
+		c.set("requestId", createId());
+		await next();
+	})
 	.use(logger())
 	.use(
 		cors({

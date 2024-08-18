@@ -9,6 +9,7 @@ type HonoEnv = {
 			permissions: SpecificPermissionCode[];
 			roles: RoleCode[];
 		};
+		requestId: string;
 	};
 };
 
