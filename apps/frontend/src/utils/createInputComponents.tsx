@@ -11,6 +11,10 @@ import {
 	NumberInputProps,
 	PasswordInput,
 	PasswordInputProps,
+	Radio,
+	RadioGroup,
+	RadioGroupProps,
+	RadioProps,
 	Select,
 	SelectProps,
 	TextInput,
@@ -62,6 +66,11 @@ type TextareaType = {
 	type: "textarea";
 } & TextareaProps;
 
+type RadioGroupType = {
+	type: "radio-group";
+	radios: RadioProps[];
+} & RadioGroupProps;
+
 type AcceptedInput = (
 	| TextInputType
 	| MultiSelectInputType
@@ -72,6 +81,7 @@ type AcceptedInput = (
 	| Group
 	| CheckboxType
 	| TextareaType
+	| RadioGroupType
 ) &
 	GeneralInputProps;
 
@@ -180,6 +190,16 @@ function createInputComponents(options: Options) {
 						readOnly={options.readonlyAll || input.readOnly}
 						disabled={options.disableAll || input.disabled}
 					/>
+				);
+			}
+
+			case "radio-group": {
+				return (
+					<RadioGroup {...input} key={key}>
+						{input.radios.map((radio, index) => (
+							<Radio key={index} {...radio} />
+						))}
+					</RadioGroup>
 				);
 			}
 		}
