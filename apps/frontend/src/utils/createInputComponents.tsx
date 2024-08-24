@@ -5,6 +5,7 @@ import {
 	ChipProps,
 	Fieldset,
 	FieldsetProps,
+	Group,
 	MultiSelect,
 	MultiSelectProps,
 	NumberInput,
@@ -68,6 +69,7 @@ type TextareaType = {
 
 type RadioGroupType = {
 	type: "radio-group";
+	layout?: "vertical" | "horizontal";
 	radios: RadioProps[];
 } & Omit<RadioGroupProps, "children">;
 
@@ -196,9 +198,11 @@ function createInputComponents(options: Options) {
 			case "radio-group": {
 				return (
 					<RadioGroup {...input} key={key}>
-						{input.radios.map((radio, index) => (
-							<Radio key={index} {...radio} />
-						))}
+						<Group>
+							{input.radios.map((radio, index) => (
+								<Radio key={index} {...radio} />
+							))}
+						</Group>
 					</RadioGroup>
 				);
 			}
