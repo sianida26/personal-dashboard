@@ -69,7 +69,7 @@ type TextareaType = {
 type RadioGroupType = {
 	type: "radio-group";
 	radios: RadioProps[];
-} & RadioGroupProps;
+} & Omit<RadioGroupProps, "children">;
 
 type AcceptedInput = (
 	| TextInputType
