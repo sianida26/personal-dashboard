@@ -6,7 +6,7 @@ import { z } from "zod";
 import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
 import { checkPassword } from "../../utils/passwordUtils";
-import { generateAccessToken, verifyRefreshToken } from "../../utils/authUtils";
+import { generateAccessToken } from "../../utils/authUtils";
 import { rolesSchema } from "../../drizzle/schema/roles";
 import { rolesToUsers } from "../../drizzle/schema/rolesToUsers";
 import HonoEnv from "../../types/HonoEnv";
