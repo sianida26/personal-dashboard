@@ -33,8 +33,8 @@ const envSchema = z.object({
 	DATABASE_URL: z.string(),
 
 	//Secrets
-	PRIVATE_KEY_PATH: z.string(),
-	PUBLIC_KEY_PATH: z.string(),
+	PRIVATE_KEY_PATH: z.string().default("private_key.pem"),
+	PUBLIC_KEY_PATH: z.string().default("public_key.pem"),
 
 	//Logging
 	LOG_ERROR: logSchema("true"),
