@@ -20,7 +20,7 @@ const columnHelper = createColumnHelper<DataType>();
 export default function UsersPage() {
 	return (
 		<PageTemplate
-			title="Users"
+			title="Userssdfjsdklfj"
 			queryOptions={userQueryOptions}
 			modals={[<UserFormModal />, <UserDeleteModal />]}
 			columnDefs={[

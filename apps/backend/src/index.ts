@@ -14,8 +14,8 @@ import DashboardError from "./errors/DashboardError";
 import HonoEnv from "./types/HonoEnv";
 import devRoutes from "./routes/dev/route";
 import appEnv from "./appEnv";
-import { createId } from "@paralleldrive/cuid2";
 import appLogger from "./utils/logger";
+import requestLogger from "./middlewares/requestLogger";
 
 configDotenv();
 
@@ -23,19 +23,7 @@ const app = new Hono<HonoEnv>();
 
 const routes = app
 	// request logger
-	.use(async (c, next) => {
-		if (appEnv.LOG_REQUEST) {
-			const startTime = performance.now();
-			c.set("requestId", createId());
-			await next();
-			const endTime = performance.now();
-			const responseTime = Math.floor(endTime - startTime);
-			appLogger.request(c, responseTime);
-		} else {
-			c.set("requestId", createId());
-			await next();
-		}
-	})
+	.use(requestLogger)
 	.use(
 		cors({
 			origin: "*",
