@@ -1,12 +1,12 @@
 import jwt from "jsonwebtoken";
-import appEnv from "../appEnv";
+import { getPrivateKey, getPublicKey } from "./secretManager";
 
 // Environment variables for secrets, defaulting to a random secret if not set.
-const accessTokenSecret = appEnv.ACCESS_TOKEN_SECRET;
-const refreshTokenSecret = appEnv.REFRESH_TOKEN_SECRET;
+// const accessTokenSecret = appEnv.ACCESS_TOKEN_SECRET;
+// const refreshTokenSecret = appEnv.REFRESH_TOKEN_SECRET;
 
 // Algorithm to be used for JWT encoding.
-const algorithm: jwt.Algorithm = "HS256";
+const algorithm: jwt.Algorithm = "RS256";
 
 // Expiry settings for tokens. 'null' signifies no expiry.
 export const accessTokenExpiry: number | string | null = null;
@@ -28,7 +28,7 @@ interface RefreshTokenPayload {
  * @returns A promise that resolves to the generated JWT string.
  */
 export const generateAccessToken = async (payload: AccessTokenPayload) => {
-	const token = jwt.sign(payload, accessTokenSecret, {
+	const token = jwt.sign(payload, getPrivateKey(), {
 		algorithm,
 		...(accessTokenExpiry ? { expiresIn: accessTokenExpiry } : {}),
 	});
@@ -42,7 +42,7 @@ export const generateAccessToken = async (payload: AccessTokenPayload) => {
  * @returns A promise that resolves to the generated JWT string.
  */
 export const generateRefreshToken = async (payload: RefreshTokenPayload) => {
-	const token = jwt.sign(payload, refreshTokenSecret, {
+	const token = jwt.sign(payload, getPrivateKey(), {
 		algorithm,
 		...(refreshTokenExpiry ? { expiresIn: refreshTokenExpiry } : {}),
 	});
@@ -57,10 +57,7 @@ export const generateRefreshToken = async (payload: RefreshTokenPayload) => {
  */
 export const verifyAccessToken = async (token: string) => {
 	try {
-		const payload = jwt.verify(
-			token,
-			accessTokenSecret
-		) as AccessTokenPayload;
+		const payload = jwt.verify(token, getPublicKey()) as AccessTokenPayload;
 		return payload;
 	} catch {
 		return null;
@@ -77,7 +74,7 @@ export const verifyRefreshToken = async (token: string) => {
 	try {
 		const payload = jwt.verify(
 			token,
-			refreshTokenSecret
+			getPublicKey()
 		) as RefreshTokenPayload;
 		return payload;
 	} catch {

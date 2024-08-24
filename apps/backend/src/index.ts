@@ -16,6 +16,10 @@ import devRoutes from "./routes/dev/route";
 import appEnv from "./appEnv";
 import appLogger from "./utils/logger";
 import requestLogger from "./middlewares/requestLogger";
+import authTokenMiddleware from "./middlewares/authTokenMiddleware";
+import { readFile } from "fs/promises";
+import * as fs from "fs";
+import * as crypto from "crypto";
 
 configDotenv();
 
@@ -29,46 +33,7 @@ const routes = app
 			origin: "*",
 		})
 	)
-	.use(async (c, next) => {
-		const cookieSecret = appEnv.COOKIE_SECRET;
-
-		if (!cookieSecret)
-			throw new HTTPException(500, {
-				message: "The 'COOKIE_SECRET' env is not set",
-			});
-
-		const accessToken = await getSignedCookie(
-			c,
-			cookieSecret,
-			"access_token",
-			"secure"
-		);
-
-		if (accessToken) {
-			const payload = await verifyAccessToken(accessToken);
-
-			if (payload) c.set("uid", payload.uid);
-		} else {
-			const authHeader = c.req.header("Authorization");
-
-			if (authHeader && authHeader.startsWith("Bearer ")) {
-				const token = authHeader.substring(7);
-				const payload = await verifyAccessToken(token);
-
-				if (payload) c.set("uid", payload.uid);
-			}
-		}
-
-		await next();
-	})
-	.use(async (c, next) => {
-		console.log("Incoming request:", c.req.path);
-		await next();
-		console.log("Outgoing response:", c.res.status);
-		if (c.res.status !== 200) {
-			console.log(await c.res.text());
-		}
-	})
+	.use(authTokenMiddleware)
 	.get("/test", (c) => {
 		return c.json({
 			message: "Server is up",
@@ -110,15 +75,20 @@ const routes = app
 		}
 	});
 
-const port = appEnv.APP_PORT;
-appLogger.info(`Server is running on port ${port}`);
-appLogger.info(
-	`Application is running on ${appEnv.APP_ENV.toUpperCase()} environment`
+serve(
+	{
+		fetch: app.fetch,
+		port: appEnv.APP_PORT,
+		hostname: appEnv.APP_HOST,
+	},
+	(info) => {
+		appLogger.info(
+			`Server is running on http://${info.address}:${info.port}`
+		);
+		appLogger.info(
+			`Application is running on ${appEnv.APP_ENV.toUpperCase()} environment`
+		);
+	}
 );
-
-serve({
-	fetch: app.fetch,
-	port,
-});
 
 export type AppType = typeof routes;

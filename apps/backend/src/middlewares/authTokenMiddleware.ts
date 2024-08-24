@@ -1,0 +1,21 @@
+import { createMiddleware } from "hono/factory";
+import HonoEnv from "../types/HonoEnv";
+import appEnv from "../appEnv";
+import { HTTPException } from "hono/http-exception";
+import { getSignedCookie } from "hono/cookie";
+import { verifyAccessToken } from "../utils/authUtils";
+
+const authTokenMiddleware = createMiddleware<HonoEnv>(async (c, next) => {
+	const authHeader = c.req.header("Authorization");
+
+	if (authHeader && authHeader.startsWith("Bearer ")) {
+		const token = authHeader.substring(7);
+		const payload = await verifyAccessToken(token);
+
+		if (payload) c.set("uid", payload.uid);
+	}
+
+	await next();
+});
+
+export default authTokenMiddleware;

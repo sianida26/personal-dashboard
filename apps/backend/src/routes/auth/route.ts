@@ -21,7 +21,6 @@ import { permissionsSchema } from "../../drizzle/schema/permissions";
 import { SpecificPermissionCode } from "../../data/permissions";
 import authInfo from "../../middlewares/authInfo";
 import { unauthorized } from "../../errors/DashboardError";
-import appEnv from "../../appEnv";
 
 const authRoutes = new Hono<HonoEnv>()
 	.post(
@@ -99,26 +98,6 @@ const authRoutes = new Hono<HonoEnv>()
 				uid: user[0].users.id,
 			});
 
-			const cookieSecret = appEnv.COOKIE_SECRET;
-
-			if (!cookieSecret)
-				throw new HTTPException(500, {
-					message: "The 'COOKIE_SECRET' env var is not set",
-				});
-
-			// await setSignedCookie(
-			// 	c,
-			// 	"access_token",
-			// 	accessToken,
-			// 	cookieSecret,
-			// 	{
-			// 		secure: true,
-			// 		httpOnly: true,
-			// 		prefix: "secure",
-			// 		expires:
-			// 	}
-			// );
-
 			const permissions = new Set<SpecificPermissionCode>();
 			user.forEach((user) => {
 				if (user.permissions?.code) {
@@ -183,11 +162,11 @@ const authRoutes = new Hono<HonoEnv>()
 			return c.notFound();
 		}
 
-		deleteCookie(c, "access_token", {
-			secure: true,
-			httpOnly: true,
-			prefix: "secure",
-		});
+		// deleteCookie(c, "access_token", {
+		// 	secure: true,
+		// 	httpOnly: true,
+		// 	prefix: "secure",
+		// });
 
 		return c.json({
 			message: "Logged out successfully",

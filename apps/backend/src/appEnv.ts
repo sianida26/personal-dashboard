@@ -23,13 +23,18 @@ const logSchema = (defaultValue: "true" | "false") =>
 		.transform((value) => value === "true");
 
 const envSchema = z.object({
+	//Application
 	APP_ENV: z.enum(["development", "production"]),
+	APP_HOST: z.string().ip().default("127.0.0.1"),
 	APP_PORT: z.coerce.number().int(),
 	BASE_URL: z.string(),
+
+	//Database
 	DATABASE_URL: z.string(),
-	ACCESS_TOKEN_SECRET: z.string(),
-	REFRESH_TOKEN_SECRET: z.string(),
-	COOKIE_SECRET: z.string(),
+
+	//Secrets
+	PRIVATE_KEY_PATH: z.string(),
+	PUBLIC_KEY_PATH: z.string(),
 
 	//Logging
 	LOG_ERROR: logSchema("true"),
