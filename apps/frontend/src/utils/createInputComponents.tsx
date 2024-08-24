@@ -5,6 +5,8 @@ import {
 	ChipProps,
 	Fieldset,
 	FieldsetProps,
+	FileInput,
+	FileInputProps,
 	Group,
 	MultiSelect,
 	MultiSelectProps,
@@ -73,6 +75,11 @@ type RadioGroupType = {
 	radios: RadioProps[];
 } & Omit<RadioGroupProps, "children">;
 
+type FileInputType<Multiple = boolean> = {
+	type: "file-input";
+	multiple?: Multiple;
+} & Omit<FileInputProps<Multiple>, "type" | "multiple">;
+
 type AcceptedInput = (
 	| TextInputType
 	| MultiSelectInputType
@@ -84,6 +91,7 @@ type AcceptedInput = (
 	| CheckboxType
 	| TextareaType
 	| RadioGroupType
+	| FileInputType
 ) &
 	GeneralInputProps;
 
@@ -197,13 +205,29 @@ function createInputComponents(options: Options) {
 
 			case "radio-group": {
 				return (
-					<RadioGroup {...input} key={key}>
+					<RadioGroup
+						{...input}
+						key={key}
+						readOnly={options.readonlyAll || input.readOnly}
+					>
 						<Group>
 							{input.radios.map((radio, index) => (
 								<Radio key={index} {...radio} />
 							))}
 						</Group>
 					</RadioGroup>
+				);
+			}
+
+			case "file-input": {
+				return (
+					<FileInput
+						{...input}
+						key={key}
+						type="button"
+						readOnly={options.readonlyAll || input.readOnly}
+						disabled={options.disableAll || input.disabled}
+					/>
 				);
 			}
 		}
