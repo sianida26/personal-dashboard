@@ -1,8 +1,5 @@
 import { createMiddleware } from "hono/factory";
 import HonoEnv from "../types/HonoEnv";
-import appEnv from "../appEnv";
-import { HTTPException } from "hono/http-exception";
-import { getSignedCookie } from "hono/cookie";
 import { verifyAccessToken } from "../utils/authUtils";
 
 const authTokenMiddleware = createMiddleware<HonoEnv>(async (c, next) => {

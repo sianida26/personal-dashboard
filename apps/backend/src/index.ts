@@ -3,11 +3,9 @@ import { configDotenv } from "dotenv";
 import { Hono } from "hono";
 import authRoutes from "./routes/auth/route";
 import usersRoute from "./routes/users/route";
-import { verifyAccessToken } from "./utils/authUtils";
 import permissionRoutes from "./routes/permissions/route";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
-import { getSignedCookie } from "hono/cookie";
 import dashboardRoutes from "./routes/dashboard/routes";
 import rolesRoute from "./routes/roles/route";
 import DashboardError from "./errors/DashboardError";
@@ -17,9 +15,6 @@ import appEnv from "./appEnv";
 import appLogger from "./utils/logger";
 import requestLogger from "./middlewares/requestLogger";
 import authTokenMiddleware from "./middlewares/authTokenMiddleware";
-import { readFile } from "fs/promises";
-import * as fs from "fs";
-import * as crypto from "crypto";
 
 configDotenv();
 
