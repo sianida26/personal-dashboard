@@ -21,7 +21,6 @@ configDotenv();
 const app = new Hono<HonoEnv>();
 
 const routes = app
-	// request logger
 	.use(requestLogger)
 	.use(
 		cors({
@@ -29,17 +28,17 @@ const routes = app
 		})
 	)
 	.use(authTokenMiddleware)
-	.get("/test", (c) => {
-		return c.json({
-			message: "Server is up",
-		} as const);
-	})
 	.route("/auth", authRoutes)
 	.route("/users", usersRoute)
 	.route("/permissions", permissionRoutes)
 	.route("/dashboard", dashboardRoutes)
 	.route("/roles", rolesRoute)
 	.route("/dev", devRoutes)
+	.get("/test", (c) => {
+		return c.json({
+			message: "Server is up",
+		} as const);
+	})
 	.onError((err, c) => {
 		appLogger.error(err, c);
 		if (err instanceof DashboardError) {

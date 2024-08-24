@@ -6,11 +6,7 @@ import { z } from "zod";
 import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
 import { checkPassword } from "../../utils/passwordUtils";
-import {
-	generateAccessToken,
-	generateRefreshToken,
-	verifyRefreshToken,
-} from "../../utils/authUtils";
+import { generateAccessToken, verifyRefreshToken } from "../../utils/authUtils";
 import { rolesSchema } from "../../drizzle/schema/roles";
 import { rolesToUsers } from "../../drizzle/schema/rolesToUsers";
 import HonoEnv from "../../types/HonoEnv";
@@ -93,10 +89,6 @@ const authRoutes = new Hono<HonoEnv>()
 				uid: user[0].users.id,
 			});
 
-			const refreshToken = await generateRefreshToken({
-				uid: user[0].users.id,
-			});
-
 			const permissions = new Set<SpecificPermissionCode>();
 			user.forEach((user) => {
 				if (user.permissions?.code) {
@@ -108,40 +100,11 @@ const authRoutes = new Hono<HonoEnv>()
 
 			return c.json({
 				accessToken,
-				refreshToken,
 				user: {
 					id: user[0].users.id,
 					name: user[0].users.name,
 					permissions: Array.from(permissions),
 				},
-			});
-		}
-	)
-	.post(
-		"/refresh-token",
-		zValidator(
-			"json",
-			z.object({
-				refreshToken: z.string(),
-			})
-		),
-		async (c) => {
-			const { refreshToken } = c.req.valid("json");
-
-			const decoded = await verifyRefreshToken(refreshToken);
-
-			if (!decoded) {
-				throw new HTTPException(401, {
-					message: "Invalid refresh token",
-				});
-			}
-
-			const accessToken = await generateAccessToken({
-				uid: decoded.uid,
-			});
-
-			return c.json({
-				accessToken,
 			});
 		}
 	)
@@ -160,12 +123,6 @@ const authRoutes = new Hono<HonoEnv>()
 		if (!uid) {
 			return c.notFound();
 		}
-
-		// deleteCookie(c, "access_token", {
-		// 	secure: true,
-		// 	httpOnly: true,
-		// 	prefix: "secure",
-		// });
 
 		return c.json({
 			message: "Logged out successfully",
