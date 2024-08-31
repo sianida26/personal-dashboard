@@ -28,10 +28,16 @@ import {
 	TextareaProps,
 } from "@mantine/core";
 import { ReactNode } from "@tanstack/react-router";
+import React from "react";
 
 type GeneralInputProps = {
 	hidden?: boolean;
 	key?: string | number;
+};
+
+type CustomType = {
+	type: "custom";
+	component: React.ReactNode;
 };
 
 type TextInputType = {
@@ -95,6 +101,7 @@ type AcceptedInput = (
 	| TextareaType
 	| RadioGroupType
 	| FileInputType
+	| CustomType
 ) &
 	GeneralInputProps;
 
@@ -232,6 +239,10 @@ function createInputComponents(options: Options) {
 						disabled={options.disableAll || input.disabled}
 					/>
 				);
+			}
+
+			case "custom": {
+				return input.component;
 			}
 		}
 	};
