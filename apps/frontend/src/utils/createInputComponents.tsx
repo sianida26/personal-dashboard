@@ -8,6 +8,7 @@ import {
 	FileInput,
 	FileInputProps,
 	Group,
+	MantineSpacing,
 	MultiSelect,
 	MultiSelectProps,
 	NumberInput,
@@ -20,6 +21,7 @@ import {
 	RadioProps,
 	Select,
 	SelectProps,
+	Stack,
 	TextInput,
 	TextInputProps,
 	Textarea,
@@ -55,6 +57,7 @@ type SelectType = {
 type Group = {
 	type: "group";
 	inputs: AcceptedInput[];
+	gap?: MantineSpacing;
 } & FieldsetProps;
 
 type ChipType = {
@@ -164,7 +167,7 @@ function createInputComponents(options: Options) {
 
 				return (
 					<Fieldset key={key} {...input}>
-						{localComponents}
+						<Stack gap={input.gap}>{localComponents}</Stack>
 					</Fieldset>
 				);
 			}
