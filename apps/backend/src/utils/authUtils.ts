@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { getPrivateKey, getPublicKey } from "./secretManager";
+import DashboardError from "../errors/DashboardError";
 
 // Environment variables for secrets, defaulting to a random secret if not set.
 // const accessTokenSecret = appEnv.ACCESS_TOKEN_SECRET;
@@ -59,7 +60,17 @@ export const verifyAccessToken = async (token: string) => {
 	try {
 		const payload = jwt.verify(token, getPublicKey()) as AccessTokenPayload;
 		return payload;
-	} catch {
+	} catch (e) {
+		if (e instanceof jwt.JsonWebTokenError) {
+			if (e.message === "invalid signature") {
+				throw new DashboardError({
+					message: "Invalid access token signature",
+					errorCode: "invalid_signature",
+					severity: "LOW",
+					statusCode: 401,
+				});
+			}
+		}
 		return null;
 	}
 };

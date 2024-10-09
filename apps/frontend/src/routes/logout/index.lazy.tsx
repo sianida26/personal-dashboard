@@ -25,7 +25,9 @@ export default function LogoutPage() {
 			to: "/login",
 			replace: true,
 		});
-	}, [navigate, isAuthenticated, clearAuthData, queryClient]);
+
+		window.location.href = "/login";
+	}, []);
 
 	return <div>Logging out...</div>;
 }

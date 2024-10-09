@@ -23,7 +23,7 @@ export const Route = createFileRoute("/_dashboardLayout")({
 function DashboardLayout() {
 	const { isAuthenticated, saveAuthData } = useAuth();
 
-	useQuery({
+	const { error } = useQuery({
 		queryKey: ["my-profile"],
 		queryFn: async () => {
 			const response = await fetchRPC(client.auth["my-profile"].$get());
@@ -40,6 +40,10 @@ function DashboardLayout() {
 	});
 
 	const [openNavbar, { toggle }] = useDisclosure(false);
+
+	if (error && error.message === "Invalid access token signature") {
+		return <Navigate to="/logout" />;
+	}
 
 	return isAuthenticated ? (
 		<AppShell
