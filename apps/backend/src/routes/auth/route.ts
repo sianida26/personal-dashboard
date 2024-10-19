@@ -1,5 +1,5 @@
 import { zValidator } from "@hono/zod-validator";
-import { and, eq, isNull, or } from "drizzle-orm";
+import { and, eq, isNull, ne, or } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
@@ -15,60 +15,57 @@ import { permissionsToRoles } from "../../drizzle/schema/permissionsToRoles";
 import { permissionsSchema } from "../../drizzle/schema/permissions";
 import { SpecificPermissionCode } from "../../data/permissions";
 import authInfo from "../../middlewares/authInfo";
-import { unauthorized } from "../../errors/DashboardError";
+import { notFound, unauthorized } from "../../errors/DashboardError";
 
 const authRoutes = new Hono<HonoEnv>()
 	.post(
 		"/login",
 		zValidator(
-			"form",
+			"json",
 			z.object({
 				username: z.string(),
 				password: z.string(),
-				___jwt: z.string().default("false"),
 			})
 		),
 		async (c) => {
-			const formData = c.req.valid("form");
+			const formData = c.req.valid("json");
 
-			const user = await db
-				.select()
-				.from(users)
-				.where(
-					and(
-						isNull(users.deletedAt),
-						eq(users.isEnabled, true),
-						or(
-							eq(users.username, formData.username),
-							eq(users.email, formData.username)
-						)
-					)
-				)
-				.leftJoin(
-					permissionsToUsers,
-					eq(permissionsToUsers.userId, users.id)
-				)
-				.leftJoin(rolesToUsers, eq(rolesToUsers.userId, users.id))
-				.leftJoin(rolesSchema, eq(rolesToUsers.roleId, rolesSchema.id))
-				.leftJoin(
-					permissionsToRoles,
-					eq(permissionsToRoles.roleId, rolesSchema.id)
-				)
-				.leftJoin(
-					permissionsSchema,
+			// Query the database to find the user by username or email, only if the user is enabled and not deleted
+			const user = await db.query.users.findFirst({
+				where: and(
+					isNull(users.deletedAt),
+					eq(users.isEnabled, true),
 					or(
-						eq(
-							permissionsSchema.id,
-							permissionsToUsers.permissionId
-						),
-						eq(
-							permissionsSchema.id,
-							permissionsToRoles.permissionId
+						eq(users.username, formData.username),
+						and(
+							eq(users.email, formData.username),
+							ne(users.email, "")
 						)
 					)
-				);
+				),
+				with: {
+					permissionsToUsers: {
+						with: {
+							permission: true,
+						},
+					},
+					rolesToUsers: {
+						with: {
+							role: {
+								with: {
+									permissionsToRoles: {
+										with: {
+											permission: true,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			});
 
-			if (!user.length) {
+			if (!user) {
 				throw new HTTPException(400, {
 					message: "Invalid username or password",
 				});
@@ -76,7 +73,7 @@ const authRoutes = new Hono<HonoEnv>()
 
 			const isSuccess = await checkPassword(
 				formData.password,
-				user[0].users.password
+				user.password
 			);
 
 			if (!isSuccess) {
@@ -86,23 +83,33 @@ const authRoutes = new Hono<HonoEnv>()
 			}
 
 			const accessToken = await generateAccessToken({
-				uid: user[0].users.id,
+				uid: user.id,
 			});
 
+			// Collect all permissions the user has, both user-specific and role-specific
 			const permissions = new Set<SpecificPermissionCode>();
-			user.forEach((user) => {
-				if (user.permissions?.code) {
+
+			// Add user-specific permissions to the set
+			user.permissionsToUsers.forEach((userPermission) =>
+				permissions.add(
+					userPermission.permission.code as SpecificPermissionCode
+				)
+			);
+
+			// Add role-specific permissions to the set
+			user.rolesToUsers.forEach((userRole) =>
+				userRole.role.permissionsToRoles.forEach((rolePermission) =>
 					permissions.add(
-						user.permissions.code as SpecificPermissionCode
-					);
-				}
-			});
+						rolePermission.permission.code as SpecificPermissionCode
+					)
+				)
+			);
 
 			return c.json({
 				accessToken,
 				user: {
-					id: user[0].users.id,
-					name: user[0].users.name,
+					id: user.id,
+					name: user.name,
 					permissions: Array.from(permissions),
 				},
 			});
@@ -121,7 +128,7 @@ const authRoutes = new Hono<HonoEnv>()
 		const uid = c.var.uid;
 
 		if (!uid) {
-			return c.notFound();
+			throw notFound();
 		}
 
 		return c.json({
