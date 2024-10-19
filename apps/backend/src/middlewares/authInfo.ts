@@ -2,12 +2,7 @@ import { createMiddleware } from "hono/factory";
 import HonoEnv from "../types/HonoEnv";
 import db from "../drizzle";
 import { users } from "../drizzle/schema/users";
-import { permissionsToUsers } from "../drizzle/schema/permissionsToUsers";
-import { rolesToUsers } from "../drizzle/schema/rolesToUsers";
-import { and, eq, isNull, or } from "drizzle-orm";
-import { rolesSchema } from "../drizzle/schema/roles";
-import { permissionsToRoles } from "../drizzle/schema/permissionsToRoles";
-import { permissionsSchema } from "../drizzle/schema/permissions";
+import { and, eq, isNull } from "drizzle-orm";
 import { RoleCode } from "../data/roles";
 import { SpecificPermissionCode } from "../data/permissions";
 
@@ -26,55 +21,65 @@ const authInfo = createMiddleware<HonoEnv>(async (c, next) => {
 
 	// Proceed only if uid is present and currentUser is not already set
 	if (uid && !currentUser) {
-		const user = await db
-			.select()
-			.from(users)
-			.where(
-				and(
-					eq(users.id, uid),
-					eq(users.isEnabled, true),
-					isNull(users.deletedAt)
-				)
-			)
-			.leftJoin(
-				permissionsToUsers,
-				eq(permissionsToUsers.userId, users.id)
-			)
-			.leftJoin(rolesToUsers, eq(rolesToUsers.userId, users.id))
-			.leftJoin(rolesSchema, eq(rolesToUsers.roleId, rolesSchema.id))
-			.leftJoin(
-				permissionsToRoles,
-				eq(permissionsToRoles.roleId, rolesSchema.id)
-			)
-			.leftJoin(
-				permissionsSchema,
-				or(
-					eq(permissionsSchema.id, permissionsToUsers.permissionId),
-					eq(permissionsSchema.id, permissionsToRoles.permissionId)
-				)
-			);
+		const user = await db.query.users.findFirst({
+			where: and(
+				eq(users.id, uid),
+				eq(users.isEnabled, true),
+				isNull(users.deletedAt)
+			),
+			with: {
+				// Include user-specific permissions
+				permissionsToUsers: {
+					with: {
+						permission: true,
+					},
+				},
 
-		const roles = new Set<RoleCode>();
-		const permissions = new Set<SpecificPermissionCode>();
+				// Include user roles, and their associated permissions
+				rolesToUsers: {
+					with: {
+						role: {
+							with: {
+								permissionsToRoles: {
+									with: {
+										permission: true,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		});
 
-		user.forEach((user) => {
-			if (user.roles?.code) {
-				roles.add(user.roles.code as RoleCode);
-			}
+		if (user) {
+			const roles = new Set<RoleCode>();
+			const permissions = new Set<SpecificPermissionCode>();
 
-			if (user.permissions?.code) {
-				permissions.add(
-					user.permissions.code as SpecificPermissionCode
+			// Collect role-based permissions by iterating through each role
+			user.rolesToUsers.forEach((userRole) => {
+				roles.add(userRole.role.code as RoleCode);
+
+				userRole.role.permissionsToRoles.forEach((permissionRole) =>
+					permissions.add(
+						permissionRole.permission.code as SpecificPermissionCode
+					)
 				);
-			}
-		});
+			});
 
-		// Setting the currentUser with fetched data
-		c.set("currentUser", {
-			name: user[0].users.name, // Assuming the first result is the user
-			permissions: Array.from(permissions),
-			roles: Array.from(roles),
-		});
+			// Collect user-specific permissions
+			user.permissionsToUsers.forEach((userPermission) => {
+				permissions.add(
+					userPermission.permission.code as SpecificPermissionCode
+				);
+			});
+
+			c.set("currentUser", {
+				name: user.name,
+				permissions: Array.from(permissions),
+				roles: Array.from(roles),
+			});
+		}
 	}
 
 	await next();
