@@ -6,8 +6,7 @@ import requestValidator from "../../utils/requestValidator";
 import checkPermission from "../../middlewares/checkPermission";
 import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
-import { sql } from "drizzle-orm";
-import { unionAll } from "drizzle-orm/pg-core";
+import { and, eq, ilike, isNull, or, sql } from "drizzle-orm";
 
 const devRoutes = new Hono<HonoEnv>()
 	.use(authInfo)
@@ -18,42 +17,78 @@ const devRoutes = new Hono<HonoEnv>()
 		requestValidator(
 			"query",
 			z.object({
-				includeTrashed: z.string().default("false"),
-				withMetadata: z.string().default("false"),
+				includeTrashed: z
+					.string()
+					.default("false")
+					.transform((val) => val === "true"),
+				withMetadata: z
+					.string()
+					.default("false")
+					.transform((val) => val === "true"),
 				page: z.coerce.number().int().min(1).optional(),
 				limit: z.coerce.number().int().min(1).max(1000).optional(),
+				q: z.string().optional(),
 			})
 		),
 		async (c) => {
-			const userQuery = db
-				.select({
-					id: users.id,
-					name: users.name,
-					email: users.email,
-					username: users.username,
-					isEnabled: users.isEnabled,
-					createdAt: users.createdAt,
-					updatedAt: users.updatedAt,
-					fullCount: sql<number>`null`,
-				})
-				.from(users);
+			const { includeTrashed, page, limit, q, withMetadata } =
+				c.req.valid("query");
 
-			const totalCount = db
-				.select({
-					id: sql<string>`null`,
-					name: sql<string>`null`,
-					email: sql<string>`null`,
-					username: sql<string>`null`,
-					isEnabled: sql<boolean>`null`,
-					createdAt: sql<Date>`null`,
-					updatedAt: sql<Date>`null`,
-					fullCount: sql<number>`count(*)`,
-				})
-				.from(users);
+			const result = await db.query.users.findMany({
+				columns: {
+					id: true,
+					name: true,
+					email: true,
+					username: true,
+					isEnabled: true,
+					createdAt: true,
+					updatedAt: true,
+					deletedAt: includeTrashed,
+				},
+				extras: {
+					fullCount: db
+						.$count(
+							users,
+							includeTrashed ? isNull(users.deletedAt) : undefined
+						)
+						.as("fullCount"),
+				},
+				where: and(
+					includeTrashed ? undefined : isNull(users.deletedAt),
+					q
+						? or(
+								ilike(users.name, q),
+								ilike(users.username, q),
+								ilike(users.email, q),
+								eq(users.id, q)
+							)
+						: undefined
+				),
+				offset: page && limit ? page + limit : undefined,
+				limit: limit,
+			});
 
-			const result = await unionAll(userQuery, totalCount);
+			const data = result.map((d) => ({ ...d, fullCount: undefined }));
 
-			return c.json(result);
+			if (withMetadata) {
+				return c.json({
+					data,
+					_metadata: {
+						currentPage: page ?? 0,
+						totalPages:
+							page && limit
+								? Math.ceil(
+										(Number(result[0]?.fullCount) ?? 0) /
+											limit
+									)
+								: 0,
+						totalItems: Number(result[0]?.fullCount) ?? 0,
+						perPage: limit ?? 0,
+					},
+				});
+			}
+
+			return c.json(data);
 		}
 	);
 
