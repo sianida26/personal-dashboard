@@ -11,12 +11,8 @@ import appEnv from "../appEnv";
 
 configDotenv();
 
-const dbUrl = appEnv.DATABASE_URL;
-
-if (!dbUrl) throw new Error("DATABASE_URL is not set");
-
-const queryClient = postgres(dbUrl);
-const db = drizzle(queryClient, {
+const db = drizzle({
+	connection: appEnv.DATABASE_URL,
 	schema: {
 		...usersSchema,
 		...permissionsSchema,
