@@ -76,6 +76,7 @@ const createCreateButton = (
 			<Button
 				leftSection={<TbPlus />}
 				component={Link}
+				//@ts-ignore
 				search={{ create: true }}
 			>
 				Create New
@@ -86,6 +87,7 @@ const createCreateButton = (
 			<Button
 				leftSection={<TbPlus />}
 				component={Link}
+				//@ts-ignore
 				search={{ create: true }}
 			>
 				{property}
