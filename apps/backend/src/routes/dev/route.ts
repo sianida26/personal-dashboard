@@ -6,7 +6,7 @@ import requestValidator from "../../utils/requestValidator";
 import checkPermission from "../../middlewares/checkPermission";
 import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
-import { and, eq, ilike, isNull, or, sql } from "drizzle-orm";
+import { and, eq, ilike, isNull, or } from "drizzle-orm";
 
 const devRoutes = new Hono<HonoEnv>()
 	.use(authInfo)

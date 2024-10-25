@@ -32,21 +32,25 @@ const DashboardLayoutRoute = DashboardLayoutImport.update({
 } as any)
 
 const IndexLazyRoute = IndexLazyImport.update({
+  id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
 
 const LogoutIndexLazyRoute = LogoutIndexLazyImport.update({
+  id: '/logout/',
   path: '/logout/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/logout/index.lazy').then((d) => d.Route))
 
 const LoginIndexLazyRoute = LoginIndexLazyImport.update({
+  id: '/login/',
   path: '/login/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/login/index.lazy').then((d) => d.Route))
 
 const DashboardLayoutUsersIndexRoute = DashboardLayoutUsersIndexImport.update({
+  id: '/users/',
   path: '/users/',
   getParentRoute: () => DashboardLayoutRoute,
 } as any).lazy(() =>
@@ -55,12 +59,14 @@ const DashboardLayoutUsersIndexRoute = DashboardLayoutUsersIndexImport.update({
 
 const DashboardLayoutTimetableIndexRoute =
   DashboardLayoutTimetableIndexImport.update({
+    id: '/timetable/',
     path: '/timetable/',
     getParentRoute: () => DashboardLayoutRoute,
   } as any)
 
 const DashboardLayoutDashboardIndexRoute =
   DashboardLayoutDashboardIndexImport.update({
+    id: '/dashboard/',
     path: '/dashboard/',
     getParentRoute: () => DashboardLayoutRoute,
   } as any)
@@ -123,16 +129,94 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren({
-  IndexLazyRoute,
-  DashboardLayoutRoute: DashboardLayoutRoute.addChildren({
-    DashboardLayoutDashboardIndexRoute,
-    DashboardLayoutTimetableIndexRoute,
-    DashboardLayoutUsersIndexRoute,
-  }),
-  LoginIndexLazyRoute,
-  LogoutIndexLazyRoute,
-})
+interface DashboardLayoutRouteChildren {
+  DashboardLayoutDashboardIndexRoute: typeof DashboardLayoutDashboardIndexRoute
+  DashboardLayoutTimetableIndexRoute: typeof DashboardLayoutTimetableIndexRoute
+  DashboardLayoutUsersIndexRoute: typeof DashboardLayoutUsersIndexRoute
+}
+
+const DashboardLayoutRouteChildren: DashboardLayoutRouteChildren = {
+  DashboardLayoutDashboardIndexRoute: DashboardLayoutDashboardIndexRoute,
+  DashboardLayoutTimetableIndexRoute: DashboardLayoutTimetableIndexRoute,
+  DashboardLayoutUsersIndexRoute: DashboardLayoutUsersIndexRoute,
+}
+
+const DashboardLayoutRouteWithChildren = DashboardLayoutRoute._addFileChildren(
+  DashboardLayoutRouteChildren,
+)
+
+export interface FileRoutesByFullPath {
+  '/': typeof IndexLazyRoute
+  '': typeof DashboardLayoutRouteWithChildren
+  '/login': typeof LoginIndexLazyRoute
+  '/logout': typeof LogoutIndexLazyRoute
+  '/dashboard': typeof DashboardLayoutDashboardIndexRoute
+  '/timetable': typeof DashboardLayoutTimetableIndexRoute
+  '/users': typeof DashboardLayoutUsersIndexRoute
+}
+
+export interface FileRoutesByTo {
+  '/': typeof IndexLazyRoute
+  '': typeof DashboardLayoutRouteWithChildren
+  '/login': typeof LoginIndexLazyRoute
+  '/logout': typeof LogoutIndexLazyRoute
+  '/dashboard': typeof DashboardLayoutDashboardIndexRoute
+  '/timetable': typeof DashboardLayoutTimetableIndexRoute
+  '/users': typeof DashboardLayoutUsersIndexRoute
+}
+
+export interface FileRoutesById {
+  __root__: typeof rootRoute
+  '/': typeof IndexLazyRoute
+  '/_dashboardLayout': typeof DashboardLayoutRouteWithChildren
+  '/login/': typeof LoginIndexLazyRoute
+  '/logout/': typeof LogoutIndexLazyRoute
+  '/_dashboardLayout/dashboard/': typeof DashboardLayoutDashboardIndexRoute
+  '/_dashboardLayout/timetable/': typeof DashboardLayoutTimetableIndexRoute
+  '/_dashboardLayout/users/': typeof DashboardLayoutUsersIndexRoute
+}
+
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | ''
+    | '/login'
+    | '/logout'
+    | '/dashboard'
+    | '/timetable'
+    | '/users'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '' | '/login' | '/logout' | '/dashboard' | '/timetable' | '/users'
+  id:
+    | '__root__'
+    | '/'
+    | '/_dashboardLayout'
+    | '/login/'
+    | '/logout/'
+    | '/_dashboardLayout/dashboard/'
+    | '/_dashboardLayout/timetable/'
+    | '/_dashboardLayout/users/'
+  fileRoutesById: FileRoutesById
+}
+
+export interface RootRouteChildren {
+  IndexLazyRoute: typeof IndexLazyRoute
+  DashboardLayoutRoute: typeof DashboardLayoutRouteWithChildren
+  LoginIndexLazyRoute: typeof LoginIndexLazyRoute
+  LogoutIndexLazyRoute: typeof LogoutIndexLazyRoute
+}
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexLazyRoute: IndexLazyRoute,
+  DashboardLayoutRoute: DashboardLayoutRouteWithChildren,
+  LoginIndexLazyRoute: LoginIndexLazyRoute,
+  LogoutIndexLazyRoute: LogoutIndexLazyRoute,
+}
+
+export const routeTree = rootRoute
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
 
 /* prettier-ignore-end */
 

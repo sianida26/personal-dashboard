@@ -57,7 +57,7 @@ export default function LoginPage() {
 	const loginMutation = useMutation({
 		mutationFn: async (values: FormSchema) => {
 			const res = await client.auth.login.$post({
-				form: values,
+				json: values,
 			});
 
 			if (res.ok) {
