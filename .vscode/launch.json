@@ -1,0 +1,29 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Debug Backend",
+			"type": "node",
+			"request": "launch",
+			"runtimeExecutable": "pnpm",
+			"runtimeArgs": ["run", "dev"],
+			"cwd": "${workspaceFolder}/apps/backend",
+			"console": "integratedTerminal"
+		},
+		{
+			"name": "Debug Frontend",
+			"type": "node",
+			"request": "launch",
+			"runtimeExecutable": "pnpm",
+			"runtimeArgs": ["run", "dev"],
+			"cwd": "${workspaceFolder}/apps/frontend",
+			"console": "integratedTerminal"
+		}
+	],
+	"compounds": [
+		{
+			"name": "Start Backend and Frontend",
+			"configurations": ["Debug Backend", "Debug Frontend"]
+		}
+	]
+}
