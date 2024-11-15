@@ -27,7 +27,7 @@ export default function LogoutPage() {
 		});
 
 		window.location.href = "/login";
-	}, []);
+	});
 
 	return <div>Logging out...</div>;
 }

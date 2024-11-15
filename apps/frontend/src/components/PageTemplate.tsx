@@ -1,4 +1,3 @@
-/* eslint-disable no-mixed-spaces-and-tabs */
 import {
 	Button,
 	Card,
@@ -73,23 +72,13 @@ const createCreateButton = (
 ) => {
 	if (property === true) {
 		return (
-			<Button
-				leftSection={<TbPlus />}
-				component={Link}
-				//@ts-ignore
-				search={{ create: true }}
-			>
+			<Button leftSection={<TbPlus />} component={Link} to="?create=true">
 				Create New
 			</Button>
 		);
 	} else if (typeof property === "string") {
 		return (
-			<Button
-				leftSection={<TbPlus />}
-				component={Link}
-				//@ts-ignore
-				search={{ create: true }}
-			>
+			<Button leftSection={<TbPlus />} component={Link} to="?create=true">
 				{property}
 			</Button>
 		);

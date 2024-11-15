@@ -1,25 +1,6 @@
 import { ReactNode } from "@tanstack/react-router";
-import { createContext, useState } from "react";
-
-interface AuthContextType {
-	user: {
-		id: string;
-		name: string;
-		permissions: string[];
-	} | null;
-	accessToken: string | null;
-	saveAuthData: (
-		userData: NonNullable<AuthContextType["user"]>,
-		accessToken?: NonNullable<AuthContextType["accessToken"]>
-	) => void;
-	clearAuthData: () => void;
-	checkPermission: (permission: string) => boolean;
-	isAuthenticated: boolean;
-}
-
-export const AuthContext = createContext<AuthContextType | undefined>(
-	undefined
-);
+import { useState } from "react";
+import AuthContext, { AuthContextType } from "./AuthContext";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
 	const [userId, setUserId] = useState<string | null>(null);
