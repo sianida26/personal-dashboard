@@ -169,7 +169,7 @@ export default function PageTemplate<
 				<div className="flex flex-col">
 					{/* Search */}
 					{withSearchBar && (
-						<div className="flex pb-4">
+						<div className="flex">
 							<TextInput
 								leftSection={<TbSearch />}
 								value={filterOptions.q}
@@ -182,7 +182,9 @@ export default function PageTemplate<
 					)}
 
 					{/* Table */}
-					<DashboardTable table={table} />
+					<div className="mt-4">
+						<DashboardTable table={table} />
+					</div>
 
 					{/* Pagination */}
 					{query.data && (
