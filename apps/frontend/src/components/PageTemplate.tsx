@@ -106,6 +106,8 @@ export default function PageTemplate<
 		q: "",
 	});
 
+	const withSearchBar = Boolean(props.searchBar ?? true);
+
 	// const [deboucedSearchQuery] = useDebouncedValue(filterOptions.q, 500);
 
 	const query = useQuery({
@@ -166,7 +168,7 @@ export default function PageTemplate<
 				{/* Table Functionality */}
 				<div className="flex flex-col">
 					{/* Search */}
-					{props.searchBar && (
+					{withSearchBar && (
 						<div className="flex pb-4">
 							<TextInput
 								leftSection={<TbSearch />}
