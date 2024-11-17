@@ -46,6 +46,7 @@ type Props<
 	title: string;
 	createButton?: string | true | React.ReactNode;
 	modals?: React.ReactNode[];
+	searchBar?: boolean | React.ReactNode;
 	queryOptions: (
 		page: number,
 		limit: number,
@@ -165,16 +166,18 @@ export default function PageTemplate<
 				{/* Table Functionality */}
 				<div className="flex flex-col">
 					{/* Search */}
-					<div className="flex pb-4">
-						<TextInput
-							leftSection={<TbSearch />}
-							value={filterOptions.q}
-							onChange={(e) =>
-								handleSearchQueryChange(e.target.value)
-							}
-							placeholder="Search..."
-						/>
-					</div>
+					{props.searchBar && (
+						<div className="flex pb-4">
+							<TextInput
+								leftSection={<TbSearch />}
+								value={filterOptions.q}
+								onChange={(e) =>
+									handleSearchQueryChange(e.target.value)
+								}
+								placeholder="Search..."
+							/>
+						</div>
+					)}
 
 					{/* Table */}
 					<DashboardTable table={table} />
