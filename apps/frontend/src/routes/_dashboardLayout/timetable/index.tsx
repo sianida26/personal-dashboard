@@ -1,5 +1,4 @@
 import Timetable from "@/components/Timetable";
-import { Card } from "@mantine/core";
 import { createFileRoute } from "@tanstack/react-router";
 import dayjs from "dayjs";
 
@@ -29,8 +28,8 @@ export default function TimetablePage() {
 	console.log(events);
 
 	return (
-		<Card>
+		<div>
 			<Timetable events={events} />
-		</Card>
+		</div>
 	);
 }

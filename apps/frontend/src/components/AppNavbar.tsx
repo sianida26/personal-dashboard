@@ -1,7 +1,7 @@
-import { AppShell, ScrollArea } from "@mantine/core";
-import { useQuery } from "@tanstack/react-query";
-import client from "../honoClient";
-import MenuItem from "./NavbarMenuItem";
+// import { AppShell, ScrollArea } from "@mantine/core";
+// import { useQuery } from "@tanstack/react-query";
+// import client from "../honoClient";
+// import MenuItem from "./NavbarMenuItem";
 
 // import MenuItem from "./SidebarMenuItem";
 // import { useAuth } from "@/modules/auth/contexts/AuthContext";
@@ -15,30 +15,32 @@ import MenuItem from "./NavbarMenuItem";
 export default function AppNavbar() {
 	// const {user} = useAuth();
 
-	const { data } = useQuery({
-		queryKey: ["sidebarData"],
-		queryFn: async () => {
-			const res = await client.dashboard.getSidebarItems.$get();
-			if (res.ok) {
-				const data = await res.json();
+	// const { data } = useQuery({
+	// 	queryKey: ["sidebarData"],
+	// 	queryFn: async () => {
+	// 		const res = await client.dashboard.getSidebarItems.$get();
+	// 		if (res.ok) {
+	// 			const data = await res.json();
 
-				return data;
-			}
-			console.error("Error:", res.status, res.statusText);
+	// 			return data;
+	// 		}
+	// 		console.error("Error:", res.status, res.statusText);
 
-			//TODO: Handle error properly
-			throw new Error("Error fetching sidebar data");
-		},
-	});
+	// 		//TODO: Handle error properly
+	// 		throw new Error("Error fetching sidebar data");
+	// 	},
+	// });
 
-	return (
-		<AppShell.Navbar p="md">
-			<ScrollArea style={{ flex: "1" }}>
-				{data?.map((menu, i) => <MenuItem menu={menu} key={i} />)}
-				{/* {user?.sidebarMenus.map((menu, i) => (
-					<MenuItem menu={menu} key={i} />
-				)) ?? null} */}
-			</ScrollArea>
-		</AppShell.Navbar>
-	);
+	return <div>App Navbar</div>
+
+	// return (
+	// 	<AppShell.Navbar p="md">
+	// 		<ScrollArea style={{ flex: "1" }}>
+	// 			{data?.map((menu, i) => <MenuItem menu={menu} key={i} />)}
+	// 			{/* {user?.sidebarMenus.map((menu, i) => (
+	// 				<MenuItem menu={menu} key={i} />
+	// 			)) ?? null} */}
+	// 		</ScrollArea>
+	// 	</AppShell.Navbar>
+	// );
 }

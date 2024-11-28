@@ -1,5 +1,5 @@
-import { Popover } from "@mantine/core";
-import { DatePicker } from "@mantine/dates";
+// import { Popover } from "@mantine/core";
+// import { DatePicker } from "@mantine/dates";
 import dayjs from "dayjs";
 import { useState } from "react";
 
@@ -44,30 +44,32 @@ export default function WeekPicker({ currentDate, onChange }: Props) {
 	const [hovered, setHovered] = useState<Date | null>(null);
 	const [value, setValue] = useState<Date | null>(null);
 
-	return (
-		<Popover>
-			<Popover.Target>
-				<button>{currentDate.format("MMMM YYYY")}</button>
-			</Popover.Target>
-			<Popover.Dropdown>
-				<DatePicker
-					getDayProps={(date) => {
-						const isHovered = isInWeekRange(date, hovered);
-						const isSelected = isInWeekRange(date, value);
-						const isInRange = isHovered || isSelected;
-						return {
-							onMouseEnter: () => setHovered(date),
-							onMouseLeave: () => setHovered(null),
-							inRange: isInRange,
-							firstInRange: isInRange && date.getDay() === 1,
-							lastInRange: isInRange && date.getDay() === 0,
-							selected: isSelected,
-							onClick: () => setValue(date),
-						};
-					}}
-					onChange={(date) => onChange(date ?? new Date())}
-				/>
-			</Popover.Dropdown>
-		</Popover>
-	);
+	return <div>Weekpicker</div>
+
+	// return (
+		// <Popover>
+		// 	<Popover.Target>
+		// 		<button>{currentDate.format("MMMM YYYY")}</button>
+		// 	</Popover.Target>
+		// 	<Popover.Dropdown>
+		// 		<DatePicker
+		// 			getDayProps={(date) => {
+		// 				const isHovered = isInWeekRange(date, hovered);
+		// 				const isSelected = isInWeekRange(date, value);
+		// 				const isInRange = isHovered || isSelected;
+		// 				return {
+		// 					onMouseEnter: () => setHovered(date),
+		// 					onMouseLeave: () => setHovered(null),
+		// 					inRange: isInRange,
+		// 					firstInRange: isInRange && date.getDay() === 1,
+		// 					lastInRange: isInRange && date.getDay() === 0,
+		// 					selected: isSelected,
+		// 					onClick: () => setValue(date),
+		// 				};
+		// 			}}
+		// 			onChange={(date) => onChange(date ?? new Date())}
+		// 		/>
+		// 	</Popover.Dropdown>
+		// </Popover>
+	// );
 }

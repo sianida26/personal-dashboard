@@ -1,4 +1,3 @@
-import { AppShell } from "@mantine/core";
 import { Navigate, Outlet, createFileRoute } from "@tanstack/react-router";
 import { useDisclosure } from "@mantine/hooks";
 import AppHeader from "../components/AppHeader";
@@ -46,26 +45,28 @@ function DashboardLayout() {
 	}
 
 	return isAuthenticated ? (
-		<AppShell
-			padding="md"
-			header={{ height: 70 }}
-			navbar={{
-				width: 300,
-				breakpoint: "sm",
-				collapsed: { mobile: !openNavbar },
-			}}
+		// App Shell
+		<div
+			// padding="md"
+			// header={{ height: 70 }}
+			// navbar={{
+			// 	width: 300,
+			// 	breakpoint: "sm",
+			// 	collapsed: { mobile: !openNavbar },
+			// }}
 		>
 			<AppHeader openNavbar={openNavbar} toggle={toggle} />
 
 			<AppNavbar />
 
-			<AppShell.Main
+			{/* App Shell.Main */}
+			<div
 				className="bg-slate-100"
-				styles={{ main: { backgroundColor: "rgb(241 245 249)" } }}
+				// styles={{ main: { backgroundColor: "rgb(241 245 249)" } }}
 			>
 				<Outlet />
-			</AppShell.Main>
-		</AppShell>
+			</div>
+		</div>
 	) : (
 		<Navigate to="/login" />
 	);

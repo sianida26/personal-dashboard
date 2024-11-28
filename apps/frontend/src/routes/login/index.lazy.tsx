@@ -1,21 +1,15 @@
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
-import {
-	Paper,
-	PasswordInput,
-	Stack,
-	Text,
-	TextInput,
-	Group,
-	Button,
-	Alert,
-} from "@mantine/core";
 import client from "../../honoClient";
 import { useForm } from "@mantine/form";
 import { z } from "zod";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { useEffect, useState } from "react";
 import useAuth from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import backgroundImage from "@/assets/images/starry-night-over-meadow-with-tree-silhouette-and-mountain-vector.jpg";
+import TextInput from "@/components/TextInput";
+import { FcGoogle } from "react-icons/fc";
 
 export const Route = createLazyFileRoute("/login/")({
 	component: LoginPage,
@@ -94,63 +88,68 @@ export default function LoginPage() {
 	};
 
 	return (
-		<div className="w-screen h-screen flex items-center justify-center">
-			<Paper radius="md" p="xl" withBorder w={400}>
-				<Text size="lg" fw={500} mb={30}>
-					Welcome
-				</Text>
-				<form onSubmit={form.onSubmit(handleSubmit)}>
-					<Stack>
-						{errorMessage ? (
-							<Alert
-								variant="filled"
-								color="pink"
-								title=""
-								// icon={icon}
-							>
-								{errorMessage}
-							</Alert>
-						) : null}
-						<TextInput
-							label="Username or Email"
-							placeholder="Enter your username or email"
-							name="username"
-							autoComplete="username"
-							disabled={loginMutation.isPending}
-							{...form.getInputProps("username")}
-						/>
-						<PasswordInput
-							label="Password"
-							placeholder="Your password"
-							name="password"
-							autoComplete="password"
-							disabled={loginMutation.isPending}
-							{...form.getInputProps("password")}
-						/>
-					</Stack>
+		<div className="w-screen h-screen flex">
+			{/* Left Side */}
+			<div className="bg-red-500 flex-grow hidden lg:flex">
+				<img
+					src="https://images.pexels.com/photos/21243683/pexels-photo-21243683/free-photo-of-seni-kesenian-kreatif-melambai.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+					className="w-full h-full object-cover object-right"
+				/>
+			</div>
 
-					<Group justify="space-between" mt="xl">
-						{/* <Anchor
-							component="a"
-							type="button"
-							c="dimmed"
-							size="xs"
-							href="/register"
-						>
-							Don&apos;t have an account? Register
-						</Anchor> */}
-						<div />
+			{/* Right Side */}
+			<div className="flex-grow lg:max-w-screen-md w-full flex flex-col justify-center items-center">
+				{/* Top side */}
+				<div className="justify-self-start flex justify-end w-full px-8 pt-8">
+					<a href="#" className="text-xl font-bold">
+						Register
+					</a>
+				</div>
 
-						<Button
-							type="submit"
-							radius="xl"
-							disabled={loginMutation.isPending}
-						>
-							Login
-						</Button>
-					</Group>
-				</form>
-			</Paper>
+				{/* Main Content */}
+				<div className="flex flex-col items-center flex-grow justify-center">
+					{/* Login Content */}
+					<div className="flex flex-col items-center gap-6">
+						<div className="flex flex-col items-center gap-2">
+							<h1 className="text-3xl font-bold">Log In</h1>
+							<p className="text-muted-foreground text-sm">
+								Enter your username or email to log in to the
+								app
+							</p>
+						</div>
+
+						<form className="flex flex-col w-full gap-4">
+							<TextInput label="Username" />
+							<TextInput label="Password" type="password" />
+
+							<Button>Sign In With Email</Button>
+						</form>
+
+						<div className="relative w-full">
+							<div className="absolute inset-0 flex items-center">
+								<span className="w-full border-t" />
+							</div>
+							<div className="relative flex justify-center text-xs uppercase">
+								<span className="bg-background px-2 text-muted-foreground">
+									Or continue with
+								</span>
+							</div>
+						</div>
+
+						<div className="w-full">
+							<Button variant="outline" className="w-full">
+								<FcGoogle />
+								Google
+							</Button>
+						</div>
+					</div>
+				</div>
+
+				{/* Bottom Part */}
+				<div className="pb-2">
+					<p className="text-muted-foreground text-sm">Version 1.0</p>
+				</div>
+			</div>
 		</div>
 	);
 }

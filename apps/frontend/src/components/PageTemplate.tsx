@@ -1,14 +1,3 @@
-import {
-	Button,
-	Card,
-	Flex,
-	Pagination,
-	Select,
-	Stack,
-	Text,
-	TextInput,
-	Title,
-} from "@mantine/core";
 import { Link } from "@tanstack/react-router";
 import React, { ReactNode, useState } from "react";
 import { TbPlus, TbSearch } from "react-icons/tb";
@@ -25,6 +14,7 @@ import {
 	useQuery,
 } from "@tanstack/react-query";
 import { useDebouncedCallback } from "@mantine/hooks";
+import { Button } from "./ui/button";
 
 type PaginatedResponse<T extends Record<string, unknown>> = {
 	data: Array<T>;
