@@ -7,9 +7,9 @@ import { zodResolver } from "mantine-form-zod-resolver";
 import { useEffect, useState } from "react";
 import useAuth from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import backgroundImage from "@/assets/images/starry-night-over-meadow-with-tree-silhouette-and-mountain-vector.jpg";
 import TextInput from "@/components/TextInput";
 import { FcGoogle } from "react-icons/fc";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export const Route = createLazyFileRoute("/login/")({
 	component: LoginPage,
@@ -73,13 +73,11 @@ export default function LoginPage() {
 		},
 
 		onError: async (error) => {
-			console.log("error!");
 			if (error instanceof Response) {
 				const body = await error.json();
 				setErrorMessage(body.message as string);
 				return;
 			}
-			console.log("bukan error");
 		},
 	});
 
@@ -118,11 +116,40 @@ export default function LoginPage() {
 							</p>
 						</div>
 
-						<form className="flex flex-col w-full gap-4">
-							<TextInput label="Username" />
-							<TextInput label="Password" type="password" />
+						{errorMessage && (
+							<Alert
+								variant="default"
+								className="bg-destructive text-destructive-foreground"
+							>
+								<AlertTitle>Error</AlertTitle>
+								<AlertDescription>
+									Username or Password does not match.
+								</AlertDescription>
+							</Alert>
+						)}
 
-							<Button>Sign In With Email</Button>
+						<form
+							className="flex flex-col w-full gap-4"
+							onSubmit={form.onSubmit(handleSubmit)}
+						>
+							<TextInput
+								label="Username"
+								disabled={loginMutation.isPending}
+								{...form.getInputProps("username")}
+							/>
+							<TextInput
+								label="Password"
+								type="password"
+								disabled={loginMutation.isPending}
+								{...form.getInputProps("password")}
+							/>
+
+							<Button
+								disabled={loginMutation.isPending}
+								type="submit"
+							>
+								Sign In
+							</Button>
 						</form>
 
 						<div className="relative w-full">
@@ -146,6 +173,7 @@ export default function LoginPage() {
 				</div>
 
 				{/* Bottom Part */}
+				{/* TODO: Add automatic versioning */}
 				<div className="pb-2">
 					<p className="text-muted-foreground text-sm">Version 1.0</p>
 				</div>
