@@ -36,6 +36,8 @@ export default function AppSidebar() {
 		},
 	});
 
+	const matchRoute = useMatchRoute();
+
 	if (isLoading) {
 		return (
 			<Sidebar>
@@ -92,6 +94,11 @@ export default function AppSidebar() {
 													>
 														<SidebarMenuButton
 															asChild
+															isActive={Boolean(
+																matchRoute({
+																	to: child.link,
+																})
+															)}
 														>
 															<a
 																href={
@@ -127,7 +134,11 @@ export default function AppSidebar() {
 								<SidebarMenuItem>
 									<SidebarMenuButton
 										asChild
-										isActive
+										isActive={Boolean(
+											matchRoute({
+												to: menu.link,
+											})
+										)}
 										size="lg"
 									>
 										<a href={menu.link}>
