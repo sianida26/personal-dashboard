@@ -74,12 +74,12 @@ export default function AppSidebar() {
 
 	return (
 		<Sidebar>
-			<SidebarHeader>
-				<div className="pb-4 flex justify-center">
+			<SidebarHeader className="h-16">
+				<div className="flex justify-center items-center">
 					<img src={logo} alt="Logo" />
 				</div>
 			</SidebarHeader>
-			<SidebarContent>
+			<SidebarContent className="pt-4">
 				{data?.map((menu, index) => {
 					if (menu.type === "group") {
 						return (

@@ -9,13 +9,17 @@ const queryClient = new QueryClient();
 
 const router = createRouter({
 	routeTree,
-	context: { queryClient: queryClient },
+	context: { queryClient: queryClient, pageTitle: "" },
 	defaultPreloadStaleTime: 0,
 });
 
 declare module "@tanstack/react-router" {
 	interface Register {
 		router: typeof router;
+	}
+
+	interface StaticDataRouteOption {
+		title?: string;
 	}
 }
 

@@ -1,24 +1,14 @@
 import { Navigate, Outlet, createFileRoute } from "@tanstack/react-router";
-import { useDisclosure } from "@mantine/hooks";
-import AppHeader from "../components/AppHeader";
-import AppNavbar from "../components/AppNavbar";
 import useAuth from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import fetchRPC from "@/utils/fetchRPC";
 import client from "@/honoClient";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import AppSidebar from "@/components/AppSidebar";
+import AppHeader from "@/components/AppHeader";
 
 export const Route = createFileRoute("/_dashboardLayout")({
 	component: DashboardLayout,
-
-	// beforeLoad: ({ location }) => {
-	// 	if (true) {
-	// 		throw redirect({
-	// 			to: "/login",
-	// 		});
-	// 	}
-	// },
 });
 
 function DashboardLayout() {
@@ -40,7 +30,7 @@ function DashboardLayout() {
 		enabled: isAuthenticated,
 	});
 
-	const [openNavbar, { toggle }] = useDisclosure(false);
+	// const [openNavbar, { toggle }] = useDisclosure(false);
 
 	if (error && error.message === "Invalid access token signature") {
 		return <Navigate to="/logout" />;
@@ -49,19 +39,19 @@ function DashboardLayout() {
 	return isAuthenticated ? (
 		// App Shell
 		<SidebarProvider>
-			<div className="bg-red-500 w-screen h-screen">
+			<div className="w-screen h-screen flex">
 				{/* Sidebar */}
 				<AppSidebar />
 
 				{/* Right Side */}
-				<div>
+				<div className="w-full">
 					{/* Header */}
-					<div>
-						<SidebarTrigger />
-					</div>
+					<AppHeader />
 
 					{/* Main Content */}
-					<Outlet />
+					<div className="p-4">
+						<Outlet />
+					</div>
 				</div>
 			</div>
 		</SidebarProvider>

@@ -1,88 +1,22 @@
-import { useState } from "react";
-// import logo from "@/assets/logos/logo.png";
-// import cx from "clsx";
-// import classNames from "./styles/appHeader.module.css";
-// import { TbChevronDown } from "react-icons/tb";
-// import { Link } from "@tanstack/react-router";
-import useAuth from "@/hooks/useAuth";
-// import getUserMenus from "../actions/getUserMenus";
-// import { useAuth } from "@/modules/auth/contexts/AuthContext";
-// import UserMenuItem from "./UserMenuItem";
-
-// interface Props {
-// 	openNavbar: boolean;
-// 	toggle: () => void;
-// }
-
-// const mockUserData = {
-// 	name: "Fulan bin Fulanah",
-// 	email: "janspoon@fighter.dev",
-// 	image: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-5.png",
-// };
+import { SidebarTrigger } from "./ui/sidebar";
+import { useMatches } from "@tanstack/react-router";
 
 export default function AppHeader() {
-	// const [userMenuOpened, setUserMenuOpened] = useState(false);
+	const matches = useMatches();
 
-	// const { user } = useAuth();
+	const pageTitle = matches.at(-1)?.staticData.title ?? "";
 
-	// const userMenus = getUserMenus().map((item, i) => (
-	// 	<UserMenuItem item={item} key={i} />
-	// ));
+	return (
+		<div className="w-full h-16 border-b flex items-center justify-between px-4">
+			{/* Left Side */}
+			<div className="flex gap-4 items-center">
+				<SidebarTrigger />
 
-	return <div>App header</div>
+				<div className="font-semibold">{pageTitle}</div>
+			</div>
 
-	// return (
-	// 	<AppShell.Header>
-	// 		<Group h="100%" px="md" justify="space-between">
-	// 			<Burger
-	// 				opened={props.openNavbar}
-	// 				onClick={props.toggle}
-	// 				hiddenFrom="sm"
-	// 				size="sm"
-	// 			/>
-	// 			<img src={logo} alt="" className="h-8" />
-	// 			<Menu
-	// 				width={260}
-	// 				position="bottom-end"
-	// 				transitionProps={{ transition: "pop-top-right" }}
-	// 				onOpen={() => setUserMenuOpened(true)}
-	// 				onClose={() => setUserMenuOpened(false)}
-	// 				withinPortal
-	// 			>
-	// 				<Menu.Target>
-	// 					<UnstyledButton
-	// 						className={cx(classNames.user, {
-	// 							[classNames.userActive]: userMenuOpened,
-	// 						})}
-	// 					>
-	// 						<Group gap={7}>
-	// 							<Avatar
-	// 								// src={user?.photoProfile}
-	// 								// alt={user?.name}
-	// 								radius="xl"
-	// 								size={30}
-	// 							/>
-	// 							<Text fw={500} size="sm" lh={1} mr={3}>
-	// 								{/* {user?.name} */}
-	// 								{user?.name ?? "Anonymous"}
-	// 							</Text>
-	// 							<TbChevronDown
-	// 								style={{ width: rem(12), height: rem(12) }}
-	// 								strokeWidth={1.5}
-	// 							/>
-	// 						</Group>
-	// 					</UnstyledButton>
-	// 				</Menu.Target>
-
-	// 				<Menu.Dropdown>
-	// 					<Menu.Item component={Link} to="/logout">
-	// 						Logout
-	// 					</Menu.Item>
-
-	// 					{/* {userMenus} */}
-	// 				</Menu.Dropdown>
-	// 			</Menu>
-	// 		</Group>
-	// 	</AppShell.Header>
-	// );
+			{/* RIght Side */}
+			<div></div>
+		</div>
+	);
 }
