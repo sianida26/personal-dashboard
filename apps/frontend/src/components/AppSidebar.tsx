@@ -18,9 +18,19 @@ import { getTablerIcon } from "@/utils/getTablerIcon";
 import { IconType } from "react-icons";
 
 import logo from "@/assets/logos/logo.png";
-import { useMatchRoute } from "@tanstack/react-router";
+import { Link, useMatchRoute } from "@tanstack/react-router";
+import {
+	DropdownMenu,
+	DropdownMenuTrigger,
+} from "@radix-ui/react-dropdown-menu";
+import { TbChevronUp, TbDoorExit, TbUser } from "react-icons/tb";
+import useAuth from "@/hooks/useAuth";
+import { DropdownMenuContent, DropdownMenuItem } from "./ui/dropdown-menu";
+import defaultProfilePicture from "@/assets/images/default-picture.jpg";
 
 export default function AppSidebar() {
+	const { user } = useAuth();
+
 	const { data, isLoading, error } = useQuery<SidebarMenuType[], Error>({
 		queryKey: ["sidebarData"],
 		queryFn: async () => {
@@ -152,7 +162,59 @@ export default function AppSidebar() {
 					}
 				})}
 			</SidebarContent>
-			<SidebarFooter />
+			<SidebarFooter>
+				<SidebarMenu>
+					<SidebarMenuItem>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild className="">
+								<SidebarMenuButton className="h-16 rounded-sm border pl-2 flex w-full items-center justify-between">
+									{/* Left Side */}
+									<div className="flex overflow-clip items-center gap-2 w-full">
+										<img
+											src={defaultProfilePicture}
+											alt="Profile Picture"
+											className="h-12 rounded-xl"
+										/>
+
+										<div className="flex flex-col w-full text-sm overflow-hidden">
+											<p className="w-full truncate font-semibold">
+												{user?.name}
+											</p>
+											<p className="w-full text-xs truncate text-muted-foreground">
+												{user?.email ??
+													user?.username ??
+													"User"}
+											</p>
+										</div>
+									</div>
+
+									{/* Right Side */}
+									<div className="">
+										<TbChevronUp />
+									</div>
+								</SidebarMenuButton>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent
+								side="top"
+								className="w-[--radix-popper-anchor-width]"
+							>
+								<DropdownMenuItem>
+									<span className="flex items-center gap-2">
+										<TbUser /> Account
+									</span>
+								</DropdownMenuItem>
+								<Link to="/logout">
+									<DropdownMenuItem>
+										<span className="flex items-center gap-2 text-red-500">
+											<TbDoorExit /> Sign Out
+										</span>
+									</DropdownMenuItem>
+								</Link>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</SidebarMenuItem>
+				</SidebarMenu>
+			</SidebarFooter>
 		</Sidebar>
 	);
 }

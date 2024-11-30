@@ -4,6 +4,9 @@ export interface AuthContextType {
 	user: {
 		id: string;
 		name: string;
+		profilePictureUrl?: string;
+		email?: string;
+		username?: string;
 		permissions: string[];
 	} | null;
 	accessToken: string | null;
