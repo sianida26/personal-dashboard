@@ -11,14 +11,17 @@ import { and, eq, or } from "drizzle-orm";
 import { Hono } from "hono";
 import HonoEnv from "../../types/HonoEnv";
 import { forbidden } from "../../errors/DashboardError";
+import { SidebarMenuChildItem, SidebarMenuItem } from "../../types/SidebarMenu";
 
 const router = new Hono<HonoEnv>();
 
 const dashboardRoutes = router.get("/getSidebarItems", async (c) => {
 	const uid = c.var.uid;
 
+	// Check if user ID is present
 	if (!uid) throw forbidden();
 
+	// Query the database to get user permissions
 	const queryResult = await db
 		.selectDistinctOn([permissionsSchema.id], {
 			id: users.id,
@@ -51,60 +54,57 @@ const dashboardRoutes = router.get("/getSidebarItems", async (c) => {
 			)
 		);
 
+	// If no permissions found, forbid access
 	if (!queryResult.length) throw forbidden();
 
+	// Extract unique permission codes
 	const permissions = [...new Set(queryResult.map((r) => r.permission.code))];
 
-	const filteredMenus = sidebarMenus.reduce(
-		(prev, menu) => {
-			//if menu has children, check if any permission match
-			if (menu.children) {
-				const children = menu.children.filter(
-					(child) =>
-						child.allowedPermissions?.some((perm) =>
-							permissions.includes(perm)
-						) || child.allowedPermissions?.includes("*")
+	// Helper function to check if a menu item is allowed
+	const hasPermission = (
+		item: SidebarMenuItem | SidebarMenuChildItem,
+		userPermissions: string[]
+	): boolean => {
+		if (!item.allowedPermissions) {
+			// If no permissions are specified, the item is accessible to all
+			return true;
+		}
+		if (item.allowedPermissions.includes("*")) {
+			// "*" means accessible to all users
+			return true;
+		}
+		// Check if there's any intersection between item's permissions and user's permissions
+		return item.allowedPermissions.some((perm) =>
+			userPermissions.includes(perm)
+		);
+	};
+
+	// Filter the sidebar menus based on permissions
+	const filteredMenus: SidebarMenu[] = sidebarMenus.reduce<SidebarMenu[]>(
+		(acc, menu) => {
+			if (menu.type === "group") {
+				// If the menu is a group, filter its children
+				const filteredChildren = menu.children.filter((child) =>
+					hasPermission(child, permissions)
 				);
 
-				if (children.length) {
-					//add children and hide the allowed permissions field
-					return [
-						...prev,
-						{ ...menu, children, allowedPermissions: undefined },
-					];
+				if (filteredChildren.length > 0) {
+					// If there are visible children, include the group with the filtered children
+					acc.push({ ...menu, children: filteredChildren });
+				}
+			} else {
+				// If the menu is a single item, check its permission
+				if (hasPermission(menu, permissions)) {
+					acc.push(menu);
 				}
 			}
-
-			//if menu has no children, check if permission match
-			else if (
-				menu.allowedPermissions?.some((perm) =>
-					permissions.includes(perm)
-				) ||
-				menu.allowedPermissions?.includes("*")
-			) {
-				//add menu and hide the allowed permissions field
-				return [...prev, { ...menu, allowedPermissions: undefined }];
-			}
-
-			//dont add permission to menu if it doesnt match
-			return prev;
+			return acc;
 		},
-		[] as Omit<SidebarMenu, "allowedPermissions">[]
+		[]
 	);
 
-	//I don't know why but it is not working without redefining the type
-	return c.json(
-		filteredMenus as {
-			label: string;
-			icon: Record<"tb", string>;
-			children?: {
-				label: string;
-				link: string;
-			}[];
-			link?: string;
-			color?: string;
-		}[]
-	);
+	// Return the filtered menus as JSON
+	return c.json(filteredMenus);
 });
 
 export default dashboardRoutes;

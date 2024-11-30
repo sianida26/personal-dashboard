@@ -6,6 +6,8 @@ import useAuth from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import fetchRPC from "@/utils/fetchRPC";
 import client from "@/honoClient";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import AppSidebar from "@/components/AppSidebar";
 
 export const Route = createFileRoute("/_dashboardLayout")({
 	component: DashboardLayout,
@@ -46,27 +48,23 @@ function DashboardLayout() {
 
 	return isAuthenticated ? (
 		// App Shell
-		<div
-			// padding="md"
-			// header={{ height: 70 }}
-			// navbar={{
-			// 	width: 300,
-			// 	breakpoint: "sm",
-			// 	collapsed: { mobile: !openNavbar },
-			// }}
-		>
-			<AppHeader openNavbar={openNavbar} toggle={toggle} />
+		<SidebarProvider>
+			<div className="bg-red-500 w-screen h-screen">
+				{/* Sidebar */}
+				<AppSidebar />
 
-			<AppNavbar />
+				{/* Right Side */}
+				<div>
+					{/* Header */}
+					<div>
+						<SidebarTrigger />
+					</div>
 
-			{/* App Shell.Main */}
-			<div
-				className="bg-slate-100"
-				// styles={{ main: { backgroundColor: "rgb(241 245 249)" } }}
-			>
-				<Outlet />
+					{/* Main Content */}
+					<Outlet />
+				</div>
 			</div>
-		</div>
+		</SidebarProvider>
 	) : (
 		<Navigate to="/login" />
 	);
