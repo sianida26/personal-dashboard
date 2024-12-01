@@ -110,10 +110,8 @@ export default function AppSidebar() {
 																})
 															)}
 														>
-															<a
-																href={
-																	child.link
-																}
+															<Link
+																to={child.link}
 															>
 																{Icon && (
 																	<Icon className="mr-2" />
@@ -123,7 +121,7 @@ export default function AppSidebar() {
 																		child.label
 																	}
 																</span>
-															</a>
+															</Link>
 														</SidebarMenuButton>
 													</SidebarMenuItem>
 												);
@@ -151,10 +149,10 @@ export default function AppSidebar() {
 										)}
 										size="lg"
 									>
-										<a href={menu.link}>
+										<Link to={menu.link}>
 											{Icon && <Icon className="mr-2" />}
 											<span>{menu.label}</span>
-										</a>
+										</Link>
 									</SidebarMenuButton>
 								</SidebarMenuItem>
 							</SidebarMenu>
