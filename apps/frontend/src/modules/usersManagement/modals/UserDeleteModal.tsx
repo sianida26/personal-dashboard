@@ -54,7 +54,6 @@ export default function UserDeleteModal() {
 					variant: "destructive",
 					title: "Error",
 					description: error.message,
-					duration: 2000,
 				});
 			}
 		},
@@ -62,7 +61,6 @@ export default function UserDeleteModal() {
 			toast({
 				description: "User deleted successfully.",
 				className: "bg-green-300 text-green-800",
-				duration: 2000,
 			});
 			queryClient.removeQueries({ queryKey: ["user", userId] });
 			queryClient.invalidateQueries({ queryKey: ["users"] });
