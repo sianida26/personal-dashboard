@@ -8,7 +8,7 @@ import createActionButtons from "@/utils/createActionButton";
 import { TbEye, TbPencil, TbTrash } from "react-icons/tb";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-// import UserDeleteModal from "@/modules/usersManagement/modals/UserDeleteModal";
+import UserDeleteModal from "@/modules/usersManagement/modals/UserDeleteModal";
 
 export const Route = createLazyFileRoute("/_dashboardLayout/users/")({
 	component: UsersPage,
@@ -23,7 +23,7 @@ export default function UsersPage() {
 		<PageTemplate
 			title="Users"
 			queryOptions={userQueryOptions}
-			modals={[]}
+			modals={[<UserDeleteModal />]}
 			columnDefs={[
 				columnHelper.display({
 					header: "#",
@@ -58,9 +58,13 @@ export default function UsersPage() {
 					header: "Status",
 					cell: (props) =>
 						props.row.original.isEnabled ? (
-							<Badge className="bg-green-500">Active</Badge>
+							<Badge className="bg-green-500 hover:bg-green-500">
+								Active
+							</Badge>
 						) : (
-							<Badge className="bg-gray-500">Inactive</Badge>
+							<Badge className="bg-gray-500 hover:bg-gray-500">
+								Inactive
+							</Badge>
 						),
 				}),
 

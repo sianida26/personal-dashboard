@@ -6,6 +6,7 @@ import client from "@/honoClient";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import AppSidebar from "@/components/AppSidebar";
 import AppHeader from "@/components/AppHeader";
+import { Toaster } from "@/components/ui/toaster";
 
 export const Route = createFileRoute("/_dashboardLayout")({
 	component: DashboardLayout,
@@ -54,6 +55,8 @@ function DashboardLayout() {
 					</div>
 				</div>
 			</div>
+
+			<Toaster />
 		</SidebarProvider>
 	) : (
 		<Navigate to="/login" />

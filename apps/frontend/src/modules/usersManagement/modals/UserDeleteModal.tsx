@@ -1,14 +1,24 @@
 import client from "@/honoClient";
-import { Button, Flex, Modal, Text } from "@mantine/core";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getRouteApi, useSearch } from "@tanstack/react-router";
 import { deleteUser } from "../queries/userQueries";
-import { notifications } from "@mantine/notifications";
 import fetchRPC from "@/utils/fetchRPC";
+import {
+	AlertDialog,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 const routeApi = getRouteApi("/_dashboardLayout/users/");
 
 export default function UserDeleteModal() {
+	const { toast } = useToast();
+
 	const queryClient = useQueryClient();
 
 	const searchParams = useSearch({ from: "/_dashboardLayout/users/" }) as {
@@ -40,16 +50,19 @@ export default function UserDeleteModal() {
 		},
 		onError: (error: unknown) => {
 			if (error instanceof Error) {
-				notifications.show({
-					message: error.message,
-					color: "red",
+				toast({
+					variant: "destructive",
+					title: "Error",
+					description: error.message,
+					duration: 2000,
 				});
 			}
 		},
 		onSuccess: () => {
-			notifications.show({
-				message: "User deleted successfully.",
-				color: "green",
+			toast({
+				description: "User deleted successfully.",
+				className: "bg-green-300 text-green-800",
+				duration: 2000,
 			});
 			queryClient.removeQueries({ queryKey: ["user", userId] });
 			queryClient.invalidateQueries({ queryKey: ["users"] });
@@ -57,43 +70,81 @@ export default function UserDeleteModal() {
 		},
 	});
 
+	const handleCloseModal = () => {
+		if (mutation.isPending) return;
+		navigate({ search: {} });
+	};
+
 	const isModalOpen = Boolean(searchParams.delete && userQuery.data);
 
 	return (
-		<Modal
-			opened={isModalOpen}
-			onClose={() => navigate({ search: {} })}
-			title={`Delete confirmation`}
-		>
-			<Text size="sm">
-				Are you sure you want to delete user{" "}
-				<Text span fw={700}>
-					{userQuery.data?.name}
-				</Text>
-				? This action is irreversible.
-			</Text>
+		<AlertDialog open={isModalOpen}>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>
+						Are you absolutely sure?
+					</AlertDialogTitle>
+					<AlertDialogDescription>
+						This action cannot be undone. This will permanently
+						delete the data of user{" "}
+						<b className="text-foreground">
+							{userQuery.data?.name}
+						</b>
+						.
+					</AlertDialogDescription>
+				</AlertDialogHeader>
+				<AlertDialogFooter className="gap-4">
+					<Button
+						disabled={mutation.isPending}
+						variant="ghost"
+						onClick={handleCloseModal}
+					>
+						Cancel
+					</Button>
+					<Button
+						onClick={() => mutation.mutate({ id: userId })}
+						disabled={mutation.isPending}
+						variant="destructive"
+					>
+						Yes, I am sure
+					</Button>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
+		// <AlertDialog
+		// 	opened={isModalOpen}
+		// 	onClose={() => navigate({ search: {} })}
+		// 	title={`Delete confirmation`}
+		// >
+		// 	<Text size="sm">
+		// 		Are you sure you want to delete user{" "}
+		// 		<Text span fw={700}>
+		// 			{userQuery.data?.name}
+		// 		</Text>
+		// 		? This action is irreversible.
+		// 	</Text>
 
-			{/* {errorMessage && <Alert color="red">{errorMessage}</Alert>} */}
-			{/* Buttons */}
-			<Flex justify="flex-end" align="center" gap="lg" mt="lg">
-				<Button
-					variant="outline"
-					onClick={() => navigate({ search: {} })}
-					disabled={mutation.isPending}
-				>
-					Cancel
-				</Button>
-				<Button
-					variant="subtle"
-					// leftSection={<TbDeviceFloppy size={20} />}
-					type="submit"
-					color="red"
-					loading={mutation.isPending}
-					onClick={() => mutation.mutate({ id: userId })}
-				>
-					Delete User
-				</Button>
-			</Flex>
-		</Modal>
+		// 	{/* {errorMessage && <Alert color="red">{errorMessage}</Alert>} */}
+		// 	{/* Buttons */}
+		// 	<Flex justify="flex-end" align="center" gap="lg" mt="lg">
+		// 		<Button
+		// 			variant="outline"
+		// 			onClick={() => navigate({ search: {} })}
+		// 			disabled={mutation.isPending}
+		// 		>
+		// 			Cancel
+		// 		</Button>
+		// 		<Button
+		// 			variant="subtle"
+		// 			// leftSection={<TbDeviceFloppy size={20} />}
+		// 			type="submit"
+		// 			color="red"
+		// 			loading={mutation.isPending}
+		// 			onClick={() => mutation.mutate({ id: userId })}
+		// 		>
+		// 			Delete User
+		// 		</Button>
+		// 	</Flex>
+		// </AlertDialog>
 	);
 }
