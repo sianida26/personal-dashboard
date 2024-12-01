@@ -1,7 +1,6 @@
 import client from "@/honoClient";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getRouteApi, useSearch } from "@tanstack/react-router";
-import { deleteUser } from "../queries/userQueries";
+import { createFileRoute } from "@tanstack/react-router";
 import fetchRPC from "@/utils/fetchRPC";
 import {
 	AlertDialog,
@@ -13,20 +12,21 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { deleteUser } from "@/modules/usersManagement/queries/userQueries";
 
-const routeApi = getRouteApi("/_dashboardLayout/users");
+export const Route = createFileRoute("/_dashboardLayout/users/delete/$userId")({
+	component: UserDeleteModal,
+});
 
 export default function UserDeleteModal() {
 	const { toast } = useToast();
 
+	const params = Route.useParams();
+
 	const queryClient = useQueryClient();
 
-	const searchParams = useSearch({ from: "/_dashboardLayout/users" }) as {
-		delete: string;
-	};
-
-	const userId = searchParams.delete;
-	const navigate = routeApi.useNavigate();
+	const userId = params.userId;
+	const navigate = Route.useNavigate();
 
 	const userQuery = useQuery({
 		queryKey: ["users", userId],
@@ -70,10 +70,10 @@ export default function UserDeleteModal() {
 
 	const handleCloseModal = () => {
 		if (mutation.isPending) return;
-		navigate({ search: {} });
+		navigate({ to: "/users" });
 	};
 
-	const isModalOpen = Boolean(searchParams.delete && userQuery.data);
+	const isModalOpen = Boolean(userId && userQuery.data);
 
 	return (
 		<AlertDialog open={isModalOpen}>

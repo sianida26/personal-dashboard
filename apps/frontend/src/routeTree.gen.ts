@@ -14,9 +14,10 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as DashboardLayoutImport } from './routes/_dashboardLayout'
-import { Route as DashboardLayoutUsersIndexImport } from './routes/_dashboardLayout/users/index'
+import { Route as DashboardLayoutUsersImport } from './routes/_dashboardLayout/users'
 import { Route as DashboardLayoutTimetableIndexImport } from './routes/_dashboardLayout/timetable/index'
 import { Route as DashboardLayoutDashboardIndexImport } from './routes/_dashboardLayout/dashboard/index'
+import { Route as DashboardLayoutUsersDeleteUserIdImport } from './routes/_dashboardLayout/users/delete.$userId'
 
 // Create Virtual Routes
 
@@ -49,12 +50,12 @@ const LoginIndexLazyRoute = LoginIndexLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/login/index.lazy').then((d) => d.Route))
 
-const DashboardLayoutUsersIndexRoute = DashboardLayoutUsersIndexImport.update({
-  id: '/users/',
-  path: '/users/',
+const DashboardLayoutUsersRoute = DashboardLayoutUsersImport.update({
+  id: '/users',
+  path: '/users',
   getParentRoute: () => DashboardLayoutRoute,
 } as any).lazy(() =>
-  import('./routes/_dashboardLayout/users/index.lazy').then((d) => d.Route),
+  import('./routes/_dashboardLayout/users.lazy').then((d) => d.Route),
 )
 
 const DashboardLayoutTimetableIndexRoute =
@@ -69,6 +70,13 @@ const DashboardLayoutDashboardIndexRoute =
     id: '/dashboard/',
     path: '/dashboard/',
     getParentRoute: () => DashboardLayoutRoute,
+  } as any)
+
+const DashboardLayoutUsersDeleteUserIdRoute =
+  DashboardLayoutUsersDeleteUserIdImport.update({
+    id: '/delete/$userId',
+    path: '/delete/$userId',
+    getParentRoute: () => DashboardLayoutUsersRoute,
   } as any)
 
 // Populate the FileRoutesByPath interface
@@ -88,6 +96,13 @@ declare module '@tanstack/react-router' {
       fullPath: ''
       preLoaderRoute: typeof DashboardLayoutImport
       parentRoute: typeof rootRoute
+    }
+    '/_dashboardLayout/users': {
+      id: '/_dashboardLayout/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof DashboardLayoutUsersImport
+      parentRoute: typeof DashboardLayoutImport
     }
     '/login/': {
       id: '/login/'
@@ -117,28 +132,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutTimetableIndexImport
       parentRoute: typeof DashboardLayoutImport
     }
-    '/_dashboardLayout/users/': {
-      id: '/_dashboardLayout/users/'
-      path: '/users'
-      fullPath: '/users'
-      preLoaderRoute: typeof DashboardLayoutUsersIndexImport
-      parentRoute: typeof DashboardLayoutImport
+    '/_dashboardLayout/users/delete/$userId': {
+      id: '/_dashboardLayout/users/delete/$userId'
+      path: '/delete/$userId'
+      fullPath: '/users/delete/$userId'
+      preLoaderRoute: typeof DashboardLayoutUsersDeleteUserIdImport
+      parentRoute: typeof DashboardLayoutUsersImport
     }
   }
 }
 
 // Create and export the route tree
 
+interface DashboardLayoutUsersRouteChildren {
+  DashboardLayoutUsersDeleteUserIdRoute: typeof DashboardLayoutUsersDeleteUserIdRoute
+}
+
+const DashboardLayoutUsersRouteChildren: DashboardLayoutUsersRouteChildren = {
+  DashboardLayoutUsersDeleteUserIdRoute: DashboardLayoutUsersDeleteUserIdRoute,
+}
+
+const DashboardLayoutUsersRouteWithChildren =
+  DashboardLayoutUsersRoute._addFileChildren(DashboardLayoutUsersRouteChildren)
+
 interface DashboardLayoutRouteChildren {
+  DashboardLayoutUsersRoute: typeof DashboardLayoutUsersRouteWithChildren
   DashboardLayoutDashboardIndexRoute: typeof DashboardLayoutDashboardIndexRoute
   DashboardLayoutTimetableIndexRoute: typeof DashboardLayoutTimetableIndexRoute
-  DashboardLayoutUsersIndexRoute: typeof DashboardLayoutUsersIndexRoute
 }
 
 const DashboardLayoutRouteChildren: DashboardLayoutRouteChildren = {
+  DashboardLayoutUsersRoute: DashboardLayoutUsersRouteWithChildren,
   DashboardLayoutDashboardIndexRoute: DashboardLayoutDashboardIndexRoute,
   DashboardLayoutTimetableIndexRoute: DashboardLayoutTimetableIndexRoute,
-  DashboardLayoutUsersIndexRoute: DashboardLayoutUsersIndexRoute,
 }
 
 const DashboardLayoutRouteWithChildren = DashboardLayoutRoute._addFileChildren(
@@ -148,32 +174,35 @@ const DashboardLayoutRouteWithChildren = DashboardLayoutRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
   '': typeof DashboardLayoutRouteWithChildren
+  '/users': typeof DashboardLayoutUsersRouteWithChildren
   '/login': typeof LoginIndexLazyRoute
   '/logout': typeof LogoutIndexLazyRoute
   '/dashboard': typeof DashboardLayoutDashboardIndexRoute
   '/timetable': typeof DashboardLayoutTimetableIndexRoute
-  '/users': typeof DashboardLayoutUsersIndexRoute
+  '/users/delete/$userId': typeof DashboardLayoutUsersDeleteUserIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
   '': typeof DashboardLayoutRouteWithChildren
+  '/users': typeof DashboardLayoutUsersRouteWithChildren
   '/login': typeof LoginIndexLazyRoute
   '/logout': typeof LogoutIndexLazyRoute
   '/dashboard': typeof DashboardLayoutDashboardIndexRoute
   '/timetable': typeof DashboardLayoutTimetableIndexRoute
-  '/users': typeof DashboardLayoutUsersIndexRoute
+  '/users/delete/$userId': typeof DashboardLayoutUsersDeleteUserIdRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
   '/_dashboardLayout': typeof DashboardLayoutRouteWithChildren
+  '/_dashboardLayout/users': typeof DashboardLayoutUsersRouteWithChildren
   '/login/': typeof LoginIndexLazyRoute
   '/logout/': typeof LogoutIndexLazyRoute
   '/_dashboardLayout/dashboard/': typeof DashboardLayoutDashboardIndexRoute
   '/_dashboardLayout/timetable/': typeof DashboardLayoutTimetableIndexRoute
-  '/_dashboardLayout/users/': typeof DashboardLayoutUsersIndexRoute
+  '/_dashboardLayout/users/delete/$userId': typeof DashboardLayoutUsersDeleteUserIdRoute
 }
 
 export interface FileRouteTypes {
@@ -181,22 +210,32 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | ''
+    | '/users'
     | '/login'
     | '/logout'
     | '/dashboard'
     | '/timetable'
-    | '/users'
+    | '/users/delete/$userId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '' | '/login' | '/logout' | '/dashboard' | '/timetable' | '/users'
+  to:
+    | '/'
+    | ''
+    | '/users'
+    | '/login'
+    | '/logout'
+    | '/dashboard'
+    | '/timetable'
+    | '/users/delete/$userId'
   id:
     | '__root__'
     | '/'
     | '/_dashboardLayout'
+    | '/_dashboardLayout/users'
     | '/login/'
     | '/logout/'
     | '/_dashboardLayout/dashboard/'
     | '/_dashboardLayout/timetable/'
-    | '/_dashboardLayout/users/'
+    | '/_dashboardLayout/users/delete/$userId'
   fileRoutesById: FileRoutesById
 }
 
@@ -236,9 +275,16 @@ export const routeTree = rootRoute
     "/_dashboardLayout": {
       "filePath": "_dashboardLayout.tsx",
       "children": [
+        "/_dashboardLayout/users",
         "/_dashboardLayout/dashboard/",
-        "/_dashboardLayout/timetable/",
-        "/_dashboardLayout/users/"
+        "/_dashboardLayout/timetable/"
+      ]
+    },
+    "/_dashboardLayout/users": {
+      "filePath": "_dashboardLayout/users.tsx",
+      "parent": "/_dashboardLayout",
+      "children": [
+        "/_dashboardLayout/users/delete/$userId"
       ]
     },
     "/login/": {
@@ -255,9 +301,9 @@ export const routeTree = rootRoute
       "filePath": "_dashboardLayout/timetable/index.tsx",
       "parent": "/_dashboardLayout"
     },
-    "/_dashboardLayout/users/": {
-      "filePath": "_dashboardLayout/users/index.tsx",
-      "parent": "/_dashboardLayout"
+    "/_dashboardLayout/users/delete/$userId": {
+      "filePath": "_dashboardLayout/users/delete.$userId.tsx",
+      "parent": "/_dashboardLayout/users"
     }
   }
 }

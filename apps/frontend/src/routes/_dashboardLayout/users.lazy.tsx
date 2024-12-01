@@ -1,6 +1,6 @@
 import { userQueryOptions } from "@/modules/usersManagement/queries/userQueries";
 import PageTemplate from "@/components/PageTemplate";
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 // import UserFormModal from "@/modules/usersManagement/modals/UserFormModal";
 import ExtractQueryDataType from "@/types/ExtractQueryDataType";
 import { createColumnHelper } from "@tanstack/react-table";
@@ -8,9 +8,8 @@ import createActionButtons from "@/utils/createActionButton";
 import { TbEye, TbPencil, TbTrash } from "react-icons/tb";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import UserDeleteModal from "@/modules/usersManagement/modals/UserDeleteModal";
 
-export const Route = createLazyFileRoute("/_dashboardLayout/users/")({
+export const Route = createLazyFileRoute("/_dashboardLayout/users")({
 	component: UsersPage,
 });
 
@@ -19,11 +18,12 @@ type DataType = ExtractQueryDataType<typeof userQueryOptions>;
 const columnHelper = createColumnHelper<DataType>();
 
 export default function UsersPage() {
+	const navigate = useNavigate();
+
 	return (
 		<PageTemplate
 			title="Users"
 			queryOptions={userQueryOptions}
-			modals={[<UserDeleteModal />]}
 			columnDefs={[
 				columnHelper.display({
 					header: "#",
@@ -92,7 +92,13 @@ export default function UsersPage() {
 								{
 									label: "Delete",
 									permission: true,
-									action: `?delete=${props.row.original.id}`,
+									action: () =>
+										navigate({
+											to: "/users/delete/$userId",
+											params: {
+												userId: props.row.original.id,
+											},
+										}),
 									variant: "outline",
 									className:
 										"border-red-500 text-red-500 hover:bg-red-500 hover:text-white",

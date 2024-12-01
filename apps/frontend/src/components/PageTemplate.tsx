@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, Outlet } from "@tanstack/react-router";
 import React, { ReactNode, useState } from "react";
 import { TbPlus, TbSearch } from "react-icons/tb";
 import DashboardTable from "./DashboardTable";
@@ -302,6 +302,8 @@ export default function PageTemplate<
 					<React.Fragment key={index}>{modal}</React.Fragment>
 				))}
 			</div>
+
+			<Outlet />
 		</div>
 	);
 }
