@@ -1,5 +1,12 @@
-import { Table, Center, ScrollArea } from "@mantine/core";
 import { Table as ReactTable, flexRender } from "@tanstack/react-table";
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "./ui/table";
 
 interface Props<TData> {
 	table: ReactTable<TData>;
@@ -7,46 +14,37 @@ interface Props<TData> {
 
 export default function DashboardTable<T>({ table }: Props<T>) {
 	return (
-		<ScrollArea.Autosize>
-			<Table
-				verticalSpacing="xs"
-				horizontalSpacing="xs"
-				striped
-				highlightOnHover
-				withColumnBorders
-				withRowBorders
-			>
-				{/* Thead */}
-				<Table.Thead>
+		<div className="rounded-md border">
+			<Table>
+				<TableHeader>
 					{table.getHeaderGroups().map((headerGroup) => (
-						<Table.Tr key={headerGroup.id}>
+						<TableRow key={headerGroup.id}>
 							{headerGroup.headers.map((header) => (
-								<Table.Th
-									key={header.id}
-									style={{
-										maxWidth: `${header.column.columnDef.maxSize}px`,
-										width: `${header.getSize()}`,
-									}}
-								>
+								<TableHead key={header.id}>
 									{header.isPlaceholder
 										? null
 										: flexRender(
 												header.column.columnDef.header,
 												header.getContext()
 											)}
-								</Table.Th>
+								</TableHead>
 							))}
-						</Table.Tr>
+						</TableRow>
 					))}
-				</Table.Thead>
-
-				{/* Tbody */}
-				<Table.Tbody>
+				</TableHeader>
+				<TableBody>
 					{table.getRowModel().rows.length > 0 ? (
-						table.getRowModel().rows.map((row) => (
-							<Table.Tr key={row.id}>
+						table.getRowModel().rows.map((row, rowIndex) => (
+							<TableRow
+								key={row.id}
+								className={
+									rowIndex % 2 === 0
+										? "bg-muted"
+										: "bg-background"
+								}
+							>
 								{row.getVisibleCells().map((cell) => (
-									<Table.Td
+									<TableCell
 										key={cell.id}
 										style={{
 											maxWidth: `${cell.column.columnDef.maxSize}px`,
@@ -56,19 +54,19 @@ export default function DashboardTable<T>({ table }: Props<T>) {
 											cell.column.columnDef.cell,
 											cell.getContext()
 										)}
-									</Table.Td>
+									</TableCell>
 								))}
-							</Table.Tr>
+							</TableRow>
 						))
 					) : (
-						<Table.Tr>
-							<Table.Td colSpan={table.getAllColumns().length}>
-								<Center>- No Data -</Center>
-							</Table.Td>
-						</Table.Tr>
+						<TableRow>
+							<TableCell colSpan={table.getAllColumns().length}>
+								<p className="text-center">- No Data -</p>
+							</TableCell>
+						</TableRow>
 					)}
-				</Table.Tbody>
+				</TableBody>
 			</Table>
-		</ScrollArea.Autosize>
+		</div>
 	);
 }

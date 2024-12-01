@@ -44,12 +44,12 @@ function DashboardLayout() {
 				<AppSidebar />
 
 				{/* Right Side */}
-				<div className="w-full">
+				<div className="w-full h-full">
 					{/* Header */}
 					<AppHeader />
 
 					{/* Main Content */}
-					<div className="p-4">
+					<div className="h-full pt-16">
 						<Outlet />
 					</div>
 				</div>

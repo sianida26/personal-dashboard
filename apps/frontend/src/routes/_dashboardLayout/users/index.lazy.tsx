@@ -1,13 +1,14 @@
 import { userQueryOptions } from "@/modules/usersManagement/queries/userQueries";
 import PageTemplate from "@/components/PageTemplate";
 import { createLazyFileRoute } from "@tanstack/react-router";
-import UserFormModal from "@/modules/usersManagement/modals/UserFormModal";
+// import UserFormModal from "@/modules/usersManagement/modals/UserFormModal";
 import ExtractQueryDataType from "@/types/ExtractQueryDataType";
 import { createColumnHelper } from "@tanstack/react-table";
-import { Badge, Flex } from "@mantine/core";
 import createActionButtons from "@/utils/createActionButton";
 import { TbEye, TbPencil, TbTrash } from "react-icons/tb";
-import UserDeleteModal from "@/modules/usersManagement/modals/UserDeleteModal";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+// import UserDeleteModal from "@/modules/usersManagement/modals/UserDeleteModal";
 
 export const Route = createLazyFileRoute("/_dashboardLayout/users/")({
 	component: UsersPage,
@@ -20,9 +21,9 @@ const columnHelper = createColumnHelper<DataType>();
 export default function UsersPage() {
 	return (
 		<PageTemplate
-			title="Userssdfjsdklfj"
+			title="Users"
 			queryOptions={userQueryOptions}
-			modals={[<UserFormModal />, <UserDeleteModal />]}
+			modals={[]}
 			columnDefs={[
 				columnHelper.display({
 					header: "#",
@@ -30,7 +31,21 @@ export default function UsersPage() {
 				}),
 
 				columnHelper.display({
-					header: "Name",
+					id: "Name",
+					header: ({ column }) => {
+						return (
+							<Button
+								variant="ghost"
+								onClick={() =>
+									column.toggleSorting(
+										column.getIsSorted() === "asc"
+									)
+								}
+							>
+								Name
+							</Button>
+						);
+					},
 					cell: (props) => props.row.original.name,
 				}),
 
@@ -43,40 +58,44 @@ export default function UsersPage() {
 					header: "Status",
 					cell: (props) =>
 						props.row.original.isEnabled ? (
-							<Badge color="green">Active</Badge>
+							<Badge className="bg-green-500">Active</Badge>
 						) : (
-							<Badge color="red">Inactive</Badge>
+							<Badge className="bg-gray-500">Inactive</Badge>
 						),
 				}),
 
 				columnHelper.display({
 					header: "Actions",
 					cell: (props) => (
-						<Flex gap="xs">
+						<div className="flex gap-2">
 							{createActionButtons([
 								{
 									label: "Detail",
 									permission: true,
 									action: `?detail=${props.row.original.id}`,
-									color: "green",
+									className:
+										"bg-green-500 hover:bg-green-600",
 									icon: <TbEye />,
 								},
 								{
 									label: "Edit",
 									permission: true,
 									action: `?edit=${props.row.original.id}`,
-									color: "orange",
+									className:
+										"bg-yellow-500 hover:bg-yellow-600",
 									icon: <TbPencil />,
 								},
 								{
 									label: "Delete",
 									permission: true,
 									action: `?delete=${props.row.original.id}`,
-									color: "red",
+									variant: "outline",
+									className:
+										"border-red-500 text-red-500 hover:bg-red-500 hover:text-white",
 									icon: <TbTrash />,
 								},
 							])}
-						</Flex>
+						</div>
 					),
 				}),
 			]}

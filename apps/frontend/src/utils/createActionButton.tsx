@@ -1,49 +1,48 @@
+import { Button, ButtonProps } from "@/components/ui/button";
 import {
-	ActionIcon,
-	ActionIconVariant,
-	MantineColor,
 	Tooltip,
-} from "@mantine/core";
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Link } from "@tanstack/react-router";
 import React from "react";
 
-interface Action {
+type Action = ButtonProps & {
 	label: string;
 	action?: (() => void) | string;
-	variant?: ActionIconVariant;
 	permission?: boolean;
 	icon: React.ReactNode;
-	color: MantineColor;
-}
+};
 
 export default function createActionButtons(actions: Action[]) {
-	const defaults = {
-		variant: "light",
-	};
-
 	const elements = actions.map((action, i) =>
 		action.permission ? (
-			<Tooltip label={action.label} key={i}>
-				{typeof action.action === "string" ||
-				action.action === undefined ? (
-					<ActionIcon
-						variant={action.variant ?? defaults.variant}
-						color={action.color}
-						component={Link}
-						to={action.action ?? "#"}
-					>
-						{action.icon}
-					</ActionIcon>
-				) : (
-					<ActionIcon
-						variant={action.variant ?? defaults.variant}
-						color={action.color}
-						onClick={action.action}
-					>
-						{action.icon}
-					</ActionIcon>
-				)}
-			</Tooltip>
+			<TooltipProvider>
+				<Tooltip key={i}>
+					<TooltipTrigger>
+						{typeof action.action === "string" ||
+						action.action === undefined ? (
+							<Link to={action.action ?? "#"}>
+								<Button size="icon" {...action}>
+									{action.icon}
+								</Button>
+							</Link>
+						) : (
+							<Button
+								onClick={action.action}
+								size="icon"
+								{...action}
+							>
+								{action.icon}
+							</Button>
+						)}
+					</TooltipTrigger>
+					<TooltipContent className="">
+						<p>{action.label}</p>
+					</TooltipContent>
+				</Tooltip>
+			</TooltipProvider>
 		) : null
 	);
 

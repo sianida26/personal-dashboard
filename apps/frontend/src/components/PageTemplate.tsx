@@ -5,6 +5,8 @@ import DashboardTable from "./DashboardTable";
 import {
 	ColumnDef,
 	getCoreRowModel,
+	getSortedRowModel,
+	SortingState,
 	useReactTable,
 } from "@tanstack/react-table";
 import {
@@ -15,6 +17,17 @@ import {
 } from "@tanstack/react-query";
 import { useDebouncedCallback } from "@mantine/hooks";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Select } from "./ui/select";
+import {
+	Pagination,
+	PaginationContent,
+	PaginationItem,
+	PaginationPrevious,
+	PaginationNext,
+	PaginationEllipsis,
+	PaginationButton,
+} from "./ui/pagination";
 
 type PaginatedResponse<T extends Record<string, unknown>> = {
 	data: Array<T>;
@@ -63,15 +76,17 @@ const createCreateButton = (
 ) => {
 	if (property === true) {
 		return (
-			<Button leftSection={<TbPlus />} component={Link} to="?create=true">
-				Create New
-			</Button>
+			//@ts-expect-error global search param for create route
+			<Link search={{ create: true }}>
+				<Button leftSection={<TbPlus />}>Create New</Button>
+			</Link>
 		);
 	} else if (typeof property === "string") {
 		return (
-			<Button leftSection={<TbPlus />} component={Link} to="?create=true">
-				{property}
-			</Button>
+			//@ts-expect-error global search param for create route
+			<Link search={{ create: true }}>
+				<Button leftSection={<TbPlus />}>{property}</Button>
+			</Link>
 		);
 	} else {
 		return property;
@@ -96,9 +111,12 @@ export default function PageTemplate<
 		q: "",
 	});
 
+	const [sorting, setSorting] = React.useState<SortingState>([]);
+
 	const withSearchBar = Boolean(props.searchBar ?? true);
 
-	// const [deboucedSearchQuery] = useDebouncedValue(filterOptions.q, 500);
+	const siblings = 1;
+	const boundaries = 1;
 
 	const query = useQuery({
 		...(typeof props.queryOptions === "function"
@@ -116,15 +134,15 @@ export default function PageTemplate<
 		columns: props.columnDefs,
 		getCoreRowModel: getCoreRowModel(),
 		defaultColumn: {
-			cell: (props) => <Text>{props.getValue() as ReactNode}</Text>,
+			cell: (props) => <p>{props.getValue() as ReactNode}</p>,
+		},
+		onSortingChange: setSorting,
+		getSortedRowModel: getSortedRowModel(),
+		state: {
+			sorting,
 		},
 	});
 
-	/**
-	 * Handles the change in search query input with debounce.
-	 *
-	 * @param value - The new search query value.
-	 */
 	const handleSearchQueryChange = useDebouncedCallback((value: string) => {
 		setFilterOptions((prev) => ({
 			page: 0,
@@ -133,11 +151,6 @@ export default function PageTemplate<
 		}));
 	}, 500);
 
-	/**
-	 * Handles the change in page number.
-	 *
-	 * @param page - The new page number.
-	 */
 	const handlePageChange = (page: number) => {
 		setFilterOptions((prev) => ({
 			page: page - 1,
@@ -146,31 +159,42 @@ export default function PageTemplate<
 		}));
 	};
 
+	const totalPages = query.data?._metadata.totalPages ?? 1;
+	const currentPage = filterOptions.page + 1;
+
 	return (
-		<Stack>
-			<Title order={1}>{props.title}</Title>
-			<Card>
+		<div className="p-8 bg-muted h-full flex flex-col gap-8">
+			{/* Title */}
+			<h1 className="text-3xl font-bold">{props.title}</h1>
+
+			{/* Card */}
+			<div className="rounded-lg border shadow-lg p-4 bg-background">
 				{/* Top Section */}
-				<Flex justify="flex-end">
-					{createCreateButton(props.createButton)}
-				</Flex>
+				<div className="flex justify-between">
+					{/* Left */}
+					<div>
+						{/* Search */}
+						{withSearchBar && (
+							<div className="flex">
+								<Input
+									leftSection={<TbSearch />}
+									value={filterOptions.q}
+									onChange={(e) =>
+										handleSearchQueryChange(e.target.value)
+									}
+									placeholder="Search..."
+									className=""
+								/>
+							</div>
+						)}
+					</div>
+
+					{/* Right */}
+					<div>{createCreateButton(props.createButton)}</div>
+				</div>
 
 				{/* Table Functionality */}
 				<div className="flex flex-col">
-					{/* Search */}
-					{withSearchBar && (
-						<div className="flex">
-							<TextInput
-								leftSection={<TbSearch />}
-								value={filterOptions.q}
-								onChange={(e) =>
-									handleSearchQueryChange(e.target.value)
-								}
-								placeholder="Search..."
-							/>
-						</div>
-					)}
-
 					{/* Table */}
 					<div className="mt-4">
 						<DashboardTable table={table} />
@@ -180,30 +204,95 @@ export default function PageTemplate<
 					{query.data && (
 						<div className="pt-4 flex-wrap flex items-center gap-4">
 							<Select
-								label="Per Page"
-								data={["5", "10", "50", "100", "500", "1000"]}
-								allowDeselect={false}
 								defaultValue="10"
-								searchValue={filterOptions.limit.toString()}
-								onChange={(value) =>
-									setFilterOptions((prev) => ({
-										page: prev.page,
-										limit: parseInt(value ?? "10"),
-										q: prev.q,
-									}))
-								}
-								checkIconPosition="right"
-								className="w-20"
+								// onChange={(value) =>
+								// 	setFilterOptions((prev) => ({
+								// 		page: prev.page,
+								// 		limit: parseInt(value ?? "10"),
+								// 		q: prev.q,
+								// 	}))
+								// }
 							/>
 							<Pagination
-								value={filterOptions.page + 1}
-								total={query.data._metadata.totalPages}
-								onChange={handlePageChange}
-							/>
-							<Text c="dimmed" size="sm">
+							// value={currentPage}
+							// total={totalPages}
+							// onChange={handlePageChange}
+							// siblings={1}
+							// boundaries={1}
+							>
+								<PaginationContent>
+									<PaginationItem>
+										<PaginationPrevious
+											onClick={() =>
+												currentPage > 1 &&
+												handlePageChange(
+													currentPage - 1
+												)
+											}
+											disabled={currentPage === 1}
+										/>
+									</PaginationItem>
+									{[...Array(totalPages)].map((_, index) => {
+										const pageIndex = index + 1;
+										if (
+											pageIndex === currentPage ||
+											pageIndex <= boundaries ||
+											pageIndex >
+												totalPages - boundaries ||
+											Math.abs(pageIndex - currentPage) <=
+												siblings
+										) {
+											return (
+												<PaginationItem key={index}>
+													<PaginationButton
+														isActive={
+															currentPage ===
+															pageIndex
+														}
+														onClick={() =>
+															handlePageChange(
+																pageIndex
+															)
+														}
+													>
+														{pageIndex}
+													</PaginationButton>
+												</PaginationItem>
+											);
+										} else if (
+											pageIndex ===
+												currentPage + siblings + 1 ||
+											pageIndex ===
+												currentPage - siblings - 1
+										) {
+											return (
+												<PaginationItem
+													key={`ellipsis-${index}`}
+												>
+													<PaginationEllipsis />
+												</PaginationItem>
+											);
+										}
+										return null;
+									})}
+									<PaginationItem>
+										<PaginationNext
+											onClick={() =>
+												handlePageChange(
+													currentPage + 1
+												)
+											}
+											disabled={
+												currentPage === totalPages
+											}
+										/>
+									</PaginationItem>
+								</PaginationContent>
+							</Pagination>
+							<p>
 								Showing {query.data.data.length} of{" "}
 								{query.data._metadata.totalItems}
-							</Text>
+							</p>
 						</div>
 					)}
 				</div>
@@ -212,7 +301,7 @@ export default function PageTemplate<
 				{props.modals?.map((modal, index) => (
 					<React.Fragment key={index}>{modal}</React.Fragment>
 				))}
-			</Card>
-		</Stack>
+			</div>
+		</div>
 	);
 }
