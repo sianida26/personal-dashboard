@@ -77,14 +77,14 @@ const createCreateButton = (
 	if (property === true) {
 		return (
 			//@ts-expect-error global search param for create route
-			<Link search={{ create: true }}>
+			<Link to={"./create"}>
 				<Button leftSection={<TbPlus />}>Create New</Button>
 			</Link>
 		);
 	} else if (typeof property === "string") {
 		return (
 			//@ts-expect-error global search param for create route
-			<Link search={{ create: true }}>
+			<Link to={"./create"}>
 				<Button leftSection={<TbPlus />}>{property}</Button>
 			</Link>
 		);

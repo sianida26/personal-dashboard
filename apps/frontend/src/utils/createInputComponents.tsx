@@ -1,34 +1,23 @@
+import { Checkbox, CheckboxProps } from "@/components/ui/checkbox";
+import { Input, InputProps } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import MultiSelect, { MultiSelectProps } from "@/components/ui/multi-select";
 import {
-	Checkbox,
-	CheckboxProps,
-	Chip,
-	ChipProps,
-	Fieldset,
-	FieldsetProps,
-	FileInput,
-	FileInputProps,
-	Group,
-	MantineSpacing,
-	MultiSelect,
-	MultiSelectProps,
-	NumberInput,
-	NumberInputProps,
 	PasswordInput,
 	PasswordInputProps,
-	Radio,
+} from "@/components/ui/password-input";
+import {
 	RadioGroup,
+	RadioGroupItem,
 	RadioGroupProps,
 	RadioProps,
-	Select,
-	SelectProps,
-	Stack,
-	TextInput,
-	TextInputProps,
-	Textarea,
-	TextareaProps,
-} from "@mantine/core";
+} from "@/components/ui/radio-group";
+import { Select, SelectProps } from "@/components/ui/select";
+import { Textarea, TextareaProps } from "@/components/ui/textarea";
 import { ReactNode } from "@tanstack/react-router";
 import React from "react";
+
+//TODO: Implement all these
 
 type GeneralInputProps = {
 	hidden?: boolean;
@@ -42,7 +31,7 @@ type CustomType = {
 
 type TextInputType = {
 	type: "text";
-} & TextInputProps;
+} & InputProps;
 
 type MultiSelectInputType = {
 	type: "multi-select";
@@ -52,27 +41,27 @@ type PasswordInputType = {
 	type: "password";
 } & PasswordInputProps;
 
-type NumberInputType = {
-	type: "number";
-} & Omit<NumberInputProps, "type">;
+// type NumberInputType = {
+// 	type: "number";
+// } & Omit<NumberInputProps, "type">;
 
 type SelectType = {
 	type: "select";
 } & SelectProps;
 
-type Group = {
-	type: "group";
-	inputs: AcceptedInput[];
-	gap?: MantineSpacing;
-} & FieldsetProps;
+// type Group = {
+// 	type: "group";
+// 	inputs: AcceptedInput[];
+// 	gap?: MantineSpacing;
+// } & FieldsetProps;
 
-type ChipType = {
-	type: "chip";
-} & Omit<ChipProps, "type">;
+// type ChipType = {
+// 	type: "chip";
+// } & Omit<ChipProps, "type">;
 
 type CheckboxType = {
 	type: "checkbox";
-} & CheckboxProps;
+} & Omit<CheckboxProps, "type">;
 
 type TextareaType = {
 	type: "textarea";
@@ -84,23 +73,23 @@ type RadioGroupType = {
 	radios: RadioProps[];
 } & Omit<RadioGroupProps, "children">;
 
-type FileInputType<Multiple = boolean> = {
-	type: "file-input";
-	multiple?: Multiple;
-} & Omit<FileInputProps<Multiple>, "type" | "multiple">;
+// type FileInputType<Multiple = boolean> = {
+// 	type: "file-input";
+// 	multiple?: Multiple;
+// } & Omit<FileInputProps<Multiple>, "type" | "multiple">;
 
 type AcceptedInput = (
 	| TextInputType
 	| MultiSelectInputType
 	| PasswordInputType
-	| NumberInputType
+	// | NumberInputType
 	| SelectType
-	| ChipType
-	| Group
+	// | ChipType
+	// | Group
 	| CheckboxType
 	| TextareaType
 	| RadioGroupType
-	| FileInputType
+	// | FileInputType
 	| CustomType
 ) &
 	GeneralInputProps;
@@ -118,7 +107,7 @@ function createInputComponents(options: Options) {
 		switch (input.type) {
 			case "text":
 				return (
-					<TextInput
+					<Input
 						{...input}
 						key={key}
 						readOnly={options.readonlyAll || input.readOnly}
@@ -130,8 +119,8 @@ function createInputComponents(options: Options) {
 					<MultiSelect
 						{...input}
 						key={key}
-						readOnly={options.readonlyAll || input.readOnly}
-						disabled={options.disableAll || input.disabled}
+						// readOnly={options.readonlyAll || input.readOnly}
+						// disabled={options.disableAll || input.disabled}
 					/>
 				);
 			case "password":
@@ -143,60 +132,61 @@ function createInputComponents(options: Options) {
 						disabled={options.disableAll || input.disabled}
 					/>
 				);
-			case "number":
-				return (
-					<NumberInput
-						{...input}
-						key={key}
-						type="text"
-						readOnly={options.readonlyAll || input.readOnly}
-						disabled={options.disableAll || input.disabled}
-					/>
-				);
+			// case "number":
+			// 	return (
+			// 		<NumberInput
+			// 			{...input}
+			// 			key={key}
+			// 			type="text"
+			// 			readOnly={options.readonlyAll || input.readOnly}
+			// 			disabled={options.disableAll || input.disabled}
+			// 		/>
+			// 	);
 			case "select":
 				return (
 					<Select
 						{...input}
 						key={key}
-						readOnly={options.readonlyAll || input.readOnly}
+						// readOnly={options.readonlyAll || input.readOnly}
 						disabled={options.disableAll || input.disabled}
 					/>
 				);
 
-			case "group": {
-				const localComponents: ReactNode[] = [];
+			// case "group": {
+			// 	const localComponents: ReactNode[] = [];
 
-				for (const [key, child] of input.inputs.entries()) {
-					if (child.hidden) continue;
+			// 	for (const [key, child] of input.inputs.entries()) {
+			// 		if (child.hidden) continue;
 
-					localComponents.push(createComponent({ ...child, key }));
-				}
+			// 		localComponents.push(createComponent({ ...child, key }));
+			// 	}
 
-				return (
-					<Fieldset key={key} {...input}>
-						<Stack gap={input.gap}>{localComponents}</Stack>
-					</Fieldset>
-				);
-			}
+			// 	return (
+			// 		<Fieldset key={key} {...input}>
+			// 			<Stack gap={input.gap}>{localComponents}</Stack>
+			// 		</Fieldset>
+			// 	);
+			// }
 
-			case "chip": {
-				return (
-					<Chip
-						{...input}
-						key={key}
-						type="checkbox"
-						readOnly={options.readonlyAll || input.readOnly}
-						disabled={options.disableAll || input.disabled}
-					/>
-				);
-			}
+			// case "chip": {
+			// 	return (
+			// 		<Chip
+			// 			{...input}
+			// 			key={key}
+			// 			type="checkbox"
+			// 			readOnly={options.readonlyAll || input.readOnly}
+			// 			disabled={options.disableAll || input.disabled}
+			// 		/>
+			// 	);
+			// }
 
 			case "checkbox": {
 				return (
 					<Checkbox
 						{...input}
+						type="button"
 						key={key}
-						readOnly={options.readonlyAll || input.readOnly}
+						// readOnly={options.readonlyAll || input.readOnly}
 						disabled={options.disableAll || input.disabled}
 					/>
 				);
@@ -218,28 +208,36 @@ function createInputComponents(options: Options) {
 					<RadioGroup
 						{...input}
 						key={key}
-						readOnly={options.readonlyAll || input.readOnly}
+						// readOnly={options.readonlyAll || input.readOnly}
 					>
-						<Group>
-							{input.radios.map((radio, index) => (
-								<Radio key={index} {...radio} />
-							))}
-						</Group>
+						{/* <Group> */}
+						{input.radios.map((radio, index) => {
+							return (
+								<div
+									className="flex items-center space-x-2"
+									key={index}
+								>
+									<RadioGroupItem {...radio} />
+									<Label htmlFor={radio.id}>{index}</Label>
+								</div>
+							);
+						})}
+						{/* </Group> */}
 					</RadioGroup>
 				);
 			}
 
-			case "file-input": {
-				return (
-					<FileInput
-						{...input}
-						key={key}
-						type="button"
-						readOnly={options.readonlyAll || input.readOnly}
-						disabled={options.disableAll || input.disabled}
-					/>
-				);
-			}
+			// case "file-input": {
+			// 	return (
+			// 		<FileInput
+			// 			{...input}
+			// 			key={key}
+			// 			type="button"
+			// 			readOnly={options.readonlyAll || input.readOnly}
+			// 			disabled={options.disableAll || input.disabled}
+			// 		/>
+			// 	);
+			// }
 
 			case "custom": {
 				return input.component;
