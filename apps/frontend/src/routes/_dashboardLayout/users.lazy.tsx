@@ -76,7 +76,7 @@ export default function UsersPage() {
 								{
 									label: "Detail",
 									permission: true,
-									action: `?detail=${props.row.original.id}`,
+									action: `./detail/${props.row.original.id}`,
 									className:
 										"bg-green-500 hover:bg-green-600",
 									icon: <TbEye />,
@@ -84,7 +84,7 @@ export default function UsersPage() {
 								{
 									label: "Edit",
 									permission: true,
-									action: `?edit=${props.row.original.id}`,
+									action: `./edit/${props.row.original.id}`,
 									className:
 										"bg-yellow-500 hover:bg-yellow-600",
 									icon: <TbPencil />,

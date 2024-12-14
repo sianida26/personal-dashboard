@@ -148,6 +148,11 @@ export default function UserFormModal({ formType, userId }: Props) {
 		navigate({ to: "/users" });
 	};
 
+	const closeModal = () => {
+		navigate({ to: ".." });
+		form.reset();
+	};
+
 	/**
 	 * YOU MIGHT NOT NEED FOLLOWING:
 	 */
@@ -164,11 +169,9 @@ export default function UserFormModal({ formType, userId }: Props) {
 		},
 	});
 
-	console.log(form.getInputProps("name"));
-
 	return (
 		<Dialog open={true}>
-			<DialogContent>
+			<DialogContent onClose={closeModal}>
 				<DialogHeader>
 					<DialogTitle>{modalTitle}</DialogTitle>
 				</DialogHeader>
@@ -216,12 +219,12 @@ export default function UserFormModal({ formType, userId }: Props) {
 											variant="ghost"
 											className="border-primary"
 											type="button"
-											onClick={() =>
+											onClick={() => {
 												form.setFieldValue(
 													"password",
 													generateRandomPassword()
-												)
-											}
+												);
+											}}
 										>
 											<TbRefresh />
 											Generate Random Password
@@ -249,7 +252,8 @@ export default function UserFormModal({ formType, userId }: Props) {
 					<div className="flex justify-end items-center gap-4 mt-4">
 						<Button
 							variant="outline"
-							// onClick={() => navigate({ search: {} })}
+							type="button"
+							onClick={closeModal}
 							disabled={mutation.isPending}
 						>
 							Close
@@ -267,16 +271,5 @@ export default function UserFormModal({ formType, userId }: Props) {
 				</form>
 			</DialogContent>
 		</Dialog>
-		// <Modal
-		// 	opened={isModalOpen}
-		// 	onClose={() => navigate({ search: {} })}
-		// 	title={modalTitle} //Uppercase first letter
-		// 	scrollAreaComponent={ScrollArea.Autosize}
-		// 	size="md"
-		// >
-		// 	<form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
-
-		// 	</form>
-		// </Modal>
 	);
 }

@@ -19,6 +19,8 @@ import { Route as DashboardLayoutTimetableIndexImport } from './routes/_dashboar
 import { Route as DashboardLayoutDevIndexImport } from './routes/_dashboardLayout/dev/index'
 import { Route as DashboardLayoutDashboardIndexImport } from './routes/_dashboardLayout/dashboard/index'
 import { Route as DashboardLayoutUsersCreateImport } from './routes/_dashboardLayout/users/create'
+import { Route as DashboardLayoutUsersEditUserIdImport } from './routes/_dashboardLayout/users/edit.$userId'
+import { Route as DashboardLayoutUsersDetailUserIdImport } from './routes/_dashboardLayout/users/detail.$userId'
 import { Route as DashboardLayoutUsersDeleteUserIdImport } from './routes/_dashboardLayout/users/delete.$userId'
 
 // Create Virtual Routes
@@ -87,6 +89,20 @@ const DashboardLayoutUsersCreateRoute = DashboardLayoutUsersCreateImport.update(
     getParentRoute: () => DashboardLayoutUsersRoute,
   } as any,
 )
+
+const DashboardLayoutUsersEditUserIdRoute =
+  DashboardLayoutUsersEditUserIdImport.update({
+    id: '/edit/$userId',
+    path: '/edit/$userId',
+    getParentRoute: () => DashboardLayoutUsersRoute,
+  } as any)
+
+const DashboardLayoutUsersDetailUserIdRoute =
+  DashboardLayoutUsersDetailUserIdImport.update({
+    id: '/detail/$userId',
+    path: '/detail/$userId',
+    getParentRoute: () => DashboardLayoutUsersRoute,
+  } as any)
 
 const DashboardLayoutUsersDeleteUserIdRoute =
   DashboardLayoutUsersDeleteUserIdImport.update({
@@ -169,6 +185,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutUsersDeleteUserIdImport
       parentRoute: typeof DashboardLayoutUsersImport
     }
+    '/_dashboardLayout/users/detail/$userId': {
+      id: '/_dashboardLayout/users/detail/$userId'
+      path: '/detail/$userId'
+      fullPath: '/users/detail/$userId'
+      preLoaderRoute: typeof DashboardLayoutUsersDetailUserIdImport
+      parentRoute: typeof DashboardLayoutUsersImport
+    }
+    '/_dashboardLayout/users/edit/$userId': {
+      id: '/_dashboardLayout/users/edit/$userId'
+      path: '/edit/$userId'
+      fullPath: '/users/edit/$userId'
+      preLoaderRoute: typeof DashboardLayoutUsersEditUserIdImport
+      parentRoute: typeof DashboardLayoutUsersImport
+    }
   }
 }
 
@@ -177,11 +207,15 @@ declare module '@tanstack/react-router' {
 interface DashboardLayoutUsersRouteChildren {
   DashboardLayoutUsersCreateRoute: typeof DashboardLayoutUsersCreateRoute
   DashboardLayoutUsersDeleteUserIdRoute: typeof DashboardLayoutUsersDeleteUserIdRoute
+  DashboardLayoutUsersDetailUserIdRoute: typeof DashboardLayoutUsersDetailUserIdRoute
+  DashboardLayoutUsersEditUserIdRoute: typeof DashboardLayoutUsersEditUserIdRoute
 }
 
 const DashboardLayoutUsersRouteChildren: DashboardLayoutUsersRouteChildren = {
   DashboardLayoutUsersCreateRoute: DashboardLayoutUsersCreateRoute,
   DashboardLayoutUsersDeleteUserIdRoute: DashboardLayoutUsersDeleteUserIdRoute,
+  DashboardLayoutUsersDetailUserIdRoute: DashboardLayoutUsersDetailUserIdRoute,
+  DashboardLayoutUsersEditUserIdRoute: DashboardLayoutUsersEditUserIdRoute,
 }
 
 const DashboardLayoutUsersRouteWithChildren =
@@ -216,6 +250,8 @@ export interface FileRoutesByFullPath {
   '/dev': typeof DashboardLayoutDevIndexRoute
   '/timetable': typeof DashboardLayoutTimetableIndexRoute
   '/users/delete/$userId': typeof DashboardLayoutUsersDeleteUserIdRoute
+  '/users/detail/$userId': typeof DashboardLayoutUsersDetailUserIdRoute
+  '/users/edit/$userId': typeof DashboardLayoutUsersEditUserIdRoute
 }
 
 export interface FileRoutesByTo {
@@ -229,6 +265,8 @@ export interface FileRoutesByTo {
   '/dev': typeof DashboardLayoutDevIndexRoute
   '/timetable': typeof DashboardLayoutTimetableIndexRoute
   '/users/delete/$userId': typeof DashboardLayoutUsersDeleteUserIdRoute
+  '/users/detail/$userId': typeof DashboardLayoutUsersDetailUserIdRoute
+  '/users/edit/$userId': typeof DashboardLayoutUsersEditUserIdRoute
 }
 
 export interface FileRoutesById {
@@ -243,6 +281,8 @@ export interface FileRoutesById {
   '/_dashboardLayout/dev/': typeof DashboardLayoutDevIndexRoute
   '/_dashboardLayout/timetable/': typeof DashboardLayoutTimetableIndexRoute
   '/_dashboardLayout/users/delete/$userId': typeof DashboardLayoutUsersDeleteUserIdRoute
+  '/_dashboardLayout/users/detail/$userId': typeof DashboardLayoutUsersDetailUserIdRoute
+  '/_dashboardLayout/users/edit/$userId': typeof DashboardLayoutUsersEditUserIdRoute
 }
 
 export interface FileRouteTypes {
@@ -258,6 +298,8 @@ export interface FileRouteTypes {
     | '/dev'
     | '/timetable'
     | '/users/delete/$userId'
+    | '/users/detail/$userId'
+    | '/users/edit/$userId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -270,6 +312,8 @@ export interface FileRouteTypes {
     | '/dev'
     | '/timetable'
     | '/users/delete/$userId'
+    | '/users/detail/$userId'
+    | '/users/edit/$userId'
   id:
     | '__root__'
     | '/'
@@ -282,6 +326,8 @@ export interface FileRouteTypes {
     | '/_dashboardLayout/dev/'
     | '/_dashboardLayout/timetable/'
     | '/_dashboardLayout/users/delete/$userId'
+    | '/_dashboardLayout/users/detail/$userId'
+    | '/_dashboardLayout/users/edit/$userId'
   fileRoutesById: FileRoutesById
 }
 
@@ -332,7 +378,9 @@ export const routeTree = rootRoute
       "parent": "/_dashboardLayout",
       "children": [
         "/_dashboardLayout/users/create",
-        "/_dashboardLayout/users/delete/$userId"
+        "/_dashboardLayout/users/delete/$userId",
+        "/_dashboardLayout/users/detail/$userId",
+        "/_dashboardLayout/users/edit/$userId"
       ]
     },
     "/login/": {
@@ -359,6 +407,14 @@ export const routeTree = rootRoute
     },
     "/_dashboardLayout/users/delete/$userId": {
       "filePath": "_dashboardLayout/users/delete.$userId.tsx",
+      "parent": "/_dashboardLayout/users"
+    },
+    "/_dashboardLayout/users/detail/$userId": {
+      "filePath": "_dashboardLayout/users/detail.$userId.tsx",
+      "parent": "/_dashboardLayout/users"
+    },
+    "/_dashboardLayout/users/edit/$userId": {
+      "filePath": "_dashboardLayout/users/edit.$userId.tsx",
       "parent": "/_dashboardLayout/users"
     }
   }
