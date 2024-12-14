@@ -1,4 +1,4 @@
-import { useForm, zodResolver } from "@mantine/form";
+import { useForm } from "@mantine/form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { TbDeviceFloppy, TbRefresh } from "react-icons/tb";
 import client from "../../../honoClient";
@@ -19,7 +19,6 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { z } from "zod";
 import { PasswordInput } from "@/components/ui/password-input";
 import generateRandomPassword from "@/utils/generateRandomPassword";
 
