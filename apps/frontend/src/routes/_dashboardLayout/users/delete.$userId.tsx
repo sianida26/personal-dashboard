@@ -64,7 +64,7 @@ export default function UserDeleteModal() {
 			});
 			queryClient.removeQueries({ queryKey: ["user", userId] });
 			queryClient.invalidateQueries({ queryKey: ["users"] });
-			navigate({ search: {} });
+			handleCloseModal();
 		},
 	});
 
