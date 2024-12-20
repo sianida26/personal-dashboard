@@ -1,4 +1,4 @@
-import { NumberInput } from "@/components/ui/number-input";
+import createInputComponents from "@/utils/createInputComponents";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_dashboardLayout/dev/")({
@@ -9,8 +9,25 @@ export const Route = createFileRoute("/_dashboardLayout/dev/")({
 
 function RouteComponent() {
 	return (
-		<div className="p-4 w-56">
-			<NumberInput label="berapa?" />
+		<div className="p-4 w-72">
+			{createInputComponents({
+				inputs: [
+					{
+						type: "group",
+						legend: "Group",
+						inputs: [
+							{
+								label: "Number Input",
+								type: "number",
+							},
+							{
+								label: "Text Input",
+								type: "text",
+							},
+						],
+					},
+				],
+			})}
 		</div>
 	);
 }

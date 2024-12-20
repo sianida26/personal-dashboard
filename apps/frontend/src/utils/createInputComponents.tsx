@@ -1,4 +1,5 @@
 import { Checkbox, CheckboxProps } from "@/components/ui/checkbox";
+import FormGroup, { FormGroupProps } from "@/components/ui/form-group";
 import { Input, InputProps } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import MultiSelect, { MultiSelectProps } from "@/components/ui/multi-select";
@@ -50,11 +51,10 @@ type SelectType = {
 	type: "select";
 } & SelectProps;
 
-// type Group = {
-// 	type: "group";
-// 	inputs: AcceptedInput[];
-// 	gap?: MantineSpacing;
-// } & FieldsetProps;
+type Group = {
+	type: "group";
+	inputs: AcceptedInput[];
+} & FormGroupProps;
 
 // type ChipType = {
 // 	type: "chip";
@@ -86,7 +86,7 @@ type AcceptedInput = (
 	| NumberInputType
 	| SelectType
 	// | ChipType
-	// | Group
+	| Group
 	| CheckboxType
 	| TextareaType
 	| RadioGroupType
@@ -152,21 +152,21 @@ function createInputComponents(options: Options) {
 					/>
 				);
 
-			// case "group": {
-			// 	const localComponents: ReactNode[] = [];
+			case "group": {
+				const localComponents: ReactNode[] = [];
 
-			// 	for (const [key, child] of input.inputs.entries()) {
-			// 		if (child.hidden) continue;
+				for (const [key, child] of input.inputs.entries()) {
+					if (child.hidden) continue;
 
-			// 		localComponents.push(createComponent({ ...child, key }));
-			// 	}
+					localComponents.push(createComponent({ ...child, key }));
+				}
 
-			// 	return (
-			// 		<Fieldset key={key} {...input}>
-			// 			<Stack gap={input.gap}>{localComponents}</Stack>
-			// 		</Fieldset>
-			// 	);
-			// }
+				return (
+					<FormGroup key={key} {...input}>
+						{localComponents}
+					</FormGroup>
+				);
+			}
 
 			// case "chip": {
 			// 	return (
