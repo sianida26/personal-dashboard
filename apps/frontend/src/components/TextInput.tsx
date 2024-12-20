@@ -1,6 +1,5 @@
 import React from "react";
 import { Input } from "./ui/input";
-import { Label } from "./ui/label";
 
 type Props = React.InputHTMLAttributes<HTMLInputElement> & {
 	label?: string | React.ReactNode;
@@ -11,9 +10,6 @@ type Props = React.InputHTMLAttributes<HTMLInputElement> & {
 export default function TextInput(props: Props) {
 	return (
 		<div className={`flex flex-col gap-2 ${props.wrapperClassName || ""}`}>
-			{/* Label */}
-			{props.label && <Label>{props.label}</Label>}
-
 			<Input {...props} />
 
 			{/* Description */}
