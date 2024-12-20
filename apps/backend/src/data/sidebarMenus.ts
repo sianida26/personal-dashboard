@@ -19,13 +19,14 @@ const sidebarMenus: SidebarMenu[] = [
 				link: "/users",
 				color: "red",
 			},
-			{
-				label: "Roles",
-				icon: { tb: "TbUserCog" },
-				allowedPermissions: ["*"],
-				link: "/roles",
-				color: "green",
-			},
+			//TODO: Add roles page and feature
+			// {
+			// 	label: "Roles",
+			// 	icon: { tb: "TbUserCog" },
+			// 	allowedPermissions: ["*"],
+			// 	link: "/roles",
+			// 	color: "green",
+			// },
 		],
 	},
 ];
