@@ -1,7 +1,6 @@
-// import { Popover } from "@mantine/core";
-// import { DatePicker } from "@mantine/dates";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Calendar } from "../ui/calendar";
 
 interface Props {
 	currentDate: dayjs.Dayjs;
@@ -17,7 +16,7 @@ function startOfWeek(date: Date) {
 	return new Date(
 		date.getFullYear(),
 		date.getMonth(),
-		date.getDate() - getDay(date) - 1
+		date.getDate() - getDay(date)
 	);
 }
 
@@ -33,43 +32,26 @@ function endOfWeek(date: Date) {
 		.toDate();
 }
 
-function isInWeekRange(date: Date, value: Date | null) {
-	return value
-		? dayjs(date).isBefore(endOfWeek(value)) &&
-				dayjs(date).isAfter(startOfWeek(value))
-		: false;
-}
-
 export default function WeekPicker({ currentDate, onChange }: Props) {
-	const [hovered, setHovered] = useState<Date | null>(null);
-	const [value, setValue] = useState<Date | null>(null);
-
-	return <div>Weekpicker</div>
-
-	// return (
-		// <Popover>
-		// 	<Popover.Target>
-		// 		<button>{currentDate.format("MMMM YYYY")}</button>
-		// 	</Popover.Target>
-		// 	<Popover.Dropdown>
-		// 		<DatePicker
-		// 			getDayProps={(date) => {
-		// 				const isHovered = isInWeekRange(date, hovered);
-		// 				const isSelected = isInWeekRange(date, value);
-		// 				const isInRange = isHovered || isSelected;
-		// 				return {
-		// 					onMouseEnter: () => setHovered(date),
-		// 					onMouseLeave: () => setHovered(null),
-		// 					inRange: isInRange,
-		// 					firstInRange: isInRange && date.getDay() === 1,
-		// 					lastInRange: isInRange && date.getDay() === 0,
-		// 					selected: isSelected,
-		// 					onClick: () => setValue(date),
-		// 				};
-		// 			}}
-		// 			onChange={(date) => onChange(date ?? new Date())}
-		// 		/>
-		// 	</Popover.Dropdown>
-		// </Popover>
-	// );
+	return (
+		<Popover>
+			<PopoverTrigger>
+				<button>{currentDate.format("MMMM YYYY")}</button>
+			</PopoverTrigger>
+			<PopoverContent>
+				<Calendar
+					mode="range"
+					weekStartsOn={1}
+					selected={{
+						from: startOfWeek(currentDate.toDate()),
+						to: endOfWeek(currentDate.toDate()),
+					}}
+					onDayClick={(date) => {
+						onChange(startOfWeek(date ?? new Date()));
+					}}
+					initialFocus
+				/>
+			</PopoverContent>
+		</Popover>
+	);
 }

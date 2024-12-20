@@ -8,6 +8,7 @@ import DayColumn from "./DayColumn";
 import { TbChevronLeft, TbChevronRight } from "react-icons/tb";
 import Event from "./types/Event";
 import WeekPicker from "./WeekPicker";
+import { Button } from "../ui/button";
 
 dayjs.extend(isoWeek);
 dayjs.extend(customParseFormat);
@@ -64,29 +65,31 @@ export default function Timetable<T extends Record<string, unknown> & Event>({
 			{/* Header */}
 			<div className="flex justify-between items-center">
 				{/* Left */}
-				<div className="flex gap-8">
-					<button
+				<div className="flex gap-8 items-center">
+					<Button
 						className="flex items-center border border-gray-900 font-medium px-2 py-1 rounded-md"
 						onClick={() => setCurrentDate(dayjs())}
 					>
 						Today
-					</button>
+					</Button>
 
 					<div className="flex gap-2">
-						<button
+						<Button
+							variant="ghost"
 							onClick={() =>
 								setCurrentDate(currentDate.subtract(1, "week"))
 							}
 						>
 							<TbChevronLeft />
-						</button>
-						<button
+						</Button>
+						<Button
+							variant="ghost"
 							onClick={() =>
 								setCurrentDate(currentDate.add(1, "week"))
 							}
 						>
 							<TbChevronRight />
-						</button>
+						</Button>
 					</div>
 
 					<WeekPicker
