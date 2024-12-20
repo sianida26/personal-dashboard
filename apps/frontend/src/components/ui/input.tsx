@@ -9,6 +9,9 @@ export interface InputProps extends React.ComponentProps<"input"> {
 	rightSection?: React.ReactNode; // Custom prop that accepts ReactNode
 	label?: React.ReactNode; // Custom prop for the label
 	withAsterisk?: boolean;
+	classNames?: Partial<{
+		rightSection: string;
+	}>;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -18,6 +21,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 			type,
 			leftSection,
 			rightSection,
+			classNames,
 			label,
 			id,
 			error,
@@ -55,7 +59,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 						{...props}
 					/>
 					{rightSection && (
-						<div className="absolute right-3 bottom-0 transform text-muted-foreground">
+						<div
+							className={cn(
+								"absolute right-3 bottom-0 transform text-muted-foreground",
+								classNames?.rightSection
+							)}
+						>
 							{rightSection}
 						</div>
 					)}

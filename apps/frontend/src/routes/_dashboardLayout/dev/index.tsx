@@ -1,4 +1,4 @@
-import Timetable from "@/components/Timetable";
+import { NumberInput } from "@/components/ui/number-input";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_dashboardLayout/dev/")({
@@ -9,8 +9,8 @@ export const Route = createFileRoute("/_dashboardLayout/dev/")({
 
 function RouteComponent() {
 	return (
-		<div className="p-4">
-			<Timetable events={[]} />
+		<div className="p-4 w-56">
+			<NumberInput label="berapa?" />
 		</div>
 	);
 }

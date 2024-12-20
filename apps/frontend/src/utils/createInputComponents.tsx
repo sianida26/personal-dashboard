@@ -2,6 +2,7 @@ import { Checkbox, CheckboxProps } from "@/components/ui/checkbox";
 import { Input, InputProps } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import MultiSelect, { MultiSelectProps } from "@/components/ui/multi-select";
+import { NumberInput, NumberInputProps } from "@/components/ui/number-input";
 import {
 	PasswordInput,
 	PasswordInputProps,
@@ -41,9 +42,9 @@ type PasswordInputType = {
 	type: "password";
 } & PasswordInputProps;
 
-// type NumberInputType = {
-// 	type: "number";
-// } & Omit<NumberInputProps, "type">;
+type NumberInputType = {
+	type: "number";
+} & Omit<NumberInputProps, "type">;
 
 type SelectType = {
 	type: "select";
@@ -82,7 +83,7 @@ type AcceptedInput = (
 	| TextInputType
 	| MultiSelectInputType
 	| PasswordInputType
-	// | NumberInputType
+	| NumberInputType
 	| SelectType
 	// | ChipType
 	// | Group
@@ -132,16 +133,15 @@ function createInputComponents(options: Options) {
 						disabled={options.disableAll || input.disabled}
 					/>
 				);
-			// case "number":
-			// 	return (
-			// 		<NumberInput
-			// 			{...input}
-			// 			key={key}
-			// 			type="text"
-			// 			readOnly={options.readonlyAll || input.readOnly}
-			// 			disabled={options.disableAll || input.disabled}
-			// 		/>
-			// 	);
+			case "number":
+				return (
+					<NumberInput
+						{...input}
+						key={key}
+						readOnly={options.readonlyAll || input.readOnly}
+						disabled={options.disableAll || input.disabled}
+					/>
+				);
 			case "select":
 				return (
 					<Select
