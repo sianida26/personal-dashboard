@@ -1,4 +1,5 @@
 import { Checkbox, CheckboxProps } from "@/components/ui/checkbox";
+import { FileInput, FileInputProps } from "@/components/ui/file-input";
 import FormGroup, { FormGroupProps } from "@/components/ui/form-group";
 import { Input, InputProps } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -74,10 +75,10 @@ type RadioGroupType = {
 	radios: RadioProps[];
 } & Omit<RadioGroupProps, "children">;
 
-// type FileInputType<Multiple = boolean> = {
-// 	type: "file-input";
-// 	multiple?: Multiple;
-// } & Omit<FileInputProps<Multiple>, "type" | "multiple">;
+type FileInputType<Multiple = boolean> = {
+	type: "file-input";
+	multiple?: Multiple;
+} & Omit<FileInputProps, "type" | "multiple">;
 
 type AcceptedInput = (
 	| TextInputType
@@ -90,7 +91,7 @@ type AcceptedInput = (
 	| CheckboxType
 	| TextareaType
 	| RadioGroupType
-	// | FileInputType
+	| FileInputType
 	| CustomType
 ) &
 	GeneralInputProps;
@@ -227,17 +228,16 @@ function createInputComponents(options: Options) {
 				);
 			}
 
-			// case "file-input": {
-			// 	return (
-			// 		<FileInput
-			// 			{...input}
-			// 			key={key}
-			// 			type="button"
-			// 			readOnly={options.readonlyAll || input.readOnly}
-			// 			disabled={options.disableAll || input.disabled}
-			// 		/>
-			// 	);
-			// }
+			case "file-input": {
+				return (
+					<FileInput
+						{...input}
+						key={key}
+						readOnly={options.readonlyAll || input.readOnly}
+						disabled={options.disableAll || input.disabled}
+					/>
+				);
+			}
 
 			case "custom": {
 				return input.component;

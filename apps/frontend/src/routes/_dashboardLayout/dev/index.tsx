@@ -24,6 +24,10 @@ function RouteComponent() {
 								label: "Text Input",
 								type: "text",
 							},
+							{
+								label: "File Input",
+								type: "file-input",
+							},
 						],
 					},
 				],
