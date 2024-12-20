@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { routeTree } from "./routeTree.gen";
 
 import { AuthProvider } from "./contexts/Auth/AuthProvider";
+import { NotificationProvider } from "./contexts/Notification/NotificationProvider";
 
 const queryClient = new QueryClient();
 
@@ -27,7 +28,9 @@ function App() {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<AuthProvider>
-				<RouterProvider router={router} />
+				<NotificationProvider>
+					<RouterProvider router={router} />
+				</NotificationProvider>
 			</AuthProvider>
 		</QueryClientProvider>
 	);
