@@ -7,7 +7,7 @@ export default function AppHeader() {
 	const pageTitle = matches.at(-1)?.staticData.title ?? "";
 
 	return (
-		<div className="w-full h-16 border-b flex items-center justify-between px-4 fixed">
+		<div className="w-full h-16 border-b flex items-center justify-between px-4 fixed bg-background">
 			{/* Left Side */}
 			<div className="flex gap-4 items-center">
 				<SidebarTrigger />
