@@ -18,3 +18,5 @@ function normalizePhoneNumber(
 
 	return phone;
 }
+
+export default normalizePhoneNumber;
