@@ -149,7 +149,7 @@ export default function UserFormModal({ formType, userId }: Props) {
 	};
 
 	const closeModal = () => {
-		navigate({ to: ".." });
+		navigate({ to: "/users" });
 		form.reset();
 	};
 
