@@ -7,6 +7,7 @@ import * as permissionsToRolesSchema from "./schema/permissionsToRoles";
 import * as permissionsToUsersSchema from "./schema/permissionsToUsers";
 import * as rolesToUsersSchema from "./schema/rolesToUsers";
 import appEnv from "../appEnv";
+import SqlLogger from "./utils/SqlLogger";
 
 configDotenv();
 
@@ -20,6 +21,7 @@ const db = drizzle({
 		...permissionsToUsersSchema,
 		...rolesToUsersSchema,
 	},
+	logger: new SqlLogger(),
 });
 
 export default db;

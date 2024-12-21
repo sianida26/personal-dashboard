@@ -41,6 +41,7 @@ const envSchema = z.object({
 	LOG_INFO: logSchema("true"),
 	LOG_DEBUG: logSchema("false"),
 	LOG_REQUEST: logSchema("true"),
+	LOG_SQL: logSchema("true"),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);

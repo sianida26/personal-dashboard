@@ -9,17 +9,19 @@ import appEnv from "../appEnv";
 
 dayjs.extend(DayjsUTC);
 
-type LOG_TYPES = "error" | "info" | "debug" | "request";
+type LOG_TYPES = "error" | "info" | "debug" | "request" | "sql";
 
 class Logger {
 	private errorLogFile: string;
 	private debugLogFile: string;
 	private infoLogFile: string;
 	private requestLogFile: string;
+	private sqlLogFile: string;
 	private errorLogStream: fs.WriteStream;
 	private debugLogStream: fs.WriteStream;
 	private infoLogStream: fs.WriteStream;
 	private requestLogStream: fs.WriteStream;
+	private sqlLogStream: fs.WriteStream;
 
 	constructor() {
 		const currentDate = dayjs().utc().format("YYYYMMDD");
@@ -28,6 +30,7 @@ class Logger {
 		this.infoLogFile = `./logs/${currentDate}-info.log`;
 		this.debugLogFile = `./logs/${currentDate}-debug.log`;
 		this.requestLogFile = `./logs/${currentDate}-access.log`;
+		this.sqlLogFile = `./logs/${currentDate}-sql.log`;
 		// this.logFile = "./logs/log.LOG";
 		this.errorLogStream = fs.createWriteStream(this.errorLogFile, {
 			flags: "a",
@@ -42,6 +45,10 @@ class Logger {
 		});
 
 		this.requestLogStream = fs.createWriteStream(this.requestLogFile, {
+			flags: "a",
+		});
+
+		this.sqlLogStream = fs.createWriteStream(this.sqlLogFile, {
 			flags: "a",
 		});
 	}
@@ -63,6 +70,9 @@ class Logger {
 				break;
 			case "request":
 				stream = this.requestLogStream;
+				break;
+			case "sql":
+				stream = this.sqlLogStream;
 				break;
 			default:
 				throw new Error("Invalid LOG TYPE");
@@ -117,6 +127,11 @@ class Logger {
 		const message = `${c.req.method} ${c.req.path} ${c.var.uid ?? "-"} ${c.var.requestId ?? "-"} ${c.res.status} ${responseTime ?? "-"} ${c.req.header("User-Agent") ?? "-"}`;
 		console.log(`REQ: ${message}`);
 		this.log(message, "request");
+	}
+
+	sql(query: string, params: any[]) {
+		if (!appEnv.LOG_SQL) return;
+		this.log(`SQL: ${query} ${JSON.stringify(params)}`, "sql");
 	}
 }
 
