@@ -148,7 +148,7 @@ function createInputComponents(options: Options) {
 					<Select
 						{...input}
 						key={key}
-						// readOnly={options.readonlyAll || input.readOnly}
+						readOnly={options.readonlyAll || input.readOnly}
 						disabled={options.disableAll || input.disabled}
 					/>
 				);
