@@ -24,10 +24,14 @@ type Props<T extends Record<string, unknown> & Event> = {
 		center?: JSX.Element;
 		right?: JSX.Element;
 	};
+	classNames?: Partial<{
+		todayButton: string;
+	}>;
 };
 
 export default function Timetable<T extends Record<string, unknown> & Event>({
 	events,
+	classNames,
 	...props
 }: Props<T>) {
 	const [currentDate, setCurrentDate] = useState(dayjs());
@@ -67,7 +71,7 @@ export default function Timetable<T extends Record<string, unknown> & Event>({
 				{/* Left */}
 				<div className="flex gap-8 items-center">
 					<Button
-						className="flex items-center border border-gray-900 font-medium px-2 py-1 rounded-md"
+						className={classNames?.todayButton}
 						onClick={() => setCurrentDate(dayjs())}
 					>
 						Today
