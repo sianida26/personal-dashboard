@@ -8,6 +8,7 @@ export interface AuthContextType {
 		email?: string;
 		username?: string;
 		permissions: string[];
+		roles: string[];
 	} | null;
 	accessToken: string | null;
 	saveAuthData: (

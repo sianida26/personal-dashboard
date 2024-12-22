@@ -106,6 +106,7 @@ const authRoutes = new Hono<HonoEnv>()
 					id: user.id,
 					name: user.name,
 					permissions: Array.from(permissions),
+					roles: user.rolesToUsers.map((role) => role.role.name),
 				},
 			});
 		}
