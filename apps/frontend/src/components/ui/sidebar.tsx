@@ -570,7 +570,7 @@ const SidebarMenuButton = React.forwardRef<
 		ref
 	) => {
 		const Comp = asChild ? Slot : "button";
-		const { isMobile, state, toggleSidebar } = useSidebar();
+		const { isMobile, state, setOpenMobile } = useSidebar();
 
 		const button = (
 			<Comp
@@ -582,7 +582,7 @@ const SidebarMenuButton = React.forwardRef<
 					sidebarMenuButtonVariants({ variant, size }),
 					className
 				)}
-				onClick={() => toggleSidebar()}
+				onClick={() => setOpenMobile(false)}
 				{...props}
 			/>
 		);
