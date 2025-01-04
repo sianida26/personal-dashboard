@@ -23,6 +23,7 @@ function DashboardLayout() {
 				id: response.id,
 				name: response.name,
 				permissions: response.permissions,
+				roles: response.roles,
 			});
 
 			return response;
