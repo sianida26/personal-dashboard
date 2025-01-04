@@ -12,7 +12,11 @@ import HonoEnv from "../../types/HonoEnv";
 import requestValidator from "../../utils/requestValidator";
 import authInfo from "../../middlewares/authInfo";
 import checkPermission from "../../middlewares/checkPermission";
-import { userFormSchema, userUpdateSchema } from "@repo/validation";
+import {
+	paginationRequestSchema,
+	userFormSchema,
+	userUpdateSchema,
+} from "@repo/validation";
 
 const usersRoute = new Hono<HonoEnv>()
 	.use(authInfo)
@@ -26,22 +30,7 @@ const usersRoute = new Hono<HonoEnv>()
 	.get(
 		"/",
 		checkPermission("users.readAll"),
-		requestValidator(
-			"query",
-			z.object({
-				includeTrashed: z
-					.string()
-					.optional()
-					.transform((v) => v?.toLowerCase() === "true"),
-				withMetadata: z
-					.string()
-					.optional()
-					.transform((v) => v?.toLowerCase() === "true"),
-				page: z.coerce.number().int().min(0).default(0),
-				limit: z.coerce.number().int().min(1).max(1000).default(1),
-				q: z.string().default(""),
-			})
-		),
+		requestValidator("query", paginationRequestSchema),
 		async (c) => {
 			const { includeTrashed, page, limit, q } = c.req.valid("query");
 

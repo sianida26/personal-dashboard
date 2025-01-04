@@ -8,7 +8,10 @@ import { checkPassword } from "../../utils/passwordUtils";
 import { generateAccessToken } from "../../utils/authUtils";
 import HonoEnv from "../../types/HonoEnv";
 import authInfo from "../../middlewares/authInfo";
-import { notFound, unauthorized } from "../../errors/DashboardError";
+import DashboardError, {
+	notFound,
+	unauthorized,
+} from "../../errors/DashboardError";
 import { loginSchema } from "@repo/validation";
 import { PermissionCode } from "@repo/data";
 
@@ -49,16 +52,22 @@ const authRoutes = new Hono<HonoEnv>()
 		});
 
 		if (!user) {
-			throw new HTTPException(400, {
+			throw new DashboardError({
+				errorCode: "INVALID_CREDENTIALS",
 				message: "Invalid username or password",
+				severity: "LOW",
+				statusCode: 400,
 			});
 		}
 
 		const isSuccess = await checkPassword(formData.password, user.password);
 
 		if (!isSuccess) {
-			throw new HTTPException(400, {
+			throw new DashboardError({
+				errorCode: "INVALID_CREDENTIALS",
 				message: "Invalid username or password",
+				severity: "LOW",
+				statusCode: 400,
 			});
 		}
 
