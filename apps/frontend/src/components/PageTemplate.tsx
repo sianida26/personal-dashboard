@@ -204,14 +204,14 @@ export default function PageTemplate<
 					{query.data && (
 						<div className="pt-4 flex-wrap flex items-center gap-4">
 							<Select
-								defaultValue="10"
-								// onChange={(value) =>
-								// 	setFilterOptions((prev) => ({
-								// 		page: prev.page,
-								// 		limit: parseInt(value ?? "10"),
-								// 		q: prev.q,
-								// 	}))
-								// }
+							// defaultValue="10"
+							// onChange={(value) =>
+							// 	setFilterOptions((prev) => ({
+							// 		page: prev.page,
+							// 		limit: parseInt(value ?? "10"),
+							// 		q: prev.q,
+							// 	}))
+							// }
 							/>
 							<Pagination
 							// value={currentPage}

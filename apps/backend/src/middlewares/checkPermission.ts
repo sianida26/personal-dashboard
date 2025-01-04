@@ -1,7 +1,7 @@
 import { createMiddleware } from "hono/factory";
-import { PermissionCode } from "../data/permissions";
 import HonoEnv from "../types/HonoEnv";
 import { unauthorized } from "../errors/DashboardError";
+import { ExtendedPermissionCodeWithAll } from "@repo/data";
 
 /**
  * Creates a middleware to check if the current user has the required permissions.
@@ -13,7 +13,7 @@ import { unauthorized } from "../errors/DashboardError";
  * @param permissions - An array of permissions to check against the current user's permissions.
  * @returns A middleware function for the Hono framework.
  */
-const checkPermission = (...permissions: PermissionCode[]) =>
+const checkPermission = (...permissions: ExtendedPermissionCodeWithAll[]) =>
 	createMiddleware<HonoEnv>(async (c, next) => {
 		// Allow all operations if the permissions include a wildcard "*"
 		if (permissions.includes("*")) {

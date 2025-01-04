@@ -1,9 +1,9 @@
-import { PermissionCode } from "../data/permissions";
+import { ExtendedPermissionCodeWithAll } from "@repo/data";
 
 export interface SidebarMenuChildItem {
 	label: string;
 	link: string;
-	allowedPermissions?: PermissionCode[];
+	allowedPermissions?: readonly ExtendedPermissionCodeWithAll[];
 }
 
 export interface SidebarMenuItem {
@@ -13,7 +13,7 @@ export interface SidebarMenuItem {
 	children?: SidebarMenuChildItem[];
 	link?: string;
 	color?: string;
-	allowedPermissions?: PermissionCode[];
+	allowedPermissions?: readonly ExtendedPermissionCodeWithAll[];
 }
 
 export interface SidebarMenuGroup {

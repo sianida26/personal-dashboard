@@ -2,16 +2,15 @@ import { zValidator } from "@hono/zod-validator";
 import { and, eq, isNull, ne, or } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
-import { z } from "zod";
 import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
 import { checkPassword } from "../../utils/passwordUtils";
 import { generateAccessToken } from "../../utils/authUtils";
 import HonoEnv from "../../types/HonoEnv";
-import { SpecificPermissionCode } from "../../data/permissions";
 import authInfo from "../../middlewares/authInfo";
 import { notFound, unauthorized } from "../../errors/DashboardError";
 import { loginSchema } from "@repo/validation";
+import { PermissionCode } from "@repo/data";
 
 const authRoutes = new Hono<HonoEnv>()
 	.post("/login", zValidator("json", loginSchema), async (c) => {
@@ -68,20 +67,18 @@ const authRoutes = new Hono<HonoEnv>()
 		});
 
 		// Collect all permissions the user has, both user-specific and role-specific
-		const permissions = new Set<SpecificPermissionCode>();
+		const permissions = new Set<PermissionCode>();
 
 		// Add user-specific permissions to the set
 		user.permissionsToUsers.forEach((userPermission) =>
-			permissions.add(
-				userPermission.permission.code as SpecificPermissionCode
-			)
+			permissions.add(userPermission.permission.code as PermissionCode)
 		);
 
 		// Add role-specific permissions to the set
 		user.rolesToUsers.forEach((userRole) =>
 			userRole.role.permissionsToRoles.forEach((rolePermission) =>
 				permissions.add(
-					rolePermission.permission.code as SpecificPermissionCode
+					rolePermission.permission.code as PermissionCode
 				)
 			)
 		);

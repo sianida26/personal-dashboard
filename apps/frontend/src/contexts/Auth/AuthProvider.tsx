@@ -41,7 +41,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		<AuthContext.Provider
 			value={{
 				user: userId
-					? { id: userId, name: userName!, permissions: permissions! }
+					? {
+							id: userId,
+							name: userName!,
+							permissions: permissions!,
+							roles: [],
+						}
 					: null,
 				accessToken,
 				saveAuthData,

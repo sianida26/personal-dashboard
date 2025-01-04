@@ -42,6 +42,9 @@ importers:
       '@paralleldrive/cuid2':
         specifier: ^2.2.2
         version: 2.2.2
+      '@repo/data':
+        specifier: workspace:*
+        version: link:../../packages/data
       '@repo/validation':
         specifier: workspace:*
         version: link:../../packages/validation
@@ -272,6 +275,15 @@ importers:
       vite:
         specifier: ^6.0.3
         version: 6.0.3(@types/node@22.10.2)(jiti@1.21.6)(sugarss@4.0.1(postcss@8.4.49))(tsx@4.19.2)(yaml@2.6.1)
+
+  packages/data:
+    devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      typescript:
+        specifier: latest
+        version: 5.7.2
 
   packages/eslint-config:
     devDependencies:

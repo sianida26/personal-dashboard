@@ -3,8 +3,8 @@ import HonoEnv from "../types/HonoEnv";
 import db from "../drizzle";
 import { users } from "../drizzle/schema/users";
 import { and, eq, isNull } from "drizzle-orm";
-import { RoleCode } from "../data/roles";
-import { SpecificPermissionCode } from "../data/permissions";
+import { RoleCode } from "../data/defaultRoles";
+import { PermissionCode } from "@repo/data";
 
 /**
  * Middleware to load and set authentication information for a user.
@@ -54,7 +54,7 @@ const authInfo = createMiddleware<HonoEnv>(async (c, next) => {
 
 		if (user) {
 			const roles = new Set<RoleCode>();
-			const permissions = new Set<SpecificPermissionCode>();
+			const permissions = new Set<PermissionCode>();
 
 			// Collect role-based permissions by iterating through each role
 			user.rolesToUsers.forEach((userRole) => {
@@ -62,7 +62,7 @@ const authInfo = createMiddleware<HonoEnv>(async (c, next) => {
 
 				userRole.role.permissionsToRoles.forEach((permissionRole) =>
 					permissions.add(
-						permissionRole.permission.code as SpecificPermissionCode
+						permissionRole.permission.code as PermissionCode
 					)
 				);
 			});
@@ -70,7 +70,7 @@ const authInfo = createMiddleware<HonoEnv>(async (c, next) => {
 			// Collect user-specific permissions
 			user.permissionsToUsers.forEach((userPermission) => {
 				permissions.add(
-					userPermission.permission.code as SpecificPermissionCode
+					userPermission.permission.code as PermissionCode
 				);
 			});
 

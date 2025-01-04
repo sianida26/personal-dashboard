@@ -1,5 +1,5 @@
 import { SpecificPermissionCode } from "../data/permissions";
-import { RoleCode } from "../data/roles";
+import { RoleCode } from "../data/defaultRoles";
 
 type HonoEnv = {
 	Variables: {
