@@ -11,106 +11,91 @@ import HonoEnv from "../../types/HonoEnv";
 import { SpecificPermissionCode } from "../../data/permissions";
 import authInfo from "../../middlewares/authInfo";
 import { notFound, unauthorized } from "../../errors/DashboardError";
+import { loginSchema } from "@repo/validation";
 
 const authRoutes = new Hono<HonoEnv>()
-	.post(
-		"/login",
-		zValidator(
-			"json",
-			z.object({
-				username: z.string(),
-				password: z.string(),
-			})
-		),
-		async (c) => {
-			const formData = c.req.valid("json");
+	.post("/login", zValidator("json", loginSchema), async (c) => {
+		const formData = c.req.valid("json");
 
-			// Query the database to find the user by username or email, only if the user is enabled and not deleted
-			const user = await db.query.users.findFirst({
-				where: and(
-					isNull(users.deletedAt),
-					eq(users.isEnabled, true),
-					or(
-						eq(users.username, formData.username),
-						and(
-							eq(users.email, formData.username),
-							ne(users.email, "")
-						)
-					)
-				),
-				with: {
-					permissionsToUsers: {
-						with: {
-							permission: true,
-						},
+		// Query the database to find the user by username or email, only if the user is enabled and not deleted
+		const user = await db.query.users.findFirst({
+			where: and(
+				isNull(users.deletedAt),
+				eq(users.isEnabled, true),
+				or(
+					eq(users.username, formData.username),
+					and(eq(users.email, formData.username), ne(users.email, ""))
+				)
+			),
+			with: {
+				permissionsToUsers: {
+					with: {
+						permission: true,
 					},
-					rolesToUsers: {
-						with: {
-							role: {
-								with: {
-									permissionsToRoles: {
-										with: {
-											permission: true,
-										},
+				},
+				rolesToUsers: {
+					with: {
+						role: {
+							with: {
+								permissionsToRoles: {
+									with: {
+										permission: true,
 									},
 								},
 							},
 						},
 					},
 				},
-			});
+			},
+		});
 
-			if (!user) {
-				throw new HTTPException(400, {
-					message: "Invalid username or password",
-				});
-			}
-
-			const isSuccess = await checkPassword(
-				formData.password,
-				user.password
-			);
-
-			if (!isSuccess) {
-				throw new HTTPException(400, {
-					message: "Invalid username or password",
-				});
-			}
-
-			const accessToken = await generateAccessToken({
-				uid: user.id,
-			});
-
-			// Collect all permissions the user has, both user-specific and role-specific
-			const permissions = new Set<SpecificPermissionCode>();
-
-			// Add user-specific permissions to the set
-			user.permissionsToUsers.forEach((userPermission) =>
-				permissions.add(
-					userPermission.permission.code as SpecificPermissionCode
-				)
-			);
-
-			// Add role-specific permissions to the set
-			user.rolesToUsers.forEach((userRole) =>
-				userRole.role.permissionsToRoles.forEach((rolePermission) =>
-					permissions.add(
-						rolePermission.permission.code as SpecificPermissionCode
-					)
-				)
-			);
-
-			return c.json({
-				accessToken,
-				user: {
-					id: user.id,
-					name: user.name,
-					permissions: Array.from(permissions),
-					roles: user.rolesToUsers.map((role) => role.role.name),
-				},
+		if (!user) {
+			throw new HTTPException(400, {
+				message: "Invalid username or password",
 			});
 		}
-	)
+
+		const isSuccess = await checkPassword(formData.password, user.password);
+
+		if (!isSuccess) {
+			throw new HTTPException(400, {
+				message: "Invalid username or password",
+			});
+		}
+
+		const accessToken = await generateAccessToken({
+			uid: user.id,
+		});
+
+		// Collect all permissions the user has, both user-specific and role-specific
+		const permissions = new Set<SpecificPermissionCode>();
+
+		// Add user-specific permissions to the set
+		user.permissionsToUsers.forEach((userPermission) =>
+			permissions.add(
+				userPermission.permission.code as SpecificPermissionCode
+			)
+		);
+
+		// Add role-specific permissions to the set
+		user.rolesToUsers.forEach((userRole) =>
+			userRole.role.permissionsToRoles.forEach((rolePermission) =>
+				permissions.add(
+					rolePermission.permission.code as SpecificPermissionCode
+				)
+			)
+		);
+
+		return c.json({
+			accessToken,
+			user: {
+				id: user.id,
+				name: user.name,
+				permissions: Array.from(permissions),
+				roles: user.rolesToUsers.map((role) => role.role.name),
+			},
+		});
+	})
 	.get("/my-profile", authInfo, async (c) => {
 		const currentUser = c.var.currentUser;
 
