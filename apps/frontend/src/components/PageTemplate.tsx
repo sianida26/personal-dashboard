@@ -1,67 +1,53 @@
-import { Link, Outlet } from "@tanstack/react-router";
 import React, { ReactNode, useState } from "react";
-import { TbPlus, TbSearch } from "react-icons/tb";
-import DashboardTable from "./DashboardTable";
+import { ClientRequestOptions } from "hono";
+import { ClientResponse } from "hono/client";
+import { PaginatedResponse } from "@repo/data/types";
+import { useQuery } from "@tanstack/react-query";
+import fetchRPC from "@/utils/fetchRPC";
 import {
 	ColumnDef,
+	ColumnHelper,
+	createColumnHelper,
 	getCoreRowModel,
 	getSortedRowModel,
 	SortingState,
 	useReactTable,
 } from "@tanstack/react-table";
-import {
-	QueryKey,
-	UseQueryOptions,
-	keepPreviousData,
-	useQuery,
-} from "@tanstack/react-query";
 import { useDebouncedCallback } from "@mantine/hooks";
-import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { TbPlus, TbSearch } from "react-icons/tb";
+import { Button } from "./ui/button";
+import { Link, Outlet } from "@tanstack/react-router";
+import DashboardTable from "./DashboardTable";
 import { Select } from "./ui/select";
 import {
 	Pagination,
-	PaginationContent,
-	PaginationItem,
-	PaginationPrevious,
-	PaginationNext,
-	PaginationEllipsis,
 	PaginationButton,
+	PaginationContent,
+	PaginationEllipsis,
+	PaginationItem,
+	PaginationNext,
+	PaginationPrevious,
 } from "./ui/pagination";
 
-type PaginatedResponse<T extends Record<string, unknown>> = {
-	data: Array<T>;
-	_metadata: {
-		currentPage: number;
-		totalPages: number;
-		perPage: number;
-		totalItems: number;
-	};
-};
+type HonoEndpoint<T extends Record<string, unknown>> = (
+	args: Record<string, unknown> & {
+		query: {
+			page: string;
+			limit: string;
+			q?: string;
+		};
+	},
+	options?: ClientRequestOptions
+) => Promise<ClientResponse<PaginatedResponse<T>>>;
 
-//ref: https://x.com/TkDodo/status/1491451513264574501
-type Props<
-	TQueryKey extends QueryKey,
-	TQueryFnData extends Record<string, unknown>,
-	TError,
-	TData extends Record<string, unknown> = TQueryFnData,
-> = {
+type Props<T extends Record<string, unknown>> = {
 	title: string;
 	createButton?: string | true | React.ReactNode;
 	modals?: React.ReactNode[];
 	searchBar?: boolean | React.ReactNode;
-	queryOptions: (
-		page: number,
-		limit: number,
-		q?: string
-	) => UseQueryOptions<
-		PaginatedResponse<TQueryFnData>,
-		TError,
-		PaginatedResponse<TData>,
-		TQueryKey
-	>;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	columnDefs: ColumnDef<any>[];
+	endpoint: HonoEndpoint<T>;
+	columnDefs: (columnHelper: ColumnHelper<T>) => ColumnDef<any, any>[];
 };
 
 /**
@@ -72,7 +58,7 @@ type Props<
  */
 const createCreateButton = (
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	property: Props<any, any, any>["createButton"] = true
+	property: Props<any>["createButton"] = true
 ) => {
 	if (property === true) {
 		return (
@@ -93,45 +79,42 @@ const createCreateButton = (
 	}
 };
 
-/**
- * PageTemplate component for displaying a paginated table with search and filter functionality.
- 
- * @param props - The properties object.
- * @returns The rendered PageTemplate component.
- */
-export default function PageTemplate<
-	TQueryKey extends QueryKey,
-	TQueryFnData extends Record<string, unknown>,
-	TError,
-	TData extends Record<string, unknown> = TQueryFnData,
->(props: Props<TQueryKey, TQueryFnData, TError, TData>) {
+const getColumnHelper = <T extends Record<string, unknown>>() =>
+	createColumnHelper<T>();
+
+export default function PageTemplateV2<T extends Record<string, unknown>>(
+	props: Props<T>
+) {
+	const withSearchBar = Boolean(props.searchBar ?? true);
+	const siblings = 1;
+	const boundaries = 1;
+
+	const [sorting, setSorting] = React.useState<SortingState>([]);
 	const [filterOptions, setFilterOptions] = useState({
 		page: 0,
 		limit: 10,
 		q: "",
 	});
 
-	const [sorting, setSorting] = React.useState<SortingState>([]);
-
-	const withSearchBar = Boolean(props.searchBar ?? true);
-
-	const siblings = 1;
-	const boundaries = 1;
+	const columnHelper = React.useMemo(() => getColumnHelper<T>(), []);
 
 	const query = useQuery({
-		...(typeof props.queryOptions === "function"
-			? props.queryOptions(
-					filterOptions.page,
-					filterOptions.limit,
-					filterOptions.q
-				)
-			: props.queryOptions),
-		placeholderData: keepPreviousData,
+		queryKey: [props.endpoint.name, props.endpoint.arguments],
+		queryFn: () =>
+			fetchRPC(
+				props.endpoint({
+					query: {
+						limit: String(filterOptions.limit),
+						page: String(filterOptions.page),
+						q: filterOptions.q,
+					},
+				})
+			),
 	});
 
 	const table = useReactTable({
 		data: query.data?.data ?? [],
-		columns: props.columnDefs,
+		columns: props.columnDefs(columnHelper),
 		getCoreRowModel: getCoreRowModel(),
 		defaultColumn: {
 			cell: (props) => <p>{props.getValue() as ReactNode}</p>,
