@@ -6,7 +6,7 @@ import createInputComponents from "@/utils/createInputComponents";
 import fetchRPC from "@/utils/fetchRPC";
 import generateRandomPassword from "@/utils/generateRandomPassword";
 import { useForm } from "@mantine/form";
-import { useQuery } from "@tanstack/react-query";
+import { useIsMutating, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { TbRefresh } from "react-icons/tb";
 
@@ -16,6 +16,9 @@ export const Route = createFileRoute("/_dashboardLayout/dev/create")({
 
 function RouteComponent() {
 	const navigate = useNavigate();
+	const isMutating = useIsMutating({
+		mutationKey: ["create-user"],
+	});
 
 	const form = useForm({
 		initialValues: {
@@ -31,7 +34,7 @@ function RouteComponent() {
 
 	const { data: roles } = useQuery({
 		queryKey: ["roles"],
-		queryFn: async () => fetchRPC(client.roles.$get()),
+		queryFn: () => fetchRPC(client.roles.$get()),
 	});
 
 	return (
@@ -40,15 +43,16 @@ function RouteComponent() {
 			onSubmit={() =>
 				fetchRPC(
 					client.users.$post({
-						form: form.getValues(),
+						json: form.getValues(),
 					})
 				)
 			}
 			title="Create new User"
 			onClose={() => navigate({ to: ".." })}
+			mutationKey={["create-user"]}
 		>
 			{createInputComponents({
-				// disableAll: mutation.isPending,
+				disableAll: Boolean(isMutating),
 				inputs: [
 					{
 						type: "text",
@@ -104,13 +108,14 @@ function RouteComponent() {
 						type: "multi-select",
 						label: "Roles",
 						selectedOptions: form.values.roles,
-						onChange: (values) => console.log(values),
+						onChange: (values) =>
+							form.setFieldValue("roles", values),
 						options:
 							roles?.map((role) => ({
 								value: role.id,
 								label: role.name,
 							})) ?? [],
-						// error: form.errors.roles,
+						error: form.errors.roles,
 					},
 				],
 			})}

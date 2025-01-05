@@ -10,7 +10,7 @@ import {
 import { Command as CommandPrimitive } from "cmdk";
 import { LuCheck, LuChevronsUpDown } from "react-icons/lu";
 import { cn } from "@/lib/utils";
-import { KeyboardEvent, useCallback, useRef, useState } from "react";
+import React, { KeyboardEvent, useCallback, useRef, useState } from "react";
 import { Label } from "./label";
 
 export type BaseFieldProps = {
@@ -19,6 +19,7 @@ export type BaseFieldProps = {
 	placeholder?: string;
 	disabled?: boolean;
 	readOnly?: boolean;
+	error?: React.ReactNode;
 };
 
 type Option = { label: string; value: string };
@@ -40,6 +41,7 @@ export function MultiSelect({
 	allowCreate,
 	label,
 	readOnly,
+	error,
 }: MultiSelectProps) {
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [open, setOpen] = useState(false);
@@ -55,19 +57,22 @@ export function MultiSelect({
 		[selectedOptions, onChange]
 	); // Add selected and onChange as dependencies
 
-	const handleKeyDown = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
-		const input = inputRef.current;
-		if (input) {
-			if (e.key === "Delete" || e.key === "Backspace") {
-				if (input.value === "") {
-					selectedOptions = [...selectedOptions.slice(0, -1)];
+	const handleKeyDown = useCallback(
+		(e: KeyboardEvent<HTMLDivElement>) => {
+			const input = inputRef.current;
+			if (input) {
+				if (e.key === "Delete" || e.key === "Backspace") {
+					if (input.value === "") {
+						onChange([...selectedOptions.slice(0, -1)]);
+					}
+				}
+				if (e.key === "Escape") {
+					input.blur();
 				}
 			}
-			if (e.key === "Escape") {
-				input.blur();
-			}
-		}
-	}, []);
+		},
+		[selectedOptions, onChange]
+	);
 
 	const handleSelect = useCallback(
 		(value: string) => {
@@ -98,7 +103,12 @@ export function MultiSelect({
 			)}
 		>
 			{typeof label === "string" ? <Label>{label}</Label> : label}
-			<div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-1 focus-within:ring-ring focus-within:ring-offset-2 relative">
+			<div
+				className={cn(
+					"group rounded-md px-3 py-2 text-sm ring-offset-background focus-within:ring-1 focus-within:ring-ring focus-within:ring-offset-2 relative bg-background",
+					error ? "border border-destructive" : "border border-input"
+				)}
+			>
 				<div className="absolute right-2 top-1/2 -translate-y-1/2">
 					<LuChevronsUpDown className="text-muted-foreground" />
 				</div>
@@ -163,7 +173,9 @@ export function MultiSelect({
 					/>
 				</div>
 			</div>
-			<div className="relative mt-2 bg-red-500">
+			{/* Render the error message if there is an error */}
+			{error && <p className="mt-1 text-sm text-destructive">{error}</p>}
+			<div className="relative">
 				<CommandList>
 					{open && options.length > 0 ? (
 						<div className="absolute top-0 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">

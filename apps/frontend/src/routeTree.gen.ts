@@ -19,6 +19,7 @@ import { Route as DashboardLayoutDevImport } from './routes/_dashboardLayout/dev
 import { Route as DashboardLayoutTimetableIndexImport } from './routes/_dashboardLayout/timetable/index'
 import { Route as DashboardLayoutDashboardIndexImport } from './routes/_dashboardLayout/dashboard/index'
 import { Route as DashboardLayoutUsersCreateImport } from './routes/_dashboardLayout/users/create'
+import { Route as DashboardLayoutDevMultiSelectImport } from './routes/_dashboardLayout/dev/multi-select'
 import { Route as DashboardLayoutDevCreateImport } from './routes/_dashboardLayout/dev/create'
 import { Route as DashboardLayoutUsersEditUserIdImport } from './routes/_dashboardLayout/users/edit.$userId'
 import { Route as DashboardLayoutUsersDetailUserIdImport } from './routes/_dashboardLayout/users/detail.$userId'
@@ -90,6 +91,13 @@ const DashboardLayoutUsersCreateRoute = DashboardLayoutUsersCreateImport.update(
     getParentRoute: () => DashboardLayoutUsersRoute,
   } as any,
 )
+
+const DashboardLayoutDevMultiSelectRoute =
+  DashboardLayoutDevMultiSelectImport.update({
+    id: '/multi-select',
+    path: '/multi-select',
+    getParentRoute: () => DashboardLayoutDevRoute,
+  } as any)
 
 const DashboardLayoutDevCreateRoute = DashboardLayoutDevCreateImport.update({
   id: '/create',
@@ -171,6 +179,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutDevCreateImport
       parentRoute: typeof DashboardLayoutDevImport
     }
+    '/_dashboardLayout/dev/multi-select': {
+      id: '/_dashboardLayout/dev/multi-select'
+      path: '/multi-select'
+      fullPath: '/dev/multi-select'
+      preLoaderRoute: typeof DashboardLayoutDevMultiSelectImport
+      parentRoute: typeof DashboardLayoutDevImport
+    }
     '/_dashboardLayout/users/create': {
       id: '/_dashboardLayout/users/create'
       path: '/create'
@@ -220,10 +235,12 @@ declare module '@tanstack/react-router' {
 
 interface DashboardLayoutDevRouteChildren {
   DashboardLayoutDevCreateRoute: typeof DashboardLayoutDevCreateRoute
+  DashboardLayoutDevMultiSelectRoute: typeof DashboardLayoutDevMultiSelectRoute
 }
 
 const DashboardLayoutDevRouteChildren: DashboardLayoutDevRouteChildren = {
   DashboardLayoutDevCreateRoute: DashboardLayoutDevCreateRoute,
+  DashboardLayoutDevMultiSelectRoute: DashboardLayoutDevMultiSelectRoute,
 }
 
 const DashboardLayoutDevRouteWithChildren =
@@ -272,6 +289,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginIndexLazyRoute
   '/logout': typeof LogoutIndexLazyRoute
   '/dev/create': typeof DashboardLayoutDevCreateRoute
+  '/dev/multi-select': typeof DashboardLayoutDevMultiSelectRoute
   '/users/create': typeof DashboardLayoutUsersCreateRoute
   '/dashboard': typeof DashboardLayoutDashboardIndexRoute
   '/timetable': typeof DashboardLayoutTimetableIndexRoute
@@ -288,6 +306,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginIndexLazyRoute
   '/logout': typeof LogoutIndexLazyRoute
   '/dev/create': typeof DashboardLayoutDevCreateRoute
+  '/dev/multi-select': typeof DashboardLayoutDevMultiSelectRoute
   '/users/create': typeof DashboardLayoutUsersCreateRoute
   '/dashboard': typeof DashboardLayoutDashboardIndexRoute
   '/timetable': typeof DashboardLayoutTimetableIndexRoute
@@ -305,6 +324,7 @@ export interface FileRoutesById {
   '/login/': typeof LoginIndexLazyRoute
   '/logout/': typeof LogoutIndexLazyRoute
   '/_dashboardLayout/dev/create': typeof DashboardLayoutDevCreateRoute
+  '/_dashboardLayout/dev/multi-select': typeof DashboardLayoutDevMultiSelectRoute
   '/_dashboardLayout/users/create': typeof DashboardLayoutUsersCreateRoute
   '/_dashboardLayout/dashboard/': typeof DashboardLayoutDashboardIndexRoute
   '/_dashboardLayout/timetable/': typeof DashboardLayoutTimetableIndexRoute
@@ -323,6 +343,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/logout'
     | '/dev/create'
+    | '/dev/multi-select'
     | '/users/create'
     | '/dashboard'
     | '/timetable'
@@ -338,6 +359,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/logout'
     | '/dev/create'
+    | '/dev/multi-select'
     | '/users/create'
     | '/dashboard'
     | '/timetable'
@@ -353,6 +375,7 @@ export interface FileRouteTypes {
     | '/login/'
     | '/logout/'
     | '/_dashboardLayout/dev/create'
+    | '/_dashboardLayout/dev/multi-select'
     | '/_dashboardLayout/users/create'
     | '/_dashboardLayout/dashboard/'
     | '/_dashboardLayout/timetable/'
@@ -408,7 +431,8 @@ export const routeTree = rootRoute
       "filePath": "_dashboardLayout/dev.tsx",
       "parent": "/_dashboardLayout",
       "children": [
-        "/_dashboardLayout/dev/create"
+        "/_dashboardLayout/dev/create",
+        "/_dashboardLayout/dev/multi-select"
       ]
     },
     "/_dashboardLayout/users": {
@@ -429,6 +453,10 @@ export const routeTree = rootRoute
     },
     "/_dashboardLayout/dev/create": {
       "filePath": "_dashboardLayout/dev/create.tsx",
+      "parent": "/_dashboardLayout/dev"
+    },
+    "/_dashboardLayout/dev/multi-select": {
+      "filePath": "_dashboardLayout/dev/multi-select.tsx",
       "parent": "/_dashboardLayout/dev"
     },
     "/_dashboardLayout/users/create": {
