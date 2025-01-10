@@ -9,6 +9,7 @@ import {
 import React, { useMemo } from "react";
 import { Button } from "./ui/button";
 import { TbDeviceFloppy } from "react-icons/tb";
+import { cn } from "@/lib/utils";
 
 export type FormTemplateProps<TForm> = {
 	children: React.ReactNode;
@@ -24,6 +25,7 @@ export type FormTemplateProps<TForm> = {
 		submit: boolean | string | React.ReactNode;
 		cancel: boolean | string | React.ReactNode;
 	}>;
+	className?: string;
 };
 
 export default function FormTemplate<TForm>(props: FormTemplateProps<TForm>) {
@@ -107,7 +109,10 @@ export default function FormTemplate<TForm>(props: FormTemplateProps<TForm>) {
 	};
 
 	return (
-		<form onSubmit={props.form.onSubmit(handleSubmit)}>
+		<form
+			onSubmit={props.form.onSubmit(handleSubmit)}
+			className={cn("flex flex-col gap-2", props.className)}
+		>
 			{props.children}
 
 			{/* Buttons */}

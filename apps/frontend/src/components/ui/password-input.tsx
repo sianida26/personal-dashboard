@@ -4,25 +4,40 @@ import { cn } from "@/lib/utils";
 import { Input, InputProps } from "./input";
 import { TbEye, TbEyeClosed } from "react-icons/tb";
 
-export interface PasswordInputProps extends InputProps {}
+export interface PasswordInputProps extends InputProps {
+	isPasswordVisible?: boolean;
+	onPasswordVisibilityChange?: (isVisible: boolean) => void;
+}
 
 const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
-	({ className, id, ...props }, ref) => {
-		const [isPasswordVisible, setIsPasswordVisible] = React.useState(false);
+	(
+		{
+			className,
+			id,
+			isPasswordVisible: controlledVisibility,
+			onPasswordVisibilityChange,
+			...props
+		},
+		ref
+	) => {
+		const [internalVisibility, setInternalVisibility] =
+			React.useState(false);
+
+		const isPasswordVisible = controlledVisibility ?? internalVisibility;
 
 		const togglePasswordVisibility = () => {
-			setIsPasswordVisible((prev) => !prev);
+			const newValue = !isPasswordVisible;
+			setInternalVisibility(newValue);
+			onPasswordVisibilityChange?.(newValue);
 		};
 
 		return (
 			<div className="relative w-full">
 				<div className="relative">
 					<Input
+						type={isPasswordVisible ? "text" : "password"}
 						id={id}
-						className={cn(
-							"pr-10", // Extra padding for the eye icon
-							className
-						)}
+						className={cn("pr-10", className)}
 						rightSection={
 							<button
 								type="button"
@@ -36,9 +51,8 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
 								)}
 							</button>
 						}
-						ref={ref}
 						{...props}
-						type={isPasswordVisible ? "text" : "password"}
+						ref={ref}
 					/>
 				</div>
 			</div>

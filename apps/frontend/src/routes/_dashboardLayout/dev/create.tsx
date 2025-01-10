@@ -9,6 +9,9 @@ import { useForm } from "@mantine/form";
 import { useIsMutating, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { TbRefresh } from "react-icons/tb";
+import { userFormSchema } from "../../../../../../packages/validation/src/schemas/userSchema";
+import { z } from "zod";
+import { useState } from "react";
 
 export const Route = createFileRoute("/_dashboardLayout/dev/create")({
 	component: RouteComponent,
@@ -20,14 +23,17 @@ function RouteComponent() {
 		mutationKey: ["create-user"],
 	});
 
-	const form = useForm({
+	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+	type A = z.infer<typeof userFormSchema>;
+
+	const form = useForm<A>({
 		initialValues: {
-			id: "",
 			email: "",
 			name: "",
 			username: "",
-			photoProfileUrl: "",
 			password: "",
+			isEnabled: true,
 			roles: [] as string[],
 		},
 	});
@@ -43,24 +49,25 @@ function RouteComponent() {
 			onSubmit={() =>
 				fetchRPC(
 					client.users.$post({
-						json: form.getValues(),
+						json: {
+							name: form.values.name,
+							password: form.values.password,
+							username: form.values.username,
+							roles: form.values.roles,
+						},
 					})
 				)
 			}
 			title="Create new User"
 			onClose={() => navigate({ to: ".." })}
+			onSuccess={() => navigate({ to: ".." })}
+			successToastMessage="User have been created successfully"
 			mutationKey={["create-user"]}
+			invalidateQueries={["users"]}
 		>
 			{createInputComponents({
 				disableAll: Boolean(isMutating),
 				inputs: [
-					{
-						type: "text",
-						readOnly: true,
-						// variant: "filled",
-						...form.getInputProps("id"),
-						hidden: !form.values.id,
-					},
 					{
 						type: "text",
 						label: "Name",
@@ -79,12 +86,23 @@ function RouteComponent() {
 						...form.getInputProps("email"),
 					},
 					{
+						type: "checkbox",
+						label: "Enabled",
+						...form.getInputProps("isEnabled", {
+							type: "checkbox",
+						}),
+					},
+					{
 						type: "custom",
 						component: (
 							<div className="flex flex-col">
 								<PasswordInput
 									label="Password"
 									withAsterisk
+									isPasswordVisible={isPasswordVisible}
+									onPasswordVisibilityChange={
+										setIsPasswordVisible
+									}
 									{...form.getInputProps("password")}
 								/>
 								<Button
@@ -96,6 +114,7 @@ function RouteComponent() {
 											"password",
 											generateRandomPassword()
 										);
+										setIsPasswordVisible(true);
 									}}
 								>
 									<TbRefresh />
@@ -107,7 +126,7 @@ function RouteComponent() {
 					{
 						type: "multi-select",
 						label: "Roles",
-						selectedOptions: form.values.roles,
+						selectedOptions: form.values.roles ?? [],
 						onChange: (values) =>
 							form.setFieldValue("roles", values),
 						options:

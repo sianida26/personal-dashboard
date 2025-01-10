@@ -17,6 +17,7 @@ import {
 	userFormSchema,
 	userUpdateSchema,
 } from "@repo/validation";
+import DashboardError from "../../errors/DashboardError";
 
 const usersRoute = new Hono<HonoEnv>()
 	.use(authInfo)
@@ -145,34 +146,69 @@ const usersRoute = new Hono<HonoEnv>()
 	.post(
 		"/",
 		checkPermission("users.create"),
-		requestValidator("form", userFormSchema),
+		requestValidator("json", userFormSchema),
 		async (c) => {
-			const userData = c.req.valid("form");
+			const userData = c.req.valid("json");
 
-			const user = await db
-				.insert(users)
-				.values({
-					name: userData.name,
-					username: userData.username,
-					email: userData.email,
-					password: await hashPassword(userData.password),
-					isEnabled: userData.isEnabled.toLowerCase() === "true",
-				})
-				.returning();
+			//check for existing username
+			const sameUsername = await db.query.users.findFirst({
+				where: eq(users.username, userData.username),
+			});
 
-			if (userData.roles) {
-				const roles = JSON.parse(userData.roles) as string[];
-				console.log(roles);
-
-				if (roles.length) {
-					await db.insert(rolesToUsers).values(
-						roles.map((role) => ({
-							userId: user[0].id,
-							roleId: role,
-						}))
-					);
-				}
+			if (sameUsername) {
+				throw new DashboardError({
+					errorCode: "INVALID_FORM_DATA",
+					message: "Username is already exists",
+					formErrors: {
+						username: "This username is already exists",
+					},
+					severity: "LOW",
+					statusCode: 422,
+				});
 			}
+
+			if (userData.email) {
+				const sameEmail = await db.query.users.findFirst({
+					where: eq(users.email, userData.email),
+				});
+
+				if (sameEmail)
+					throw new DashboardError({
+						errorCode: "INVALID_FORM_DATA",
+						message: "Email is already exists",
+						formErrors: {
+							username: "This email is already exists",
+						},
+						severity: "LOW",
+						statusCode: 422,
+					});
+			}
+
+			await db.transaction(async (trx) => {
+				const user = await trx
+					.insert(users)
+					.values({
+						name: userData.name,
+						username: userData.username,
+						email: userData.email,
+						password: await hashPassword(userData.password),
+						isEnabled: userData.isEnabled,
+					})
+					.returning();
+
+				if (userData.roles) {
+					const roles = userData.roles;
+
+					if (roles && roles.length) {
+						await trx.insert(rolesToUsers).values(
+							roles.map((role) => ({
+								userId: user[0].id,
+								roleId: role,
+							}))
+						);
+					}
+				}
+			});
 
 			return c.json(
 				{
@@ -207,7 +243,7 @@ const usersRoute = new Hono<HonoEnv>()
 						? { password: await hashPassword(userData.password) }
 						: {}),
 					updatedAt: new Date(),
-					isEnabled: userData.isEnabled.toLowerCase() === "true",
+					isEnabled: userData.isEnabled,
 				})
 				.where(eq(users.id, userId));
 

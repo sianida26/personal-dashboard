@@ -48,6 +48,7 @@ type Props<T extends Record<string, unknown>> = {
 	searchBar?: boolean | React.ReactNode;
 	endpoint: HonoEndpoint<T>;
 	columnDefs: (columnHelper: ColumnHelper<T>) => ColumnDef<any, any>[];
+	queryKey?: any[];
 };
 
 /**
@@ -99,7 +100,7 @@ export default function PageTemplateV2<T extends Record<string, unknown>>(
 	const columnHelper = React.useMemo(() => getColumnHelper<T>(), []);
 
 	const query = useQuery({
-		queryKey: [props.endpoint.name, props.endpoint.arguments],
+		queryKey: props.queryKey ?? [props.endpoint.name, filterOptions],
 		queryFn: () =>
 			fetchRPC(
 				props.endpoint({
