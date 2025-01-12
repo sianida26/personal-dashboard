@@ -223,10 +223,10 @@ const usersRoute = new Hono<HonoEnv>()
 	.patch(
 		"/:id",
 		checkPermission("users.update"),
-		requestValidator("form", userUpdateSchema),
+		requestValidator("json", userUpdateSchema),
 		async (c) => {
 			const userId = c.req.param("id");
-			const userData = c.req.valid("form");
+			const userData = c.req.valid("json");
 
 			const user = await db
 				.select()

@@ -10,22 +10,41 @@ import { useIsMutating, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { TbRefresh } from "react-icons/tb";
 import { z } from "zod";
-import { useState } from "react";
-import { userFormSchema } from "@repo/validation";
+import { useEffect, useState } from "react";
+import { userUpdateSchema } from "@repo/validation";
 
-export const Route = createFileRoute("/_dashboardLayout/dev/create")({
+export const Route = createFileRoute("/_dashboardLayout/dev/edit/$id")({
 	component: RouteComponent,
 });
 
 function RouteComponent() {
 	const navigate = useNavigate();
 	const isMutating = useIsMutating({
-		mutationKey: ["create-user"],
+		mutationKey: ["edit-user"],
 	});
+	const { id } = Route.useParams();
 
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-	const form = useForm<z.infer<typeof userFormSchema>>({
+	const detailEndpoint = client.users[":id"].$get;
+
+	const { data: userData } = useQuery({
+		queryKey: ["users", { id }],
+		queryFn: () => fetchRPC(detailEndpoint({ param: { id }, query: {} })),
+	});
+
+	useEffect(() => {
+		userData &&
+			form.setValues({
+				email: userData.email ?? "",
+				isEnabled: userData.isEnabled ?? false,
+				name: userData.name,
+				roles: userData.roles.map((role) => role.id),
+				username: userData.username,
+			});
+	}, [userData]);
+
+	const form = useForm<z.infer<typeof userUpdateSchema>>({
 		initialValues: {
 			email: "",
 			name: "",
@@ -46,19 +65,22 @@ function RouteComponent() {
 			form={form}
 			onSubmit={() =>
 				fetchRPC(
-					client.users.$post({
+					client.users[":id"].$patch({
+						param: { id },
 						json: {
 							name: form.values.name,
 							password: form.values.password,
 							username: form.values.username,
+							email: form.values.email,
+							isEnabled: form.values.isEnabled,
 							roles: form.values.roles,
 						},
 					})
 				)
 			}
-			title="Create new User"
-			onClose={() => navigate({ to: ".." })}
-			onSuccess={() => navigate({ to: ".." })}
+			title="Edit User"
+			onClose={() => navigate({ to: "/dev" })}
+			onSuccess={() => navigate({ to: "/dev" })}
 			successToastMessage="User have been created successfully"
 			mutationKey={["create-user"]}
 			invalidateQueries={["users"]}
@@ -96,7 +118,6 @@ function RouteComponent() {
 							<div className="flex flex-col">
 								<PasswordInput
 									label="Password"
-									withAsterisk
 									isPasswordVisible={isPasswordVisible}
 									onPasswordVisibilityChange={
 										setIsPasswordVisible

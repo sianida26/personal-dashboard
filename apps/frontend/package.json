@@ -51,7 +51,8 @@
 		"tailwindcss-animate": "^1.0.7",
 		"uuid": "^11.0.3",
 		"zod": "^3.24.1",
-		"@repo/data": "workspace:*"
+		"@repo/data": "workspace:*",
+		"@repo/validation": "workspace:*"
 	},
 	"devDependencies": {
 		"@tanstack/eslint-plugin-query": "^5.62.1",

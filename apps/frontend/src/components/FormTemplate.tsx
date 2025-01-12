@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 export type FormTemplateProps<TForm> = {
 	children: React.ReactNode;
 	form: UseFormReturnType<TForm>;
-	onSubmit: Function;
+	onSubmit?: Function;
 	onSuccess?: Function;
 	onSettled?: Function;
 	onCancel?: Function;
@@ -36,7 +36,7 @@ export default function FormTemplate<TForm>(props: FormTemplateProps<TForm>) {
 	const mutation = useMutation({
 		mutationKey: props.mutationKey,
 		mutationFn: async () => {
-			return await props.onSubmit();
+			return await props.onSubmit?.();
 		},
 		onError: (error: unknown) => {
 			if (error instanceof FormResponseError) {

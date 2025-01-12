@@ -28,7 +28,7 @@ export type MultiSelectProps = {
 	options: Option[];
 	selectedOptions: Option["value"][];
 	allowCreate?: boolean;
-	onChange: (options: Option["value"][]) => void;
+	onChange?: (options: Option["value"][]) => void;
 	onValueChange?: (value: string) => void;
 } & BaseFieldProps;
 
@@ -52,7 +52,7 @@ export function MultiSelect({
 			const _selectedOptions = [
 				...selectedOptions.filter((s) => s !== option.value),
 			];
-			onChange(_selectedOptions);
+			onChange?.(_selectedOptions);
 		},
 		[selectedOptions, onChange]
 	); // Add selected and onChange as dependencies
@@ -63,7 +63,7 @@ export function MultiSelect({
 			if (input) {
 				if (e.key === "Delete" || e.key === "Backspace") {
 					if (input.value === "") {
-						onChange([...selectedOptions.slice(0, -1)]);
+						onChange?.([...selectedOptions.slice(0, -1)]);
 					}
 				}
 				if (e.key === "Escape") {
@@ -89,7 +89,7 @@ export function MultiSelect({
 				_selectedOptions = [...selectedOptions, newOption.value];
 			}
 			setInputValue("");
-			onChange(_selectedOptions);
+			onChange?.(_selectedOptions);
 		},
 		[selectedOptions, onChange]
 	);
