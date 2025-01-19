@@ -49,6 +49,9 @@ function RouteComponent() {
 			form={form}
 			title={"User Detail"}
 			onClose={() => navigate({ to: "/dev" })}
+			buttons={{
+				submit: false,
+			}}
 		>
 			{createInputComponents({
 				readonlyAll: true,

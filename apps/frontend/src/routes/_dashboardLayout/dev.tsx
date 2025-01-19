@@ -1,20 +1,23 @@
 import PageTemplateV2 from '@/components/PageTemplate'
 import { Button } from '@/components/ui/button'
 import client from '@/honoClient'
-import createActionButtons from '@/utils/createActionButton'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { TbEye, TbPencil, TbTrash } from 'react-icons/tb'
+import { usePermissions } from "@/hooks/useAuth";
+import createActionButtons from "@/utils/createActionButton";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { TbEye, TbPencil, TbTrash } from "react-icons/tb";
 
-export const Route = createFileRoute('/_dashboardLayout/dev')({
-  component: RouteComponent,
-})
+export const Route = createFileRoute("/_dashboardLayout/dev")({
+	component: RouteComponent,
+});
 
 // TODO: Make this page inacessible
 
 function RouteComponent() {
-  const navigate = useNavigate()
+	const navigate = useNavigate();
 
-  return (
+	usePermissions("dev-routes");
+
+	return (
 		<PageTemplateV2
 			endpoint={client.users.$get}
 			title="aaa"
@@ -23,6 +26,7 @@ function RouteComponent() {
 				helper.display({
 					header: "#",
 					cell: (props) => props.row.index + 1,
+					size: 1,
 				}),
 				helper.accessor("name", {
 					cell: (info) => info.getValue(),
@@ -80,9 +84,9 @@ function RouteComponent() {
 									permission: true,
 									action: () =>
 										navigate({
-											to: "/users/delete/$userId",
+											to: "/dev/delete/$id",
 											params: {
-												userId: props.row.original.id,
+												id: props.row.original.id,
 											},
 										}),
 									variant: "outline",
@@ -96,5 +100,5 @@ function RouteComponent() {
 				}),
 			]}
 		/>
-  );
+	);
 }
