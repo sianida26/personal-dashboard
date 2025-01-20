@@ -1,4 +1,4 @@
-import { and, eq, ilike, isNull, or, sql } from "drizzle-orm";
+import { and, desc, eq, ilike, isNull, or, sql } from "drizzle-orm";
 import { Hono } from "hono";
 
 import { z } from "zod";
@@ -65,6 +65,7 @@ const usersRoute = new Hono<HonoEnv>()
 							: undefined
 					)
 				)
+				.orderBy(desc(users.createdAt))
 				.offset(page * limit)
 				.limit(limit);
 
