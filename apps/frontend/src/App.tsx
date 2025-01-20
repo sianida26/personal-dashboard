@@ -6,7 +6,13 @@ import { routeTree } from "./routeTree.gen";
 import { AuthProvider } from "./contexts/Auth/AuthProvider";
 import { NotificationProvider } from "./contexts/Notification/NotificationProvider";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+	defaultOptions: {
+		queries: {
+			staleTime: 0,
+		},
+	},
+});
 
 const router = createRouter({
 	routeTree,
