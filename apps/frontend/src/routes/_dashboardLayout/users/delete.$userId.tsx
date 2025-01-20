@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { deleteUser } from "@/modules/usersManagement/queries/userQueries";
 
 export const Route = createFileRoute("/_dashboardLayout/users/delete/$userId")({
 	component: UserDeleteModal,
@@ -46,7 +45,14 @@ export default function UserDeleteModal() {
 	const mutation = useMutation({
 		mutationKey: ["deleteUserMutation"],
 		mutationFn: async ({ id }: { id: string }) => {
-			return await deleteUser(id);
+			return await fetchRPC(
+				client.users[":id"].$delete({
+					param: {
+						id,
+					},
+					form: {},
+				})
+			);
 		},
 		onError: (error: unknown) => {
 			if (error instanceof Error) {
@@ -109,40 +115,5 @@ export default function UserDeleteModal() {
 				</AlertDialogFooter>
 			</AlertDialogContent>
 		</AlertDialog>
-		// <AlertDialog
-		// 	opened={isModalOpen}
-		// 	onClose={() => navigate({ search: {} })}
-		// 	title={`Delete confirmation`}
-		// >
-		// 	<Text size="sm">
-		// 		Are you sure you want to delete user{" "}
-		// 		<Text span fw={700}>
-		// 			{userQuery.data?.name}
-		// 		</Text>
-		// 		? This action is irreversible.
-		// 	</Text>
-
-		// 	{/* {errorMessage && <Alert color="red">{errorMessage}</Alert>} */}
-		// 	{/* Buttons */}
-		// 	<Flex justify="flex-end" align="center" gap="lg" mt="lg">
-		// 		<Button
-		// 			variant="outline"
-		// 			onClick={() => navigate({ search: {} })}
-		// 			disabled={mutation.isPending}
-		// 		>
-		// 			Cancel
-		// 		</Button>
-		// 		<Button
-		// 			variant="subtle"
-		// 			// leftSection={<TbDeviceFloppy size={20} />}
-		// 			type="submit"
-		// 			color="red"
-		// 			loading={mutation.isPending}
-		// 			onClick={() => mutation.mutate({ id: userId })}
-		// 		>
-		// 			Delete User
-		// 		</Button>
-		// 	</Flex>
-		// </AlertDialog>
 	);
 }

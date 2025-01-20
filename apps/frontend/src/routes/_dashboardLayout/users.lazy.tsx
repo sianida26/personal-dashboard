@@ -1,21 +1,14 @@
-import { userQueryOptions } from "@/modules/usersManagement/queries/userQueries";
 import PageTemplate from "@/components/PageTemplate";
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
-// import UserFormModal from "@/modules/usersManagement/modals/UserFormModal";
-import ExtractQueryDataType from "@/types/ExtractQueryDataType";
-import { createColumnHelper } from "@tanstack/react-table";
 import createActionButtons from "@/utils/createActionButton";
 import { TbEye, TbPencil, TbTrash } from "react-icons/tb";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import client from "@/honoClient";
 
 export const Route = createLazyFileRoute("/_dashboardLayout/users")({
 	component: UsersPage,
 });
-
-type DataType = ExtractQueryDataType<typeof userQueryOptions>;
-
-const columnHelper = createColumnHelper<DataType>();
 
 export default function UsersPage() {
 	const navigate = useNavigate();
@@ -23,15 +16,16 @@ export default function UsersPage() {
 	return (
 		<PageTemplate
 			title="Users"
-			queryOptions={userQueryOptions}
-			columnDefs={[
-				columnHelper.display({
+			endpoint={client.users.$get}
+			queryKey={["users"]}
+			columnDefs={(helper) => [
+				helper.display({
 					header: "#",
 					cell: (props) => props.row.index + 1,
+					size: 1,
 				}),
-
-				columnHelper.display({
-					id: "Name",
+				helper.accessor("name", {
+					cell: (info) => info.getValue(),
 					header: ({ column }) => {
 						return (
 							<Button
@@ -46,29 +40,25 @@ export default function UsersPage() {
 							</Button>
 						);
 					},
-					cell: (props) => props.row.original.name,
 				}),
-
-				columnHelper.display({
+				helper.accessor("username", {
+					cell: (info) => info.getValue(),
 					header: "Username",
-					cell: (props) => props.row.original.username,
 				}),
-
-				columnHelper.display({
-					header: "Status",
-					cell: (props) =>
-						props.row.original.isEnabled ? (
-							<Badge className="bg-green-500 hover:bg-green-500">
+				helper.accessor("isEnabled", {
+					cell: (info) =>
+						info.getValue() ? (
+							<Badge className="text-green-500 bg-green-100">
 								Active
 							</Badge>
 						) : (
-							<Badge className="bg-gray-500 hover:bg-gray-500">
+							<Badge className="text-gray-500 bg-gray-100">
 								Inactive
 							</Badge>
 						),
+					header: "Status",
 				}),
-
-				columnHelper.display({
+				helper.display({
 					header: "Actions",
 					cell: (props) => (
 						<div className="flex gap-2">
@@ -94,9 +84,9 @@ export default function UsersPage() {
 									permission: true,
 									action: () =>
 										navigate({
-											to: "/users/delete/$userId",
+											to: "/dev/delete/$id",
 											params: {
-												userId: props.row.original.id,
+												id: props.row.original.id,
 											},
 										}),
 									variant: "outline",
