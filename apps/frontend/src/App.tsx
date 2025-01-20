@@ -16,7 +16,7 @@ const queryClient = new QueryClient({
 
 const router = createRouter({
 	routeTree,
-	context: { queryClient: queryClient, pageTitle: "" },
+	context: { queryClient, pageTitle: "" },
 	defaultPreloadStaleTime: 0,
 });
 
