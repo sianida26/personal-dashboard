@@ -7,7 +7,10 @@ import {
 	DotsHorizontalIcon,
 } from "@radix-ui/react-icons";
 
-const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
+const NativePagination = ({
+	className,
+	...props
+}: React.ComponentProps<"nav">) => (
 	<nav
 		role="navigation"
 		aria-label="pagination"
@@ -15,7 +18,7 @@ const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
 		{...props}
 	/>
 );
-Pagination.displayName = "Pagination";
+NativePagination.displayName = "Pagination";
 
 const PaginationContent = React.forwardRef<
 	HTMLUListElement,
@@ -134,8 +137,102 @@ const PaginationEllipsis = ({
 );
 PaginationEllipsis.displayName = "PaginationEllipsis";
 
+export type PaginationProps = {
+	boundaries?: number;
+	className?: string;
+	onChange?: (value: number) => void;
+	siblings?: number;
+	total: number;
+	value?: number;
+};
+
+const Pagination = ({
+	boundaries = 1,
+	className,
+	onChange,
+	siblings = 1,
+	total,
+	value = 1,
+}: PaginationProps) => {
+	const getPageNumbers = () => {
+		// If total pages is small, just show all pages
+		if (total <= boundaries * 2 + siblings * 2 + 1) {
+			return Array.from({ length: total }, (_, i) => i + 1);
+		}
+
+		const pages: (number | "dots")[] = [];
+
+		const rightBoundary = total - boundaries + 1;
+		const leftSibling = Math.max(value - siblings, boundaries + 1);
+		const rightSibling = Math.min(value + siblings, rightBoundary - 1);
+
+		// Add first boundaries
+		for (let i = 1; i <= boundaries; i++) {
+			pages.push(i);
+		}
+
+		// Add left dots if needed
+		if (leftSibling > boundaries + 1) {
+			pages.push("dots");
+		}
+
+		// Add siblings and current page
+		for (let i = leftSibling; i <= rightSibling; i++) {
+			if (i > boundaries && i < rightBoundary) {
+				pages.push(i);
+			}
+		}
+
+		// Add right dots if needed
+		if (rightSibling < rightBoundary - 1) {
+			pages.push("dots");
+		}
+
+		// Add last boundaries
+		for (let i = rightBoundary; i <= total; i++) {
+			pages.push(i);
+		}
+
+		return pages;
+	};
+
+	return (
+		<NativePagination className={className}>
+			<PaginationContent>
+				<PaginationItem>
+					<PaginationPrevious
+						onClick={() => onChange?.(Math.max(1, value - 1))}
+						disabled={value <= 1}
+					/>
+				</PaginationItem>
+				{getPageNumbers().map((page, index) => (
+					<PaginationItem key={index}>
+						{page === "dots" ? (
+							<PaginationEllipsis />
+						) : (
+							<PaginationButton
+								isActive={page === value}
+								onClick={() => onChange?.(page)}
+							>
+								{page}
+							</PaginationButton>
+						)}
+					</PaginationItem>
+				))}
+				<PaginationItem>
+					<PaginationNext
+						onClick={() => onChange?.(Math.min(total, value + 1))}
+						disabled={value >= total}
+					/>
+				</PaginationItem>
+			</PaginationContent>
+		</NativePagination>
+	);
+};
+
 export {
 	Pagination,
+	NativePagination,
 	PaginationContent,
 	PaginationLink,
 	PaginationItem,

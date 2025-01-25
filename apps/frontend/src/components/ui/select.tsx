@@ -172,7 +172,6 @@ const Select = ({ ...props }: SelectProps) => {
 		<div>
 			<Label>{props.label}</Label>
 			<NativeSelect
-				value={props.value}
 				open={props.readOnly ? false : undefined}
 				disabled={props.disabled}
 				defaultValue={props.defaultValue}

@@ -20,15 +20,7 @@ import { Button } from "./ui/button";
 import { Link, Outlet } from "@tanstack/react-router";
 import DashboardTable from "./DashboardTable";
 import { Select } from "./ui/select";
-import {
-	Pagination,
-	PaginationButton,
-	PaginationContent,
-	PaginationEllipsis,
-	PaginationItem,
-	PaginationNext,
-	PaginationPrevious,
-} from "./ui/pagination";
+import { Pagination } from "./ui/pagination";
 
 type HonoEndpoint<T extends Record<string, unknown>> = (
 	args: Record<string, unknown> & {
@@ -83,31 +75,29 @@ const createCreateButton = (
 const getColumnHelper = <T extends Record<string, unknown>>() =>
 	createColumnHelper<T>();
 
-export default function PageTemplateV2<T extends Record<string, unknown>>(
+export default function PageTemplate<T extends Record<string, unknown>>(
 	props: Props<T>
 ) {
 	const withSearchBar = Boolean(props.searchBar ?? true);
-	const siblings = 1;
-	const boundaries = 1;
 
 	const [sorting, setSorting] = React.useState<SortingState>([]);
-	const [filterOptions, setFilterOptions] = useState({
-		page: 0,
-		limit: 10,
-		q: "",
-	});
+	const [page, setPage] = useState(0);
+	const [limit, setLimit] = useState(10);
+	const [q, setQ] = useState("");
 
 	const columnHelper = React.useMemo(() => getColumnHelper<T>(), []);
 
+	console.log("filterOptions");
+
 	const query = useQuery({
-		queryKey: props.queryKey ?? [props.endpoint.name, filterOptions],
+		queryKey: [...(props.queryKey ?? []), page, limit, q],
 		queryFn: () =>
 			fetchRPC(
 				props.endpoint({
 					query: {
-						limit: String(filterOptions.limit),
-						page: String(filterOptions.page),
-						q: filterOptions.q,
+						limit: String(limit),
+						page: String(page),
+						q: q,
 					},
 				})
 			),
@@ -128,23 +118,15 @@ export default function PageTemplateV2<T extends Record<string, unknown>>(
 	});
 
 	const handleSearchQueryChange = useDebouncedCallback((value: string) => {
-		setFilterOptions((prev) => ({
-			page: 0,
-			limit: prev.limit,
-			q: value,
-		}));
+		setQ(value);
 	}, 500);
 
 	const handlePageChange = (page: number) => {
-		setFilterOptions((prev) => ({
-			page: page - 1,
-			limit: prev.limit,
-			q: prev.q,
-		}));
+		setPage(page - 1);
 	};
 
 	const totalPages = query.data?._metadata.totalPages ?? 1;
-	const currentPage = filterOptions.page + 1;
+	const currentPage = page + 1;
 
 	return (
 		<div className="p-8 bg-muted h-full flex flex-col gap-8">
@@ -162,7 +144,7 @@ export default function PageTemplateV2<T extends Record<string, unknown>>(
 							<div className="flex">
 								<Input
 									leftSection={<TbSearch />}
-									value={filterOptions.q}
+									value={q}
 									onChange={(e) =>
 										handleSearchQueryChange(e.target.value)
 									}
@@ -181,98 +163,34 @@ export default function PageTemplateV2<T extends Record<string, unknown>>(
 				<div className="flex flex-col">
 					{/* Table */}
 					<div className="mt-4">
-						<DashboardTable table={table} />
+						{query.data ? (
+							<DashboardTable table={table} />
+						) : (
+							<div>Loading...</div>
+						)}
 					</div>
 
 					{/* Pagination */}
 					{query.data && (
 						<div className="pt-4 flex-wrap flex items-center gap-4">
 							<Select
-							// defaultValue="10"
-							// onChange={(value) =>
-							// 	setFilterOptions((prev) => ({
-							// 		page: prev.page,
-							// 		limit: parseInt(value ?? "10"),
-							// 		q: prev.q,
-							// 	}))
-							// }
+								label="Items per page"
+								defaultValue={String(limit)}
+								onValueChange={(value) => {
+									setPage(0);
+									setLimit(Number(value));
+								}}
+								data={[
+									"5",
+									"10",
+									"20",
+									"50",
+									"100",
+									"200",
+									"500",
+								]}
 							/>
-							<Pagination
-							// value={currentPage}
-							// total={totalPages}
-							// onChange={handlePageChange}
-							// siblings={1}
-							// boundaries={1}
-							>
-								<PaginationContent>
-									<PaginationItem>
-										<PaginationPrevious
-											onClick={() =>
-												currentPage > 1 &&
-												handlePageChange(
-													currentPage - 1
-												)
-											}
-											disabled={currentPage === 1}
-										/>
-									</PaginationItem>
-									{[...Array(totalPages)].map((_, index) => {
-										const pageIndex = index + 1;
-										if (
-											pageIndex === currentPage ||
-											pageIndex <= boundaries ||
-											pageIndex >
-												totalPages - boundaries ||
-											Math.abs(pageIndex - currentPage) <=
-												siblings
-										) {
-											return (
-												<PaginationItem key={index}>
-													<PaginationButton
-														isActive={
-															currentPage ===
-															pageIndex
-														}
-														onClick={() =>
-															handlePageChange(
-																pageIndex
-															)
-														}
-													>
-														{pageIndex}
-													</PaginationButton>
-												</PaginationItem>
-											);
-										} else if (
-											pageIndex ===
-												currentPage + siblings + 1 ||
-											pageIndex ===
-												currentPage - siblings - 1
-										) {
-											return (
-												<PaginationItem
-													key={`ellipsis-${index}`}
-												>
-													<PaginationEllipsis />
-												</PaginationItem>
-											);
-										}
-										return null;
-									})}
-									<PaginationItem>
-										<PaginationNext
-											onClick={() =>
-												handlePageChange(
-													currentPage + 1
-												)
-											}
-											disabled={
-												currentPage === totalPages
-											}
-										/>
-									</PaginationItem>
-								</PaginationContent>
-							</Pagination>
+
 							<p>
 								Showing {query.data.data.length} of{" "}
 								{query.data._metadata.totalItems}
@@ -280,6 +198,12 @@ export default function PageTemplateV2<T extends Record<string, unknown>>(
 						</div>
 					)}
 				</div>
+
+				<Pagination
+					total={totalPages}
+					value={currentPage}
+					onChange={handlePageChange}
+				/>
 
 				{/* The Modals */}
 				{props.modals?.map((modal, index) => (
