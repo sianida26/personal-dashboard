@@ -162,6 +162,9 @@ export type SelectProps = {
 	disabled?: boolean;
 	readOnly?: boolean;
 	data?: ({ value: string; label: React.ReactNode } | string)[];
+	defaultValue?: string;
+	onValueChange?: (value: string) => void;
+	value?: string;
 };
 
 const Select = ({ ...props }: SelectProps) => {
@@ -169,8 +172,11 @@ const Select = ({ ...props }: SelectProps) => {
 		<div>
 			<Label>{props.label}</Label>
 			<NativeSelect
+				value={props.value}
 				open={props.readOnly ? false : undefined}
 				disabled={props.disabled}
+				defaultValue={props.defaultValue}
+				onValueChange={props.onValueChange}
 			>
 				<SelectTrigger disabled={props.disabled}>
 					<SelectValue placeholder={props.placeholder} />
