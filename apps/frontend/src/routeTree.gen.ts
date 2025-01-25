@@ -16,6 +16,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as DashboardLayoutImport } from './routes/_dashboardLayout'
 import { Route as R403Import } from './routes/403'
 import { Route as DashboardLayoutUsersImport } from './routes/_dashboardLayout/users'
+import { Route as DashboardLayoutRolesImport } from './routes/_dashboardLayout/roles'
 import { Route as DashboardLayoutDevImport } from './routes/_dashboardLayout/dev'
 import { Route as DashboardLayoutTimetableIndexImport } from './routes/_dashboardLayout/timetable/index'
 import { Route as DashboardLayoutDashboardIndexImport } from './routes/_dashboardLayout/dashboard/index'
@@ -73,6 +74,12 @@ const DashboardLayoutUsersRoute = DashboardLayoutUsersImport.update({
 } as any).lazy(() =>
   import('./routes/_dashboardLayout/users.lazy').then((d) => d.Route),
 )
+
+const DashboardLayoutRolesRoute = DashboardLayoutRolesImport.update({
+  id: '/roles',
+  path: '/roles',
+  getParentRoute: () => DashboardLayoutRoute,
+} as any)
 
 const DashboardLayoutDevRoute = DashboardLayoutDevImport.update({
   id: '/dev',
@@ -188,6 +195,13 @@ declare module '@tanstack/react-router' {
       path: '/dev'
       fullPath: '/dev'
       preLoaderRoute: typeof DashboardLayoutDevImport
+      parentRoute: typeof DashboardLayoutImport
+    }
+    '/_dashboardLayout/roles': {
+      id: '/_dashboardLayout/roles'
+      path: '/roles'
+      fullPath: '/roles'
+      preLoaderRoute: typeof DashboardLayoutRolesImport
       parentRoute: typeof DashboardLayoutImport
     }
     '/_dashboardLayout/users': {
@@ -331,6 +345,7 @@ const DashboardLayoutUsersRouteWithChildren =
 
 interface DashboardLayoutRouteChildren {
   DashboardLayoutDevRoute: typeof DashboardLayoutDevRouteWithChildren
+  DashboardLayoutRolesRoute: typeof DashboardLayoutRolesRoute
   DashboardLayoutUsersRoute: typeof DashboardLayoutUsersRouteWithChildren
   DashboardLayoutDashboardIndexRoute: typeof DashboardLayoutDashboardIndexRoute
   DashboardLayoutTimetableIndexRoute: typeof DashboardLayoutTimetableIndexRoute
@@ -338,6 +353,7 @@ interface DashboardLayoutRouteChildren {
 
 const DashboardLayoutRouteChildren: DashboardLayoutRouteChildren = {
   DashboardLayoutDevRoute: DashboardLayoutDevRouteWithChildren,
+  DashboardLayoutRolesRoute: DashboardLayoutRolesRoute,
   DashboardLayoutUsersRoute: DashboardLayoutUsersRouteWithChildren,
   DashboardLayoutDashboardIndexRoute: DashboardLayoutDashboardIndexRoute,
   DashboardLayoutTimetableIndexRoute: DashboardLayoutTimetableIndexRoute,
@@ -352,6 +368,7 @@ export interface FileRoutesByFullPath {
   '/403': typeof R403Route
   '': typeof DashboardLayoutRouteWithChildren
   '/dev': typeof DashboardLayoutDevRouteWithChildren
+  '/roles': typeof DashboardLayoutRolesRoute
   '/users': typeof DashboardLayoutUsersRouteWithChildren
   '/login': typeof LoginIndexLazyRoute
   '/logout': typeof LogoutIndexLazyRoute
@@ -373,6 +390,7 @@ export interface FileRoutesByTo {
   '/403': typeof R403Route
   '': typeof DashboardLayoutRouteWithChildren
   '/dev': typeof DashboardLayoutDevRouteWithChildren
+  '/roles': typeof DashboardLayoutRolesRoute
   '/users': typeof DashboardLayoutUsersRouteWithChildren
   '/login': typeof LoginIndexLazyRoute
   '/logout': typeof LogoutIndexLazyRoute
@@ -395,6 +413,7 @@ export interface FileRoutesById {
   '/403': typeof R403Route
   '/_dashboardLayout': typeof DashboardLayoutRouteWithChildren
   '/_dashboardLayout/dev': typeof DashboardLayoutDevRouteWithChildren
+  '/_dashboardLayout/roles': typeof DashboardLayoutRolesRoute
   '/_dashboardLayout/users': typeof DashboardLayoutUsersRouteWithChildren
   '/login/': typeof LoginIndexLazyRoute
   '/logout/': typeof LogoutIndexLazyRoute
@@ -418,6 +437,7 @@ export interface FileRouteTypes {
     | '/403'
     | ''
     | '/dev'
+    | '/roles'
     | '/users'
     | '/login'
     | '/logout'
@@ -438,6 +458,7 @@ export interface FileRouteTypes {
     | '/403'
     | ''
     | '/dev'
+    | '/roles'
     | '/users'
     | '/login'
     | '/logout'
@@ -458,6 +479,7 @@ export interface FileRouteTypes {
     | '/403'
     | '/_dashboardLayout'
     | '/_dashboardLayout/dev'
+    | '/_dashboardLayout/roles'
     | '/_dashboardLayout/users'
     | '/login/'
     | '/logout/'
@@ -518,6 +540,7 @@ export const routeTree = rootRoute
       "filePath": "_dashboardLayout.tsx",
       "children": [
         "/_dashboardLayout/dev",
+        "/_dashboardLayout/roles",
         "/_dashboardLayout/users",
         "/_dashboardLayout/dashboard/",
         "/_dashboardLayout/timetable/"
@@ -533,6 +556,10 @@ export const routeTree = rootRoute
         "/_dashboardLayout/dev/detail/$id",
         "/_dashboardLayout/dev/edit/$id"
       ]
+    },
+    "/_dashboardLayout/roles": {
+      "filePath": "_dashboardLayout/roles.tsx",
+      "parent": "/_dashboardLayout"
     },
     "/_dashboardLayout/users": {
       "filePath": "_dashboardLayout/users.tsx",
