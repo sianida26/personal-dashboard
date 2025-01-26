@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
-import isoWeek from "dayjs/plugin/isoWeek";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import isoWeek from "dayjs/plugin/isoWeek";
 import { useMemo } from "react";
 
 dayjs.extend(isoWeek);
@@ -27,7 +27,7 @@ export default function HourColumn({ startTime, endTime }: Props) {
 	return (
 		<div className="flex flex-col border w-12">
 			{/* Column Header */}
-			<div className="flex flex-col h-20"></div>
+			<div className="flex flex-col h-20" />
 
 			{/* Hour Rows */}
 			{hoursArray.map((h) => (

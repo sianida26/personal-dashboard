@@ -1,5 +1,5 @@
-import { hc } from "hono/client";
 import type { AppType } from "backend";
+import { hc } from "hono/client";
 
 const backendUrl = import.meta.env.VITE_BACKEND_BASE_URL as string | undefined;
 

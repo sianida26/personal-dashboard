@@ -1,15 +1,15 @@
-import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMutation } from "@tanstack/react-query";
-import client from "../../honoClient";
+import TextInput from "@/components/TextInput";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import useAuth from "@/hooks/useAuth";
 import { useForm } from "@mantine/form";
-import { z } from "zod";
+import { useMutation } from "@tanstack/react-query";
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { useEffect, useState } from "react";
-import useAuth from "@/hooks/useAuth";
-import { Button } from "@/components/ui/button";
-import TextInput from "@/components/TextInput";
 import { FcGoogle } from "react-icons/fc";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { z } from "zod";
+import client from "../../honoClient";
 
 export const Route = createLazyFileRoute("/login/")({
 	component: LoginPage,
@@ -69,7 +69,7 @@ export default function LoginPage() {
 					permissions: data.user.permissions,
 					roles: data.user.roles,
 				},
-				data.accessToken
+				data.accessToken,
 			);
 		},
 
@@ -91,6 +91,7 @@ export default function LoginPage() {
 			{/* Left Side */}
 			<div className="bg-red-500 flex-grow hidden lg:flex">
 				<img
+					alt="Decorative creative art background"
 					src="https://images.pexels.com/photos/21243683/pexels-photo-21243683/free-photo-of-seni-kesenian-kreatif-melambai.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
 					className="w-full h-full object-cover object-right"
 				/>
@@ -100,7 +101,8 @@ export default function LoginPage() {
 			<div className="flex-grow lg:max-w-screen-md w-full flex flex-col justify-center items-center">
 				{/* Top side */}
 				<div className="justify-self-start flex justify-end w-full px-8 pt-8">
-					<a href="#" className="text-xl font-bold">
+					{/* TODO: Implement register page and link */}
+					<a href="/register" className="text-xl font-bold">
 						Register
 					</a>
 				</div>
@@ -112,8 +114,7 @@ export default function LoginPage() {
 						<div className="flex flex-col items-center gap-2">
 							<h1 className="text-3xl font-bold">Log In</h1>
 							<p className="text-muted-foreground text-sm">
-								Enter your username or email to log in to the
-								app
+								Enter your username or email to log in to the app
 							</p>
 						</div>
 
@@ -145,10 +146,7 @@ export default function LoginPage() {
 								{...form.getInputProps("password")}
 							/>
 
-							<Button
-								disabled={loginMutation.isPending}
-								type="submit"
-							>
+							<Button disabled={loginMutation.isPending} type="submit">
 								Sign In
 							</Button>
 						</form>

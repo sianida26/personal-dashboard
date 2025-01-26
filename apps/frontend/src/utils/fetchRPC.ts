@@ -1,8 +1,8 @@
 import FormResponseError from "@/errors/FormResponseError";
 import ResponseError from "@/errors/ResponseError";
-import { ClientResponse } from "hono/client";
+import type { ClientResponse } from "hono/client";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: any is used to allow for any type of property
 type BlankRecordToNever<T> = T extends any
 	? T extends null
 		? null
@@ -47,7 +47,7 @@ type BlankRecordToNever<T> = T extends any
  * ```
  */
 async function fetchRPC<T>(
-	endpoint: Promise<ClientResponse<T>>
+	endpoint: Promise<ClientResponse<T>>,
 ): Promise<BlankRecordToNever<T>> {
 	const res = await endpoint;
 

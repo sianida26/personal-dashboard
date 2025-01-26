@@ -1,9 +1,9 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
-import { Input, InputProps } from "./input";
-import { Button } from "./button";
 import { LuChevronDown, LuChevronUp } from "react-icons/lu";
+import { Button } from "./button";
+import { Input, type InputProps } from "./input";
 
 export interface NumberInputProps extends InputProps {
 	withoutArrows?: boolean;
@@ -26,10 +26,10 @@ const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 			step = 1,
 			...props
 		},
-		ref
+		ref,
 	) => {
 		const [localValue, setLocalValue] = React.useState<number | undefined>(
-			defaultValue !== undefined ? Number(defaultValue) : undefined
+			defaultValue !== undefined ? Number(defaultValue) : undefined,
 		);
 
 		const isControlled = value !== undefined;
@@ -64,7 +64,7 @@ const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 
 		const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 			const newValue = Number(e.target.value);
-			handleValueChange(isNaN(newValue) ? 0 : newValue);
+			handleValueChange(Number.isNaN(newValue) ? 0 : newValue);
 		};
 
 		return (
@@ -103,7 +103,7 @@ const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 				</div>
 			</div>
 		);
-	}
+	},
 );
 
 NumberInput.displayName = "NumberInput";

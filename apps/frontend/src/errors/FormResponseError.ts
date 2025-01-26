@@ -36,7 +36,7 @@ class FormResponseError extends ResponseError {
 		message: string,
 		formErrors: Record<string, string>,
 		statusCode = 422,
-		errorCode = "INVALID_FORM_DATA"
+		errorCode = "INVALID_FORM_DATA",
 	) {
 		super(message, statusCode, errorCode);
 

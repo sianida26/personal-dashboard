@@ -1,4 +1,4 @@
-function generateRandomPassword(length: number = 8): string {
+function generateRandomPassword(length = 8): string {
 	const charset =
 		"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+[]{}|;:',.<>?";
 	let password = "";

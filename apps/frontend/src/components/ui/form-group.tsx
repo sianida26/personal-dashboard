@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
-import React, { forwardRef } from "react";
+import type React from "react";
+import { forwardRef } from "react";
 
 export type FormGroupProps = {
 	legend?: React.ReactNode;
@@ -13,19 +14,14 @@ const FormGroup = forwardRef<HTMLFieldSetElement, FormGroupProps>(
 		return (
 			<fieldset
 				ref={ref}
-				className={cn(
-					"flex flex-col gap-2 border p-4 rounded-md",
-					className
-				)}
+				className={cn("flex flex-col gap-2 border p-4 rounded-md", className)}
 				{...props}
 			>
-				<legend className={cn("text-sm", classNames?.legend)}>
-					{legend}
-				</legend>
+				<legend className={cn("text-sm", classNames?.legend)}>{legend}</legend>
 				{children}
 			</fieldset>
 		);
-	}
+	},
 );
 
 FormGroup.displayName = "FormGroup";

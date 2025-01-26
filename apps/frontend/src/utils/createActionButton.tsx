@@ -1,4 +1,4 @@
-import { Button, ButtonProps } from "@/components/ui/button";
+import { Button, type ButtonProps } from "@/components/ui/button";
 import {
 	Tooltip,
 	TooltipContent,
@@ -6,7 +6,7 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Link } from "@tanstack/react-router";
-import React from "react";
+import type React from "react";
 
 type Action = ButtonProps & {
 	label: string;
@@ -16,10 +16,10 @@ type Action = ButtonProps & {
 };
 
 export default function createActionButtons(actions: Action[]) {
-	const elements = actions.map((action, i) =>
+	const elements = actions.map((action) =>
 		action.permission ? (
-			<TooltipProvider>
-				<Tooltip key={i}>
+			<TooltipProvider key={action.label}>
+				<Tooltip>
 					<TooltipTrigger>
 						{typeof action.action === "string" ||
 						action.action === undefined ? (
@@ -29,11 +29,7 @@ export default function createActionButtons(actions: Action[]) {
 								</Button>
 							</Link>
 						) : (
-							<Button
-								onClick={action.action}
-								size="icon"
-								{...action}
-							>
+							<Button onClick={action.action} size="icon" {...action}>
 								{action.icon}
 							</Button>
 						)}
@@ -43,7 +39,7 @@ export default function createActionButtons(actions: Action[]) {
 					</TooltipContent>
 				</Tooltip>
 			</TooltipProvider>
-		) : null
+		) : null,
 	);
 
 	return <>{elements}</>;

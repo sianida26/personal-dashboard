@@ -1,3 +1,8 @@
+import client from "@/honoClient";
+import { getTablerIcon } from "@/utils/getTablerIcon";
+import { useQuery } from "@tanstack/react-query";
+import type { SidebarMenu as SidebarMenuType } from "backend/types";
+import type { IconType } from "react-icons";
 // src/components/AppSidebar.tsx
 import {
 	Sidebar,
@@ -11,22 +16,17 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "./ui/sidebar";
-import { useQuery } from "@tanstack/react-query";
-import client from "@/honoClient";
-import { SidebarMenu as SidebarMenuType } from "backend/types";
-import { getTablerIcon } from "@/utils/getTablerIcon";
-import { IconType } from "react-icons";
 
+import defaultProfilePicture from "@/assets/images/default-picture.jpg";
 import logo from "@/assets/logos/logo.png";
-import { Link, useMatchRoute } from "@tanstack/react-router";
+import useAuth from "@/hooks/useAuth";
 import {
 	DropdownMenu,
 	DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
+import { Link, useMatchRoute } from "@tanstack/react-router";
 import { TbChevronUp, TbDoorExit, TbUser } from "react-icons/tb";
-import useAuth from "@/hooks/useAuth";
 import { DropdownMenuContent, DropdownMenuItem } from "./ui/dropdown-menu";
-import defaultProfilePicture from "@/assets/images/default-picture.jpg";
 
 export default function AppSidebar() {
 	const { user } = useAuth();
@@ -80,84 +80,66 @@ export default function AppSidebar() {
 				</div>
 			</SidebarHeader>
 			<SidebarContent className="pt-4">
-				{data?.map((menu, index) => {
+				{data?.map((menu) => {
 					if (menu.type === "group") {
 						return (
-							<SidebarGroup key={index}>
-								<SidebarGroupLabel>
-									{menu.label}
-								</SidebarGroupLabel>
+							<SidebarGroup key={menu.label}>
+								<SidebarGroupLabel>{menu.label}</SidebarGroupLabel>
 								<SidebarGroupContent>
 									<SidebarMenu>
-										{menu.children.map(
-											(child, childIndex) => {
-												const Icon: IconType | null =
-													child.icon
-														? getTablerIcon(
-																child.icon.tb
-															)
-														: null;
+										{menu.children.map((child) => {
+											const Icon: IconType | null = child.icon
+												? getTablerIcon(child.icon.tb)
+												: null;
 
-												return (
-													<SidebarMenuItem
-														key={childIndex}
+											return (
+												<SidebarMenuItem key={child.link}>
+													<SidebarMenuButton
+														asChild
+														isActive={Boolean(
+															matchRoute({
+																to: child.link,
+															}),
+														)}
 													>
-														<SidebarMenuButton
-															asChild
-															isActive={Boolean(
-																matchRoute({
-																	to: child.link,
-																})
-															)}
-														>
-															<Link
-																to={child.link}
-															>
-																{Icon && (
-																	<Icon className="mr-2" />
-																)}
-																<span>
-																	{
-																		child.label
-																	}
-																</span>
-															</Link>
-														</SidebarMenuButton>
-													</SidebarMenuItem>
-												);
-											}
-										)}
+														<Link to={child.link}>
+															{Icon && <Icon className="mr-2" />}
+															<span>{child.label}</span>
+														</Link>
+													</SidebarMenuButton>
+												</SidebarMenuItem>
+											);
+										})}
 									</SidebarMenu>
 								</SidebarGroupContent>
 							</SidebarGroup>
 						);
-					} else {
-						// Single SidebarMenuItem (not in a group)
-						const Icon: IconType | null = menu.icon
-							? getTablerIcon(menu.icon.tb)
-							: null;
-
-						return (
-							<SidebarMenu key={index}>
-								<SidebarMenuItem>
-									<SidebarMenuButton
-										asChild
-										isActive={Boolean(
-											matchRoute({
-												to: menu.link,
-											})
-										)}
-										size="lg"
-									>
-										<Link to={menu.link}>
-											{Icon && <Icon className="mr-2" />}
-											<span>{menu.label}</span>
-										</Link>
-									</SidebarMenuButton>
-								</SidebarMenuItem>
-							</SidebarMenu>
-						);
 					}
+					// Single SidebarMenuItem (not in a group)
+					const Icon: IconType | null = menu.icon
+						? getTablerIcon(menu.icon.tb)
+						: null;
+
+					return (
+						<SidebarMenu key={menu.link}>
+							<SidebarMenuItem>
+								<SidebarMenuButton
+									asChild
+									isActive={Boolean(
+										matchRoute({
+											to: menu.link,
+										}),
+									)}
+									size="lg"
+								>
+									<Link to={menu.link}>
+										{Icon && <Icon className="mr-2" />}
+										<span>{menu.label}</span>
+									</Link>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
+						</SidebarMenu>
+					);
 				})}
 			</SidebarContent>
 			<SidebarFooter>
@@ -170,7 +152,7 @@ export default function AppSidebar() {
 									<div className="flex overflow-clip items-center gap-2 w-full">
 										<img
 											src={defaultProfilePicture}
-											alt="Profile Picture"
+											alt="User avatar"
 											className="h-12 rounded-xl"
 										/>
 
@@ -179,9 +161,7 @@ export default function AppSidebar() {
 												{user?.name}
 											</p>
 											<p className="w-full text-xs truncate text-muted-foreground">
-												{user?.email ??
-													user?.username ??
-													"User"}
+												{user?.email ?? user?.username ?? "User"}
 											</p>
 										</div>
 									</div>

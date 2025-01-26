@@ -1,3 +1,3 @@
 import type CrudPermission from "./CrudPermission";
 
-export { CrudPermission };
+export type { CrudPermission };

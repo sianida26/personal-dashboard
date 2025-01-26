@@ -5,7 +5,7 @@ import fetchRPC from "@/utils/fetchRPC";
 import { useForm } from "@mantine/form";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { InferResponseType } from "hono";
+import type { InferResponseType } from "hono";
 import { useEffect } from "react";
 
 export const Route = createFileRoute("/_dashboardLayout/users/detail/$userId")({
@@ -26,7 +26,7 @@ function RouteComponent() {
 						page: "1",
 						limit: "1000",
 					},
-				})
+				}),
 			),
 	});
 
@@ -94,8 +94,7 @@ function RouteComponent() {
 					{
 						type: "multi-select",
 						label: "Roles",
-						selectedOptions:
-							form.values.roles?.map((x) => x.id) ?? [],
+						selectedOptions: form.values.roles?.map((x) => x.id) ?? [],
 						options:
 							roles?.data?.map((role) => ({
 								value: role.id,

@@ -1,10 +1,10 @@
 import PageTemplate from "@/components/PageTemplate";
-import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
-import createActionButtons from "@/utils/createActionButton";
-import { TbEye, TbPencil, TbTrash } from "react-icons/tb";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import client from "@/honoClient";
+import createActionButtons from "@/utils/createActionButton";
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
+import { TbEye, TbPencil, TbTrash } from "react-icons/tb";
 
 export const Route = createLazyFileRoute("/_dashboardLayout/users")({
 	component: UsersPage,
@@ -31,9 +31,7 @@ export default function UsersPage() {
 							<Button
 								variant="ghost"
 								onClick={() =>
-									column.toggleSorting(
-										column.getIsSorted() === "asc"
-									)
+									column.toggleSorting(column.getIsSorted() === "asc")
 								}
 							>
 								Name
@@ -48,13 +46,9 @@ export default function UsersPage() {
 				helper.accessor("isEnabled", {
 					cell: (info) =>
 						info.getValue() ? (
-							<Badge className="text-green-500 bg-green-100">
-								Active
-							</Badge>
+							<Badge className="text-green-500 bg-green-100">Active</Badge>
 						) : (
-							<Badge className="text-gray-500 bg-gray-100">
-								Inactive
-							</Badge>
+							<Badge className="text-gray-500 bg-gray-100">Inactive</Badge>
 						),
 					header: "Status",
 				}),
@@ -67,16 +61,14 @@ export default function UsersPage() {
 									label: "Detail",
 									permission: true,
 									action: `./detail/${props.row.original.id}`,
-									className:
-										"bg-green-500 hover:bg-green-600",
+									className: "bg-green-500 hover:bg-green-600",
 									icon: <TbEye />,
 								},
 								{
 									label: "Edit",
 									permission: true,
 									action: `./edit/${props.row.original.id}`,
-									className:
-										"bg-yellow-500 hover:bg-yellow-600",
+									className: "bg-yellow-500 hover:bg-yellow-600",
 									icon: <TbPencil />,
 								},
 								{

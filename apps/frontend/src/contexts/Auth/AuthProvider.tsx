@@ -1,18 +1,18 @@
-import { ReactNode } from "@tanstack/react-router";
+import type { ReactNode } from "@tanstack/react-router";
 import { useState } from "react";
-import AuthContext, { AuthContextType } from "./AuthContext";
+import AuthContext, { type AuthContextType } from "./AuthContext";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
 	const [userId, setUserId] = useState<string | null>(null);
 	const [userName, setUserName] = useState<string | null>(null);
 	const [permissions, setPermissions] = useState<string[] | null>(null);
 	const [accessToken, setAccessToken] = useState<string | null>(
-		localStorage.getItem("accessToken")
+		localStorage.getItem("accessToken"),
 	);
 
 	const saveAuthData = (
 		userData: NonNullable<AuthContextType["user"]>,
-		accessToken?: NonNullable<AuthContextType["accessToken"]>
+		accessToken?: NonNullable<AuthContextType["accessToken"]>,
 	) => {
 		setUserId(userData.id);
 		setUserName(userData.name);
@@ -40,14 +40,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	return (
 		<AuthContext.Provider
 			value={{
-				user: userId
-					? {
-							id: userId,
-							name: userName!,
-							permissions: permissions!,
-							roles: [],
-						}
-					: null,
+				user:
+					userId && userName && permissions
+						? {
+								id: userId,
+								name: userName,
+								permissions: permissions,
+								roles: [],
+							}
+						: null,
 				accessToken,
 				saveAuthData,
 				clearAuthData,

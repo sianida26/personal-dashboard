@@ -1,4 +1,4 @@
-import { Table as ReactTable, flexRender } from "@tanstack/react-table";
+import { type Table as ReactTable, flexRender } from "@tanstack/react-table";
 import {
 	Table,
 	TableBody,
@@ -25,7 +25,7 @@ export default function DashboardTable<T>({ table }: Props<T>) {
 										? null
 										: flexRender(
 												header.column.columnDef.header,
-												header.getContext()
+												header.getContext(),
 											)}
 								</TableHead>
 							))}
@@ -37,11 +37,7 @@ export default function DashboardTable<T>({ table }: Props<T>) {
 						table.getRowModel().rows.map((row, rowIndex) => (
 							<TableRow
 								key={row.id}
-								className={
-									rowIndex % 2 === 0
-										? "bg-muted"
-										: "bg-background"
-								}
+								className={rowIndex % 2 === 0 ? "bg-muted" : "bg-background"}
 							>
 								{row.getVisibleCells().map((cell) => (
 									<TableCell
@@ -50,10 +46,7 @@ export default function DashboardTable<T>({ table }: Props<T>) {
 											maxWidth: `${cell.column.columnDef.maxSize}px`,
 										}}
 									>
-										{flexRender(
-											cell.column.columnDef.cell,
-											cell.getContext()
-										)}
+										{flexRender(cell.column.columnDef.cell, cell.getContext())}
 									</TableCell>
 								))}
 							</TableRow>

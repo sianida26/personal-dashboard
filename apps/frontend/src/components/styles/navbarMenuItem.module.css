@@ -11,10 +11,7 @@
 			var(--mantine-color-gray-0),
 			var(--mantine-color-dark-7)
 		);
-		color: light-dark(
-			var(--mantine-color-black),
-			var(--mantine-color-dark-0)
-		);
+		color: light-dark(var(--mantine-color-black), var(--mantine-color-dark-0));
 	}
 }
 

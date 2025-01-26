@@ -6,12 +6,12 @@ import createInputComponents from "@/utils/createInputComponents";
 import fetchRPC from "@/utils/fetchRPC";
 import generateRandomPassword from "@/utils/generateRandomPassword";
 import { useForm } from "@mantine/form";
-import { userFormSchema } from "@repo/validation";
+import type { userFormSchema } from "@repo/validation";
 import { useIsMutating, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { TbRefresh } from "react-icons/tb";
-import { z } from "zod";
+import type { z } from "zod";
 
 export const Route = createFileRoute("/_dashboardLayout/users/create")({
 	component: RouteComponent,
@@ -45,7 +45,7 @@ function RouteComponent() {
 						page: "1",
 						limit: "1000",
 					},
-				})
+				}),
 			),
 	});
 
@@ -61,7 +61,7 @@ function RouteComponent() {
 							username: form.values.username,
 							roles: form.values.roles,
 						},
-					})
+					}),
 				)
 			}
 			title="Create new User"
@@ -106,9 +106,7 @@ function RouteComponent() {
 									label="Password"
 									withAsterisk
 									isPasswordVisible={isPasswordVisible}
-									onPasswordVisibilityChange={
-										setIsPasswordVisible
-									}
+									onPasswordVisibilityChange={setIsPasswordVisible}
 									{...form.getInputProps("password")}
 								/>
 								<Button
@@ -116,10 +114,7 @@ function RouteComponent() {
 									className="border-primary"
 									type="button"
 									onClick={() => {
-										form.setFieldValue(
-											"password",
-											generateRandomPassword()
-										);
+										form.setFieldValue("password", generateRandomPassword());
 										setIsPasswordVisible(true);
 									}}
 								>
@@ -133,8 +128,7 @@ function RouteComponent() {
 						type: "multi-select",
 						label: "Roles",
 						selectedOptions: form.values.roles ?? [],
-						onChange: (values) =>
-							form.setFieldValue("roles", values),
+						onChange: (values) => form.setFieldValue("roles", values),
 						options:
 							roles?.data.map((role) => ({
 								value: role.id,

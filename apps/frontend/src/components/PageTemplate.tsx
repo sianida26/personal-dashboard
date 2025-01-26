@@ -1,27 +1,27 @@
-import React, { ReactNode, useState } from "react";
-import { ClientRequestOptions } from "hono";
-import { ClientResponse } from "hono/client";
-import { PaginatedResponse } from "@repo/data/types";
-import { useQuery } from "@tanstack/react-query";
+import ResponseError from "@/errors/ResponseError";
 import fetchRPC from "@/utils/fetchRPC";
+import { useDebouncedCallback } from "@mantine/hooks";
+import type { PaginatedResponse } from "@repo/data/types";
+import { useQuery } from "@tanstack/react-query";
+import { Link, Navigate, Outlet } from "@tanstack/react-router";
 import {
-	ColumnDef,
-	ColumnHelper,
+	type ColumnDef,
+	type ColumnHelper,
+	type SortingState,
 	createColumnHelper,
 	getCoreRowModel,
 	getSortedRowModel,
-	SortingState,
 	useReactTable,
 } from "@tanstack/react-table";
-import { useDebouncedCallback } from "@mantine/hooks";
-import { Input } from "./ui/input";
+import type { ClientRequestOptions } from "hono";
+import type { ClientResponse } from "hono/client";
+import React, { type ReactNode, useState } from "react";
 import { TbPlus, TbSearch } from "react-icons/tb";
-import { Button } from "./ui/button";
-import { Link, Navigate, Outlet } from "@tanstack/react-router";
 import DashboardTable from "./DashboardTable";
-import { Select } from "./ui/select";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 import { Pagination } from "./ui/pagination";
-import ResponseError from "@/errors/ResponseError";
+import { Select } from "./ui/select";
 
 type HonoEndpoint<T extends Record<string, unknown>> = (
 	args: Record<string, unknown> & {
@@ -31,7 +31,7 @@ type HonoEndpoint<T extends Record<string, unknown>> = (
 			q?: string;
 		};
 	},
-	options?: ClientRequestOptions
+	options?: ClientRequestOptions,
 ) => Promise<ClientResponse<PaginatedResponse<T>>>;
 
 type Props<T extends Record<string, unknown>> = {
@@ -40,7 +40,9 @@ type Props<T extends Record<string, unknown>> = {
 	modals?: React.ReactNode[];
 	searchBar?: boolean | React.ReactNode;
 	endpoint: HonoEndpoint<T>;
+	// biome-ignore lint/suspicious/noExplicitAny: any is used to allow for any type of columnDefs
 	columnDefs: (columnHelper: ColumnHelper<T>) => ColumnDef<any, any>[];
+	// biome-ignore lint/suspicious/noExplicitAny: any is used to allow for any type of queryKey
 	queryKey?: any[];
 };
 
@@ -51,8 +53,8 @@ type Props<T extends Record<string, unknown>> = {
  * @returns The create button element.
  */
 const createCreateButton = (
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	property: Props<any>["createButton"] = true
+	// biome-ignore lint/suspicious/noExplicitAny: any is used to allow for any type of property
+	property: Props<any>["createButton"] = true,
 ) => {
 	if (property === true) {
 		return (
@@ -61,23 +63,23 @@ const createCreateButton = (
 				<Button leftSection={<TbPlus />}>Create New</Button>
 			</Link>
 		);
-	} else if (typeof property === "string") {
+	}
+	if (typeof property === "string") {
 		return (
 			//@ts-expect-error global search param for create route
 			<Link to={"./create"}>
 				<Button leftSection={<TbPlus />}>{property}</Button>
 			</Link>
 		);
-	} else {
-		return property;
 	}
+	return property;
 };
 
 const getColumnHelper = <T extends Record<string, unknown>>() =>
 	createColumnHelper<T>();
 
 export default function PageTemplate<T extends Record<string, unknown>>(
-	props: Props<T>
+	props: Props<T>,
 ) {
 	const withSearchBar = Boolean(props.searchBar ?? true);
 
@@ -100,7 +102,7 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 						page: String(page),
 						q: q,
 					},
-				})
+				}),
 			),
 	});
 
@@ -154,9 +156,7 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 								<Input
 									leftSection={<TbSearch />}
 									value={q}
-									onChange={(e) =>
-										handleSearchQueryChange(e.target.value)
-									}
+									onChange={(e) => handleSearchQueryChange(e.target.value)}
 									placeholder="Search..."
 									className=""
 								/>
@@ -185,15 +185,7 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 									setPage(0);
 									setLimit(Number(value));
 								}}
-								data={[
-									"5",
-									"10",
-									"20",
-									"50",
-									"100",
-									"200",
-									"500",
-								]}
+								data={["5", "10", "20", "50", "100", "200", "500"]}
 							/>
 
 							<p>
@@ -211,9 +203,12 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 				/>
 
 				{/* The Modals */}
-				{props.modals?.map((modal, index) => (
-					<React.Fragment key={index}>{modal}</React.Fragment>
-				))}
+				{props.modals?.map((modal) => {
+					const modalKey =
+						(modal as { key?: string | number })?.key ??
+						`modal-${Math.random()}`;
+					return <React.Fragment key={modalKey}>{modal}</React.Fragment>;
+				})}
 			</div>
 
 			<Outlet />

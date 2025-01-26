@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Calendar } from "../ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 interface Props {
 	currentDate: dayjs.Dayjs;
@@ -16,7 +16,7 @@ function startOfWeek(date: Date) {
 	return new Date(
 		date.getFullYear(),
 		date.getMonth(),
-		date.getDate() - getDay(date)
+		date.getDate() - getDay(date),
 	);
 }
 
@@ -25,8 +25,8 @@ function endOfWeek(date: Date) {
 		new Date(
 			date.getFullYear(),
 			date.getMonth(),
-			date.getDate() + (6 - getDay(date))
-		)
+			date.getDate() + (6 - getDay(date)),
+		),
 	)
 		.endOf("date")
 		.toDate();
@@ -36,7 +36,7 @@ export default function WeekPicker({ currentDate, onChange }: Props) {
 	return (
 		<Popover>
 			<PopoverTrigger>
-				<button>{currentDate.format("MMMM YYYY")}</button>
+				<button type="button">{currentDate.format("MMMM YYYY")}</button>
 			</PopoverTrigger>
 			<PopoverContent>
 				<Calendar

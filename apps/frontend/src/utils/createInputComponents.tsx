@@ -1,24 +1,29 @@
-import { Checkbox, CheckboxProps } from "@/components/ui/checkbox";
-import { FileInput, FileInputProps } from "@/components/ui/file-input";
-import FormGroup, { FormGroupProps } from "@/components/ui/form-group";
-import { Input, InputProps } from "@/components/ui/input";
+import { Checkbox, type CheckboxProps } from "@/components/ui/checkbox";
+import { FileInput, type FileInputProps } from "@/components/ui/file-input";
+import FormGroup, { type FormGroupProps } from "@/components/ui/form-group";
+import { Input, type InputProps } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import MultiSelect, { MultiSelectProps } from "@/components/ui/multi-select";
-import { NumberInput, NumberInputProps } from "@/components/ui/number-input";
+import MultiSelect, {
+	type MultiSelectProps,
+} from "@/components/ui/multi-select";
+import {
+	NumberInput,
+	type NumberInputProps,
+} from "@/components/ui/number-input";
 import {
 	PasswordInput,
-	PasswordInputProps,
+	type PasswordInputProps,
 } from "@/components/ui/password-input";
 import {
 	RadioGroup,
 	RadioGroupItem,
-	RadioGroupProps,
-	RadioProps,
+	type RadioGroupProps,
+	type RadioProps,
 } from "@/components/ui/radio-group";
-import { Select, SelectProps } from "@/components/ui/select";
-import { Textarea, TextareaProps } from "@/components/ui/textarea";
-import { ReactNode } from "@tanstack/react-router";
-import React from "react";
+import { Select, type SelectProps } from "@/components/ui/select";
+import { Textarea, type TextareaProps } from "@/components/ui/textarea";
+import type { ReactNode } from "@tanstack/react-router";
+import type React from "react";
 
 //TODO: Implement all these
 
@@ -216,7 +221,7 @@ function createInputComponents(options: Options) {
 							return (
 								<div
 									className="flex items-center space-x-2"
-									key={index}
+									key={`${radio.id}-${index}`}
 								>
 									<RadioGroupItem {...radio} />
 									<Label htmlFor={radio.id}>{index}</Label>

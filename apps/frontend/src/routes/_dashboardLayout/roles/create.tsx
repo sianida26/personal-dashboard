@@ -3,11 +3,11 @@ import client from "@/honoClient";
 import createInputComponents from "@/utils/createInputComponents";
 import fetchRPC from "@/utils/fetchRPC";
 import { useForm } from "@mantine/form";
-import { PermissionCode, permissions } from "@repo/data";
-import { roleFormSchema } from "@repo/validation";
+import { type PermissionCode, permissions } from "@repo/data";
+import type { roleFormSchema } from "@repo/validation";
 import { useIsMutating } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { z } from "zod";
+import type { z } from "zod";
 
 export const Route = createFileRoute("/_dashboardLayout/roles/create")({
 	component: RouteComponent,
@@ -38,7 +38,7 @@ function RouteComponent() {
 							description: form.values.description,
 							permissions: form.values.permissions,
 						},
-					})
+					}),
 				)
 			}
 			title="Create New Role"
@@ -68,10 +68,7 @@ function RouteComponent() {
 						label: "Permissions",
 						selectedOptions: form.values.permissions ?? [],
 						onChange: (values) =>
-							form.setFieldValue(
-								"permissions",
-								values as PermissionCode[]
-							),
+							form.setFieldValue("permissions", values as PermissionCode[]),
 						options: Array.from(permissions),
 						error: form.errors.roles,
 					},

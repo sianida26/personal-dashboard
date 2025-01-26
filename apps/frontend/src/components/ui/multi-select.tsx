@@ -7,10 +7,11 @@ import {
 	CommandItem,
 	CommandList,
 } from "@/components/ui/command";
-import { Command as CommandPrimitive } from "cmdk";
-import { LuCheck, LuChevronsUpDown } from "react-icons/lu";
 import { cn } from "@/lib/utils";
-import React, { KeyboardEvent, useCallback, useRef, useState } from "react";
+import { Command as CommandPrimitive } from "cmdk";
+import type React from "react";
+import { type KeyboardEvent, useCallback, useRef, useState } from "react";
+import { LuCheck, LuChevronsUpDown } from "react-icons/lu";
 import { Label } from "./label";
 
 export type BaseFieldProps = {
@@ -52,7 +53,7 @@ export function MultiSelect({
 			const _selectedOptions = selectedOptions.filter((s) => s !== value);
 			onChange?.(_selectedOptions);
 		},
-		[selectedOptions, onChange]
+		[selectedOptions, onChange],
 	);
 
 	const handleKeyDown = useCallback(
@@ -69,7 +70,7 @@ export function MultiSelect({
 				}
 			}
 		},
-		[selectedOptions, onChange]
+		[selectedOptions, onChange],
 	);
 
 	const handleSelect = useCallback(
@@ -85,7 +86,7 @@ export function MultiSelect({
 			setInputValue("");
 			onChange?.(_selectedOptions);
 		},
-		[selectedOptions, onChange]
+		[selectedOptions, onChange],
 	);
 
 	return (
@@ -93,14 +94,14 @@ export function MultiSelect({
 			onKeyDown={handleKeyDown}
 			className={cn(
 				"overflow-visible bg-transparent pt-2 flex flex-col gap-1 h-min",
-				readOnly ? "cursor-not-allowed bg-gray-200" : ""
+				readOnly ? "cursor-not-allowed bg-gray-200" : "",
 			)}
 		>
 			{typeof label === "string" ? <Label>{label}</Label> : label}
 			<div
 				className={cn(
 					"group rounded-md px-3 py-2 text-sm ring-offset-background focus-within:ring-1 focus-within:ring-ring focus-within:ring-offset-2 relative bg-background",
-					error ? "border border-destructive" : "border border-input"
+					error ? "border border-destructive" : "border border-input",
 				)}
 			>
 				<div className="absolute right-2 top-1/2 -translate-y-1/2">
@@ -113,19 +114,13 @@ export function MultiSelect({
 							return opt.value === value;
 						});
 						const label =
-							typeof option === "string"
-								? option
-								: option?.label || value;
+							typeof option === "string" ? option : option?.label || value;
 
 						return (
 							<Badge
 								key={value}
 								variant="secondary"
-								className={cn(
-									readOnly
-										? "cursor-not-allowed opacity-50"
-										: ""
-								)}
+								className={cn(readOnly ? "cursor-not-allowed opacity-50" : "")}
 							>
 								{label}
 								{!readOnly && (
@@ -162,11 +157,7 @@ export function MultiSelect({
 						placeholder={selectedOptions.length ? "" : placeholder}
 						className="ml-2 flex-1 bg-transparent outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
 						onKeyDown={(e) => {
-							if (
-								e.key === "Enter" &&
-								inputValue &&
-								allowCreate
-							) {
+							if (e.key === "Enter" && inputValue && allowCreate) {
 								handleSelect(inputValue);
 							}
 						}}
@@ -181,13 +172,9 @@ export function MultiSelect({
 							<CommandGroup className="overflow-auto">
 								{options.map((option) => {
 									const value =
-										typeof option === "string"
-											? option
-											: option.value;
+										typeof option === "string" ? option : option.value;
 									const label =
-										typeof option === "string"
-											? option
-											: option.label;
+										typeof option === "string" ? option : option.label;
 
 									return (
 										<CommandItem
@@ -205,11 +192,9 @@ export function MultiSelect({
 											<LuCheck
 												className={cn(
 													"h-3 w-3",
-													selectedOptions.includes(
-														value
-													)
+													selectedOptions.includes(value)
 														? "text-primary mr-2"
-														: "hidden"
+														: "hidden",
 												)}
 											/>
 											{label}

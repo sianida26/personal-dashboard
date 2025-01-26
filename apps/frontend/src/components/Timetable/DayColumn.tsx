@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
-import isoWeek from "dayjs/plugin/isoWeek";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import Event from "./types/Event";
+import isoWeek from "dayjs/plugin/isoWeek";
+import type Event from "./types/Event";
 
 dayjs.extend(isoWeek);
 dayjs.extend(customParseFormat);
@@ -42,13 +42,19 @@ export default function DayColumn<T extends Record<string, unknown> & Event>({
 
 				return (
 					// Base Cell
-					<div key={i} className="border-t h-20 relative">
+					<div
+						key={currentDateTime.format("YYYY-MM-DD-HH")}
+						className="border-t h-20 relative"
+					>
 						{renderCell ? (
 							<div className="w-full h-full relative">
 								{renderCell(currentDateTime)}
 							</div>
 						) : (
-							<button className="flex pr-1.5 w-full gap-1 relative hover:bg-gray-100 h-full"></button>
+							<button
+								type="button"
+								className="flex pr-1.5 w-full gap-1 relative hover:bg-gray-100 h-full"
+							/>
 						)}
 
 						{/* Events Container */}
@@ -56,21 +62,15 @@ export default function DayColumn<T extends Record<string, unknown> & Event>({
 							{events
 								.filter((event) => {
 									return (
-										currentDateTime.isSame(
-											event.start,
-											"hour"
-										) ||
+										currentDateTime.isSame(event.start, "hour") ||
 										(currentDateTime.isAfter(event.start) &&
 											currentDateTime.isBefore(event.end))
 									);
 								})
 								.map((event, i) =>
-									currentDateTime.isSame(
-										event.start,
-										"hour"
-									) ? (
+									currentDateTime.isSame(event.start, "hour") ? (
 										<div
-											key={i}
+											key={`${event.title}-${event.start.valueOf()}`}
 											className="w-full z-10 relative pointer-events-auto"
 											style={{
 												minHeight: "min-content",
@@ -78,12 +78,7 @@ export default function DayColumn<T extends Record<string, unknown> & Event>({
 												// The height is calculated from the duration of the event in minutes, converted to a percentage of an hour,
 												// plus an additional number of pixels equivalent to the number of hours in the event duration
 												height: `calc(${
-													(event.end.diff(
-														event.start,
-														"minute"
-													) *
-														100) /
-													60
+													(event.end.diff(event.start, "minute") * 100) / 60
 												}% + ${event.end.diff(event.start, "hour")}px)`,
 
 												// The top position is calculated from the start minute of the event, converted to a percentage of an hour
@@ -93,14 +88,20 @@ export default function DayColumn<T extends Record<string, unknown> & Event>({
 											{renderEvent ? (
 												renderEvent(event)
 											) : (
-												<button className="bg-primary-100 rounded-sm text-sm text-left pl-1 text-primary-800 font-medium w-full h-full flex items-start justify-start">
+												<button
+													type="button"
+													className="bg-primary-100 rounded-sm text-sm text-left pl-1 text-primary-800 font-medium w-full h-full flex items-start justify-start"
+												>
 													{event.title}
 												</button>
 											)}
 										</div>
 									) : (
-										<div className="w-full"></div>
-									)
+										<div
+											key={`${event.title}-${event.start.valueOf()}-${i}`}
+											className="w-full"
+										/>
+									),
 								)}
 						</div>
 					</div>

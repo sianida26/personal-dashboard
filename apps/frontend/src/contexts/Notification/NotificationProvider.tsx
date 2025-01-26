@@ -1,12 +1,12 @@
-import { ReactNode } from "@tanstack/react-router";
+import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/hooks/use-toast";
+import type { ReactNode } from "@tanstack/react-router";
 import { useState } from "react";
 import {
-	Notification,
+	type Notification,
 	NotificationContext,
 	useNotification,
 } from "./NotificationContext";
-import { Toaster } from "@/components/ui/toaster";
-import { useToast } from "@/hooks/use-toast";
 
 let showNotification: (notification: Omit<Notification, "id">) => void;
 

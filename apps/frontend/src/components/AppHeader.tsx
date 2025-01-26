@@ -1,5 +1,5 @@
-import { SidebarTrigger } from "./ui/sidebar";
 import { useMatches } from "@tanstack/react-router";
+import { SidebarTrigger } from "./ui/sidebar";
 
 export default function AppHeader() {
 	const matches = useMatches();
@@ -16,7 +16,7 @@ export default function AppHeader() {
 			</div>
 
 			{/* RIght Side */}
-			<div></div>
+			<div />
 		</div>
 	);
 }

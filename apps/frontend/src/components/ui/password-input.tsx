@@ -1,8 +1,8 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
-import { Input, InputProps } from "./input";
 import { TbEye, TbEyeClosed } from "react-icons/tb";
+import { Input, type InputProps } from "./input";
 
 export interface PasswordInputProps extends InputProps {
 	isPasswordVisible?: boolean;
@@ -18,10 +18,9 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
 			onPasswordVisibilityChange,
 			...props
 		},
-		ref
+		ref,
 	) => {
-		const [internalVisibility, setInternalVisibility] =
-			React.useState(false);
+		const [internalVisibility, setInternalVisibility] = React.useState(false);
 
 		const isPasswordVisible = controlledVisibility ?? internalVisibility;
 
@@ -57,7 +56,7 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
 				</div>
 			</div>
 		);
-	}
+	},
 );
 
 PasswordInput.displayName = "PasswordInput";

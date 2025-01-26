@@ -1,15 +1,16 @@
 import FormResponseError from "@/errors/FormResponseError";
 import { useToast } from "@/hooks/use-toast";
-import { UseFormReturnType } from "@mantine/form";
+import { cn } from "@/lib/utils";
+import type { UseFormReturnType } from "@mantine/form";
 import {
 	useIsMutating,
 	useMutation,
 	useQueryClient,
 } from "@tanstack/react-query";
-import React, { useMemo } from "react";
-import { Button } from "./ui/button";
+import type React from "react";
+import { useMemo } from "react";
 import { TbDeviceFloppy } from "react-icons/tb";
-import { cn } from "@/lib/utils";
+import { Button } from "./ui/button";
 
 export type FormTemplateProps<TForm> = {
 	children: React.ReactNode;
@@ -18,7 +19,9 @@ export type FormTemplateProps<TForm> = {
 	onSuccess?: Function;
 	onSettled?: Function;
 	onCancel?: Function;
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	invalidateQueries?: any[];
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	mutationKey?: any[];
 	successToastMessage?: string;
 	buttons?: Partial<{

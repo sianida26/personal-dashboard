@@ -1,5 +1,5 @@
-import React from "react";
-import FormTemplate, { FormTemplateProps } from "./FormTemplate";
+import type React from "react";
+import FormTemplate, { type FormTemplateProps } from "./FormTemplate";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 
 export type ModalFormTemplateProps<TForm> = FormTemplateProps<TForm> & {
@@ -9,7 +9,7 @@ export type ModalFormTemplateProps<TForm> = FormTemplateProps<TForm> & {
 };
 
 export default function ModalFormTemplate<TForm>(
-	props: ModalFormTemplateProps<TForm>
+	props: ModalFormTemplateProps<TForm>,
 ) {
 	const handleCloseModal = () => {
 		props.onClose?.();

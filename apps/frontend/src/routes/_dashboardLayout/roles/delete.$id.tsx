@@ -1,7 +1,3 @@
-import client from "@/honoClient";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import fetchRPC from "@/utils/fetchRPC";
 import {
 	AlertDialog,
 	AlertDialogContent,
@@ -11,7 +7,11 @@ import {
 	AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import client from "@/honoClient";
 import { useToast } from "@/hooks/use-toast";
+import fetchRPC from "@/utils/fetchRPC";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_dashboardLayout/roles/delete/$id")({
 	component: RouteComponent,
@@ -35,7 +35,7 @@ function RouteComponent() {
 					param: {
 						id,
 					},
-				})
+				}),
 			);
 		},
 	});
@@ -48,7 +48,7 @@ function RouteComponent() {
 					param: {
 						id,
 					},
-				})
+				}),
 			);
 		},
 		onError: (error: unknown) => {
@@ -82,16 +82,10 @@ function RouteComponent() {
 		<AlertDialog open={isModalOpen}>
 			<AlertDialogContent>
 				<AlertDialogHeader>
-					<AlertDialogTitle>
-						Are you absolutely sure?
-					</AlertDialogTitle>
+					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
 					<AlertDialogDescription>
-						This action cannot be undone. This will permanently
-						delete the data of role{" "}
-						<b className="text-foreground">
-							{roleQuery.data?.name}
-						</b>
-						.
+						This action cannot be undone. This will permanently delete the data
+						of role <b className="text-foreground">{roleQuery.data?.name}</b>.
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter className="gap-4">

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Input, InputProps } from "./input";
+import { Input, type InputProps } from "./input";
 
 export interface FileInputProps extends InputProps {}
 
@@ -13,7 +13,7 @@ const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(
 				</div>
 			</div>
 		);
-	}
+	},
 );
 
 FileInput.displayName = "FileInput";

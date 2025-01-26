@@ -13,7 +13,7 @@ export interface AuthContextType {
 	accessToken: string | null;
 	saveAuthData: (
 		userData: NonNullable<AuthContextType["user"]>,
-		accessToken?: NonNullable<AuthContextType["accessToken"]>
+		accessToken?: NonNullable<AuthContextType["accessToken"]>,
 	) => void;
 	clearAuthData: () => void;
 	checkPermission: (permission: string) => boolean;

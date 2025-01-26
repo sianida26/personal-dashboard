@@ -30,9 +30,7 @@ function RouteComponent() {
 							<Button
 								variant="ghost"
 								onClick={() =>
-									column.toggleSorting(
-										column.getIsSorted() === "asc"
-									)
+									column.toggleSorting(column.getIsSorted() === "asc")
 								}
 							>
 								Name
@@ -57,8 +55,7 @@ function RouteComponent() {
 									label: "Edit",
 									permission: true,
 									action: `./edit/${props.row.original.id}`,
-									className:
-										"bg-yellow-500 hover:bg-yellow-600",
+									className: "bg-yellow-500 hover:bg-yellow-600",
 									icon: <TbPencil />,
 								},
 								{

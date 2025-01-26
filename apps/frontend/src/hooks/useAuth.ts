@@ -1,5 +1,5 @@
 import AuthContext from "@/contexts/Auth/AuthContext";
-import { ExtendedPermissionCodeWithAll, PermissionCode } from "@repo/data";
+import type { ExtendedPermissionCodeWithAll, PermissionCode } from "@repo/data";
 import { useNavigate } from "@tanstack/react-router";
 import { useContext } from "react";
 
@@ -51,7 +51,7 @@ const useAuth = () => {
  * ```
  */
 export const usePermissions = (
-	permissions: ExtendedPermissionCodeWithAll[] | ExtendedPermissionCodeWithAll
+	permissions: ExtendedPermissionCodeWithAll[] | ExtendedPermissionCodeWithAll,
 ) => {
 	const { user, isAuthenticated } = useAuth();
 	const navigate = useNavigate();
