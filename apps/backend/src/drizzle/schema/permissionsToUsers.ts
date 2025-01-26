@@ -8,10 +8,10 @@ export const permissionsToUsers = pgTable(
 	{
 		userId: text("userId")
 			.notNull()
-			.references(() => users.id),
+			.references(() => users.id, { onDelete: "cascade" }),
 		permissionId: text("permissionId")
 			.notNull()
-			.references(() => permissionsSchema.id),
+			.references(() => permissionsSchema.id, { onDelete: "cascade" }),
 	},
 	(table) => ({
 		pk: primaryKey({

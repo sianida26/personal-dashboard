@@ -8,10 +8,10 @@ export const rolesToUsers = pgTable(
 	{
 		userId: text("userId")
 			.notNull()
-			.references(() => users.id),
+			.references(() => users.id, { onDelete: "cascade" }),
 		roleId: text("roleId")
 			.notNull()
-			.references(() => rolesSchema.id),
+			.references(() => rolesSchema.id, { onDelete: "cascade" }),
 	},
 	(table) => ({
 		pk: primaryKey({
