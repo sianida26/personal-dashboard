@@ -66,7 +66,7 @@ const usersRoute = new Hono<HonoEnv>()
 					)
 				)
 				.orderBy(desc(users.createdAt))
-				.offset(page * limit)
+				.offset((page - 1) * limit)
 				.limit(limit);
 
 			return c.json({

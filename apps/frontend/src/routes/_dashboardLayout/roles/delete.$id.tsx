@@ -44,11 +44,10 @@ function RouteComponent() {
 		mutationKey: ["deleteRoleMutation"],
 		mutationFn: async ({ id }: { id: string }) => {
 			return await fetchRPC(
-				client.users[":id"].$delete({
+				client.roles[":id"].$delete({
 					param: {
 						id,
 					},
-					form: {},
 				})
 			);
 		},

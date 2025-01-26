@@ -53,7 +53,7 @@ const rolesRoute = new Hono<HonoEnv>()
 					totalPages: Math.ceil(
 						(Number(result[0]?.fullCount) ?? 0) / limit
 					),
-					totalItems: Number(result[0]?.fullCount) ?? 0,
+					totalItems: (Number(result[0]?.fullCount) ?? 1) - 1, //exclude Super Admin
 					perPage: limit,
 				},
 			});
