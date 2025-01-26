@@ -1,23 +1,47 @@
 import * as React from "react";
-
 import { cn } from "@/lib/utils";
+import { Label } from "./label";
 
-export type TextareaProps = React.ComponentProps<"textarea">;
+export interface TextareaProps
+	extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+	label?: string;
+	error?: string;
+	withAsterisk?: boolean;
+	classNames?: {
+		textarea?: string;
+	};
+}
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-	({ className, ...props }, ref) => {
+	({ className, label, error, withAsterisk, classNames, ...props }, ref) => {
 		return (
-			<textarea
-				className={cn(
-					"flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-					className
+			<div className={cn("relative w-full", className)}>
+				{label && (
+					<span>
+						<Label htmlFor={props.id} className="">
+							{label}
+						</Label>
+						{withAsterisk && (
+							<span className="text-red-500">*</span>
+						)}
+					</span>
 				)}
-				ref={ref}
-				{...props}
-			/>
+				<textarea
+					className={cn(
+						"flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+						classNames?.textarea
+					)}
+					ref={ref}
+					{...props}
+				/>
+
+				{/* Error message */}
+				{error && <p className="text-sm text-destructive">{error}</p>}
+			</div>
 		);
 	}
 );
+
 Textarea.displayName = "Textarea";
 
 export { Textarea };
