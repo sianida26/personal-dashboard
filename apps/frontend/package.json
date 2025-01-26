@@ -63,8 +63,6 @@
 		"@types/react-dom": "^18.3.5",
 		"@vitejs/plugin-react-swc": "^3.7.2",
 		"autoprefixer": "^10.4.20",
-		"eslint-plugin-react-hooks": "^5.1.0",
-		"eslint-plugin-react-refresh": "^0.4.18",
 		"postcss": "^8.5.1",
 		"postcss-preset-mantine": "^1.17.0",
 		"postcss-simple-vars": "^7.0.1",
