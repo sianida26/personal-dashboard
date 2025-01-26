@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import client from "@/honoClient";
 import createActionButtons from "@/utils/createActionButton";
 import { createFileRoute } from "@tanstack/react-router";
-import { TbEye, TbPencil, TbTrash } from "react-icons/tb";
+import { TbPencil, TbTrash } from "react-icons/tb";
 
 export const Route = createFileRoute("/_dashboardLayout/roles")({
 	component: RouteComponent,
@@ -53,14 +53,6 @@ function RouteComponent() {
 					cell: (props) => (
 						<div className="flex gap-2">
 							{createActionButtons([
-								{
-									label: "Detail",
-									permission: true,
-									action: `./detail/${props.row.original.id}`,
-									className:
-										"bg-green-500 hover:bg-green-600",
-									icon: <TbEye />,
-								},
 								{
 									label: "Edit",
 									permission: true,

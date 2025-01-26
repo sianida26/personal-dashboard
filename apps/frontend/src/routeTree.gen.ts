@@ -27,6 +27,8 @@ import { Route as DashboardLayoutDevCreateImport } from './routes/_dashboardLayo
 import { Route as DashboardLayoutUsersEditUserIdImport } from './routes/_dashboardLayout/users/edit.$userId'
 import { Route as DashboardLayoutUsersDetailUserIdImport } from './routes/_dashboardLayout/users/detail.$userId'
 import { Route as DashboardLayoutUsersDeleteUserIdImport } from './routes/_dashboardLayout/users/delete.$userId'
+import { Route as DashboardLayoutRolesEditIdImport } from './routes/_dashboardLayout/roles/edit.$id'
+import { Route as DashboardLayoutRolesDeleteIdImport } from './routes/_dashboardLayout/roles/delete.$id'
 import { Route as DashboardLayoutDevEditIdImport } from './routes/_dashboardLayout/dev/edit.$id'
 import { Route as DashboardLayoutDevDetailIdImport } from './routes/_dashboardLayout/dev/detail.$id'
 import { Route as DashboardLayoutDevDeleteIdImport } from './routes/_dashboardLayout/dev/delete.$id'
@@ -150,6 +152,21 @@ const DashboardLayoutUsersDeleteUserIdRoute =
     id: '/delete/$userId',
     path: '/delete/$userId',
     getParentRoute: () => DashboardLayoutUsersRoute,
+  } as any)
+
+const DashboardLayoutRolesEditIdRoute = DashboardLayoutRolesEditIdImport.update(
+  {
+    id: '/edit/$id',
+    path: '/edit/$id',
+    getParentRoute: () => DashboardLayoutRolesRoute,
+  } as any,
+)
+
+const DashboardLayoutRolesDeleteIdRoute =
+  DashboardLayoutRolesDeleteIdImport.update({
+    id: '/delete/$id',
+    path: '/delete/$id',
+    getParentRoute: () => DashboardLayoutRolesRoute,
   } as any)
 
 const DashboardLayoutDevEditIdRoute = DashboardLayoutDevEditIdImport.update({
@@ -297,6 +314,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutDevEditIdImport
       parentRoute: typeof DashboardLayoutDevImport
     }
+    '/_dashboardLayout/roles/delete/$id': {
+      id: '/_dashboardLayout/roles/delete/$id'
+      path: '/delete/$id'
+      fullPath: '/roles/delete/$id'
+      preLoaderRoute: typeof DashboardLayoutRolesDeleteIdImport
+      parentRoute: typeof DashboardLayoutRolesImport
+    }
+    '/_dashboardLayout/roles/edit/$id': {
+      id: '/_dashboardLayout/roles/edit/$id'
+      path: '/edit/$id'
+      fullPath: '/roles/edit/$id'
+      preLoaderRoute: typeof DashboardLayoutRolesEditIdImport
+      parentRoute: typeof DashboardLayoutRolesImport
+    }
     '/_dashboardLayout/users/delete/$userId': {
       id: '/_dashboardLayout/users/delete/$userId'
       path: '/delete/$userId'
@@ -344,10 +375,14 @@ const DashboardLayoutDevRouteWithChildren =
 
 interface DashboardLayoutRolesRouteChildren {
   DashboardLayoutRolesCreateRoute: typeof DashboardLayoutRolesCreateRoute
+  DashboardLayoutRolesDeleteIdRoute: typeof DashboardLayoutRolesDeleteIdRoute
+  DashboardLayoutRolesEditIdRoute: typeof DashboardLayoutRolesEditIdRoute
 }
 
 const DashboardLayoutRolesRouteChildren: DashboardLayoutRolesRouteChildren = {
   DashboardLayoutRolesCreateRoute: DashboardLayoutRolesCreateRoute,
+  DashboardLayoutRolesDeleteIdRoute: DashboardLayoutRolesDeleteIdRoute,
+  DashboardLayoutRolesEditIdRoute: DashboardLayoutRolesEditIdRoute,
 }
 
 const DashboardLayoutRolesRouteWithChildren =
@@ -408,6 +443,8 @@ export interface FileRoutesByFullPath {
   '/dev/delete/$id': typeof DashboardLayoutDevDeleteIdRoute
   '/dev/detail/$id': typeof DashboardLayoutDevDetailIdRoute
   '/dev/edit/$id': typeof DashboardLayoutDevEditIdRoute
+  '/roles/delete/$id': typeof DashboardLayoutRolesDeleteIdRoute
+  '/roles/edit/$id': typeof DashboardLayoutRolesEditIdRoute
   '/users/delete/$userId': typeof DashboardLayoutUsersDeleteUserIdRoute
   '/users/detail/$userId': typeof DashboardLayoutUsersDetailUserIdRoute
   '/users/edit/$userId': typeof DashboardLayoutUsersEditUserIdRoute
@@ -431,6 +468,8 @@ export interface FileRoutesByTo {
   '/dev/delete/$id': typeof DashboardLayoutDevDeleteIdRoute
   '/dev/detail/$id': typeof DashboardLayoutDevDetailIdRoute
   '/dev/edit/$id': typeof DashboardLayoutDevEditIdRoute
+  '/roles/delete/$id': typeof DashboardLayoutRolesDeleteIdRoute
+  '/roles/edit/$id': typeof DashboardLayoutRolesEditIdRoute
   '/users/delete/$userId': typeof DashboardLayoutUsersDeleteUserIdRoute
   '/users/detail/$userId': typeof DashboardLayoutUsersDetailUserIdRoute
   '/users/edit/$userId': typeof DashboardLayoutUsersEditUserIdRoute
@@ -455,6 +494,8 @@ export interface FileRoutesById {
   '/_dashboardLayout/dev/delete/$id': typeof DashboardLayoutDevDeleteIdRoute
   '/_dashboardLayout/dev/detail/$id': typeof DashboardLayoutDevDetailIdRoute
   '/_dashboardLayout/dev/edit/$id': typeof DashboardLayoutDevEditIdRoute
+  '/_dashboardLayout/roles/delete/$id': typeof DashboardLayoutRolesDeleteIdRoute
+  '/_dashboardLayout/roles/edit/$id': typeof DashboardLayoutRolesEditIdRoute
   '/_dashboardLayout/users/delete/$userId': typeof DashboardLayoutUsersDeleteUserIdRoute
   '/_dashboardLayout/users/detail/$userId': typeof DashboardLayoutUsersDetailUserIdRoute
   '/_dashboardLayout/users/edit/$userId': typeof DashboardLayoutUsersEditUserIdRoute
@@ -480,6 +521,8 @@ export interface FileRouteTypes {
     | '/dev/delete/$id'
     | '/dev/detail/$id'
     | '/dev/edit/$id'
+    | '/roles/delete/$id'
+    | '/roles/edit/$id'
     | '/users/delete/$userId'
     | '/users/detail/$userId'
     | '/users/edit/$userId'
@@ -502,6 +545,8 @@ export interface FileRouteTypes {
     | '/dev/delete/$id'
     | '/dev/detail/$id'
     | '/dev/edit/$id'
+    | '/roles/delete/$id'
+    | '/roles/edit/$id'
     | '/users/delete/$userId'
     | '/users/detail/$userId'
     | '/users/edit/$userId'
@@ -524,6 +569,8 @@ export interface FileRouteTypes {
     | '/_dashboardLayout/dev/delete/$id'
     | '/_dashboardLayout/dev/detail/$id'
     | '/_dashboardLayout/dev/edit/$id'
+    | '/_dashboardLayout/roles/delete/$id'
+    | '/_dashboardLayout/roles/edit/$id'
     | '/_dashboardLayout/users/delete/$userId'
     | '/_dashboardLayout/users/detail/$userId'
     | '/_dashboardLayout/users/edit/$userId'
@@ -594,7 +641,9 @@ export const routeTree = rootRoute
       "filePath": "_dashboardLayout/roles.tsx",
       "parent": "/_dashboardLayout",
       "children": [
-        "/_dashboardLayout/roles/create"
+        "/_dashboardLayout/roles/create",
+        "/_dashboardLayout/roles/delete/$id",
+        "/_dashboardLayout/roles/edit/$id"
       ]
     },
     "/_dashboardLayout/users": {
@@ -648,6 +697,14 @@ export const routeTree = rootRoute
     "/_dashboardLayout/dev/edit/$id": {
       "filePath": "_dashboardLayout/dev/edit.$id.tsx",
       "parent": "/_dashboardLayout/dev"
+    },
+    "/_dashboardLayout/roles/delete/$id": {
+      "filePath": "_dashboardLayout/roles/delete.$id.tsx",
+      "parent": "/_dashboardLayout/roles"
+    },
+    "/_dashboardLayout/roles/edit/$id": {
+      "filePath": "_dashboardLayout/roles/edit.$id.tsx",
+      "parent": "/_dashboardLayout/roles"
     },
     "/_dashboardLayout/users/delete/$userId": {
       "filePath": "_dashboardLayout/users/delete.$userId.tsx",
