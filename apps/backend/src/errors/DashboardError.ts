@@ -1,4 +1,4 @@
-import { StatusCode } from "hono/utils/http-status";
+import { ContentfulStatusCode } from "hono/utils/http-status";
 import DashboardErrorParameter from "../types/DashboardErrorParameter";
 
 /**
@@ -8,7 +8,7 @@ import DashboardErrorParameter from "../types/DashboardErrorParameter";
  */
 class DashboardError extends Error {
 	public readonly errorCode: string;
-	public readonly statusCode: StatusCode = 500;
+	public readonly statusCode: ContentfulStatusCode = 500;
 	public readonly formErrors?: Record<string, string>;
 	public readonly severity: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
 

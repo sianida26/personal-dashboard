@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import jwt, { SignOptions } from "jsonwebtoken";
 import { getPrivateKey, getPublicKey } from "./secretManager";
 import DashboardError from "../errors/DashboardError";
 
@@ -10,8 +10,8 @@ import DashboardError from "../errors/DashboardError";
 const algorithm: jwt.Algorithm = "RS256";
 
 // Expiry settings for tokens. 'null' signifies no expiry.
-export const accessTokenExpiry: number | string | null = null;
-export const refreshTokenExpiry: number | string | null = "30d";
+export const accessTokenExpiry: jwt.SignOptions["expiresIn"] = "15m";
+export const refreshTokenExpiry: jwt.SignOptions["expiresIn"] = "30d";
 
 // Interfaces to describe the payload structure for access and refresh tokens.
 interface AccessTokenPayload {
@@ -29,10 +29,11 @@ interface RefreshTokenPayload {
  * @returns A promise that resolves to the generated JWT string.
  */
 export const generateAccessToken = async (payload: AccessTokenPayload) => {
-	const token = jwt.sign(payload, getPrivateKey(), {
+	const options: SignOptions = {
 		algorithm,
 		...(accessTokenExpiry ? { expiresIn: accessTokenExpiry } : {}),
-	});
+	};
+	const token = jwt.sign(payload, getPrivateKey(), options);
 	return token;
 };
 

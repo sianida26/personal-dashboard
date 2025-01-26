@@ -1,8 +1,8 @@
-import { StatusCode } from "hono/utils/http-status";
+import { ContentfulStatusCode } from "hono/utils/http-status";
 
 interface DashboardErrorParameter {
 	errorCode: string;
-	statusCode?: StatusCode;
+	statusCode?: ContentfulStatusCode;
 	message: string;
 	formErrors?: Record<string, string>;
 	severity?: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
