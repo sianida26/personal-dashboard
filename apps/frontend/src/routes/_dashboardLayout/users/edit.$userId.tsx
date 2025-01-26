@@ -57,7 +57,15 @@ function RouteComponent() {
 
 	const { data: roles } = useQuery({
 		queryKey: ["roles"],
-		queryFn: () => fetchRPC(client.roles.$get()),
+		queryFn: () =>
+			fetchRPC(
+				client.roles.$get({
+					query: {
+						page: "1",
+						limit: "1000",
+					},
+				})
+			),
 	});
 
 	return (
@@ -149,7 +157,7 @@ function RouteComponent() {
 						onChange: (values) =>
 							form.setFieldValue("roles", values),
 						options:
-							roles?.map((role) => ({
+							roles?.data?.map((role) => ({
 								value: role.id,
 								label: role.name,
 							})) ?? [],

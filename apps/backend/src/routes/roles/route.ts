@@ -3,17 +3,21 @@ import db from "../../drizzle";
 import { rolesSchema } from "../../drizzle/schema/roles";
 import checkPermission from "../../middlewares/checkPermission";
 import requestValidator from "../../utils/requestValidator";
-import { paginationRequestSchema } from "@repo/validation";
-import { desc, sql } from "drizzle-orm";
+import { paginationRequestSchema, roleFormSchema } from "@repo/validation";
+import { and, desc, eq, not, sql } from "drizzle-orm";
+import HonoEnv from "../../types/HonoEnv";
+import authInfo from "../../middlewares/authInfo";
+import { permissionsToRoles } from "../../drizzle/schema/permissionsToRoles";
 
-const rolesRoute = new Hono()
-	//get all permissions
+const rolesRoute = new Hono<HonoEnv>()
+	.use(authInfo)
+	//get all roles, but excludes the Super Admin role
 	.get(
 		"/",
 		checkPermission("roles.read"),
 		requestValidator("query", paginationRequestSchema),
 		async (c) => {
-			const { includeTrashed, page, limit, q } = c.req.valid("query");
+			const { page, limit, q } = c.req.valid("query");
 
 			const totalCountQuery =
 				sql<number>`(SELECT count(*) FROM ${rolesSchema})`.as(
@@ -25,9 +29,19 @@ const rolesRoute = new Hono()
 				extras: {
 					fullCount: totalCountQuery,
 				},
+				with: {
+					permissionsToRoles: {
+						with: {
+							permission: true,
+						},
+					},
+				},
 				offset: page * limit,
 				limit,
-				where: q ? sql`(${rolesSchema.name} ILIKE ${q})` : undefined,
+				where: and(
+					not(eq(rolesSchema.name, "Super Admin")),
+					q ? sql`(${rolesSchema.name} ILIKE ${q})` : undefined
+				),
 			});
 
 			return c.json({
@@ -41,6 +55,41 @@ const rolesRoute = new Hono()
 					perPage: limit,
 				},
 			});
+		}
+	)
+	//create new permission
+	.post(
+		"/",
+		checkPermission("roles.create"),
+		requestValidator("json", roleFormSchema),
+		async (c) => {
+			const { name, code, description, permissions } =
+				c.req.valid("json");
+
+			const [role] = await db
+				.insert(rolesSchema)
+				.values({
+					name,
+					code: code ?? name,
+					description,
+				})
+				.returning();
+
+			if (permissions?.length) {
+				const permissionRecords =
+					await db.query.permissionsSchema.findMany();
+
+				await db.insert(permissionsToRoles).values(
+					permissions.map((permissionCode) => ({
+						roleId: role.id,
+						permissionId: permissionRecords.find(
+							(x) => x.code === permissionCode
+						)!.id,
+					}))
+				);
+			}
+
+			return c.json(role);
 		}
 	);
 

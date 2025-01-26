@@ -19,7 +19,15 @@ function RouteComponent() {
 
 	const { data: roles } = useQuery({
 		queryKey: ["roles"],
-		queryFn: () => fetchRPC(client.roles.$get()),
+		queryFn: () =>
+			fetchRPC(
+				client.roles.$get({
+					query: {
+						page: "1",
+						limit: "1000",
+					},
+				})
+			),
 	});
 
 	const detailEndpoint = client.users[":id"].$get;
@@ -89,7 +97,7 @@ function RouteComponent() {
 						selectedOptions:
 							form.values.roles?.map((x) => x.id) ?? [],
 						options:
-							roles?.map((role) => ({
+							roles?.data?.map((role) => ({
 								value: role.id,
 								label: role.name,
 							})) ?? [],

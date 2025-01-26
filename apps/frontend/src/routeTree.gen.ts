@@ -21,6 +21,7 @@ import { Route as DashboardLayoutDevImport } from './routes/_dashboardLayout/dev
 import { Route as DashboardLayoutTimetableIndexImport } from './routes/_dashboardLayout/timetable/index'
 import { Route as DashboardLayoutDashboardIndexImport } from './routes/_dashboardLayout/dashboard/index'
 import { Route as DashboardLayoutUsersCreateImport } from './routes/_dashboardLayout/users/create'
+import { Route as DashboardLayoutRolesCreateImport } from './routes/_dashboardLayout/roles/create'
 import { Route as DashboardLayoutDevMultiSelectImport } from './routes/_dashboardLayout/dev/multi-select'
 import { Route as DashboardLayoutDevCreateImport } from './routes/_dashboardLayout/dev/create'
 import { Route as DashboardLayoutUsersEditUserIdImport } from './routes/_dashboardLayout/users/edit.$userId'
@@ -106,6 +107,14 @@ const DashboardLayoutUsersCreateRoute = DashboardLayoutUsersCreateImport.update(
     id: '/create',
     path: '/create',
     getParentRoute: () => DashboardLayoutUsersRoute,
+  } as any,
+)
+
+const DashboardLayoutRolesCreateRoute = DashboardLayoutRolesCreateImport.update(
+  {
+    id: '/create',
+    path: '/create',
+    getParentRoute: () => DashboardLayoutRolesRoute,
   } as any,
 )
 
@@ -239,6 +248,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutDevMultiSelectImport
       parentRoute: typeof DashboardLayoutDevImport
     }
+    '/_dashboardLayout/roles/create': {
+      id: '/_dashboardLayout/roles/create'
+      path: '/create'
+      fullPath: '/roles/create'
+      preLoaderRoute: typeof DashboardLayoutRolesCreateImport
+      parentRoute: typeof DashboardLayoutRolesImport
+    }
     '/_dashboardLayout/users/create': {
       id: '/_dashboardLayout/users/create'
       path: '/create'
@@ -326,6 +342,17 @@ const DashboardLayoutDevRouteChildren: DashboardLayoutDevRouteChildren = {
 const DashboardLayoutDevRouteWithChildren =
   DashboardLayoutDevRoute._addFileChildren(DashboardLayoutDevRouteChildren)
 
+interface DashboardLayoutRolesRouteChildren {
+  DashboardLayoutRolesCreateRoute: typeof DashboardLayoutRolesCreateRoute
+}
+
+const DashboardLayoutRolesRouteChildren: DashboardLayoutRolesRouteChildren = {
+  DashboardLayoutRolesCreateRoute: DashboardLayoutRolesCreateRoute,
+}
+
+const DashboardLayoutRolesRouteWithChildren =
+  DashboardLayoutRolesRoute._addFileChildren(DashboardLayoutRolesRouteChildren)
+
 interface DashboardLayoutUsersRouteChildren {
   DashboardLayoutUsersCreateRoute: typeof DashboardLayoutUsersCreateRoute
   DashboardLayoutUsersDeleteUserIdRoute: typeof DashboardLayoutUsersDeleteUserIdRoute
@@ -345,7 +372,7 @@ const DashboardLayoutUsersRouteWithChildren =
 
 interface DashboardLayoutRouteChildren {
   DashboardLayoutDevRoute: typeof DashboardLayoutDevRouteWithChildren
-  DashboardLayoutRolesRoute: typeof DashboardLayoutRolesRoute
+  DashboardLayoutRolesRoute: typeof DashboardLayoutRolesRouteWithChildren
   DashboardLayoutUsersRoute: typeof DashboardLayoutUsersRouteWithChildren
   DashboardLayoutDashboardIndexRoute: typeof DashboardLayoutDashboardIndexRoute
   DashboardLayoutTimetableIndexRoute: typeof DashboardLayoutTimetableIndexRoute
@@ -353,7 +380,7 @@ interface DashboardLayoutRouteChildren {
 
 const DashboardLayoutRouteChildren: DashboardLayoutRouteChildren = {
   DashboardLayoutDevRoute: DashboardLayoutDevRouteWithChildren,
-  DashboardLayoutRolesRoute: DashboardLayoutRolesRoute,
+  DashboardLayoutRolesRoute: DashboardLayoutRolesRouteWithChildren,
   DashboardLayoutUsersRoute: DashboardLayoutUsersRouteWithChildren,
   DashboardLayoutDashboardIndexRoute: DashboardLayoutDashboardIndexRoute,
   DashboardLayoutTimetableIndexRoute: DashboardLayoutTimetableIndexRoute,
@@ -368,12 +395,13 @@ export interface FileRoutesByFullPath {
   '/403': typeof R403Route
   '': typeof DashboardLayoutRouteWithChildren
   '/dev': typeof DashboardLayoutDevRouteWithChildren
-  '/roles': typeof DashboardLayoutRolesRoute
+  '/roles': typeof DashboardLayoutRolesRouteWithChildren
   '/users': typeof DashboardLayoutUsersRouteWithChildren
   '/login': typeof LoginIndexLazyRoute
   '/logout': typeof LogoutIndexLazyRoute
   '/dev/create': typeof DashboardLayoutDevCreateRoute
   '/dev/multi-select': typeof DashboardLayoutDevMultiSelectRoute
+  '/roles/create': typeof DashboardLayoutRolesCreateRoute
   '/users/create': typeof DashboardLayoutUsersCreateRoute
   '/dashboard': typeof DashboardLayoutDashboardIndexRoute
   '/timetable': typeof DashboardLayoutTimetableIndexRoute
@@ -390,12 +418,13 @@ export interface FileRoutesByTo {
   '/403': typeof R403Route
   '': typeof DashboardLayoutRouteWithChildren
   '/dev': typeof DashboardLayoutDevRouteWithChildren
-  '/roles': typeof DashboardLayoutRolesRoute
+  '/roles': typeof DashboardLayoutRolesRouteWithChildren
   '/users': typeof DashboardLayoutUsersRouteWithChildren
   '/login': typeof LoginIndexLazyRoute
   '/logout': typeof LogoutIndexLazyRoute
   '/dev/create': typeof DashboardLayoutDevCreateRoute
   '/dev/multi-select': typeof DashboardLayoutDevMultiSelectRoute
+  '/roles/create': typeof DashboardLayoutRolesCreateRoute
   '/users/create': typeof DashboardLayoutUsersCreateRoute
   '/dashboard': typeof DashboardLayoutDashboardIndexRoute
   '/timetable': typeof DashboardLayoutTimetableIndexRoute
@@ -413,12 +442,13 @@ export interface FileRoutesById {
   '/403': typeof R403Route
   '/_dashboardLayout': typeof DashboardLayoutRouteWithChildren
   '/_dashboardLayout/dev': typeof DashboardLayoutDevRouteWithChildren
-  '/_dashboardLayout/roles': typeof DashboardLayoutRolesRoute
+  '/_dashboardLayout/roles': typeof DashboardLayoutRolesRouteWithChildren
   '/_dashboardLayout/users': typeof DashboardLayoutUsersRouteWithChildren
   '/login/': typeof LoginIndexLazyRoute
   '/logout/': typeof LogoutIndexLazyRoute
   '/_dashboardLayout/dev/create': typeof DashboardLayoutDevCreateRoute
   '/_dashboardLayout/dev/multi-select': typeof DashboardLayoutDevMultiSelectRoute
+  '/_dashboardLayout/roles/create': typeof DashboardLayoutRolesCreateRoute
   '/_dashboardLayout/users/create': typeof DashboardLayoutUsersCreateRoute
   '/_dashboardLayout/dashboard/': typeof DashboardLayoutDashboardIndexRoute
   '/_dashboardLayout/timetable/': typeof DashboardLayoutTimetableIndexRoute
@@ -443,6 +473,7 @@ export interface FileRouteTypes {
     | '/logout'
     | '/dev/create'
     | '/dev/multi-select'
+    | '/roles/create'
     | '/users/create'
     | '/dashboard'
     | '/timetable'
@@ -464,6 +495,7 @@ export interface FileRouteTypes {
     | '/logout'
     | '/dev/create'
     | '/dev/multi-select'
+    | '/roles/create'
     | '/users/create'
     | '/dashboard'
     | '/timetable'
@@ -485,6 +517,7 @@ export interface FileRouteTypes {
     | '/logout/'
     | '/_dashboardLayout/dev/create'
     | '/_dashboardLayout/dev/multi-select'
+    | '/_dashboardLayout/roles/create'
     | '/_dashboardLayout/users/create'
     | '/_dashboardLayout/dashboard/'
     | '/_dashboardLayout/timetable/'
@@ -559,7 +592,10 @@ export const routeTree = rootRoute
     },
     "/_dashboardLayout/roles": {
       "filePath": "_dashboardLayout/roles.tsx",
-      "parent": "/_dashboardLayout"
+      "parent": "/_dashboardLayout",
+      "children": [
+        "/_dashboardLayout/roles/create"
+      ]
     },
     "/_dashboardLayout/users": {
       "filePath": "_dashboardLayout/users.tsx",
@@ -584,6 +620,10 @@ export const routeTree = rootRoute
     "/_dashboardLayout/dev/multi-select": {
       "filePath": "_dashboardLayout/dev/multi-select.tsx",
       "parent": "/_dashboardLayout/dev"
+    },
+    "/_dashboardLayout/roles/create": {
+      "filePath": "_dashboardLayout/roles/create.tsx",
+      "parent": "/_dashboardLayout/roles"
     },
     "/_dashboardLayout/users/create": {
       "filePath": "_dashboardLayout/users/create.tsx",
