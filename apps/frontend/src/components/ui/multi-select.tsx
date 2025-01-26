@@ -22,13 +22,13 @@ export type BaseFieldProps = {
 	error?: React.ReactNode;
 };
 
-type Option = { label: string; value: string };
+type Option = { label: string; value: string } | string;
 export type MultiSelectProps = {
 	placeholder?: string;
 	options: Option[];
-	selectedOptions: Option["value"][];
+	selectedOptions: string[];
 	allowCreate?: boolean;
-	onChange?: (options: Option["value"][]) => void;
+	onChange?: (options: string[]) => void;
 	onValueChange?: (value: string) => void;
 } & BaseFieldProps;
 
@@ -48,14 +48,12 @@ export function MultiSelect({
 	const [inputValue, setInputValue] = useState("");
 
 	const handleUnselect = useCallback(
-		(option: Option) => {
-			const _selectedOptions = [
-				...selectedOptions.filter((s) => s !== option.value),
-			];
+		(value: string) => {
+			const _selectedOptions = selectedOptions.filter((s) => s !== value);
 			onChange?.(_selectedOptions);
 		},
 		[selectedOptions, onChange]
-	); // Add selected and onChange as dependencies
+	);
 
 	const handleKeyDown = useCallback(
 		(e: KeyboardEvent<HTMLDivElement>) => {
@@ -76,17 +74,13 @@ export function MultiSelect({
 
 	const handleSelect = useCallback(
 		(value: string) => {
-			const existingOption = selectedOptions.find(
-				(option) => option === value
-			);
-
-			let _selectedOptions = [];
+			const existingOption = selectedOptions.includes(value);
+			let _selectedOptions: string[];
 
 			if (existingOption) {
 				_selectedOptions = selectedOptions.filter((x) => x !== value);
 			} else {
-				const newOption = { label: value, value };
-				_selectedOptions = [...selectedOptions, newOption.value];
+				_selectedOptions = [...selectedOptions, value];
 			}
 			setInputValue("");
 			onChange?.(_selectedOptions);
@@ -114,39 +108,45 @@ export function MultiSelect({
 				</div>
 				<div className="flex flex-wrap gap-1">
 					{selectedOptions.map((value) => {
-						const option = options.find(
-							(opt) => opt.value === value
-						);
+						const option = options.find((opt) => {
+							if (typeof opt === "string") return opt === value;
+							return opt.value === value;
+						});
+						const label =
+							typeof option === "string"
+								? option
+								: option?.label || value;
 
 						return (
-							option && (
-								<Badge key={value} variant="secondary">
-									{option.label}
+							<Badge
+								key={value}
+								variant="secondary"
+								className={cn(
+									readOnly
+										? "cursor-not-allowed opacity-50"
+										: ""
+								)}
+							>
+								{label}
+								{!readOnly && (
 									<button
 										type="button"
-										className={cn(
-											"ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2",
-											readOnly ? "cursor-not-allowed" : ""
-										)}
+										className="ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
 										onKeyDown={(e) => {
 											if (e.key === "Enter") {
-												handleUnselect(option);
+												handleUnselect(value);
 											}
 										}}
 										onMouseDown={(e) => {
 											e.preventDefault();
 											e.stopPropagation();
 										}}
-										onClick={() =>
-											readOnly
-												? undefined
-												: handleUnselect(option)
-										}
+										onClick={() => handleUnselect(value)}
 									>
 										<X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
 									</button>
-								</Badge>
-							)
+								)}
+							</Badge>
 						);
 					})}
 					<CommandPrimitive.Input
@@ -160,7 +160,7 @@ export function MultiSelect({
 						onBlur={() => setOpen(false)}
 						onFocus={() => (readOnly ? undefined : setOpen(true))}
 						placeholder={selectedOptions.length ? "" : placeholder}
-						className="ml-2 flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
+						className="ml-2 flex-1 bg-transparent outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
 						onKeyDown={(e) => {
 							if (
 								e.key === "Enter" &&
@@ -173,7 +173,6 @@ export function MultiSelect({
 					/>
 				</div>
 			</div>
-			{/* Render the error message if there is an error */}
 			{error && <p className="mt-1 text-sm text-destructive">{error}</p>}
 			<div className="relative">
 				<CommandList>
@@ -181,32 +180,39 @@ export function MultiSelect({
 						<div className="absolute top-0 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
 							<CommandGroup className="overflow-auto">
 								{options.map((option) => {
+									const value =
+										typeof option === "string"
+											? option
+											: option.value;
+									const label =
+										typeof option === "string"
+											? option
+											: option.label;
+
 									return (
 										<CommandItem
-											key={option.value}
+											key={value}
 											onMouseDown={(e) => {
 												e.preventDefault();
 												e.stopPropagation();
 											}}
 											onSelect={() => {
 												setInputValue("");
-												handleSelect(option.value);
+												handleSelect(value);
 											}}
-											className={"cursor-pointer"}
+											className="cursor-pointer"
 										>
 											<LuCheck
 												className={cn(
 													"h-3 w-3",
-													selectedOptions.some(
-														(item) =>
-															item ===
-															option.value
+													selectedOptions.includes(
+														value
 													)
-														? "text-primary  mr-2"
+														? "text-primary mr-2"
 														: "hidden"
 												)}
 											/>
-											{option.label}
+											{label}
 										</CommandItem>
 									);
 								})}
