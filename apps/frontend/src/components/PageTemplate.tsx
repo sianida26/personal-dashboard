@@ -17,10 +17,11 @@ import { useDebouncedCallback } from "@mantine/hooks";
 import { Input } from "./ui/input";
 import { TbPlus, TbSearch } from "react-icons/tb";
 import { Button } from "./ui/button";
-import { Link, Outlet } from "@tanstack/react-router";
+import { Link, Navigate, Outlet } from "@tanstack/react-router";
 import DashboardTable from "./DashboardTable";
 import { Select } from "./ui/select";
 import { Pagination } from "./ui/pagination";
+import ResponseError from "@/errors/ResponseError";
 
 type HonoEndpoint<T extends Record<string, unknown>> = (
 	args: Record<string, unknown> & {
@@ -128,7 +129,15 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 	const totalPages = query.data?._metadata.totalPages ?? 1;
 	const currentPage = page + 1;
 
-	return (
+	if (query.isError) {
+		if (query.error instanceof ResponseError) {
+			if (query.error.errorCode === "UNAUTHORIZED") {
+				return <Navigate to="/403" replace />;
+			}
+		}
+	}
+
+	return query.data ? (
 		<div className="p-8 bg-muted h-full flex flex-col gap-8">
 			{/* Title */}
 			<h1 className="text-3xl font-bold">{props.title}</h1>
@@ -163,11 +172,7 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 				<div className="flex flex-col">
 					{/* Table */}
 					<div className="mt-4">
-						{query.data ? (
-							<DashboardTable table={table} />
-						) : (
-							<div>Loading...</div>
-						)}
+						<DashboardTable table={table} />
 					</div>
 
 					{/* Pagination */}
@@ -213,5 +218,9 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 
 			<Outlet />
 		</div>
+	) : query.error ? (
+		<div>Error: {query.error.message}</div>
+	) : (
+		<div>Loading...</div>
 	);
 }
