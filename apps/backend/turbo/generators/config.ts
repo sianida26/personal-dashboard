@@ -23,16 +23,28 @@ export default function generator(plop: PlopTypes.NodePlopAPI) {
 			},
 		],
 		actions: [
+			// Add the route file
 			{
 				type: "add",
 				path: "src/routes/{{kebabCase name}}/route.ts",
 				templateFile: "templates/basic-route.hbs",
 			},
+
+			//Add import to index.ts
 			{
 				type: "append",
 				path: "src/index.ts",
-				pattern: /(?<insertion>)\.route("\/dev", devRoutes)/g,
-				template: '".route("/{{kebabCase name}}", {{camelCase name}}Route),',
+				pattern: /import type HonoEnv from "\.\/types\/HonoEnv";/g,
+				template:
+					'import {{camelCase name}}Route from "./routes/{{kebabCase name}}/route"',
+			},
+
+			//Add route to index.ts
+			{
+				type: "append",
+				path: "src/index.ts",
+				pattern: /\.route\("\/dev", devRoutes\)/g,
+				template: '\t.route("/{{kebabCase name}}", {{camelCase name}}Route)',
 			},
 		],
 	});
