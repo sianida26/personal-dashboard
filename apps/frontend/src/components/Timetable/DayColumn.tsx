@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import isoWeek from "dayjs/plugin/isoWeek";
 import type Event from "./types/Event";
+import type { ReactNode } from "react";
 
 dayjs.extend(isoWeek);
 dayjs.extend(customParseFormat);
@@ -11,8 +12,8 @@ type Props<T extends Record<string, unknown> & Event> = {
 	startTime: dayjs.Dayjs;
 	endTime: dayjs.Dayjs;
 	events: T[];
-	renderCell?: (date: dayjs.Dayjs) => JSX.Element;
-	renderEvent?: (event: T) => JSX.Element;
+	renderCell?: (date: dayjs.Dayjs) => ReactNode;
+	renderEvent?: (event: T) => ReactNode;
 };
 
 export default function DayColumn<T extends Record<string, unknown> & Event>({

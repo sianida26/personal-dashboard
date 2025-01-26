@@ -1,5 +1,5 @@
 import dayjs, { type Dayjs } from "dayjs";
-import { useEffect, useMemo, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
 
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import isoWeek from "dayjs/plugin/isoWeek";
@@ -17,12 +17,12 @@ type Props<T extends Record<string, unknown> & Event> = {
 	startTime?: dayjs.Dayjs;
 	endTime?: dayjs.Dayjs;
 	events: T[];
-	renderCell?: (date: dayjs.Dayjs) => JSX.Element;
-	renderEvent?: (event: T) => JSX.Element;
+	renderCell?: (date: dayjs.Dayjs) => ReactNode;
+	renderEvent?: (event: T) => ReactNode;
 	onDateChange?: (date: Dayjs) => void;
 	header?: {
-		center?: JSX.Element;
-		right?: JSX.Element;
+		center?: ReactNode;
+		right?: ReactNode;
 	};
 	classNames?: Partial<{
 		todayButton: string;
