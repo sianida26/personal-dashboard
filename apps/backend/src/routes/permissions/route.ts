@@ -1,6 +1,6 @@
+import { Hono } from "hono";
 import db from "../../drizzle";
 import { permissionsSchema } from "../../drizzle/schema/permissions";
-import { Hono } from "hono";
 
 const permissionRoutes = new Hono()
 	//get all permissions

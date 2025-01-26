@@ -1,9 +1,9 @@
-import { hashPassword } from "../..//utils/passwordUtils";
-import { users } from "../schema/users";
-import db from "..";
-import { rolesSchema } from "../schema/roles";
 import { eq } from "drizzle-orm";
+import db from "..";
+import { hashPassword } from "../..//utils/passwordUtils";
+import { rolesSchema } from "../schema/roles";
 import { rolesToUsers } from "../schema/rolesToUsers";
+import { users } from "../schema/users";
 
 const userSeeder = async () => {
 	const usersData: (typeof users.$inferInsert & { roles: string[] })[] = [
@@ -19,17 +19,13 @@ const userSeeder = async () => {
 
 	const memoizedRoleIds: Map<string, string> = new Map();
 
-	for (let user of usersData) {
+	for (const user of usersData) {
 		const insertedUser = (
-			await db
-				.insert(users)
-				.values(usersData)
-				.onConflictDoNothing()
-				.returning()
+			await db.insert(users).values(usersData).onConflictDoNothing().returning()
 		)[0];
 
 		if (insertedUser) {
-			for (let roleCode of user.roles) {
+			for (const roleCode of user.roles) {
 				if (!memoizedRoleIds.has(roleCode)) {
 					const role = (
 						await db
@@ -39,15 +35,15 @@ const userSeeder = async () => {
 					)[0];
 
 					if (!role)
-						throw new Error(
-							`Role ${roleCode} does not exists on database`
-						);
+						throw new Error(`Role ${roleCode} does not exists on database`);
 
 					memoizedRoleIds.set(roleCode, role.id);
 				}
 
+				const roleId = memoizedRoleIds.get(roleCode);
+				if (!roleId) throw new Error(`Role ${roleCode} not found in memo`);
 				await db.insert(rolesToUsers).values({
-					roleId: memoizedRoleIds.get(roleCode)!,
+					roleId,
 					userId: insertedUser.id,
 				});
 				console.log(`User ${user.name} created`);

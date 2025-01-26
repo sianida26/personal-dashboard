@@ -14,5 +14,3 @@ import userSeeder from "./seeds/userSeeder";
 	console.timeEnd("Done seeding");
 	process.exit(0);
 });
-
-export {};

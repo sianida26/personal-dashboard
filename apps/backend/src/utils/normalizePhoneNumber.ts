@@ -1,22 +1,22 @@
 function normalizePhoneNumber(
 	phone: string,
-	defaultCountryCode: string = "62"
+	defaultCountryCode = "62",
 ): string {
 	// Remove all spaces and non-digit characters except "+"
-	phone = phone.replace(/[^+\d]/g, "");
+	let normalizedPhone = phone.replace(/[^+\d]/g, "");
 
-	if (phone.startsWith("+")) {
+	if (normalizedPhone.startsWith("+")) {
 		// If it starts with a "+", remove the "+" to standardize
-		phone = phone.substring(1);
-	} else if (phone.startsWith("0")) {
+		normalizedPhone = normalizedPhone.substring(1);
+	} else if (normalizedPhone.startsWith("0")) {
 		// If it starts with "0", prepend the default country code
-		phone = defaultCountryCode + phone.substring(1);
-	} else if (!phone.startsWith(defaultCountryCode)) {
+		normalizedPhone = defaultCountryCode + normalizedPhone.substring(1);
+	} else if (!normalizedPhone.startsWith(defaultCountryCode)) {
 		// If it doesn't start with the default country code or another country code
-		phone = defaultCountryCode + phone;
+		normalizedPhone = defaultCountryCode + normalizedPhone;
 	}
 
-	return phone;
+	return normalizedPhone;
 }
 
 export default normalizePhoneNumber;

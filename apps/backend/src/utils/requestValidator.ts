@@ -1,14 +1,14 @@
 import { zValidator } from "@hono/zod-validator";
-import DashboardError from "../errors/DashboardError";
 import type {
 	Context,
-	MiddlewareHandler,
 	Env,
-	ValidationTargets,
-	TypedResponse,
 	Input,
+	MiddlewareHandler,
+	TypedResponse,
+	ValidationTargets,
 } from "hono";
-import type { z, ZodError } from "zod";
+import type { ZodError, z } from "zod";
+import DashboardError from "../errors/DashboardError";
 export type Hook<T, E extends Env, P extends string, O = {}> = (
 	result:
 		| {
@@ -20,12 +20,12 @@ export type Hook<T, E extends Env, P extends string, O = {}> = (
 				error: ZodError;
 				data: T;
 		  },
-	c: Context<E, P>
+	c: Context<E, P>,
 ) =>
 	| Response
 	| Promise<Response>
-	| void
-	| Promise<Response | void>
+	| undefined
+	| Promise<Response | undefined>
 	| TypedResponse<O>;
 type HasUndefined<T> = undefined extends T ? true : false;
 
@@ -39,6 +39,7 @@ type HasUndefined<T> = undefined extends T ? true : false;
  * @returns A middleware function that validates the request against the provided schema.
  */
 function requestValidator<
+	// biome-ignore lint/suspicious/noExplicitAny: This is a generic type, so it's okay to use `any` here
 	T extends z.ZodType<any, z.ZodTypeDef, any>,
 	Target extends keyof ValidationTargets,
 	E extends Env,
@@ -51,13 +52,9 @@ function requestValidator<
 					[K in Target]?:
 						| (K extends "json"
 								? In
-								: HasUndefined<
-											keyof ValidationTargets[K]
-									  > extends true
+								: HasUndefined<keyof ValidationTargets[K]> extends true
 									? {
-											[K2 in keyof In]?:
-												| ValidationTargets[K][K2]
-												| undefined;
+											[K2 in keyof In]?: ValidationTargets[K][K2] | undefined;
 										}
 									: {
 											[K2_1 in keyof In]: ValidationTargets[K][K2_1];
@@ -67,13 +64,9 @@ function requestValidator<
 			: {
 					[K_1 in Target]: K_1 extends "json"
 						? In
-						: HasUndefined<
-									keyof ValidationTargets[K_1]
-							  > extends true
+						: HasUndefined<keyof ValidationTargets[K_1]> extends true
 							? {
-									[K2_2 in keyof In]?:
-										| ValidationTargets[K_1][K2_2]
-										| undefined;
+									[K2_2 in keyof In]?: ValidationTargets[K_1][K2_2] | undefined;
 								}
 							: {
 									[K2_3 in keyof In]: ValidationTargets[K_1][K2_3];
@@ -85,7 +78,7 @@ function requestValidator<
 >(
 	target: Target,
 	schema: T,
-	hook?: Hook<z.TypeOf<T>, E, P, {}> | undefined
+	hook?: Hook<z.TypeOf<T>, E, P, {}> | undefined,
 ): MiddlewareHandler<E, P, V> {
 	//@ts-ignore
 	return zValidator(
@@ -94,12 +87,12 @@ function requestValidator<
 		hook ??
 			((result) => {
 				if (!result.success) {
-					let errors = result.error.flatten().fieldErrors as Record<
+					const errors = result.error.flatten().fieldErrors as Record<
 						string,
 						string[]
 					>;
-					let firstErrors: Record<string, string> = {};
-					for (let field in errors) {
+					const firstErrors: Record<string, string> = {};
+					for (const field in errors) {
 						firstErrors[field] = errors[field][0]; // Grabbing the first error message for each field
 					}
 					throw new DashboardError({
@@ -111,7 +104,7 @@ function requestValidator<
 						statusCode: 422,
 					});
 				}
-			})
+			}),
 	);
 }
 

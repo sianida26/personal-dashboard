@@ -1,11 +1,11 @@
-import * as fs from "fs";
-import DashboardError from "../errors/DashboardError";
-import { HTTPException } from "hono/http-exception";
+import * as fs from "node:fs";
 import dayjs from "dayjs";
 import DayjsUTC from "dayjs/plugin/utc";
-import { Context } from "hono";
-import HonoEnv from "../types/HonoEnv";
+import type { Context } from "hono";
+import { HTTPException } from "hono/http-exception";
 import appEnv from "../appEnv";
+import DashboardError from "../errors/DashboardError";
+import type HonoEnv from "../types/HonoEnv";
 
 dayjs.extend(DayjsUTC);
 
@@ -88,18 +88,34 @@ class Logger {
 
 		if (error instanceof DashboardError) {
 			this.log(
-				`DASHBOARD ERROR: ${error.errorCode} (${error.statusCode}) ${c?.req.method ?? "-"} ${c?.req.path ?? "-"} ${c?.var.uid ?? "-"} ${c?.var.requestId ?? "-"} ${error.severity} ${error.message} ${["CRITICAL", "HIGH"].includes(error.severity) ? `\n    ${error.stack}` : ""}`,
-				"error"
+				`DASHBOARD ERROR: ${error.errorCode} (${error.statusCode}) ${
+					c?.req.method ?? "-"
+				} ${c?.req.path ?? "-"} ${c?.var.uid ?? "-"} ${
+					c?.var.requestId ?? "-"
+				} ${error.severity} ${error.message} ${
+					["CRITICAL", "HIGH"].includes(error.severity)
+						? `\n    ${error.stack}`
+						: ""
+				}`,
+				"error",
 			);
 		} else if (error instanceof HTTPException) {
 			this.log(
-				`ERROR ${error.getResponse().status}: ${error.message} ${c?.req.method ?? "-"} ${c?.req.path ?? "-"} ${c?.var.uid ?? "-"} ${c?.var.requestId ?? "-"}\n    ${error.stack}`,
-				"error"
+				`ERROR ${error.getResponse().status}: ${error.message} ${
+					c?.req.method ?? "-"
+				} ${c?.req.path ?? "-"} ${c?.var.uid ?? "-"} ${
+					c?.var.requestId ?? "-"
+				}\n    ${error.stack}`,
+				"error",
 			);
 		} else {
 			this.log(
-				`ERROR: ${error.name} ${c?.req.method ?? "-"} ${c?.req.path ?? "-"} ${c?.var.uid ?? "-"} ${c?.var.requestId ?? "-"} ${error.message}\n    ${error.stack}`,
-				"error"
+				`ERROR: ${error.name} ${c?.req.method ?? "-"} ${
+					c?.req.path ?? "-"
+				} ${c?.var.uid ?? "-"} ${c?.var.requestId ?? "-"} ${
+					error.message
+				}\n    ${error.stack}`,
+				"error",
 			);
 		}
 	}
@@ -108,8 +124,10 @@ class Logger {
 		if (!appEnv.LOG_INFO) return;
 		console.log(`INFO: ${message}`);
 		this.log(
-			`${c?.req.method ?? "-"} ${c?.req.path ?? "-"} ${c?.var.uid ?? "-"} ${c?.var.requestId ?? "-"} ${message}`,
-			"info"
+			`${c?.req.method ?? "-"} ${c?.req.path ?? "-"} ${
+				c?.var.uid ?? "-"
+			} ${c?.var.requestId ?? "-"} ${message}`,
+			"info",
 		);
 	}
 
@@ -117,19 +135,25 @@ class Logger {
 		if (!appEnv.LOG_DEBUG) return;
 		console.log(`DEBUG: ${message}`);
 		this.log(
-			`${c?.req.method ?? "-"} ${c?.req.path ?? "-"} ${c?.var.uid ?? "-"} ${c?.var.requestId ?? "-"} ${message}`,
-			"debug"
+			`${c?.req.method ?? "-"} ${c?.req.path ?? "-"} ${
+				c?.var.uid ?? "-"
+			} ${c?.var.requestId ?? "-"} ${message}`,
+			"debug",
 		);
 	}
 
 	request(c: Context<HonoEnv>, responseTime?: number) {
 		if (!appEnv.LOG_REQUEST) return;
-		const message = `${c.req.method} ${c.req.path} ${c.var.uid ?? "-"} ${c.var.requestId ?? "-"} ${c.res.status} ${responseTime ?? "-"} ${c.req.header("User-Agent") ?? "-"}`;
+		const message = `${c.req.method} ${c.req.path} ${c.var.uid ?? "-"} ${
+			c.var.requestId ?? "-"
+		} ${c.res.status} ${responseTime ?? "-"} ${
+			c.req.header("User-Agent") ?? "-"
+		}`;
 		console.log(`REQ: ${message}`);
 		this.log(message, "request");
 	}
 
-	sql(query: string, params: any[]) {
+	sql(query: string, params: unknown[]) {
 		if (!appEnv.LOG_SQL) return;
 		this.log(`SQL: ${query} ${JSON.stringify(params)}`, "sql");
 	}

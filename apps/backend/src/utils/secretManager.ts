@@ -1,7 +1,7 @@
+import * as crypto from "node:crypto";
+import * as fs from "node:fs";
 import appEnv from "../appEnv";
 import appLogger from "./logger";
-import * as fs from "fs";
-import * as crypto from "crypto";
 
 /**
  * Generates an RSA key pair using the specified options.
@@ -54,11 +54,10 @@ const createKeyPairFiles = () => {
 export const getPrivateKey = () => {
 	if (fs.existsSync(appEnv.PRIVATE_KEY_PATH)) {
 		return fs.readFileSync(appEnv.PRIVATE_KEY_PATH, "utf-8");
-	} else {
-		appLogger.info("public/private key pair does not exists");
-		const { privateKey } = createKeyPairFiles();
-		return privateKey;
 	}
+	appLogger.info("public/private key pair does not exists");
+	const { privateKey } = createKeyPairFiles();
+	return privateKey;
 };
 
 /**
@@ -70,9 +69,8 @@ export const getPrivateKey = () => {
 export const getPublicKey = () => {
 	if (fs.existsSync(appEnv.PUBLIC_KEY_PATH)) {
 		return fs.readFileSync(appEnv.PUBLIC_KEY_PATH, "utf-8");
-	} else {
-		appLogger.info("public/private key pair does not exists");
-		const { publicKey } = createKeyPairFiles();
-		return publicKey;
 	}
+	appLogger.info("public/private key pair does not exists");
+	const { publicKey } = createKeyPairFiles();
+	return publicKey;
 };

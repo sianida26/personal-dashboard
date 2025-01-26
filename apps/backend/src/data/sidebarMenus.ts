@@ -1,4 +1,4 @@
-import { SidebarMenu } from "../types";
+import type { SidebarMenu } from "../types";
 
 const sidebarMenus: SidebarMenu[] = [
 	{

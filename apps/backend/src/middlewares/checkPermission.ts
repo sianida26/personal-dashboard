@@ -1,7 +1,7 @@
+import type { ExtendedPermissionCodeWithAll } from "@repo/data";
 import { createMiddleware } from "hono/factory";
-import HonoEnv from "../types/HonoEnv";
 import { unauthorized } from "../errors/DashboardError";
-import { ExtendedPermissionCodeWithAll } from "@repo/data";
+import type HonoEnv from "../types/HonoEnv";
 
 /**
  * Creates a middleware to check if the current user has the required permissions.
@@ -25,7 +25,7 @@ const checkPermission = (...permissions: ExtendedPermissionCodeWithAll[]) =>
 		// Proceed if the user exists and has any of the required permissions
 		if (currentUser) {
 			const hasPermission = currentUser.permissions.some((p) =>
-				permissions.includes(p)
+				permissions.includes(p),
 			);
 			if (hasPermission || permissions.includes("authenticated-only")) {
 				await next();

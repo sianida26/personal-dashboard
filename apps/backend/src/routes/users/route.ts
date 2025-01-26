@@ -1,23 +1,23 @@
 import { and, desc, eq, ilike, isNull, or, sql } from "drizzle-orm";
 import { Hono } from "hono";
 
-import { z } from "zod";
-import { HTTPException } from "hono/http-exception";
-import db from "../../drizzle";
-import { users } from "../../drizzle/schema/users";
-import { hashPassword } from "../../utils/passwordUtils";
-import { rolesToUsers } from "../../drizzle/schema/rolesToUsers";
-import { rolesSchema } from "../../drizzle/schema/roles";
-import HonoEnv from "../../types/HonoEnv";
-import requestValidator from "../../utils/requestValidator";
-import authInfo from "../../middlewares/authInfo";
-import checkPermission from "../../middlewares/checkPermission";
 import {
 	paginationRequestSchema,
 	userFormSchema,
 	userUpdateSchema,
 } from "@repo/validation";
+import { HTTPException } from "hono/http-exception";
+import { z } from "zod";
+import db from "../../drizzle";
+import { rolesSchema } from "../../drizzle/schema/roles";
+import { rolesToUsers } from "../../drizzle/schema/rolesToUsers";
+import { users } from "../../drizzle/schema/users";
 import DashboardError from "../../errors/DashboardError";
+import authInfo from "../../middlewares/authInfo";
+import checkPermission from "../../middlewares/checkPermission";
+import type HonoEnv from "../../types/HonoEnv";
+import { hashPassword } from "../../utils/passwordUtils";
+import requestValidator from "../../utils/requestValidator";
 
 const usersRoute = new Hono<HonoEnv>()
 	.use(authInfo)
@@ -60,10 +60,10 @@ const usersRoute = new Hono<HonoEnv>()
 									ilike(users.name, q),
 									ilike(users.username, q),
 									ilike(users.email, q),
-									eq(users.id, q)
+									eq(users.id, q),
 								)
-							: undefined
-					)
+							: undefined,
+					),
 				)
 				.orderBy(desc(users.createdAt))
 				.offset((page - 1) * limit)
@@ -73,14 +73,12 @@ const usersRoute = new Hono<HonoEnv>()
 				data: result.map((d) => ({ ...d, fullCount: undefined })),
 				_metadata: {
 					currentPage: page,
-					totalPages: Math.ceil(
-						(Number(result[0]?.fullCount) ?? 0) / limit
-					),
+					totalPages: Math.ceil((Number(result[0]?.fullCount) ?? 0) / limit),
 					totalItems: Number(result[0]?.fullCount) ?? 0,
 					perPage: limit,
 				},
 			});
-		}
+		},
 	)
 	//get user by id
 	.get(
@@ -90,7 +88,7 @@ const usersRoute = new Hono<HonoEnv>()
 			"query",
 			z.object({
 				includeTrashed: z.string().default("false"),
-			})
+			}),
 		),
 		async (c) => {
 			const userId = c.req.param("id");
@@ -119,8 +117,8 @@ const usersRoute = new Hono<HonoEnv>()
 				.where(
 					and(
 						eq(users.id, userId),
-						!includeTrashed ? isNull(users.deletedAt) : undefined
-					)
+						!includeTrashed ? isNull(users.deletedAt) : undefined,
+					),
 				);
 
 			if (!queryResult.length)
@@ -141,7 +139,7 @@ const usersRoute = new Hono<HonoEnv>()
 			};
 
 			return c.json(userData);
-		}
+		},
 	)
 	//create user
 	.post(
@@ -200,12 +198,12 @@ const usersRoute = new Hono<HonoEnv>()
 				if (userData.roles) {
 					const roles = userData.roles;
 
-					if (roles && roles.length) {
+					if (roles?.length) {
 						await trx.insert(rolesToUsers).values(
 							roles.map((role) => ({
 								userId: user[0].id,
 								roleId: role,
-							}))
+							})),
 						);
 					}
 				}
@@ -215,9 +213,9 @@ const usersRoute = new Hono<HonoEnv>()
 				{
 					message: "User created successfully",
 				},
-				201
+				201,
 			);
-		}
+		},
 	)
 
 	//update user
@@ -251,7 +249,7 @@ const usersRoute = new Hono<HonoEnv>()
 			return c.json({
 				message: "User updated successfully",
 			});
-		}
+		},
 	)
 
 	//delete user
@@ -262,14 +260,13 @@ const usersRoute = new Hono<HonoEnv>()
 			"form",
 			z.object({
 				skipTrash: z.string().default("false"),
-			})
+			}),
 		),
 		async (c) => {
 			const userId = c.req.param("id");
 			const currentUserId = c.var.uid;
 
-			const skipTrash =
-				c.req.valid("form").skipTrash.toLowerCase() === "true";
+			const skipTrash = c.req.valid("form").skipTrash.toLowerCase() === "true";
 
 			const user = await db
 				.select()
@@ -277,8 +274,8 @@ const usersRoute = new Hono<HonoEnv>()
 				.where(
 					and(
 						eq(users.id, userId),
-						skipTrash ? undefined : isNull(users.deletedAt)
-					)
+						skipTrash ? undefined : isNull(users.deletedAt),
+					),
 				);
 
 			if (!user[0])
@@ -305,16 +302,14 @@ const usersRoute = new Hono<HonoEnv>()
 			return c.json({
 				message: "User deleted successfully",
 			});
-		}
+		},
 	)
 
 	//undo delete
 	.patch("/restore/:id", checkPermission("users.restore"), async (c) => {
 		const userId = c.req.param("id");
 
-		const user = (
-			await db.select().from(users).where(eq(users.id, userId))
-		)[0];
+		const user = (await db.select().from(users).where(eq(users.id, userId)))[0];
 
 		if (!user) return c.notFound();
 
@@ -324,10 +319,7 @@ const usersRoute = new Hono<HonoEnv>()
 			});
 		}
 
-		await db
-			.update(users)
-			.set({ deletedAt: null })
-			.where(eq(users.id, userId));
+		await db.update(users).set({ deletedAt: null }).where(eq(users.id, userId));
 
 		return c.json({
 			message: "User restored successfully",

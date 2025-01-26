@@ -1,4 +1,4 @@
-import { ExtendedPermissionCode, permissions } from "@repo/data";
+import { type ExtendedPermissionCode, permissions } from "@repo/data";
 
 export type Role = {
 	code: RoleCode;

@@ -1,8 +1,8 @@
 import { createId } from "@paralleldrive/cuid2";
 import { relations } from "drizzle-orm";
 import { pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
-import { permissionsToUsers } from "./permissionsToUsers";
 import { permissionsToRoles } from "./permissionsToRoles";
+import { permissionsToUsers } from "./permissionsToUsers";
 
 export const permissionsSchema = pgTable("permissions", {
 	id: text("id")
@@ -19,5 +19,5 @@ export const permissionsRelations = relations(
 	({ many }) => ({
 		permissionsToUsers: many(permissionsToUsers),
 		permissionsToRoles: many(permissionsToRoles),
-	})
+	}),
 );

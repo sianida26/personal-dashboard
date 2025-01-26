@@ -1,16 +1,16 @@
-import exportedRoleData from "../../data/defaultRoles";
-import { rolesSchema } from "../schema/roles";
-import db from "..";
-import { permissionsToRoles } from "../schema/permissionsToRoles";
-import { permissionsSchema } from "../schema/permissions";
 import { eq } from "drizzle-orm";
+import db from "..";
+import exportedRoleData from "../../data/defaultRoles";
+import { permissionsSchema } from "../schema/permissions";
+import { permissionsToRoles } from "../schema/permissionsToRoles";
+import { rolesSchema } from "../schema/roles";
 
 const roleSeeder = async () => {
 	console.log("Seeding roles...");
 
 	const memoizedPermissions: Map<string, string> = new Map();
 
-	for (let role of exportedRoleData) {
+	for (const role of exportedRoleData) {
 		let insertedRole = (
 			await db
 				.insert(rolesSchema)
@@ -31,7 +31,7 @@ const roleSeeder = async () => {
 			)[0];
 		}
 
-		for (let permissionCode of role.permissions) {
+		for (const permissionCode of role.permissions) {
 			if (!memoizedPermissions.has(permissionCode)) {
 				const permission = (
 					await db
@@ -42,7 +42,7 @@ const roleSeeder = async () => {
 
 				if (!permission)
 					throw new Error(
-						`Permission ${permissionCode} does not exists in database`
+						`Permission ${permissionCode} does not exists in database`,
 					);
 
 				memoizedPermissions.set(permissionCode, permission.id);
@@ -50,11 +50,16 @@ const roleSeeder = async () => {
 
 			console.log("here");
 
+			const permissionId = memoizedPermissions.get(permissionCode);
+			if (!permissionId) {
+				throw new Error(`Permission ID not found for code: ${permissionCode}`);
+			}
+
 			const insertedPermission = await db
 				.insert(permissionsToRoles)
 				.values({
 					roleId: insertedRole.id,
-					permissionId: memoizedPermissions.get(permissionCode)!,
+					permissionId,
 				})
 				.onConflictDoNothing()
 				.returning();
@@ -64,11 +69,11 @@ const roleSeeder = async () => {
 
 			if (insertedPermission) {
 				console.log(
-					`Permission ${permissionCode} inserted to role ${role.name}`
+					`Permission ${permissionCode} inserted to role ${role.name}`,
 				);
 			} else {
 				console.warn(
-					`Permission ${permissionCode} already exists in role ${role.name}`
+					`Permission ${permissionCode} already exists in role ${role.name}`,
 				);
 			}
 		}

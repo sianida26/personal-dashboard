@@ -1,10 +1,10 @@
+import type { PermissionCode } from "@repo/data";
+import { and, eq, isNull } from "drizzle-orm";
 import { createMiddleware } from "hono/factory";
-import HonoEnv from "../types/HonoEnv";
+import type { RoleCode } from "../data/defaultRoles";
 import db from "../drizzle";
 import { users } from "../drizzle/schema/users";
-import { and, eq, isNull } from "drizzle-orm";
-import { RoleCode } from "../data/defaultRoles";
-import { PermissionCode } from "@repo/data";
+import type HonoEnv from "../types/HonoEnv";
 
 /**
  * Middleware to load and set authentication information for a user.
@@ -25,7 +25,7 @@ const authInfo = createMiddleware<HonoEnv>(async (c, next) => {
 			where: and(
 				eq(users.id, uid),
 				eq(users.isEnabled, true),
-				isNull(users.deletedAt)
+				isNull(users.deletedAt),
 			),
 			with: {
 				// Include user-specific permissions
@@ -57,22 +57,18 @@ const authInfo = createMiddleware<HonoEnv>(async (c, next) => {
 			const permissions = new Set<PermissionCode>();
 
 			// Collect role-based permissions by iterating through each role
-			user.rolesToUsers.forEach((userRole) => {
+			for (const userRole of user.rolesToUsers) {
 				roles.add(userRole.role.code as RoleCode);
 
-				userRole.role.permissionsToRoles.forEach((permissionRole) =>
-					permissions.add(
-						permissionRole.permission.code as PermissionCode
-					)
-				);
-			});
+				for (const permissionRole of userRole.role.permissionsToRoles) {
+					permissions.add(permissionRole.permission.code as PermissionCode);
+				}
+			}
 
 			// Collect user-specific permissions
-			user.permissionsToUsers.forEach((userPermission) => {
-				permissions.add(
-					userPermission.permission.code as PermissionCode
-				);
-			});
+			for (const userPermission of user.permissionsToUsers) {
+				permissions.add(userPermission.permission.code as PermissionCode);
+			}
 
 			c.set("currentUser", {
 				name: user.name,

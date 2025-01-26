@@ -1,5 +1,5 @@
-import { ContentfulStatusCode } from "hono/utils/http-status";
-import DashboardErrorParameter from "../types/DashboardErrorParameter";
+import type { ContentfulStatusCode } from "hono/utils/http-status";
+import type DashboardErrorParameter from "../types/DashboardErrorParameter";
 
 /**
  * Custom error class for handling specific dashboard-related errors with detailed context.

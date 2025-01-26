@@ -1,4 +1,4 @@
-import { ExtendedPermissionCodeWithAll } from "@repo/data";
+import type { ExtendedPermissionCodeWithAll } from "@repo/data";
 
 export interface SidebarMenuChildItem {
 	label: string;

@@ -1,6 +1,6 @@
-import jwt, { SignOptions } from "jsonwebtoken";
-import { getPrivateKey, getPublicKey } from "./secretManager";
+import jwt, { type SignOptions } from "jsonwebtoken";
 import DashboardError from "../errors/DashboardError";
+import { getPrivateKey, getPublicKey } from "./secretManager";
 
 // Environment variables for secrets, defaulting to a random secret if not set.
 // const accessTokenSecret = appEnv.ACCESS_TOKEN_SECRET;
@@ -83,10 +83,7 @@ export const verifyAccessToken = async (token: string) => {
  */
 export const verifyRefreshToken = async (token: string) => {
 	try {
-		const payload = jwt.verify(
-			token,
-			getPublicKey()
-		) as RefreshTokenPayload;
+		const payload = jwt.verify(token, getPublicKey()) as RefreshTokenPayload;
 		return payload;
 	} catch {
 		return null;

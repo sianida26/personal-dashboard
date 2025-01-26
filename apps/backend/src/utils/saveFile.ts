@@ -1,4 +1,4 @@
-import { writeFile } from "fs/promises";
+import { writeFile } from "node:fs/promises";
 
 /**
  * Saves a file to the specified path on the filesystem.

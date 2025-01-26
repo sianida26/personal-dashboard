@@ -1,18 +1,18 @@
 import { zValidator } from "@hono/zod-validator";
+import type { PermissionCode } from "@repo/data";
+import { loginSchema } from "@repo/validation";
 import { and, eq, isNull, ne, or } from "drizzle-orm";
 import { Hono } from "hono";
 import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
-import { checkPassword } from "../../utils/passwordUtils";
-import { generateAccessToken } from "../../utils/authUtils";
-import HonoEnv from "../../types/HonoEnv";
-import authInfo from "../../middlewares/authInfo";
 import DashboardError, {
 	notFound,
 	unauthorized,
 } from "../../errors/DashboardError";
-import { loginSchema } from "@repo/validation";
-import { PermissionCode } from "@repo/data";
+import authInfo from "../../middlewares/authInfo";
+import type HonoEnv from "../../types/HonoEnv";
+import { generateAccessToken } from "../../utils/authUtils";
+import { checkPassword } from "../../utils/passwordUtils";
 
 const authRoutes = new Hono<HonoEnv>()
 	.post("/login", zValidator("json", loginSchema), async (c) => {
@@ -25,8 +25,8 @@ const authRoutes = new Hono<HonoEnv>()
 				eq(users.isEnabled, true),
 				or(
 					eq(users.username, formData.username),
-					and(eq(users.email, formData.username), ne(users.email, ""))
-				)
+					and(eq(users.email, formData.username), ne(users.email, "")),
+				),
 			),
 			with: {
 				permissionsToUsers: {
@@ -78,18 +78,16 @@ const authRoutes = new Hono<HonoEnv>()
 		const permissions = new Set<PermissionCode>();
 
 		// Add user-specific permissions to the set
-		user.permissionsToUsers.forEach((userPermission) =>
-			permissions.add(userPermission.permission.code as PermissionCode)
-		);
+		for (const userPermission of user.permissionsToUsers) {
+			permissions.add(userPermission.permission.code as PermissionCode);
+		}
 
 		// Add role-specific permissions to the set
-		user.rolesToUsers.forEach((userRole) =>
-			userRole.role.permissionsToRoles.forEach((rolePermission) =>
-				permissions.add(
-					rolePermission.permission.code as PermissionCode
-				)
-			)
-		);
+		for (const userRole of user.rolesToUsers) {
+			for (const rolePermission of userRole.role.permissionsToRoles) {
+				permissions.add(rolePermission.permission.code as PermissionCode);
+			}
+		}
 
 		return c.json({
 			accessToken,
@@ -104,11 +102,11 @@ const authRoutes = new Hono<HonoEnv>()
 	.get("/my-profile", authInfo, async (c) => {
 		const currentUser = c.var.currentUser;
 
-		if (!currentUser) {
+		if (!currentUser || !c.var.uid) {
 			throw unauthorized();
 		}
 
-		return c.json({ ...currentUser, id: c.var.uid! });
+		return c.json({ ...currentUser, id: c.var.uid });
 	})
 	.get("/logout", (c) => {
 		const uid = c.var.uid;

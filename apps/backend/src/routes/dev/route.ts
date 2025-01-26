@@ -1,12 +1,12 @@
+import { and, eq, ilike, isNull, or } from "drizzle-orm";
 import { Hono } from "hono";
-import authInfo from "../../middlewares/authInfo";
-import HonoEnv from "../../types/HonoEnv";
 import { z } from "zod";
-import requestValidator from "../../utils/requestValidator";
-import checkPermission from "../../middlewares/checkPermission";
 import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
-import { and, eq, ilike, isNull, or } from "drizzle-orm";
+import authInfo from "../../middlewares/authInfo";
+import checkPermission from "../../middlewares/checkPermission";
+import type HonoEnv from "../../types/HonoEnv";
+import requestValidator from "../../utils/requestValidator";
 
 const devRoutes = new Hono<HonoEnv>()
 	.use(authInfo)
@@ -28,7 +28,7 @@ const devRoutes = new Hono<HonoEnv>()
 				page: z.coerce.number().int().min(1).optional(),
 				limit: z.coerce.number().int().min(1).max(1000).optional(),
 				q: z.string().optional(),
-			})
+			}),
 		),
 		async (c) => {
 			const { includeTrashed, page, limit, q, withMetadata } =
@@ -47,10 +47,7 @@ const devRoutes = new Hono<HonoEnv>()
 				},
 				extras: {
 					fullCount: db
-						.$count(
-							users,
-							includeTrashed ? isNull(users.deletedAt) : undefined
-						)
+						.$count(users, includeTrashed ? isNull(users.deletedAt) : undefined)
 						.as("fullCount"),
 				},
 				where: and(
@@ -60,9 +57,9 @@ const devRoutes = new Hono<HonoEnv>()
 								ilike(users.name, q),
 								ilike(users.username, q),
 								ilike(users.email, q),
-								eq(users.id, q)
+								eq(users.id, q),
 							)
-						: undefined
+						: undefined,
 				),
 				offset: page && limit ? page + limit : undefined,
 				limit: limit,
@@ -77,10 +74,7 @@ const devRoutes = new Hono<HonoEnv>()
 						currentPage: page ?? 0,
 						totalPages:
 							page && limit
-								? Math.ceil(
-										(Number(result[0]?.fullCount) ?? 0) /
-											limit
-									)
+								? Math.ceil((Number(result[0]?.fullCount) ?? 0) / limit)
 								: 0,
 						totalItems: Number(result[0]?.fullCount) ?? 0,
 						perPage: limit ?? 0,
@@ -89,7 +83,7 @@ const devRoutes = new Hono<HonoEnv>()
 			}
 
 			return c.json(data);
-		}
+		},
 	);
 
 export default devRoutes;

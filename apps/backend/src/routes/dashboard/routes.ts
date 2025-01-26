@@ -1,3 +1,5 @@
+import { and, eq, or } from "drizzle-orm";
+import { Hono } from "hono";
 import sidebarMenus from "../../data/sidebarMenus";
 import db from "../../drizzle";
 import { permissionsSchema } from "../../drizzle/schema/permissions";
@@ -6,12 +8,13 @@ import { permissionsToUsers } from "../../drizzle/schema/permissionsToUsers";
 import { rolesSchema } from "../../drizzle/schema/roles";
 import { rolesToUsers } from "../../drizzle/schema/rolesToUsers";
 import { users } from "../../drizzle/schema/users";
-import { SidebarMenu } from "../../types";
-import { and, eq, or } from "drizzle-orm";
-import { Hono } from "hono";
-import HonoEnv from "../../types/HonoEnv";
 import { forbidden } from "../../errors/DashboardError";
-import { SidebarMenuChildItem, SidebarMenuItem } from "../../types/SidebarMenu";
+import type { SidebarMenu } from "../../types";
+import type HonoEnv from "../../types/HonoEnv";
+import type {
+	SidebarMenuChildItem,
+	SidebarMenuItem,
+} from "../../types/SidebarMenu";
 
 const router = new Hono<HonoEnv>();
 
@@ -42,16 +45,13 @@ const dashboardRoutes = router.get("/getSidebarItems", async (c) => {
 		.leftJoin(permissionsToUsers, eq(permissionsToUsers.userId, users.id))
 		.leftJoin(rolesToUsers, eq(rolesToUsers.userId, users.id))
 		.leftJoin(rolesSchema, eq(rolesToUsers.roleId, rolesSchema.id))
-		.leftJoin(
-			permissionsToRoles,
-			eq(permissionsToRoles.roleId, rolesSchema.id)
-		)
+		.leftJoin(permissionsToRoles, eq(permissionsToRoles.roleId, rolesSchema.id))
 		.innerJoin(
 			permissionsSchema,
 			or(
 				eq(permissionsSchema.id, permissionsToUsers.permissionId),
-				eq(permissionsSchema.id, permissionsToRoles.permissionId)
-			)
+				eq(permissionsSchema.id, permissionsToRoles.permissionId),
+			),
 		);
 
 	// If no permissions found, forbid access
@@ -63,7 +63,7 @@ const dashboardRoutes = router.get("/getSidebarItems", async (c) => {
 	// Helper function to check if a menu item is allowed
 	const hasPermission = (
 		item: SidebarMenuItem | SidebarMenuChildItem,
-		userPermissions: string[]
+		userPermissions: string[],
 	): boolean => {
 		if (!item.allowedPermissions) {
 			// If no permissions are specified, the item is accessible to all
@@ -75,7 +75,7 @@ const dashboardRoutes = router.get("/getSidebarItems", async (c) => {
 		}
 		// Check if there's any intersection between item's permissions and user's permissions
 		return item.allowedPermissions.some((perm) =>
-			userPermissions.includes(perm)
+			userPermissions.includes(perm),
 		);
 	};
 
@@ -85,7 +85,7 @@ const dashboardRoutes = router.get("/getSidebarItems", async (c) => {
 			if (menu.type === "group") {
 				// If the menu is a group, filter its children
 				const filteredChildren = menu.children.filter((child) =>
-					hasPermission(child, permissions)
+					hasPermission(child, permissions),
 				);
 
 				if (filteredChildren.length > 0) {
@@ -100,7 +100,7 @@ const dashboardRoutes = router.get("/getSidebarItems", async (c) => {
 			}
 			return acc;
 		},
-		[]
+		[],
 	);
 
 	// Return the filtered menus as JSON

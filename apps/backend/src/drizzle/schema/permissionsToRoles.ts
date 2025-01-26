@@ -1,6 +1,6 @@
+import { relations } from "drizzle-orm";
 import { pgTable, primaryKey, text } from "drizzle-orm/pg-core";
 import { permissionsSchema } from "./permissions";
-import { relations } from "drizzle-orm";
 import { rolesSchema } from "./roles";
 
 export const permissionsToRoles = pgTable(
@@ -17,7 +17,7 @@ export const permissionsToRoles = pgTable(
 		pk: primaryKey({
 			columns: [table.roleId, table.permissionId],
 		}),
-	})
+	}),
 );
 
 export const permissionsToRolesRelations = relations(
@@ -31,5 +31,5 @@ export const permissionsToRolesRelations = relations(
 			fields: [permissionsToRoles.permissionId],
 			references: [permissionsSchema.id],
 		}),
-	})
+	}),
 );

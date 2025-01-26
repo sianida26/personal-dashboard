@@ -1,3 +1,3 @@
 import type SidebarMenu from "./SidebarMenu";
 
-export { SidebarMenu };
+export type { SidebarMenu };
