@@ -9,6 +9,9 @@
 	"exports": {
 		".": "./src/index.ts"
 	},
+	"dependencies": {
+		"@repo/data": "workspace:*"
+	},
 	"devDependencies": {
 		"@repo/typescript-config": "workspace:*",
 		"typescript": "latest"
