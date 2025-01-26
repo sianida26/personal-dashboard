@@ -84,9 +84,9 @@ export default function UsersPage() {
 									permission: true,
 									action: () =>
 										navigate({
-											to: "/dev/delete/$id",
+											to: "/users/delete/$userId",
 											params: {
-												id: props.row.original.id,
+												userId: props.row.original.id,
 											},
 										}),
 									variant: "outline",
