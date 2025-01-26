@@ -9,9 +9,8 @@ import DashboardError from "../errors/DashboardError";
 // Algorithm to be used for JWT encoding.
 const algorithm: jwt.Algorithm = "RS256";
 
-// Expiry settings for tokens. 'null' signifies no expiry.
-export const accessTokenExpiry: jwt.SignOptions["expiresIn"] = "15m";
-export const refreshTokenExpiry: jwt.SignOptions["expiresIn"] = "30d";
+export const accessTokenExpiry: jwt.SignOptions["expiresIn"] | null = null;
+export const refreshTokenExpiry: jwt.SignOptions["expiresIn"] | null = null;
 
 // Interfaces to describe the payload structure for access and refresh tokens.
 interface AccessTokenPayload {
