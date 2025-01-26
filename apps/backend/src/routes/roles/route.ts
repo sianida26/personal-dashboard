@@ -36,7 +36,7 @@ const rolesRoute = new Hono<HonoEnv>()
 						},
 					},
 				},
-				offset: page * limit,
+				offset: (page - 1) * limit,
 				limit,
 				where: and(
 					not(eq(rolesSchema.name, "Super Admin")),

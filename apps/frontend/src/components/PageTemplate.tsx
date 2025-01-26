@@ -84,13 +84,11 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 	const withSearchBar = Boolean(props.searchBar ?? true);
 
 	const [sorting, setSorting] = React.useState<SortingState>([]);
-	const [page, setPage] = useState(0);
+	const [page, setPage] = useState(1);
 	const [limit, setLimit] = useState(10);
 	const [q, setQ] = useState("");
 
 	const columnHelper = React.useMemo(() => getColumnHelper<T>(), []);
-
-	console.log("filterOptions");
 
 	const query = useQuery({
 		queryKey: [...(props.queryKey ?? []), page, limit, q],
@@ -125,11 +123,11 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 	}, 500);
 
 	const handlePageChange = (page: number) => {
-		setPage(page - 1);
+		setPage(page);
 	};
 
-	const totalPages = query.data?._metadata.totalPages ?? 1;
-	const currentPage = page + 1;
+	const totalPages = query.data?._metadata?.totalPages ?? 1;
+	const currentPage = page;
 
 	if (query.isError) {
 		if (query.error instanceof ResponseError) {
@@ -182,7 +180,7 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 								label="Items per page"
 								defaultValue={String(limit)}
 								onValueChange={(value) => {
-									setPage(0);
+									setPage(1);
 									setLimit(Number(value));
 								}}
 								data={["5", "10", "20", "50", "100", "200", "500"]}
