@@ -89,7 +89,7 @@ export default function LoginPage() {
 	return (
 		<div className="w-screen h-screen flex">
 			{/* Left Side */}
-			<div className="bg-red-500 flex-grow hidden lg:flex">
+			<div className="bg-red-500 grow hidden lg:flex">
 				<img
 					alt="Decorative creative art background"
 					src="https://images.pexels.com/photos/21243683/pexels-photo-21243683/free-photo-of-seni-kesenian-kreatif-melambai.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
@@ -98,7 +98,7 @@ export default function LoginPage() {
 			</div>
 
 			{/* Right Side */}
-			<div className="flex-grow lg:max-w-screen-md w-full flex flex-col justify-center items-center">
+			<div className="grow lg:max-w-(--breakpoint-md) w-full flex flex-col justify-center items-center">
 				{/* Top side */}
 				<div className="justify-self-start flex justify-end w-full px-8 pt-8">
 					{/* TODO: Implement register page and link */}
@@ -108,7 +108,7 @@ export default function LoginPage() {
 				</div>
 
 				{/* Main Content */}
-				<div className="flex flex-col items-center flex-grow justify-center">
+				<div className="flex flex-col items-center grow justify-center">
 					{/* Login Content */}
 					<div className="flex flex-col items-center gap-6">
 						<div className="flex flex-col items-center gap-2">

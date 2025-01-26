@@ -11,7 +11,7 @@ function RouteComponent() {
 			<img
 				src={illustration}
 				alt="403 Forbidden Illustration"
-				className="w-full max-w-screen-md"
+				className="w-full max-w-(--breakpoint-md)"
 			/>
 			<div className="flex flex-col items-center text-lg gap-4 text-center">
 				<h1 className="text-4xl font-bold">403 - Forbidden</h1>

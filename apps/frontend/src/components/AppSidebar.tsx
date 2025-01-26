@@ -174,7 +174,7 @@ export default function AppSidebar() {
 							</DropdownMenuTrigger>
 							<DropdownMenuContent
 								side="top"
-								className="w-[--radix-popper-anchor-width]"
+								className="w-(--radix-popper-anchor-width)"
 							>
 								<DropdownMenuItem>
 									<span className="flex items-center gap-2">
