@@ -1,0 +1,58 @@
+import ModalFormTemplate from "@/components/ModalFormTemplate";
+import client from "@/honoClient";
+import createInputComponents from "@/utils/createInputComponents";
+import fetchRPC from "@/utils/fetchRPC";
+import { useForm } from "@mantine/form";
+import { useIsMutating } from "@tanstack/react-query";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import type { z } from "zod";
+
+export const Route = createFileRoute("/_dashboardLayout/{{pathCase path}}/create")({
+	component: RouteComponent,
+});
+
+function RouteComponent() {
+	const navigate = useNavigate();
+	const isMutating = useIsMutating({
+		mutationKey: ["create-{{endpoint}}"],
+	});
+
+    //TODO: change theFormSchema to the correct schema
+	const form = useForm<z.infer<typeof theFormSchema>>({
+		initialValues: {
+			// TODO: Add initial values here
+		},
+	});
+
+	return (
+		<ModalFormTemplate
+			form={form}
+			onSubmit={() =>
+				fetchRPC(
+					client.{{dotCase endpoint}}.$post({
+						json: form.values,
+					}),
+				)
+			}
+			title="Create New {{title}}"
+			onClose={() => navigate({ to: ".." })}
+			onSuccess={() => navigate({ to: ".." })}
+			successToastMessage="{{title}} have been created successfully"
+			mutationKey={["create-{{endpoint}}"]}
+			invalidateQueries={["{{endpoint}}"]}
+		>
+			{createInputComponents({
+				disableAll: Boolean(isMutating),
+                //TODO: change the inputs to the correct inputs
+				inputs: [
+					{
+						type: "text",
+						label: "Name",
+						withAsterisk: true,
+						...form.getInputProps("name"),
+					},
+				],
+			})}
+		</ModalFormTemplate>
+	);
+}

@@ -1,0 +1,81 @@
+import PageTemplate from "@/components/PageTemplate";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import client from "@/honoClient";
+import createActionButtons from "@/utils/createActionButton";
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
+import { TbEye, TbPencil, TbTrash } from "react-icons/tb";
+
+export const Route = createLazyFileRoute("/_dashboardLayout/{{pathCase path}}")({
+	component: RouteComponent,
+});
+
+export default function RouteComponent() {
+	const navigate = useNavigate();
+
+	return (
+		<PageTemplate
+			title="{{title}}"
+			endpoint={client.{{dotCase endpoint}}.$get}
+			queryKey={["{{endpoint}}"]}
+			columnDefs={(helper) => [
+				helper.display({
+					header: "#",
+					cell: (props) => props.row.index + 1,
+					size: 1,
+				}),
+				helper.accessor("column1", {
+					cell: (info) => info.getValue(),
+					header: ({ column }) => {
+						return (
+							<Button
+								variant="ghost"
+								onClick={() =>
+									column.toggleSorting(column.getIsSorted() === "asc")
+								}
+							>
+								Column1
+							</Button>
+						);
+					},
+				}),
+				helper.accessor("column2", {
+					cell: (info) => info.getValue(),
+					header: "Column2",
+				}),
+				helper.display({
+					header: "Actions",
+					cell: (props) => (
+						<div className="flex gap-2">
+							{createActionButtons([
+								{
+									label: "Detail",
+									permission: true,
+									action: `./detail/${props.row.original.id}`,
+									className: "bg-green-500 hover:bg-green-600",
+									icon: <TbEye />,
+								},
+								{
+									label: "Edit",
+									permission: true,
+									action: `./edit/${props.row.original.id}`,
+									className: "bg-yellow-500 hover:bg-yellow-600",
+									icon: <TbPencil />,
+								},
+								{
+									label: "Delete",
+									permission: true,
+									action: `./delete/${props.row.original.id}`,
+									variant: "outline",
+									className:
+										"border-red-500 text-red-500 hover:bg-red-500 hover:text-white",
+									icon: <TbTrash />,
+								},
+							])}
+						</div>
+					),
+				}),
+			]}
+		/>
+	);
+}

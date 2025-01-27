@@ -1,0 +1,64 @@
+import ModalFormTemplate from "@/components/ModalFormTemplate";
+import client from "@/honoClient";
+import createInputComponents from "@/utils/createInputComponents";
+import fetchRPC from "@/utils/fetchRPC";
+import { useForm } from "@mantine/form";
+import { useQuery } from "@tanstack/react-query";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import type { InferResponseType } from "hono";
+import { useEffect } from "react";
+
+export const Route = createFileRoute("/_dashboardLayout/{{pathCase path}}/detail/$id")({
+	component: RouteComponent,
+});
+
+function RouteComponent() {
+	const navigate = useNavigate();
+
+	const { id } = Route.useParams();
+
+	const detailEndpoint = client.{{dotCase endpoint}}[":id"].$get;
+
+	const { data } = useQuery({
+		queryKey: ["{{endpoint}}", { id }],
+		queryFn: () => fetchRPC(detailEndpoint({ param: { id } })),
+	});
+
+    //TODO: change the initial values to the correct values
+	const form = useForm<Partial<InferResponseType<typeof detailEndpoint>>>({
+		initialValues: {
+			name: "",
+		},
+	});
+
+	useEffect(() => {
+		data && form.setValues(data);
+	}, [data]);
+
+	return (
+		<ModalFormTemplate
+			form={form}
+			title={"{{title}} Detail"}
+			onClose={() => navigate({ to: "/{{pathCase path}}" })}
+			buttons={
+                { submit: false }
+            }
+		>
+			{createInputComponents({
+				readonlyAll: true,
+				inputs: [
+					{
+						type: "text",
+						label: "ID",
+						...form.getInputProps("id"),
+					},
+					{
+						type: "text",
+						label: "Name",
+						...form.getInputProps("name"),
+					},
+				],
+			})}
+		</ModalFormTemplate>
+	);
+}
