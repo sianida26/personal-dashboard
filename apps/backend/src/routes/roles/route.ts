@@ -22,7 +22,9 @@ const rolesRoute = new Hono<HonoEnv>()
 			const { page, limit, q } = c.req.valid("query");
 
 			const totalCountQuery =
-				sql<number>`(SELECT count(*) FROM ${rolesSchema})`.as("fullCount");
+				sql<number>`(SELECT count(*) FROM ${rolesSchema})`.as(
+					"fullCount",
+				);
 
 			const result = await db.query.rolesSchema.findMany({
 				orderBy: [desc(rolesSchema.createdAt)],
@@ -48,7 +50,9 @@ const rolesRoute = new Hono<HonoEnv>()
 				data: result,
 				_metadata: {
 					currentPage: page,
-					totalPages: Math.ceil((Number(result[0]?.fullCount) ?? 0) / limit),
+					totalPages: Math.ceil(
+						(Number(result[0]?.fullCount) ?? 0) / limit,
+					),
 					totalItems: (Number(result[0]?.fullCount) ?? 1) - 1, //exclude Super Admin
 					perPage: limit,
 				},
@@ -61,7 +65,8 @@ const rolesRoute = new Hono<HonoEnv>()
 		checkPermission("roles.create"),
 		requestValidator("json", roleFormSchema),
 		async (c) => {
-			const { name, code, description, permissions } = c.req.valid("json");
+			const { name, code, description, permissions } =
+				c.req.valid("json");
 
 			const [role] = await db
 				.insert(rolesSchema)
@@ -73,15 +78,20 @@ const rolesRoute = new Hono<HonoEnv>()
 				.returning();
 
 			if (permissions?.length) {
-				const permissionRecords = await db.query.permissionsSchema.findMany();
+				const permissionRecords =
+					await db.query.permissionsSchema.findMany();
 
 				await db.insert(permissionsToRoles).values(
 					permissions.map((permissionCode) => ({
 						roleId: role.id,
 						permissionId:
-							permissionRecords.find((x) => x.code === permissionCode)?.id ??
+							permissionRecords.find(
+								(x) => x.code === permissionCode,
+							)?.id ??
 							(() => {
-								throw new Error(`Permission code ${permissionCode} not found`);
+								throw new Error(
+									`Permission code ${permissionCode} not found`,
+								);
 							})(),
 					})),
 				);
@@ -124,7 +134,8 @@ const rolesRoute = new Hono<HonoEnv>()
 		requestValidator("json", roleFormSchema),
 		async (c) => {
 			const roleId = c.req.param("id");
-			const { name, code, description, permissions } = c.req.valid("json");
+			const { name, code, description, permissions } =
+				c.req.valid("json");
 
 			const [role] = await db
 				.update(rolesSchema)
@@ -144,7 +155,8 @@ const rolesRoute = new Hono<HonoEnv>()
 			if (!role) throw notFound({ message: "Role not found" });
 
 			if (permissions?.length) {
-				const permissionRecords = await db.query.permissionsSchema.findMany();
+				const permissionRecords =
+					await db.query.permissionsSchema.findMany();
 
 				await db
 					.delete(permissionsToRoles)
@@ -154,9 +166,13 @@ const rolesRoute = new Hono<HonoEnv>()
 					permissions.map((permissionCode) => ({
 						roleId: role.id,
 						permissionId:
-							permissionRecords.find((x) => x.code === permissionCode)?.id ??
+							permissionRecords.find(
+								(x) => x.code === permissionCode,
+							)?.id ??
 							(() => {
-								throw new Error(`Permission code ${permissionCode} not found`);
+								throw new Error(
+									`Permission code ${permissionCode} not found`,
+								);
 							})(),
 					})),
 				);

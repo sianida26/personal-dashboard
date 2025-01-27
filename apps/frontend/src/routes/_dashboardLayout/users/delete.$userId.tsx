@@ -85,10 +85,16 @@ export default function UserDeleteModal() {
 		<AlertDialog open={isModalOpen}>
 			<AlertDialogContent>
 				<AlertDialogHeader>
-					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+					<AlertDialogTitle>
+						Are you absolutely sure?
+					</AlertDialogTitle>
 					<AlertDialogDescription>
-						This action cannot be undone. This will permanently delete the data
-						of user <b className="text-foreground">{userQuery.data?.name}</b>.
+						This action cannot be undone. This will permanently
+						delete the data of user{" "}
+						<b className="text-foreground">
+							{userQuery.data?.name}
+						</b>
+						.
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter className="gap-4">

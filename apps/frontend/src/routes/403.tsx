@@ -11,18 +11,18 @@ function RouteComponent() {
 			<img
 				src={illustration}
 				alt="403 Forbidden Illustration"
-				className="w-full max-w-screen-md"
+				className="w-full max-w-(--breakpoint-md)"
 			/>
 			<div className="flex flex-col items-center text-lg gap-4 text-center">
 				<h1 className="text-4xl font-bold">403 - Forbidden</h1>
 				<p className="text-muted-foreground text-base">
-					Oh no! You've been caught trying to access a page you're not allowed
-					to see. Maybe it's a super-secret club, or maybe the internet gods
-					just said, "Nah"
+					Oh no! You've been caught trying to access a page you're not
+					allowed to see. Maybe it's a super-secret club, or maybe the
+					internet gods just said, "Nah"
 				</p>
 				<p className="text-muted-foreground text-base">
-					Go back, take a deep breath, and try something else, Or grab a snack.
-					Snacks fix everyting!
+					Go back, take a deep breath, and try something else, Or grab
+					a snack. Snacks fix everyting!
 				</p>
 				<a href="/" className="font-medium">
 					Take me home! 🏠

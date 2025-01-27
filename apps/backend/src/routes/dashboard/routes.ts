@@ -45,7 +45,10 @@ const dashboardRoutes = router.get("/getSidebarItems", async (c) => {
 		.leftJoin(permissionsToUsers, eq(permissionsToUsers.userId, users.id))
 		.leftJoin(rolesToUsers, eq(rolesToUsers.userId, users.id))
 		.leftJoin(rolesSchema, eq(rolesToUsers.roleId, rolesSchema.id))
-		.leftJoin(permissionsToRoles, eq(permissionsToRoles.roleId, rolesSchema.id))
+		.leftJoin(
+			permissionsToRoles,
+			eq(permissionsToRoles.roleId, rolesSchema.id),
+		)
 		.innerJoin(
 			permissionsSchema,
 			or(

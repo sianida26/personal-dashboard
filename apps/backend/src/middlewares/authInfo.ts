@@ -61,13 +61,17 @@ const authInfo = createMiddleware<HonoEnv>(async (c, next) => {
 				roles.add(userRole.role.code as RoleCode);
 
 				for (const permissionRole of userRole.role.permissionsToRoles) {
-					permissions.add(permissionRole.permission.code as PermissionCode);
+					permissions.add(
+						permissionRole.permission.code as PermissionCode,
+					);
 				}
 			}
 
 			// Collect user-specific permissions
 			for (const userPermission of user.permissionsToUsers) {
-				permissions.add(userPermission.permission.code as PermissionCode);
+				permissions.add(
+					userPermission.permission.code as PermissionCode,
+				);
 			}
 
 			c.set("currentUser", {

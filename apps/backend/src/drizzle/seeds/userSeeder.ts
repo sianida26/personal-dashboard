@@ -21,7 +21,11 @@ const userSeeder = async () => {
 
 	for (const user of usersData) {
 		const insertedUser = (
-			await db.insert(users).values(usersData).onConflictDoNothing().returning()
+			await db
+				.insert(users)
+				.values(usersData)
+				.onConflictDoNothing()
+				.returning()
 		)[0];
 
 		if (insertedUser) {
@@ -35,13 +39,16 @@ const userSeeder = async () => {
 					)[0];
 
 					if (!role)
-						throw new Error(`Role ${roleCode} does not exists on database`);
+						throw new Error(
+							`Role ${roleCode} does not exists on database`,
+						);
 
 					memoizedRoleIds.set(roleCode, role.id);
 				}
 
 				const roleId = memoizedRoleIds.get(roleCode);
-				if (!roleId) throw new Error(`Role ${roleCode} not found in memo`);
+				if (!roleId)
+					throw new Error(`Role ${roleCode} not found in memo`);
 				await db.insert(rolesToUsers).values({
 					roleId,
 					userId: insertedUser.id,

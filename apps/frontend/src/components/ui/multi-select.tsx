@@ -114,19 +114,25 @@ export function MultiSelect({
 							return opt.value === value;
 						});
 						const label =
-							typeof option === "string" ? option : option?.label || value;
+							typeof option === "string"
+								? option
+								: option?.label || value;
 
 						return (
 							<Badge
 								key={value}
 								variant="secondary"
-								className={cn(readOnly ? "cursor-not-allowed opacity-50" : "")}
+								className={cn(
+									readOnly
+										? "cursor-not-allowed opacity-50"
+										: "",
+								)}
 							>
 								{label}
 								{!readOnly && (
 									<button
 										type="button"
-										className="ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
+										className="ml-1 rounded-full outline-hidden ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
 										onKeyDown={(e) => {
 											if (e.key === "Enter") {
 												handleUnselect(value);
@@ -155,9 +161,13 @@ export function MultiSelect({
 						onBlur={() => setOpen(false)}
 						onFocus={() => (readOnly ? undefined : setOpen(true))}
 						placeholder={selectedOptions.length ? "" : placeholder}
-						className="ml-2 flex-1 bg-transparent outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
+						className="ml-2 flex-1 bg-transparent outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed"
 						onKeyDown={(e) => {
-							if (e.key === "Enter" && inputValue && allowCreate) {
+							if (
+								e.key === "Enter" &&
+								inputValue &&
+								allowCreate
+							) {
 								handleSelect(inputValue);
 							}
 						}}
@@ -168,13 +178,17 @@ export function MultiSelect({
 			<div className="relative">
 				<CommandList>
 					{open && options.length > 0 ? (
-						<div className="absolute top-0 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
+						<div className="absolute top-0 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-hidden animate-in">
 							<CommandGroup className="overflow-auto">
 								{options.map((option) => {
 									const value =
-										typeof option === "string" ? option : option.value;
+										typeof option === "string"
+											? option
+											: option.value;
 									const label =
-										typeof option === "string" ? option : option.label;
+										typeof option === "string"
+											? option
+											: option.label;
 
 									return (
 										<CommandItem
@@ -192,7 +206,9 @@ export function MultiSelect({
 											<LuCheck
 												className={cn(
 													"h-3 w-3",
-													selectedOptions.includes(value)
+													selectedOptions.includes(
+														value,
+													)
 														? "text-primary mr-2"
 														: "hidden",
 												)}

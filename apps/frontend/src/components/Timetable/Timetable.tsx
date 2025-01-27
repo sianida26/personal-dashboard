@@ -1,5 +1,5 @@
 import dayjs, { type Dayjs } from "dayjs";
-import { useEffect, useMemo, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
 
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import isoWeek from "dayjs/plugin/isoWeek";
@@ -17,12 +17,12 @@ type Props<T extends Record<string, unknown> & Event> = {
 	startTime?: dayjs.Dayjs;
 	endTime?: dayjs.Dayjs;
 	events: T[];
-	renderCell?: (date: dayjs.Dayjs) => JSX.Element;
-	renderEvent?: (event: T) => JSX.Element;
+	renderCell?: (date: dayjs.Dayjs) => ReactNode;
+	renderEvent?: (event: T) => ReactNode;
 	onDateChange?: (date: Dayjs) => void;
 	header?: {
-		center?: JSX.Element;
-		right?: JSX.Element;
+		center?: ReactNode;
+		right?: ReactNode;
 	};
 	classNames?: Partial<{
 		todayButton: string;
@@ -80,13 +80,17 @@ export default function Timetable<T extends Record<string, unknown> & Event>({
 					<div className="flex gap-2">
 						<Button
 							variant="ghost"
-							onClick={() => setCurrentDate(currentDate.subtract(1, "week"))}
+							onClick={() =>
+								setCurrentDate(currentDate.subtract(1, "week"))
+							}
 						>
 							<TbChevronLeft />
 						</Button>
 						<Button
 							variant="ghost"
-							onClick={() => setCurrentDate(currentDate.add(1, "week"))}
+							onClick={() =>
+								setCurrentDate(currentDate.add(1, "week"))
+							}
 						>
 							<TbChevronRight />
 						</Button>
@@ -99,10 +103,14 @@ export default function Timetable<T extends Record<string, unknown> & Event>({
 				</div>
 
 				{/* Center */}
-				<div className="">{props.header?.center && props.header.center}</div>
+				<div className="">
+					{props.header?.center && props.header.center}
+				</div>
 
 				{/* Right */}
-				<div className="">{props.header?.right && props.header.right}</div>
+				<div className="">
+					{props.header?.right && props.header.right}
+				</div>
 			</div>
 			{/* The Table */}
 			<div className="flex">

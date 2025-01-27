@@ -1,0 +1,77 @@
+import ModalFormTemplate from "@/components/ModalFormTemplate";
+import client from "@/honoClient";
+import createInputComponents from "@/utils/createInputComponents";
+import fetchRPC from "@/utils/fetchRPC";
+import { useForm } from "@mantine/form";
+import { useIsMutating, useQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react"; // Add this import
+import type { z } from "zod";
+
+export const Route = createFileRoute("/_dashboardLayout/{{pathCase path}}/edit/$id")({
+	component: RouteComponent,
+});
+
+function RouteComponent() {
+	const { id } = Route.useParams();
+	const navigate = Route.useNavigate();
+
+	const isMutating = useIsMutating({
+		mutationKey: ["update-{{endpoint}}", id],
+	});
+
+    //TODO: change theFormSchema to the correct schema
+	const form = useForm<z.infer<typeof theFormSchema>>({
+		initialValues: {
+			name: "",
+		},
+	});
+
+	const {{camelCase endpoint}}Query = useQuery({
+		queryKey: ["{{endpoint}}", { id }],
+		queryFn: () => fetchRPC(client.{{dotCase endpoint}}[":id"].$get({ param: { id } })),
+	});
+
+	// Populate form when query data is available
+	useEffect(() => {
+		if ({{camelCase endpoint}}Query.data) {
+			form.setValues({{camelCase endpoint}}Query.data);
+		}
+	}, [{{camelCase endpoint}}Query.data]);
+
+	return (
+		<ModalFormTemplate
+			form={form}
+			onSubmit={() =>
+				fetchRPC(
+					client.{{dotCase endpoint}}[":id"].$patch({
+						param: { id },
+						json: {
+							name: form.values.name,
+							description: form.values.description,
+							permissions: form.values.permissions,
+						},
+					}),
+				)
+			}
+			title="Edit {{title}}"
+			onClose={() => navigate({ to: "/{{path}}" })}
+			onSuccess={() => navigate({ to: "/{{path}}" })}
+			successToastMessage="{{title}} has been updated successfully"
+			mutationKey={["update-{{endpoint}}", id]}
+			invalidateQueries={["{{endpoint}}"]}
+		>
+			{createInputComponents({
+				disableAll: Boolean(isMutating) || {{camelCase endpoint}}Query.isLoading,
+				inputs: [
+					{
+						type: "text",
+						label: "Name",
+						withAsterisk: true,
+						...form.getInputProps("name"),
+					},
+				],
+			})}
+		</ModalFormTemplate>
+	);
+}

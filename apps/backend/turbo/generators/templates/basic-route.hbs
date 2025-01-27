@@ -1,0 +1,109 @@
+import type { PermissionCode } from "@repo/data";
+import { paginationRequestSchema } from "@repo/validation";
+import { and, desc, eq, not, sql } from "drizzle-orm";
+import { Hono } from "hono";
+import db from "../../drizzle";
+import { {{model}} } from "../../drizzle/schema/{{model}}";
+import { notFound } from "../../errors/DashboardError";
+import authInfo from "../../middlewares/authInfo";
+import checkPermission from "../../middlewares/checkPermission";
+import type HonoEnv from "../../types/HonoEnv";
+import requestValidator from "../../utils/requestValidator";
+
+const {{camelCase name}}Route = new Hono<HonoEnv>()
+	.use(authInfo)
+    // get all {{name}}
+	.get(
+		"/",
+		checkPermission("{{permission}}.readAll"),
+		requestValidator("query", paginationRequestSchema),
+		async (c) => {
+			const { page, limit, q } = c.req.valid("query");
+
+			const totalCountQuery =
+				sql<number>`(SELECT count(*) FROM ${{{model}}})`.as("fullCount");
+
+			const result = await db.query.{{model}}.findMany({
+				orderBy: [desc({{model}}.createdAt)],
+				extras: {
+					fullCount: totalCountQuery,
+				},
+				offset: (page - 1) * limit,
+				limit,
+				where: q ? sql`(${ {{camelCase name}}.name} ILIKE ${q})` : undefined,
+			});
+
+			return c.json({
+				data: result,
+				_metadata: {
+					currentPage: page,
+					totalPages: Math.ceil((Number(result[0]?.fullCount) ?? 0) / limit),
+					totalItems: Number(result[0]?.fullCount) ?? 0,
+					perPage: limit,
+				},
+			});
+		},
+	)
+	//create new {{name}}
+	.post(
+		"/",
+		checkPermission("{{permission}}.create"),
+		requestValidator("json", theFormSchema),
+		async (c) => {
+			const data = c.req.valid("json");
+
+			const [{{camelCase name}}] = await db
+				.insert({{model}})
+				.values(data)
+				.returning();
+
+			return c.json({{camelCase name}});
+		},
+	)
+	//get {{name}} by id
+	.get("/:id", checkPermission("{{permission}}.read"), async (c) => {
+		const {{camelCase name}}Id = c.req.param("id");
+
+		const {{camelCase name}} = await db.query.{{model}}.findFirst({
+			where: eq({{model}}.id, {{camelCase name}}Id),
+		});
+
+		if (!{{camelCase name}}) throw notFound({ message: "{{name}} not found" });
+
+		return c.json({{camelCase name}});
+	})
+	//update {{name}} by id
+	.patch(
+		"/:id",
+		checkPermission("{{permission}}.update"),
+		requestValidator("json", theFormSchema),
+		async (c) => {
+			const {{camelCase name}}Id = c.req.param("id");
+			const data = c.req.valid("json");
+
+			const [{{camelCase name}}] = await db
+				.update({{model}})
+				.set(data)
+				.where(eq({{model}}.id, {{camelCase name}}Id))
+				.returning();
+
+			if (!{{camelCase name}}) throw notFound({ message: "{{name}} not found" });
+
+			return c.json({{camelCase name}});
+		},
+	)
+	//delete {{name}} by id
+	.delete("/:id", checkPermission("{{permission}}.delete"), async (c) => {
+		const {{camelCase name}}Id = c.req.param("id");
+
+		const [{{camelCase name}}] = await db
+			.delete({{model}})
+			.where(eq({{model}}.id, {{camelCase name}}Id))
+			.returning();
+
+		if (!{{camelCase name}}) throw notFound({ message: "{{name}} not found" });
+
+		return c.json({ message: "{{name}} deleted successfully" });
+	});
+
+export default {{camelCase name}}Route;

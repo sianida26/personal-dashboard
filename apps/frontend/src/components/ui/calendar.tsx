@@ -3,7 +3,7 @@ import { DayPicker } from "react-day-picker";
 
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
+// import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 // import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons"
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
@@ -58,14 +58,16 @@ function Calendar({
 				day_hidden: "invisible",
 				...classNames,
 			}}
-			components={{
-				IconLeft: ({ className, ...props }) => (
-					<LuChevronLeft className={cn("h-4 w-4", className)} {...props} />
-				),
-				IconRight: ({ className, ...props }) => (
-					<LuChevronRight className={cn("h-4 w-4", className)} {...props} />
-				),
-			}}
+			components={
+				{
+					// IconLeft: ({ className, ...props }) => (
+					// 	<LuChevronLeft className={cn("h-4 w-4", className)} {...props} />
+					// ),
+					// IconRight: ({ className, ...props }) => (
+					// 	<LuChevronRight className={cn("h-4 w-4", className)} {...props} />
+					// ),
+				}
+			}
 			{...props}
 		/>
 	);

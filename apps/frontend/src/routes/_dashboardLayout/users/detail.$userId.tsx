@@ -94,7 +94,8 @@ function RouteComponent() {
 					{
 						type: "multi-select",
 						label: "Roles",
-						selectedOptions: form.values.roles?.map((x) => x.id) ?? [],
+						selectedOptions:
+							form.values.roles?.map((x) => x.id) ?? [],
 						options:
 							roles?.data?.map((role) => ({
 								value: role.id,

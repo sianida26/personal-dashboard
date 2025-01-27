@@ -29,7 +29,11 @@ export default function createActionButtons(actions: Action[]) {
 								</Button>
 							</Link>
 						) : (
-							<Button onClick={action.action} size="icon" {...action}>
+							<Button
+								onClick={action.action}
+								size="icon"
+								{...action}
+							>
 								{action.icon}
 							</Button>
 						)}

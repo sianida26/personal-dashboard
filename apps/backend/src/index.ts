@@ -61,7 +61,8 @@ const routes = app
 		}
 		return c.json(
 			{
-				message: "Something is wrong in our side. We're working to fix it",
+				message:
+					"Something is wrong in our side. We're working to fix it",
 			},
 			500,
 		);
@@ -74,7 +75,9 @@ serve(
 		hostname: appEnv.APP_HOST,
 	},
 	(info) => {
-		appLogger.info(`Server is running on http://${info.address}:${info.port}`);
+		appLogger.info(
+			`Server is running on http://${info.address}:${info.port}`,
+		);
 		appLogger.info(
 			`Application is running on ${appEnv.APP_ENV.toUpperCase()} environment`,
 		);

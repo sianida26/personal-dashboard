@@ -25,7 +25,10 @@ const authRoutes = new Hono<HonoEnv>()
 				eq(users.isEnabled, true),
 				or(
 					eq(users.username, formData.username),
-					and(eq(users.email, formData.username), ne(users.email, "")),
+					and(
+						eq(users.email, formData.username),
+						ne(users.email, ""),
+					),
 				),
 			),
 			with: {
@@ -85,7 +88,9 @@ const authRoutes = new Hono<HonoEnv>()
 		// Add role-specific permissions to the set
 		for (const userRole of user.rolesToUsers) {
 			for (const rolePermission of userRole.role.permissionsToRoles) {
-				permissions.add(rolePermission.permission.code as PermissionCode);
+				permissions.add(
+					rolePermission.permission.code as PermissionCode,
+				);
 			}
 		}
 

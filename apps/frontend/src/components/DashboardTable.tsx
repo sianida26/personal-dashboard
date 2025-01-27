@@ -37,7 +37,11 @@ export default function DashboardTable<T>({ table }: Props<T>) {
 						table.getRowModel().rows.map((row, rowIndex) => (
 							<TableRow
 								key={row.id}
-								className={rowIndex % 2 === 0 ? "bg-muted" : "bg-background"}
+								className={
+									rowIndex % 2 === 0
+										? "bg-muted"
+										: "bg-background"
+								}
 							>
 								{row.getVisibleCells().map((cell) => (
 									<TableCell
@@ -46,7 +50,10 @@ export default function DashboardTable<T>({ table }: Props<T>) {
 											maxWidth: `${cell.column.columnDef.maxSize}px`,
 										}}
 									>
-										{flexRender(cell.column.columnDef.cell, cell.getContext())}
+										{flexRender(
+											cell.column.columnDef.cell,
+											cell.getContext(),
+										)}
 									</TableCell>
 								))}
 							</TableRow>

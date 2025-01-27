@@ -4,12 +4,13 @@
 	"scripts": {
 		"build": "turbo build",
 		"dev": "turbo dev",
-		"lint": "turbo lint",
-		"format": "biome format --write \"**/*.{ts,tsx,md}\""
+		"lint": "biome lint --write --diagnostic-level warn",
+		"format": "biome format --write --diagnostic-level warn"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
 		"@repo/typescript-config": "workspace:*",
+		"@turbo/gen": "^1.12.4",
 		"turbo": "^2.3.4",
 		"typescript": "^5.7.3"
 	},
@@ -18,7 +19,7 @@
 		"node": ">=18"
 	},
 	"dependencies": {
-		"hono": "^4.6.18",
+		"hono": "^4.6.19",
 		"zod": "^3.24.1"
 	}
 }

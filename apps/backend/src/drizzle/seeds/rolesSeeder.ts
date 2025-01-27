@@ -52,7 +52,9 @@ const roleSeeder = async () => {
 
 			const permissionId = memoizedPermissions.get(permissionCode);
 			if (!permissionId) {
-				throw new Error(`Permission ID not found for code: ${permissionCode}`);
+				throw new Error(
+					`Permission ID not found for code: ${permissionCode}`,
+				);
 			}
 
 			const insertedPermission = await db

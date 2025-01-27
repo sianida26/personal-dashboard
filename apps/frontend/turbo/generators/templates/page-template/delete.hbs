@@ -1,0 +1,110 @@
+import {
+	AlertDialog,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import client from "@/honoClient";
+import { useToast } from "@/hooks/use-toast";
+import fetchRPC from "@/utils/fetchRPC";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/_dashboardLayout/{{pathCase path}}/delete/$id")({
+	component: RouteComponent,
+});
+
+function RouteComponent() {
+	const { toast } = useToast();
+
+	const { id } = Route.useParams();
+
+	const queryClient = useQueryClient();
+
+	const navigate = Route.useNavigate();
+
+	const {{camelCase endpoint}}Query = useQuery({
+		queryKey: ["{{endpoint}}", id],
+		queryFn: async () => {
+			if (!id) return null;
+			return await fetchRPC(
+				client.{{dotCase endpoint}}[":id"].$get({
+					param: {
+						id,
+					},
+				}),
+			);
+		},
+	});
+
+	const mutation = useMutation({
+		mutationKey: ["delete-{{endpoint}}"],
+		mutationFn: async ({ id }: { id: string }) => {
+			return await fetchRPC(
+				client.{{dotCase endpoint}}[":id"].$delete({
+					param: {
+						id,
+					},
+				}),
+			);
+		},
+		onError: (error: unknown) => {
+			if (error instanceof Error) {
+				toast({
+					variant: "destructive",
+					title: "Error",
+					description: error.message,
+				});
+			}
+		},
+		onSuccess: () => {
+			toast({
+				description: "{{title}} deleted successfully.",
+				className: "bg-green-300 text-green-800",
+			});
+			queryClient.removeQueries({ queryKey: ["{{endpoint}}", id] });
+			queryClient.invalidateQueries({ queryKey: ["{{endpoint}}"] });
+			handleCloseModal();
+		},
+	});
+
+	const handleCloseModal = () => {
+		if (mutation.isPending) return;
+		navigate({ to: "/{{path}}" });
+	};
+
+	const isModalOpen = Boolean(id && {{camelCase endpoint}}Query.data);
+
+	return (
+		<AlertDialog open={isModalOpen}>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+					<AlertDialogDescription>
+						This action cannot be undone. This will permanently delete the data
+						of {{lowerCase title}} <b className="text-foreground">{ {{camelCase endpoint}}Query.data?.name }</b>.
+					</AlertDialogDescription>
+				</AlertDialogHeader>
+				<AlertDialogFooter className="gap-4">
+					<Button
+						disabled={mutation.isPending}
+						variant="ghost"
+						onClick={handleCloseModal}
+					>
+						Cancel
+					</Button>
+					<Button
+						onClick={() => mutation.mutate({ id })}
+						disabled={mutation.isPending}
+						variant="destructive"
+					>
+						Yes, I am sure
+					</Button>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
+	);
+}
