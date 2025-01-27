@@ -1,6 +1,5 @@
 {
 	"name": "@repo/data",
-	"type": "module",
 	"private": true,
 	"scripts": {
 		"dev": "tsc --watch",
