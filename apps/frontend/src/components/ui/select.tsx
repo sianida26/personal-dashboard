@@ -161,20 +161,31 @@ const SelectSeparator = React.forwardRef<
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
 
 export type SelectProps = {
-	label?: React.ReactNode;
-	placeholder?: string;
-	disabled?: boolean;
-	readOnly?: boolean;
-	data?: ({ value: string; label: React.ReactNode } | string)[];
-	defaultValue?: string;
-	onValueChange?: (value: string) => void;
-	value?: string;
-};
+		disabled?: boolean;
+		id?: string;
+		label?: React.ReactNode;
+		placeholder?: string;
+		readOnly?: boolean;
+		data?: ({ value: string; label: React.ReactNode } | string)[];
+		defaultValue?: string;
+		onValueChange?: (value: string) => void;
+		value?: string;
+		withAsterisk?: boolean;
+	};
 
 const Select = ({ ...props }: SelectProps) => {
 	return (
 		<div>
-			<Label>{props.label}</Label>
+			{props.label && (
+				<span>
+					<Label htmlFor={props.id} className="">
+						{props.label}
+					</Label>
+					{props.withAsterisk && (
+						<span className="text-red-500">*</span>
+					)}
+				</span>
+			)}
 			<NativeSelect
 				open={props.readOnly ? false : undefined}
 				disabled={props.disabled}
