@@ -51,7 +51,9 @@ const useAuth = () => {
  * ```
  */
 export const usePermissions = (
-	permissions: ExtendedPermissionCodeWithAll[] | ExtendedPermissionCodeWithAll,
+	permissions:
+		| ExtendedPermissionCodeWithAll[]
+		| ExtendedPermissionCodeWithAll,
 ) => {
 	const { user, isAuthenticated } = useAuth();
 	const navigate = useNavigate();

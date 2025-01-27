@@ -73,7 +73,9 @@ const usersRoute = new Hono<HonoEnv>()
 				data: result.map((d) => ({ ...d, fullCount: undefined })),
 				_metadata: {
 					currentPage: page,
-					totalPages: Math.ceil((Number(result[0]?.fullCount) ?? 0) / limit),
+					totalPages: Math.ceil(
+						(Number(result[0]?.fullCount) ?? 0) / limit,
+					),
 					totalItems: Number(result[0]?.fullCount) ?? 0,
 					perPage: limit,
 				},
@@ -266,7 +268,8 @@ const usersRoute = new Hono<HonoEnv>()
 			const userId = c.req.param("id");
 			const currentUserId = c.var.uid;
 
-			const skipTrash = c.req.valid("form").skipTrash.toLowerCase() === "true";
+			const skipTrash =
+				c.req.valid("form").skipTrash.toLowerCase() === "true";
 
 			const user = await db
 				.select()
@@ -309,7 +312,9 @@ const usersRoute = new Hono<HonoEnv>()
 	.patch("/restore/:id", checkPermission("users.restore"), async (c) => {
 		const userId = c.req.param("id");
 
-		const user = (await db.select().from(users).where(eq(users.id, userId)))[0];
+		const user = (
+			await db.select().from(users).where(eq(users.id, userId))
+		)[0];
 
 		if (!user) return c.notFound();
 
@@ -319,7 +324,10 @@ const usersRoute = new Hono<HonoEnv>()
 			});
 		}
 
-		await db.update(users).set({ deletedAt: null }).where(eq(users.id, userId));
+		await db
+			.update(users)
+			.set({ deletedAt: null })
+			.where(eq(users.id, userId));
 
 		return c.json({
 			message: "User restored successfully",

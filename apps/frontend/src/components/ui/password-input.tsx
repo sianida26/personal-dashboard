@@ -20,7 +20,8 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
 		},
 		ref,
 	) => {
-		const [internalVisibility, setInternalVisibility] = React.useState(false);
+		const [internalVisibility, setInternalVisibility] =
+			React.useState(false);
 
 		const isPasswordVisible = controlledVisibility ?? internalVisibility;
 

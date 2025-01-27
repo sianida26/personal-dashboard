@@ -83,7 +83,10 @@ export const verifyAccessToken = async (token: string) => {
  */
 export const verifyRefreshToken = async (token: string) => {
 	try {
-		const payload = jwt.verify(token, getPublicKey()) as RefreshTokenPayload;
+		const payload = jwt.verify(
+			token,
+			getPublicKey(),
+		) as RefreshTokenPayload;
 		return payload;
 	} catch {
 		return null;

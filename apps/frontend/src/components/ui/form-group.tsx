@@ -14,10 +14,15 @@ const FormGroup = forwardRef<HTMLFieldSetElement, FormGroupProps>(
 		return (
 			<fieldset
 				ref={ref}
-				className={cn("flex flex-col gap-2 border p-4 rounded-md", className)}
+				className={cn(
+					"flex flex-col gap-2 border p-4 rounded-md",
+					className,
+				)}
 				{...props}
 			>
-				<legend className={cn("text-sm", classNames?.legend)}>{legend}</legend>
+				<legend className={cn("text-sm", classNames?.legend)}>
+					{legend}
+				</legend>
 				{children}
 			</fieldset>
 		);

@@ -114,13 +114,19 @@ export function MultiSelect({
 							return opt.value === value;
 						});
 						const label =
-							typeof option === "string" ? option : option?.label || value;
+							typeof option === "string"
+								? option
+								: option?.label || value;
 
 						return (
 							<Badge
 								key={value}
 								variant="secondary"
-								className={cn(readOnly ? "cursor-not-allowed opacity-50" : "")}
+								className={cn(
+									readOnly
+										? "cursor-not-allowed opacity-50"
+										: "",
+								)}
 							>
 								{label}
 								{!readOnly && (
@@ -157,7 +163,11 @@ export function MultiSelect({
 						placeholder={selectedOptions.length ? "" : placeholder}
 						className="ml-2 flex-1 bg-transparent outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed"
 						onKeyDown={(e) => {
-							if (e.key === "Enter" && inputValue && allowCreate) {
+							if (
+								e.key === "Enter" &&
+								inputValue &&
+								allowCreate
+							) {
 								handleSelect(inputValue);
 							}
 						}}
@@ -172,9 +182,13 @@ export function MultiSelect({
 							<CommandGroup className="overflow-auto">
 								{options.map((option) => {
 									const value =
-										typeof option === "string" ? option : option.value;
+										typeof option === "string"
+											? option
+											: option.value;
 									const label =
-										typeof option === "string" ? option : option.label;
+										typeof option === "string"
+											? option
+											: option.label;
 
 									return (
 										<CommandItem
@@ -192,7 +206,9 @@ export function MultiSelect({
 											<LuCheck
 												className={cn(
 													"h-3 w-3",
-													selectedOptions.includes(value)
+													selectedOptions.includes(
+														value,
+													)
 														? "text-primary mr-2"
 														: "hidden",
 												)}

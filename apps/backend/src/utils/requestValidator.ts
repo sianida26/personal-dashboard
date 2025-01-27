@@ -52,9 +52,13 @@ function requestValidator<
 					[K in Target]?:
 						| (K extends "json"
 								? In
-								: HasUndefined<keyof ValidationTargets[K]> extends true
+								: HasUndefined<
+											keyof ValidationTargets[K]
+										> extends true
 									? {
-											[K2 in keyof In]?: ValidationTargets[K][K2] | undefined;
+											[K2 in keyof In]?:
+												| ValidationTargets[K][K2]
+												| undefined;
 										}
 									: {
 											[K2_1 in keyof In]: ValidationTargets[K][K2_1];
@@ -64,9 +68,13 @@ function requestValidator<
 			: {
 					[K_1 in Target]: K_1 extends "json"
 						? In
-						: HasUndefined<keyof ValidationTargets[K_1]> extends true
+						: HasUndefined<
+									keyof ValidationTargets[K_1]
+								> extends true
 							? {
-									[K2_2 in keyof In]?: ValidationTargets[K_1][K2_2] | undefined;
+									[K2_2 in keyof In]?:
+										| ValidationTargets[K_1][K2_2]
+										| undefined;
 								}
 							: {
 									[K2_3 in keyof In]: ValidationTargets[K_1][K2_3];

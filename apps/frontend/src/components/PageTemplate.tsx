@@ -154,7 +154,9 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 								<Input
 									leftSection={<TbSearch />}
 									value={q}
-									onChange={(e) => handleSearchQueryChange(e.target.value)}
+									onChange={(e) =>
+										handleSearchQueryChange(e.target.value)
+									}
 									placeholder="Search..."
 									className=""
 								/>
@@ -183,7 +185,15 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 									setPage(1);
 									setLimit(Number(value));
 								}}
-								data={["5", "10", "20", "50", "100", "200", "500"]}
+								data={[
+									"5",
+									"10",
+									"20",
+									"50",
+									"100",
+									"200",
+									"500",
+								]}
 							/>
 
 							<p>
@@ -205,7 +215,9 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 					const modalKey =
 						(modal as { key?: string | number })?.key ??
 						`modal-${Math.random()}`;
-					return <React.Fragment key={modalKey}>{modal}</React.Fragment>;
+					return (
+						<React.Fragment key={modalKey}>{modal}</React.Fragment>
+					);
 				})}
 			</div>
 

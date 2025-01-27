@@ -3,7 +3,6 @@ import type { PlopTypes } from "@turbo/gen";
 // Learn more about Turborepo Generators at https://turbo.build/repo/docs/core-concepts/monorepos/code-generation
 
 export default function generator(plop: PlopTypes.NodePlopAPI) {
-
 	plop.setGenerator("add-schema", {
 		description: "Adds a new schema to the DB",
 		prompts: [

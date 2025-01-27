@@ -14,5 +14,7 @@ function RouteComponent() {
 
 	const [currentPage, setCurrentPage] = useState(1);
 
-	return <Pagination total={6} value={currentPage} onChange={setCurrentPage} />;
+	return (
+		<Pagination total={6} value={currentPage} onChange={setCurrentPage} />
+	);
 }

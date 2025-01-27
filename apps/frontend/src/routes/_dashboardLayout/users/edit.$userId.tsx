@@ -127,7 +127,9 @@ function RouteComponent() {
 								<PasswordInput
 									label="Password"
 									isPasswordVisible={isPasswordVisible}
-									onPasswordVisibilityChange={setIsPasswordVisible}
+									onPasswordVisibilityChange={
+										setIsPasswordVisible
+									}
 									{...form.getInputProps("password")}
 								/>
 								<Button
@@ -135,7 +137,10 @@ function RouteComponent() {
 									className="border-primary"
 									type="button"
 									onClick={() => {
-										form.setFieldValue("password", generateRandomPassword());
+										form.setFieldValue(
+											"password",
+											generateRandomPassword(),
+										);
 										setIsPasswordVisible(true);
 									}}
 								>
@@ -149,7 +154,8 @@ function RouteComponent() {
 						type: "multi-select",
 						label: "Roles",
 						selectedOptions: form.values.roles ?? [],
-						onChange: (values) => form.setFieldValue("roles", values),
+						onChange: (values) =>
+							form.setFieldValue("roles", values),
 						options:
 							roles?.data?.map((role) => ({
 								value: role.id,

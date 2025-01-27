@@ -31,7 +31,9 @@ export default function UsersPage() {
 							<Button
 								variant="ghost"
 								onClick={() =>
-									column.toggleSorting(column.getIsSorted() === "asc")
+									column.toggleSorting(
+										column.getIsSorted() === "asc",
+									)
 								}
 							>
 								Name
@@ -46,9 +48,13 @@ export default function UsersPage() {
 				helper.accessor("isEnabled", {
 					cell: (info) =>
 						info.getValue() ? (
-							<Badge className="text-green-500 bg-green-100">Active</Badge>
+							<Badge className="text-green-500 bg-green-100">
+								Active
+							</Badge>
 						) : (
-							<Badge className="text-gray-500 bg-gray-100">Inactive</Badge>
+							<Badge className="text-gray-500 bg-gray-100">
+								Inactive
+							</Badge>
 						),
 					header: "Status",
 				}),
@@ -61,14 +67,16 @@ export default function UsersPage() {
 									label: "Detail",
 									permission: true,
 									action: `./detail/${props.row.original.id}`,
-									className: "bg-green-500 hover:bg-green-600",
+									className:
+										"bg-green-500 hover:bg-green-600",
 									icon: <TbEye />,
 								},
 								{
 									label: "Edit",
 									permission: true,
 									action: `./edit/${props.row.original.id}`,
-									className: "bg-yellow-500 hover:bg-yellow-600",
+									className:
+										"bg-yellow-500 hover:bg-yellow-600",
 									icon: <TbPencil />,
 								},
 								{

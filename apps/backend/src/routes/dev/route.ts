@@ -47,7 +47,12 @@ const devRoutes = new Hono<HonoEnv>()
 				},
 				extras: {
 					fullCount: db
-						.$count(users, includeTrashed ? isNull(users.deletedAt) : undefined)
+						.$count(
+							users,
+							includeTrashed
+								? isNull(users.deletedAt)
+								: undefined,
+						)
 						.as("fullCount"),
 				},
 				where: and(
@@ -74,7 +79,10 @@ const devRoutes = new Hono<HonoEnv>()
 						currentPage: page ?? 0,
 						totalPages:
 							page && limit
-								? Math.ceil((Number(result[0]?.fullCount) ?? 0) / limit)
+								? Math.ceil(
+										(Number(result[0]?.fullCount) ?? 0) /
+											limit,
+									)
 								: 0,
 						totalItems: Number(result[0]?.fullCount) ?? 0,
 						perPage: limit ?? 0,

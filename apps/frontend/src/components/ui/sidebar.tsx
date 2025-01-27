@@ -73,7 +73,8 @@ const SidebarProvider = React.forwardRef<
 		const open = openProp ?? _open;
 		const setOpen = React.useCallback(
 			(value: boolean | ((value: boolean) => boolean)) => {
-				const openState = typeof value === "function" ? value(open) : value;
+				const openState =
+					typeof value === "function" ? value(open) : value;
 				if (setOpenProp) {
 					setOpenProp(openState);
 				} else {
@@ -199,7 +200,11 @@ const Sidebar = React.forwardRef<
 
 		if (isMobile) {
 			return (
-				<Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
+				<Sheet
+					open={openMobile}
+					onOpenChange={setOpenMobile}
+					{...props}
+				>
 					<SheetContent
 						data-sidebar="sidebar"
 						data-mobile="true"
@@ -211,7 +216,9 @@ const Sidebar = React.forwardRef<
 						}
 						side={side}
 					>
-						<div className="flex h-full w-full flex-col">{children}</div>
+						<div className="flex h-full w-full flex-col">
+							{children}
+						</div>
 					</SheetContent>
 				</Sheet>
 			);
@@ -426,7 +433,10 @@ const SidebarGroup = React.forwardRef<
 		<div
 			ref={ref}
 			data-sidebar="group"
-			className={cn("relative flex w-full min-w-0 flex-col py-2", className)}
+			className={cn(
+				"relative flex w-full min-w-0 flex-col py-2",
+				className,
+			)}
 			{...props}
 		/>
 	);
@@ -521,7 +531,8 @@ const sidebarMenuButtonVariants = cva(
 	{
 		variants: {
 			variant: {
-				default: "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+				default:
+					"hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
 				outline:
 					"bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]",
 			},
@@ -567,7 +578,10 @@ const SidebarMenuButton = React.forwardRef<
 				data-sidebar="menu-button"
 				data-size={size}
 				data-active={isActive}
-				className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
+				className={cn(
+					sidebarMenuButtonVariants({ variant, size }),
+					className,
+				)}
 				onClick={() => setOpenMobile(false)}
 				{...props}
 			/>
@@ -665,7 +679,10 @@ const SidebarMenuSkeleton = React.forwardRef<
 		<div
 			ref={ref}
 			data-sidebar="menu-skeleton"
-			className={cn("rounded-md h-8 flex gap-2 px-2 items-center", className)}
+			className={cn(
+				"rounded-md h-8 flex gap-2 px-2 items-center",
+				className,
+			)}
 			{...props}
 		>
 			{showIcon && (

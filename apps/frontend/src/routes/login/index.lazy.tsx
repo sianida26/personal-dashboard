@@ -114,7 +114,8 @@ export default function LoginPage() {
 						<div className="flex flex-col items-center gap-2">
 							<h1 className="text-3xl font-bold">Log In</h1>
 							<p className="text-muted-foreground text-sm">
-								Enter your username or email to log in to the app
+								Enter your username or email to log in to the
+								app
 							</p>
 						</div>
 
@@ -146,7 +147,10 @@ export default function LoginPage() {
 								{...form.getInputProps("password")}
 							/>
 
-							<Button disabled={loginMutation.isPending} type="submit">
+							<Button
+								disabled={loginMutation.isPending}
+								type="submit"
+							>
 								Sign In
 							</Button>
 						</form>

@@ -68,7 +68,10 @@ function RouteComponent() {
 						label: "Permissions",
 						selectedOptions: form.values.permissions ?? [],
 						onChange: (values) =>
-							form.setFieldValue("permissions", values as PermissionCode[]),
+							form.setFieldValue(
+								"permissions",
+								values as PermissionCode[],
+							),
 						options: Array.from(permissions),
 						error: form.errors.roles,
 					},

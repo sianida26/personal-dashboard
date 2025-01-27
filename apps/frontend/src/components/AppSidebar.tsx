@@ -84,16 +84,23 @@ export default function AppSidebar() {
 					if (menu.type === "group") {
 						return (
 							<SidebarGroup key={menu.label}>
-								<SidebarGroupLabel>{menu.label}</SidebarGroupLabel>
+								<SidebarGroupLabel>
+									{menu.label}
+								</SidebarGroupLabel>
 								<SidebarGroupContent>
 									<SidebarMenu>
 										{menu.children.map((child) => {
-											const Icon: IconType | null = child.icon
-												? getTablerIcon(child.icon.tb)
-												: null;
+											const Icon: IconType | null =
+												child.icon
+													? getTablerIcon(
+															child.icon.tb,
+														)
+													: null;
 
 											return (
-												<SidebarMenuItem key={child.link}>
+												<SidebarMenuItem
+													key={child.link}
+												>
 													<SidebarMenuButton
 														asChild
 														isActive={Boolean(
@@ -103,8 +110,12 @@ export default function AppSidebar() {
 														)}
 													>
 														<Link to={child.link}>
-															{Icon && <Icon className="mr-2" />}
-															<span>{child.label}</span>
+															{Icon && (
+																<Icon className="mr-2" />
+															)}
+															<span>
+																{child.label}
+															</span>
 														</Link>
 													</SidebarMenuButton>
 												</SidebarMenuItem>
@@ -161,7 +172,9 @@ export default function AppSidebar() {
 												{user?.name}
 											</p>
 											<p className="w-full text-xs truncate text-muted-foreground">
-												{user?.email ?? user?.username ?? "User"}
+												{user?.email ??
+													user?.username ??
+													"User"}
 											</p>
 										</div>
 									</div>

@@ -37,7 +37,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 						<Label htmlFor={id} className="">
 							{label}
 						</Label>
-						{withAsterisk && <span className="text-red-500">*</span>}
+						{withAsterisk && (
+							<span className="text-red-500">*</span>
+						)}
 					</span>
 				)}
 				<div className="relative">

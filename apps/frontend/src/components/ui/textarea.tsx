@@ -21,7 +21,9 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 						<Label htmlFor={props.id} className="">
 							{label}
 						</Label>
-						{withAsterisk && <span className="text-red-500">*</span>}
+						{withAsterisk && (
+							<span className="text-red-500">*</span>
+						)}
 					</span>
 				)}
 				<textarea
