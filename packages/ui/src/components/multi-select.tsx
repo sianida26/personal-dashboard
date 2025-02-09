@@ -1,12 +1,7 @@
 import { X } from "lucide-react";
 
 import { Badge } from "./badge";
-import {
-	Command,
-	CommandGroup,
-	CommandItem,
-	CommandList,
-} from "./command";
+import { Command, CommandGroup, CommandItem, CommandList } from "./command";
 import { cn } from "../utils";
 import { Command as CommandPrimitive } from "cmdk";
 import type React from "react";

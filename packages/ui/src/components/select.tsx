@@ -161,17 +161,17 @@ const SelectSeparator = React.forwardRef<
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
 
 export type SelectProps = {
-		disabled?: boolean;
-		id?: string;
-		label?: React.ReactNode;
-		placeholder?: string;
-		readOnly?: boolean;
-		data?: ({ value: string; label: React.ReactNode } | string)[];
-		defaultValue?: string;
-		onValueChange?: (value: string) => void;
-		value?: string;
-		withAsterisk?: boolean;
-	};
+	disabled?: boolean;
+	id?: string;
+	label?: React.ReactNode;
+	placeholder?: string;
+	readOnly?: boolean;
+	data?: ({ value: string; label: React.ReactNode } | string)[];
+	defaultValue?: string;
+	onValueChange?: (value: string) => void;
+	value?: string;
+	withAsterisk?: boolean;
+};
 
 const Select = ({ ...props }: SelectProps) => {
 	return (

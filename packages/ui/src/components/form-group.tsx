@@ -31,6 +31,4 @@ const FormGroup = forwardRef<HTMLFieldSetElement, FormGroupProps>(
 
 FormGroup.displayName = "FormGroup";
 
-export {
-	FormGroup
-};
+export { FormGroup };
