@@ -4,7 +4,7 @@ import { type ReactNode, useEffect, useMemo, useState } from "react";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import isoWeek from "dayjs/plugin/isoWeek";
 import { TbChevronLeft, TbChevronRight } from "react-icons/tb";
-import { Button } from "../ui/button";
+import { Button } from "../../../../../packages/ui/src/components/button";
 import DayColumn from "./DayColumn";
 import HourColumn from "./HourColumn";
 import WeekPicker from "./WeekPicker";

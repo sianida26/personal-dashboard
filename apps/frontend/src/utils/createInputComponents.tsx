@@ -1,27 +1,28 @@
-import { Checkbox, type CheckboxProps } from "@/components/ui/checkbox";
-import { FileInput, type FileInputProps } from "@/components/ui/file-input";
-import FormGroup, { type FormGroupProps } from "@/components/ui/form-group";
-import { Input, type InputProps } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import MultiSelect, {
-	type MultiSelectProps,
-} from "@/components/ui/multi-select";
 import {
+	Checkbox,
+	type CheckboxProps,
+	FileInput,
+	type FileInputProps,
+	FormGroup,
+	type FormGroupProps,
+	Input,
+	type InputProps,
+	Label,
+	MultiSelect,
+	type MultiSelectProps,
 	NumberInput,
 	type NumberInputProps,
-} from "@/components/ui/number-input";
-import {
 	PasswordInput,
 	type PasswordInputProps,
-} from "@/components/ui/password-input";
-import {
 	RadioGroup,
 	RadioGroupItem,
 	type RadioGroupProps,
 	type RadioProps,
-} from "@/components/ui/radio-group";
-import { Select, type SelectProps } from "@/components/ui/select";
-import { Textarea, type TextareaProps } from "@/components/ui/textarea";
+	Select,
+	type SelectProps,
+	Textarea,
+	type TextareaProps,
+} from "@repo/ui";
 import type { ReactNode } from "@tanstack/react-router";
 import type React from "react";
 

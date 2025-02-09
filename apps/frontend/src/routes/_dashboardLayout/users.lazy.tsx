@@ -1,6 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge, Button } from "@repo/ui";
 import client from "@/honoClient";
 import createActionButtons from "@/utils/createActionButton";
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";

@@ -1,5 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui";
 import client from "@/honoClient";
 import createActionButtons from "@/utils/createActionButton";
 import { createFileRoute } from "@tanstack/react-router";

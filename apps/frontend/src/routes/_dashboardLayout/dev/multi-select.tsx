@@ -1,4 +1,4 @@
-import MultiSelect from "@/components/ui/multi-select";
+import { MultiSelect } from "@repo/ui";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 

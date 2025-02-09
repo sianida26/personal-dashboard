@@ -1,5 +1,5 @@
 import type React from "react";
-import { Input } from "./ui/input";
+import { Input } from "../../../../packages/ui/src/components/input";
 
 type Props = React.InputHTMLAttributes<HTMLInputElement> & {
 	label?: string | React.ReactNode;

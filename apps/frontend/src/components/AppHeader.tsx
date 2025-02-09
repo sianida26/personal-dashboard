@@ -1,5 +1,5 @@
 import { useMatches } from "@tanstack/react-router";
-import { SidebarTrigger } from "./ui/sidebar";
+import { SidebarTrigger } from "../../../../packages/ui/src/components/sidebar";
 
 export default function AppHeader() {
 	const matches = useMatches();

@@ -3,8 +3,17 @@ import { getTablerIcon } from "@/utils/getTablerIcon";
 import { useQuery } from "@tanstack/react-query";
 import type { SidebarMenu as SidebarMenuType } from "backend/types";
 import type { IconType } from "react-icons";
-// src/components/AppSidebar.tsx
+
+import defaultProfilePicture from "@/assets/images/default-picture.jpg";
+import logo from "@/assets/logos/logo.png";
+import useAuth from "@/hooks/useAuth";
+import { Link, useMatchRoute } from "@tanstack/react-router";
+import { TbChevronUp, TbDoorExit, TbUser } from "react-icons/tb";
 import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
 	Sidebar,
 	SidebarContent,
 	SidebarFooter,
@@ -15,18 +24,7 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-} from "./ui/sidebar";
-
-import defaultProfilePicture from "@/assets/images/default-picture.jpg";
-import logo from "@/assets/logos/logo.png";
-import useAuth from "@/hooks/useAuth";
-import {
-	DropdownMenu,
-	DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
-import { Link, useMatchRoute } from "@tanstack/react-router";
-import { TbChevronUp, TbDoorExit, TbUser } from "react-icons/tb";
-import { DropdownMenuContent, DropdownMenuItem } from "./ui/dropdown-menu";
+} from "@repo/ui";
 
 export default function AppSidebar() {
 	const { user } = useAuth();

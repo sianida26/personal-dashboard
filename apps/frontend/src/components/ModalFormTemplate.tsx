@@ -1,6 +1,11 @@
 import type React from "react";
 import FormTemplate, { type FormTemplateProps } from "./FormTemplate";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+} from "../../../../packages/ui/src/components/dialog";
 
 export type ModalFormTemplateProps<TForm> = FormTemplateProps<TForm> & {
 	title: React.ReactNode;

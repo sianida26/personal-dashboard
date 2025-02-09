@@ -1,6 +1,5 @@
 import ModalFormTemplate from "@/components/ModalFormTemplate";
-import { Button } from "@/components/ui/button";
-import { PasswordInput } from "@/components/ui/password-input";
+import { Button, PasswordInput } from "@repo/ui";
 import client from "@/honoClient";
 import createInputComponents from "@/utils/createInputComponents";
 import fetchRPC from "@/utils/fetchRPC";
@@ -154,7 +153,7 @@ function RouteComponent() {
 						type: "multi-select",
 						label: "Roles",
 						selectedOptions: form.values.roles ?? [],
-						onChange: (values) =>
+						onChange: (values: string[]) =>
 							form.setFieldValue("roles", values),
 						options:
 							roles?.data?.map((role) => ({

@@ -6,7 +6,7 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "./ui/table";
+} from "../../../../packages/ui/src/components/table";
 
 interface Props<TData> {
 	table: ReactTable<TData>;

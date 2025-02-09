@@ -1,19 +1,16 @@
-{
-	"name": "@repo/validation",
-	"type": "module",
-	"private": true,
-	"scripts": {
-		"dev": "tsc --watch",
-		"build": "tsc"
-	},
-	"exports": {
-		".": "./src/index.ts"
-	},
-	"dependencies": {
-		"@repo/data": "workspace:*"
-	},
-	"devDependencies": {
-		"@repo/typescript-config": "workspace:*",
-		"typescript": "latest"
+ {
+		"name": "@repo/validation",
+		"type": "module",
+		"private": true,
+		"scripts": {},
+		"exports": {
+			".": "./src/index.ts"
+		},
+		"dependencies": {
+			"@repo/data": "workspace:*"
+		},
+		"devDependencies": {
+			"@repo/typescript-config": "workspace:*",
+			"typescript": "latest"
+		}
 	}
-}

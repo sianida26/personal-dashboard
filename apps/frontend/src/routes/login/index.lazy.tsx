@@ -1,6 +1,5 @@
 import TextInput from "@/components/TextInput";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle, Button } from "@repo/ui";
 import useAuth from "@/hooks/useAuth";
 import { useForm } from "@mantine/form";
 import { useMutation } from "@tanstack/react-query";

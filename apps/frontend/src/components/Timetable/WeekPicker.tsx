@@ -1,6 +1,10 @@
 import dayjs from "dayjs";
-import { Calendar } from "../ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Calendar } from "../../../../../packages/ui/src/components/calendar";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "../../../../../packages/ui/src/components/popover";
 
 interface Props {
 	currentDate: dayjs.Dayjs;

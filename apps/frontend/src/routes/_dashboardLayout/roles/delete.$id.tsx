@@ -5,10 +5,10 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+} from "@repo/ui";
+import { Button } from "@repo/ui";
 import client from "@/honoClient";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@repo/ui/hooks";
 import fetchRPC from "@/utils/fetchRPC";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";

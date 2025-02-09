@@ -1,5 +1,5 @@
-import { Pagination } from "@/components/ui/pagination";
 import { usePermissions } from "@/hooks/useAuth";
+import { Pagination } from "@repo/ui";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 

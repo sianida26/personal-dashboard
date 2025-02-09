@@ -1,9 +1,9 @@
 import AppHeader from "@/components/AppHeader";
 import AppSidebar from "@/components/AppSidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import client from "@/honoClient";
 import useAuth from "@/hooks/useAuth";
 import fetchRPC from "@/utils/fetchRPC";
+import { SidebarProvider } from "@repo/ui";
 import { useQuery } from "@tanstack/react-query";
 import { Navigate, Outlet, createFileRoute } from "@tanstack/react-router";
 

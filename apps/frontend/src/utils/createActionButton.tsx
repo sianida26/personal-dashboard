@@ -1,10 +1,11 @@
-import { Button, type ButtonProps } from "@/components/ui/button";
 import {
+	Button,
+	type ButtonProps,
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@repo/ui";
 import { Link } from "@tanstack/react-router";
 import type React from "react";
 
