@@ -9,14 +9,13 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
-		"@hookform/resolvers": "^3.10.0",
 		"@mantine/form": "^7.16.3",
 		"@mantine/hooks": "^7.16.3",
 		"@repo/data": "workspace:*",
 		"@repo/ui": "workspace:*",
 		"@repo/validation": "workspace:*",
 		"@tanstack/react-query": "^5.66.0",
-		"@tanstack/react-router": "^1.101.0",
+		"@tanstack/react-router": "^1.102.1",
 		"@tanstack/react-table": "^8.20.6",
 		"@types/uuid": "^10.0.0",
 		"backend": "workspace:*",
@@ -30,12 +29,11 @@
 		"zod": "^3.24.1"
 	},
 	"devDependencies": {
-		"@tailwindcss/postcss": "^4.0.5",
-		"@tanstack/eslint-plugin-query": "^5.66.0",
-		"@tanstack/router-devtools": "^1.101.0",
-		"@tanstack/router-vite-plugin": "^1.101.0",
+		"@tailwindcss/postcss": "^4.0.6",
+		"@tanstack/router-devtools": "^1.102.1",
+		"@tanstack/router-vite-plugin": "^1.102.2",
 		"@vitejs/plugin-react-swc": "^3.8.0",
-		"postcss": "^8.5.1",
+		"postcss": "^8.5.2",
 		"postcss-preset-mantine": "^1.17.0",
 		"postcss-simple-vars": "^7.0.1",
 		"vite": "^6.1.0"

@@ -10,7 +10,6 @@
 		"@repo/data": "workspace:*"
 	},
 	"devDependencies": {
-		"@repo/typescript-config": "workspace:*",
-		"typescript": "latest"
+		"@repo/typescript-config": "workspace:*"
 	}
 }
