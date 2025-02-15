@@ -1,4 +1,3 @@
-import { serve } from "@hono/node-server";
 import { configDotenv } from "dotenv";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
@@ -66,22 +65,12 @@ const routes = app
 			},
 			500,
 		);
-	});
+	}); 
 
-serve(
-	{
-		fetch: app.fetch,
-		port: appEnv.APP_PORT,
-		hostname: appEnv.APP_HOST,
-	},
-	(info) => {
-		appLogger.info(
-			`Server is running on http://${info.address}:${info.port}`,
-		);
-		appLogger.info(
-			`Application is running on ${appEnv.APP_ENV.toUpperCase()} environment`,
-		);
-	},
-);
+export default {
+	fetch: app.fetch,
+	port: appEnv.APP_PORT,
+	hostname: appEnv.APP_HOST,
+}
 
 export type AppType = typeof routes;
