@@ -19,6 +19,6 @@
 		"strict": true,
 		"target": "ESNext",
 		"verbatimModuleSyntax": true,
-		"noEmit": true,
+		"noEmit": true
 	}
 }
