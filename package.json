@@ -7,6 +7,7 @@
 		"lint": "biome lint --write --diagnostic-level warn",
 		"format": "biome format --write --diagnostic-level warn"
 	},
+	"workspaces": ["packages/*", "apps/*"],
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
 		"@repo/typescript-config": "workspace:*",
@@ -18,7 +19,7 @@
 		"turbo": "^2.4.1",
 		"typescript": "^5.7.3"
 	},
-	"packageManager": "pnpm@9.3.0",
+	"packageManager": "bun@1.2.2",
 	"engines": {
 		"node": ">=18"
 	},
