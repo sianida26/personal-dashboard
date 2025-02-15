@@ -22,7 +22,7 @@
 	},
 	"packageManager": "bun@1.2.2",
 	"engines": {
-		"node": ">=18"
+		"bun": ">=1.2.0"
 	},
 	"dependencies": {
 		"@paralleldrive/cuid2": "^2.2.2",

@@ -1,15 +1,15 @@
 {
 	"name": "backend",
 	"scripts": {
-		"dev": "tsx watch src/index.ts",
+		"dev": "bun src/index.ts --watch",
 		"db:generate": "drizzle-kit generate",
 		"db:push": "drizzle-kit push",
 		"db:pull": "drizzle-kit pull",
-		"db:seed": "tsx src/drizzle/seed.ts",
-		"db:migrate": "tsx src/drizzle/migration.ts",
+		"db:seed": "bun src/drizzle/seed.ts",
+		"db:migrate": "bun src/drizzle/migration.ts",
 		"db:studio": "drizzle-kit studio",
 		"db:up": "drizzle-kit up",
-		"start": "tsc -p tsconfig.json && tsx src/index.ts"
+		"start": "bun src/index.ts"
 	},
 	"dependencies": {
 		"@hono/node-server": "^1.13.8",

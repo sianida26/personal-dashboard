@@ -10,7 +10,7 @@ const saltRounds = 10;
 export const hashPassword = async (password: string) => {
 	return await Bun.password.hash(password, {
 		algorithm: "bcrypt",
-		cost: 10,
+		cost: saltRounds,
 	});
 };
 
