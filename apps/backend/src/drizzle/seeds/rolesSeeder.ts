@@ -31,6 +31,10 @@ const roleSeeder = async () => {
 			)[0];
 		}
 
+		if (!insertedRole) {
+			throw new Error(`Role ${role.name} not found in database`);
+		}
+
 		for (const permissionCode of role.permissions) {
 			if (!memoizedPermissions.has(permissionCode)) {
 				const permission = (
