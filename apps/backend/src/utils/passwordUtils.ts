@@ -1,5 +1,3 @@
-import bcrypt from "bcrypt";
-
 // Number of rounds for generating the salt.
 const saltRounds = 10;
 
@@ -10,7 +8,10 @@ const saltRounds = 10;
  * @returns A promise that resolves to the hashed password string.
  */
 export const hashPassword = async (password: string) => {
-	return await bcrypt.hash(password, saltRounds);
+	return await Bun.password.hash(password, {
+		algorithm: "bcrypt",
+		cost: 10,
+	});
 };
 
 /**
@@ -21,5 +22,5 @@ export const hashPassword = async (password: string) => {
  * @returns A promise that resolves to a boolean indicating whether the password matches the hash.
  */
 export const checkPassword = async (password: string, hash: string) => {
-	return await bcrypt.compare(password, hash);
+	return await Bun.password.verify(password, hash, "bcrypt");
 };

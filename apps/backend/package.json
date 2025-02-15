@@ -16,7 +16,6 @@
 		"@hono/zod-validator": "^0.4.2",
 		"@repo/data": "workspace:*",
 		"@repo/validation": "workspace:*",
-		"bcrypt": "^5.1.1",
 		"dayjs": "^1.11.13",
 		"dotenv": "^16.4.7",
 		"drizzle-orm": "^0.39.3",
@@ -27,7 +26,6 @@
 		"zod": "^3.24.1"
 	},
 	"devDependencies": {
-		"@types/bcrypt": "^5.0.2",
 		"@types/jsonwebtoken": "^9.0.8",
 		"drizzle-kit": "^0.30.4",
 		"pg": "^8.13.1",
