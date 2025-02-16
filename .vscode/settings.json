@@ -6,5 +6,8 @@
 		"editor.defaultFormatter": "vscode.json-language-features"
 	},
 	"editor.formatOnPaste": true,
-	"tailwindCSS.experimental.configFile": "apps/frontend/css/tailwind.css"
+	"tailwindCSS.experimental.configFile": "apps/frontend/css/tailwind.css",
+	"[typescript]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	}
 }

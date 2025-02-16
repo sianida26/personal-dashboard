@@ -3,7 +3,7 @@ import AppSidebar from "@/components/AppSidebar";
 import client from "@/honoClient";
 import useAuth from "@/hooks/useAuth";
 import fetchRPC from "@/utils/fetchRPC";
-import { SidebarProvider } from "@repo/ui";
+import { SidebarProvider } from "@repo/ui/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { Navigate, Outlet, createFileRoute } from "@tanstack/react-router";
 
