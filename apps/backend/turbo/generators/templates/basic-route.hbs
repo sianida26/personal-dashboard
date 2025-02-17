@@ -21,7 +21,7 @@ const {{camelCase name}}Route = new Hono<HonoEnv>()
 			const { page, limit, q } = c.req.valid("query");
 
 			const totalCountQuery =
-				sql<number>`(SELECT count(*) FROM ${{{model}}})`.as("fullCount");
+				sql<number>`(SELECT count(*) FROM ${ {{model}} })`.as("fullCount");
 
 			const result = await db.query.{{model}}.findMany({
 				orderBy: [desc({{model}}.createdAt)],
