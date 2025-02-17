@@ -46,11 +46,7 @@ function RouteComponent() {
 				fetchRPC(
 					client.{{dotCase endpoint}}[":id"].$patch({
 						param: { id },
-						json: {
-							name: form.values.name,
-							description: form.values.description,
-							permissions: form.values.permissions,
-						},
+						json: form.values,
 					}),
 				)
 			}
