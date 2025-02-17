@@ -61,7 +61,7 @@ export default function generator(plop: PlopTypes.NodePlopAPI) {
 			},
 			{
 				type: "add",
-				path: "src/routes/_dashboardLayout/{{path}}/delete.tsx",
+				path: "src/routes/_dashboardLayout/{{path}}/delete.$id.tsx",
 				templateFile: "templates/page-template/delete.hbs",
 			},
 		],
