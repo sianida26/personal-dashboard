@@ -1,9 +1,9 @@
 import { createId } from "@paralleldrive/cuid2";
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { pgTable, timestamp, varchar } from "drizzle-orm/pg-core";
 
 export const {{camelCase name}}Schema = pgTable("{{snakeCase name}}", {
-	id: text("id")
+	id: varchar("id", {length: 25})
 		.primaryKey()
 		.$defaultFn(() => createId()),
 	createdAt: timestamp("created_at").defaultNow(),
