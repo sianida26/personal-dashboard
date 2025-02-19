@@ -9,7 +9,8 @@
 		"db:migrate": "bun src/drizzle/migration.ts",
 		"db:studio": "drizzle-kit studio",
 		"db:up": "drizzle-kit up",
-		"start": "bun src/index.ts"
+		"start": "bun src/index.ts",
+		"test": "NODE_ENV=test bun test --coverage"
 	},
 	"dependencies": {
 		"@hono/node-server": "^1.13.8",
