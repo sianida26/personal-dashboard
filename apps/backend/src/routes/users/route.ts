@@ -186,7 +186,7 @@ const usersRoute = new Hono<HonoEnv>()
 			}
 
 			await db.transaction(async (trx) => {
-				const user = await trx
+				const [user] = await trx
 					.insert(users)
 					.values({
 						name: userData.name,
@@ -197,13 +197,22 @@ const usersRoute = new Hono<HonoEnv>()
 					})
 					.returning();
 
+				if (!user) {
+					throw new DashboardError({
+						errorCode: "INTERNAL_SERVER_ERROR",
+						message: "Failed to create user",
+						severity: "HIGH",
+						statusCode: 500,
+					});
+				}
+
 				if (userData.roles) {
 					const roles = userData.roles;
 
 					if (roles?.length) {
 						await trx.insert(rolesToUsers).values(
 							roles.map((role) => ({
-								userId: user[0].id,
+								userId: user.id,
 								roleId: role,
 							})),
 						);
