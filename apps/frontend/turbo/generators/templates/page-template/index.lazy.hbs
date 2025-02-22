@@ -1,6 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui";
 import client from "@/honoClient";
 import createActionButtons from "@/utils/createActionButton";
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
@@ -24,6 +23,7 @@ export default function RouteComponent() {
 					cell: (props) => props.row.index + 1,
 					size: 1,
 				}),
+				//TODO: Change the column1 and column2 to the actual column names
 				helper.accessor("column1", {
 					cell: (info) => info.getValue(),
 					header: ({ column }) => {
