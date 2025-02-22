@@ -2,7 +2,7 @@ import PageTemplate from "@/components/PageTemplate";
 import { Button } from "@repo/ui";
 import client from "@/honoClient";
 import createActionButtons from "@/utils/createActionButton";
-import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
+import { createLazyFileRoute } from "@tanstack/react-router";
 import { TbEye, TbPencil, TbTrash } from "react-icons/tb";
 
 export const Route = createLazyFileRoute("/_dashboardLayout/{{pathCase path}}")({
@@ -10,7 +10,6 @@ export const Route = createLazyFileRoute("/_dashboardLayout/{{pathCase path}}")(
 });
 
 export default function RouteComponent() {
-	const navigate = useNavigate();
 
 	return (
 		<PageTemplate
