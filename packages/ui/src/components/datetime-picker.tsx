@@ -8,6 +8,7 @@ import { Button } from "./button";
 import { cn } from "../utils";
 import { Calendar } from "./calendar";
 import { ScrollArea, ScrollBar } from "./scroll-area";
+import { Label } from "./label";
 
 export interface DateTimePickerProps {
 	value?: Date;
@@ -71,14 +72,17 @@ export function DateTimePicker({
 	return (
 		<div>
 			{label && (
-				<label htmlFor="datetime-picker">
-					{label}
-					{withAsterisk && " *"}
-				</label>
+				<span>
+					<Label>{label}</Label>
+					{withAsterisk && <span className="text-red-500">*</span>}
+				</span>
 			)}
-			<Popover open={isOpen} onOpenChange={(open) => { 
-				if (!disabled && !readOnly) setIsOpen(open); 
-			}}>
+			<Popover
+				open={isOpen}
+				onOpenChange={(open) => {
+					if (!disabled && !readOnly) setIsOpen(open);
+				}}
+			>
 				<PopoverTrigger asChild>
 					<Button
 						id="datetime-picker"
@@ -87,14 +91,15 @@ export function DateTimePicker({
 						className={cn(
 							"w-full justify-start text-left font-normal",
 							!date && "text-muted-foreground",
-							(disabled || readOnly) && "opacity-50 cursor-not-allowed"
+							(disabled || readOnly) &&
+								"opacity-50 cursor-not-allowed",
 						)}
 					>
 						<CalendarIcon className="mr-2 h-4 w-4" />
 						{date ? (
-							format(date, "MM/dd/yyyy hh:mm")
+							format(date, "MM/dd/yyyy HH:mm")
 						) : (
-							<span>MM/DD/YYYY hh:mm</span>
+							<span>MM/DD/YYYY HH:mm</span>
 						)}
 					</Button>
 				</PopoverTrigger>
