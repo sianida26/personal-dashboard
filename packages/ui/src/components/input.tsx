@@ -36,6 +36,8 @@ export interface InputProps extends React.ComponentProps<"input"> {
 			leftSection: string;
 			rightSection: string;
 			label: string;
+			description: string;
+			error: string;
 		}>;
 
 		/**
@@ -145,7 +147,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 		};
 
 		return (
-			<div className={cn("relative w-full flex flex-col", className)}>
+			<div
+				className={cn("relative w-full flex flex-col gap-2", className)}
+			>
 				<Label
 					htmlFor={inputId}
 					className={classNames?.label}
@@ -189,12 +193,28 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 						</div>
 					)}
 				</div>
-				{description && (
-					<p className="text-sm text-muted-foreground">
-						{description}
-					</p>
-				)}
-				{error && <p className="text-sm text-destructive">{error}</p>}
+				<div className="flex flex-col">
+					{description && (
+						<p
+							className={cn(
+								"text-sm/3 text-muted-foreground",
+								classNames?.description,
+							)}
+						>
+							{description}
+						</p>
+					)}
+					{error && (
+						<p
+							className={cn(
+								"text-sm text-destructive",
+								classNames?.error,
+							)}
+						>
+							{error}
+						</p>
+					)}
+				</div>
 			</div>
 		);
 	},
