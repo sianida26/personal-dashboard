@@ -6,7 +6,7 @@
 		".": "./src/index.ts",
 		"./utils": "./src/utils/index.ts",
 		"./hooks": "./src/hooks/index.ts",
-		"./tailwind.css": "./src/styles/tailwind.css"
+		"./tailwind.css": "./src/tailwind.css"
 	},
 	"scripts": {},
 	"dependencies": {
