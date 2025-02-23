@@ -5,7 +5,7 @@ import { Label } from "./label";
 export interface TextareaProps
 	extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
 	label?: string;
-	error?: string;
+	error?: React.ReactNode;
 	withAsterisk?: boolean;
 	classNames?: {
 		textarea?: string;
