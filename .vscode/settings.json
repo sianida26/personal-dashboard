@@ -11,5 +11,8 @@
 		"editor.defaultFormatter": "biomejs.biome"
 	},
 	"git.fetchOnPull": true,
-	"git.autofetch": true
+	"git.autofetch": true,
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	}
 }
