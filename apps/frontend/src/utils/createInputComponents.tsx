@@ -1,6 +1,8 @@
 import {
 	Checkbox,
 	type CheckboxProps,
+	DateTimePicker,
+	type DateTimePickerProps,
 	FileInput,
 	type FileInputProps,
 	FormGroup,
@@ -86,12 +88,17 @@ type FileInputType<Multiple = boolean> = {
 	multiple?: Multiple;
 } & Omit<FileInputProps, "type" | "multiple">;
 
+type DateTimePickerType = {
+	type: "datetime-picker";
+} & DateTimePickerProps;
+
 type AcceptedInput = (
 	| TextInputType
 	| MultiSelectInputType
 	| PasswordInputType
 	| NumberInputType
 	| SelectType
+	| DateTimePickerType
 	// | ChipType
 	| Group
 	| CheckboxType
@@ -237,6 +244,17 @@ function createInputComponents(options: Options) {
 			case "file-input": {
 				return (
 					<FileInput
+						{...input}
+						key={key}
+						readOnly={options.readonlyAll || input.readOnly}
+						disabled={options.disableAll || input.disabled}
+					/>
+				);
+			}
+
+			case "datetime-picker": {
+				return (
+					<DateTimePicker
 						{...input}
 						key={key}
 						readOnly={options.readonlyAll || input.readOnly}
