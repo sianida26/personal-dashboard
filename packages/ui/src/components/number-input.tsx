@@ -7,32 +7,39 @@ import { LuChevronDown, LuChevronUp } from "react-icons/lu";
  * Extends InputProps for numeric-specific behavior.
  */
 export interface NumberInputProps
-	extends Omit<InputProps, "type" | "value" | "onChange"> {
-	/**
-	 * Current numeric value (controlled).
-	 */
-	value?: number;
-	/**
-	 * Default numeric value (uncontrolled).
-	 */
-	defaultValue?: number;
-	/**
-	 * Callback when value changes.
-	 */
-	onChange?(value: number): void;
-	/**
-	 * Minimum value allowed.
-	 */
-	min?: number;
-	/**
-	 * Maximum value allowed.
-	 */
-	max?: number;
-	/**
-	 * Increment/decrement step.
-	 */
-	step?: number;
-}
+		extends Omit<InputProps, "type" | "value" | "onChange"> {
+		/**
+		 * Current numeric value (controlled).
+		 */
+		value?: number;
+		/**
+		 * Default numeric value (uncontrolled).
+		 */
+		defaultValue?: number;
+		/**
+		 * Callback when value changes (numeric).
+		 */
+		onChange?(value: number): void;
+		/**
+		 * Minimum value allowed.
+		 */
+		min?: number;
+		/**
+		 * Maximum value allowed.
+		 */
+		max?: number;
+		/**
+		 * Increment/decrement step.
+		 */
+		step?: number;
+		/**
+		 * Determine how clamping is applied.
+		 * "none" - do not clamp the value.
+		 * "blur" - clamp the value on blur.
+		 * "strict" - clamp the value immediately on change.
+		 */
+		clampBehavior?: "none" | "blur" | "strict";
+	}
 
 export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 	(
@@ -43,51 +50,98 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 			min,
 			max,
 			step = 1,
-			// Spread the rest to pass down to Input
+			clampBehavior = "blur",
 			...props
 		},
 		ref,
 	) => {
-		const [internalValue, setInternalValue] = React.useState<number>(
-			value ?? defaultValue ?? 0,
-		);
-
-		// Derive controlled vs. uncontrolled
-		const currentValue = value ?? internalValue;
+		// Are we controlled?
 		const isControlled = value !== undefined;
 
-		const clampValue = (val: number) => {
-			if (min !== undefined && val < min) return min;
-			if (max !== undefined && val > max) return max;
-			return val;
-		};
+		// Keep a string state so the user can freely type (including empty).
+		const [internalValue, setInternalValue] = React.useState<string>(() => {
+			if (isControlled && value != null) return String(value);
+			if (defaultValue != null) return String(defaultValue);
+			return "";
+		});
 
-		const handleValueChange = (newVal: number) => {
-			const clamped = clampValue(newVal);
-			if (!isControlled) {
-				setInternalValue(clamped);
+		// Keep internalValue in sync if controlled
+		React.useEffect(() => {
+			if (isControlled) {
+				setInternalValue(value != null ? String(value) : "");
 			}
-			onChange?.(clamped);
+		}, [isControlled, value]);
+
+		const parseValue = (val: string) => {
+			const numeric = Number.parseFloat(val);
+			return Number.isNaN(numeric) ? null : numeric;
 		};
 
-		const increment = () => {
-			handleValueChange(currentValue + step);
+		const clampValue = (val: number) => {
+			let clamped = val;
+			if (min !== undefined && clamped < min) clamped = min;
+			if (max !== undefined && clamped > max) clamped = max;
+			return clamped;
 		};
 
-		const decrement = () => {
-			handleValueChange(currentValue - step);
+		/**
+		 * Apply logic to final value:
+		 * - If user typed a valid number, clamp if needed.
+		 * - If user typed empty or invalid, fall back to min if present, otherwise 0.
+		 */
+		const commitValue = (raw: string) => {
+			const parsed = parseValue(raw);
+
+			let finalVal: number;
+			if (parsed === null) {
+				// user typed empty or invalid
+				finalVal = min !== undefined ? min : 0;
+			} else {
+				finalVal =
+					clampBehavior === "strict" ? clampValue(parsed) : parsed;
+			}
+
+			if (!isControlled) {
+				setInternalValue(String(finalVal));
+			}
+			onChange?.(clampValue(finalVal));
 		};
 
 		const handleInputChange = (
 			event: React.ChangeEvent<HTMLInputElement>,
 		) => {
-			const numericVal = Number.parseFloat(event.target.value);
-			if (!Number.isNaN(numericVal)) {
-				handleValueChange(numericVal);
+			const rawValue = event.target.value;
+
+			if (clampBehavior === "strict") {
+				// Immediately clamp on each change
+				commitValue(rawValue);
 			} else {
-				// If user deletes everything, treat as 0 or min
-				handleValueChange(min ?? 0);
+				// Let user type freely; store raw input
+				if (!isControlled) {
+					setInternalValue(rawValue);
+				}
+				// Call onChange with numeric value or NaN
+				const parsed = parseValue(rawValue);
+				onChange?.(parsed ?? Number.NaN);
 			}
+		};
+
+		const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+			// Only clamp on blur if clampBehavior === "blur"
+			if (clampBehavior === "blur") {
+				commitValue(internalValue);
+			}
+			props.onBlur?.(event);
+		};
+
+		const increment = () => {
+			const parsed = parseValue(internalValue) ?? 0;
+			commitValue(String(parsed + step));
+		};
+
+		const decrement = () => {
+			const parsed = parseValue(internalValue) ?? 0;
+			commitValue(String(parsed - step));
 		};
 
 		// Right section with up/down arrows
@@ -114,10 +168,10 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 			<Input
 				ref={ref}
 				{...props}
-				// Force type to number to display numeric keyboard, etc.
 				type="number"
-				value={String(currentValue)}
+				value={internalValue}
 				onChange={handleInputChange}
+				onBlur={handleBlur}
 				rightSection={rightSection}
 				classNames={{
 					rightSection:
