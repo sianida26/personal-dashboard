@@ -12,7 +12,7 @@ import { ScrollArea, ScrollBar } from "./scroll-area";
 export interface DateTimePickerProps {
 	value?: Date;
 	onChange?: (date: Date) => void;
-	error?: string;
+	error?: React.ReactNode;
 	label?: string;
 	withAsterisk?: boolean;
 	disabled?: boolean;
