@@ -134,6 +134,10 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 			props.onBlur?.(event);
 		};
 
+		const numericValue = parseValue(internalValue) ?? 0;
+		const isAtMin = min !== undefined && numericValue <= min;
+		const isAtMax = max !== undefined && numericValue >= max;
+
 		const increment = () => {
 			const parsed = parseValue(internalValue) ?? 0;
 			commitValue(String(parsed + step));
@@ -150,14 +154,20 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 				<button
 					type="button"
 					onClick={increment}
-					className="flex items-center h-full justify-center leading-none w-6 hover:bg-primary/10"
+					disabled={isAtMax}
+					className={cn(
+						"flex items-center h-full justify-center leading-none w-6 hover:bg-primary/10 disabled:opacity-50 disabled:cursor-not-allowed",
+					)}
 				>
 					<LuChevronUp />
 				</button>
 				<button
 					type="button"
 					onClick={decrement}
-					className="flex items-center h-full justify-center leading-none w-6 hover:bg-primary/10"
+					disabled={isAtMin}
+					className={cn(
+						"flex items-center h-full justify-center leading-none w-6 hover:bg-primary/10 disabled:opacity-50 disabled:cursor-not-allowed",
+					)}
 				>
 					<LuChevronDown />
 				</button>
