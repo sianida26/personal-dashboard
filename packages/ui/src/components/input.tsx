@@ -2,66 +2,56 @@ import * as React from "react";
 import { cn } from "../utils";
 import { Label } from "./label";
 
-/**
- * Props for the Input component.
- *
- * @property error Optional element displayed when there is an error.
- * @property leftSection Optional element rendered on the left side of the input.
- * @property rightSection Optional element rendered on the right side of the input.
- * @property label Optional label displayed above or alongside the input.
- * @property withAsterisk If true, appends an asterisk to indicate a required field.
- * @property classNames An object that allows customization of CSS class names for the input and its sections.
- * - input: Class name for the input field.
- * - leftSection: Class name for the left section element.
- * - rightSection: Class name for the right section element.
- * - label: Class name for the label element.
- * @property mask Optional mask pattern string for the input formatting.
- */
 export interface InputProps extends React.ComponentProps<"input"> {
-	/**
-	 * Optional element displayed when there is an error.
-	 */
-	error?: React.ReactNode;
+		/**
+		 * Optional element displayed when there is an error.
+		 */
+		error?: React.ReactNode;
 
-	/**
-	 * Optional element rendered on the left side of the input.
-	 */
-	leftSection?: React.ReactNode;
+		/**
+		 * Optional element rendered on the left side of the input.
+		 */
+		leftSection?: React.ReactNode;
 
-	/**
-	 * Optional element rendered on the right side of the input.
-	 */
-	rightSection?: React.ReactNode;
+		/**
+		 * Optional element rendered on the right side of the input.
+		 */
+		rightSection?: React.ReactNode;
 
-	/**
-	 * Optional label displayed above or alongside the input.
-	 */
-	label?: React.ReactNode;
+		/**
+		 * Optional label displayed above or alongside the input.
+		 */
+		label?: React.ReactNode;
 
-	/**
-	 * If true, appends an asterisk to indicate a required field.
-	 */
-	withAsterisk?: boolean;
+		/**
+		 * If true, appends an asterisk to indicate a required field.
+		 */
+		withAsterisk?: boolean;
 
-	/**
-	 * An object that allows customization of CSS class names for the input and its sections.
-	 */
-	classNames?: Partial<{
-		input: string;
-		leftSection: string;
-		rightSection: string;
-		label: string;
-	}>;
+		/**
+		 * An object that allows customization of CSS class names for the input and its sections.
+		 */
+		classNames?: Partial<{
+			input: string;
+			leftSection: string;
+			rightSection: string;
+			label: string;
+		}>;
 
-	/**
-	 * Optional mask pattern string for the input formatting.
-	 *
-	 * - `0`: Digit placeholder.
-	 * - `A`: Letter placeholder.
-	 * - `*`: Any character placeholder.
-	 */
-	mask?: string;
-}
+		/**
+		 * Optional mask pattern string for the input formatting.
+		 *
+		 * - `0`: Digit placeholder.
+		 * - `A`: Letter placeholder.
+		 * - `*`: Any character placeholder.
+		 */
+		mask?: string;
+
+		/**
+		 * Optional description displayed under the input, above the error.
+		 */
+		description?: React.ReactNode;
+	}
 
 const applyMask = (value: string, mask: string) => {
 	let result = "";
@@ -119,6 +109,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 			error,
 			withAsterisk,
 			mask,
+			description,
 			onChange,
 			value: propValue,
 			...props
@@ -154,7 +145,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 		};
 
 		return (
-			<div className={cn("relative w-full", className)}>
+			<div className={cn("relative w-full flex flex-col", className)}>
 				<Label
 					htmlFor={inputId}
 					className={classNames?.label}
@@ -198,7 +189,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 						</div>
 					)}
 				</div>
-				<p className="text-sm text-destructive">{error}</p>
+				{description && (
+					<p className="text-sm text-muted-foreground">
+						{description}
+					</p>
+				)}
+				{error && <p className="text-sm text-destructive">{error}</p>}
 			</div>
 		);
 	},
