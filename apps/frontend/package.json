@@ -8,19 +8,18 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
-		"@mantine/form": "^7.17.0",
-		"@mantine/hooks": "^7.17.0",
+		"@mantine/form": "^7.17.1",
+		"@mantine/hooks": "^7.17.1",
 		"@repo/data": "workspace:*",
 		"@repo/ui": "workspace:*",
 		"@repo/validation": "workspace:*",
-		"@tanstack/react-query": "^5.66.9",
-		"@tanstack/react-router": "^1.109.2",
+		"@tanstack/react-query": "^5.66.11",
+		"@tanstack/react-router": "^1.112.0",
 		"@tanstack/react-table": "^8.21.2",
 		"@types/uuid": "^10.0.0",
 		"backend": "workspace:*",
 		"date-fns": "^4.1.0",
 		"dayjs": "^1.11.13",
-		"lucide-react": "^0.475.0",
 		"mantine-form-zod-resolver": "^1.1.0",
 		"react-icons": "^5.5.0",
 		"tailwindcss-animate": "^1.0.7",
@@ -28,14 +27,14 @@
 		"zod": "^3.24.2"
 	},
 	"devDependencies": {
-		"@tailwindcss/postcss": "^4.0.8",
-		"@tailwindcss/vite": "^4.0.8",
-		"@tanstack/router-devtools": "^1.109.2",
-		"@tanstack/router-vite-plugin": "^1.109.2",
+		"@tailwindcss/postcss": "^4.0.9",
+		"@tailwindcss/vite": "^4.0.9",
+		"@tanstack/router-devtools": "^1.112.0",
+		"@tanstack/router-vite-plugin": "^1.112.0",
 		"@vitejs/plugin-react-swc": "^3.8.0",
 		"postcss": "^8.5.3",
 		"postcss-preset-mantine": "^1.17.0",
 		"postcss-simple-vars": "^7.0.1",
-		"vite": "^6.1.1"
+		"vite": "^6.2.0"
 	}
 }
