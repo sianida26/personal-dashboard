@@ -1,5 +1,5 @@
-import type React from 'react';
-import { createContext, useContext, useState, type ReactNode } from 'react'
+import type React from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 
 /**
  * Type representing the state for the application.
@@ -7,7 +7,7 @@ import { createContext, useContext, useState, type ReactNode } from 'react'
  * Add additional custom state properties as needed.
  */
 type AppState = {
-    // Add custom state properties here
+	// Add custom state properties here
 };
 
 /**
@@ -15,8 +15,8 @@ type AppState = {
  * and its updater function.
  */
 type AppContextType = {
-    state: AppState;
-    setState: React.Dispatch<React.SetStateAction<AppState>>;
+	state: AppState;
+	setState: React.Dispatch<React.SetStateAction<AppState>>;
 };
 
 /**
@@ -29,7 +29,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
  * Props for the AppProvider component.
  */
 type AppProviderProps = {
-    children: ReactNode;
+	children: ReactNode;
 };
 
 /**
@@ -52,13 +52,13 @@ type AppProviderProps = {
  * );
  */
 export const AppProvider = ({ children }: AppProviderProps) => {
-    const [state, setState] = useState<AppState>({});
+	const [state, setState] = useState<AppState>({});
 
-    return (
-        <AppContext.Provider value={{ state, setState }}>
-            {children}
-        </AppContext.Provider>
-    );
+	return (
+		<AppContext.Provider value={{ state, setState }}>
+			{children}
+		</AppContext.Provider>
+	);
 };
 
 /**
@@ -82,11 +82,11 @@ export const AppProvider = ({ children }: AppProviderProps) => {
  * };
  */
 export const useAppContext = (): AppContextType => {
-    const context = useContext(AppContext);
-    if (!context) {
-        throw new Error('useAppContext must be used within an AppProvider');
-    }
-    return context;
+	const context = useContext(AppContext);
+	if (!context) {
+		throw new Error("useAppContext must be used within an AppProvider");
+	}
+	return context;
 };
 
 /**

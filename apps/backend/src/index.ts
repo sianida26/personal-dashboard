@@ -65,12 +65,12 @@ const routes = app
 			},
 			500,
 		);
-	}); 
+	});
 
 export default {
 	fetch: app.fetch,
 	port: appEnv.APP_PORT,
 	hostname: appEnv.APP_HOST,
-}
+};
 
 export type AppType = typeof routes;

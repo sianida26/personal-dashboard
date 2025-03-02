@@ -7,39 +7,39 @@ import { LuChevronDown, LuChevronUp } from "react-icons/lu";
  * Extends InputProps for numeric-specific behavior.
  */
 export interface NumberInputProps
-		extends Omit<InputProps, "type" | "value" | "onChange"> {
-		/**
-		 * Current numeric value (controlled).
-		 */
-		value?: number;
-		/**
-		 * Default numeric value (uncontrolled).
-		 */
-		defaultValue?: number;
-		/**
-		 * Callback when value changes (numeric).
-		 */
-		onChange?(value: number): void;
-		/**
-		 * Minimum value allowed.
-		 */
-		min?: number;
-		/**
-		 * Maximum value allowed.
-		 */
-		max?: number;
-		/**
-		 * Increment/decrement step.
-		 */
-		step?: number;
-		/**
-		 * Determine how clamping is applied.
-		 * "none" - do not clamp the value.
-		 * "blur" - clamp the value on blur.
-		 * "strict" - clamp the value immediately on change.
-		 */
-		clampBehavior?: "none" | "blur" | "strict";
-	}
+	extends Omit<InputProps, "type" | "value" | "onChange"> {
+	/**
+	 * Current numeric value (controlled).
+	 */
+	value?: number;
+	/**
+	 * Default numeric value (uncontrolled).
+	 */
+	defaultValue?: number;
+	/**
+	 * Callback when value changes (numeric).
+	 */
+	onChange?(value: number): void;
+	/**
+	 * Minimum value allowed.
+	 */
+	min?: number;
+	/**
+	 * Maximum value allowed.
+	 */
+	max?: number;
+	/**
+	 * Increment/decrement step.
+	 */
+	step?: number;
+	/**
+	 * Determine how clamping is applied.
+	 * "none" - do not clamp the value.
+	 * "blur" - clamp the value on blur.
+	 * "strict" - clamp the value immediately on change.
+	 */
+	clampBehavior?: "none" | "blur" | "strict";
+}
 
 export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 	(

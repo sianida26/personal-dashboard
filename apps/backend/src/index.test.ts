@@ -1,7 +1,7 @@
 // index.test.ts
 import { test, expect } from "bun:test";
 import app from "."; // adjust the path as needed
-import appEnv from "./appEnv"
+import appEnv from "./appEnv";
 
 test("GET /test returns 'Server is up'", async () => {
 	// Create a request to the /test endpoint

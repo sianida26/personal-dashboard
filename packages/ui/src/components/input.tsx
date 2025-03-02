@@ -3,57 +3,57 @@ import { cn } from "../utils";
 import { Label } from "./label";
 
 export interface InputProps extends React.ComponentProps<"input"> {
-		/**
-		 * Optional element displayed when there is an error.
-		 */
-		error?: React.ReactNode;
+	/**
+	 * Optional element displayed when there is an error.
+	 */
+	error?: React.ReactNode;
 
-		/**
-		 * Optional element rendered on the left side of the input.
-		 */
-		leftSection?: React.ReactNode;
+	/**
+	 * Optional element rendered on the left side of the input.
+	 */
+	leftSection?: React.ReactNode;
 
-		/**
-		 * Optional element rendered on the right side of the input.
-		 */
-		rightSection?: React.ReactNode;
+	/**
+	 * Optional element rendered on the right side of the input.
+	 */
+	rightSection?: React.ReactNode;
 
-		/**
-		 * Optional label displayed above or alongside the input.
-		 */
-		label?: React.ReactNode;
+	/**
+	 * Optional label displayed above or alongside the input.
+	 */
+	label?: React.ReactNode;
 
-		/**
-		 * If true, appends an asterisk to indicate a required field.
-		 */
-		withAsterisk?: boolean;
+	/**
+	 * If true, appends an asterisk to indicate a required field.
+	 */
+	withAsterisk?: boolean;
 
-		/**
-		 * An object that allows customization of CSS class names for the input and its sections.
-		 */
-		classNames?: Partial<{
-			input: string;
-			leftSection: string;
-			rightSection: string;
-			label: string;
-			description: string;
-			error: string;
-		}>;
+	/**
+	 * An object that allows customization of CSS class names for the input and its sections.
+	 */
+	classNames?: Partial<{
+		input: string;
+		leftSection: string;
+		rightSection: string;
+		label: string;
+		description: string;
+		error: string;
+	}>;
 
-		/**
-		 * Optional mask pattern string for the input formatting.
-		 *
-		 * - `0`: Digit placeholder.
-		 * - `A`: Letter placeholder.
-		 * - `*`: Any character placeholder.
-		 */
-		mask?: string;
+	/**
+	 * Optional mask pattern string for the input formatting.
+	 *
+	 * - `0`: Digit placeholder.
+	 * - `A`: Letter placeholder.
+	 * - `*`: Any character placeholder.
+	 */
+	mask?: string;
 
-		/**
-		 * Optional description displayed under the input, above the error.
-		 */
-		description?: React.ReactNode;
-	}
+	/**
+	 * Optional description displayed under the input, above the error.
+	 */
+	description?: React.ReactNode;
+}
 
 const applyMask = (value: string, mask: string) => {
 	let result = "";
