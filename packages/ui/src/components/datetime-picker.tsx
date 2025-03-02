@@ -43,15 +43,15 @@ export function DateTimePicker({
 	}, [value]);
 
 	const hours = Array.from({ length: 24 }, (_, i) => i);
-	const handleDateSelect = (selectedDate: Date | undefined) => {
-		if (selectedDate && !disabled && !readOnly) {
-			if (onChange) {
-				onChange(selectedDate);
-			} else {
-				setInternalDate(selectedDate);
-			}
-		}
-	};
+	// const handleDateSelect = (selectedDate: Date | undefined) => {
+	// 	if (selectedDate && !disabled && !readOnly) {
+	// 		if (onChange) {
+	// 			onChange(selectedDate);
+	// 		} else {
+	// 			setInternalDate(selectedDate);
+	// 		}
+	// 	}
+	// };
 
 	const handleTimeChange = (type: "hour" | "minute", value: string) => {
 		if (date && !disabled && !readOnly) {
