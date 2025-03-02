@@ -77,6 +77,8 @@ const rolesRoute = new Hono<HonoEnv>()
 				})
 				.returning();
 
+			if (!role) throw new Error("Failed to create role: Role not found");
+
 			if (permissions?.length) {
 				const permissionRecords =
 					await db.query.permissionsSchema.findMany();
