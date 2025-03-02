@@ -101,7 +101,7 @@ function requestValidator<
 					>;
 					const firstErrors: Record<string, string> = {};
 					for (const field in errors) {
-						firstErrors[field] = errors[field][0]; // Grabbing the first error message for each field
+						firstErrors[field] = errors[field]?.[0] || ""; // Grabbing the first error message for each field
 					}
 					throw new DashboardError({
 						errorCode: "INVALID_FORM_DATA",
