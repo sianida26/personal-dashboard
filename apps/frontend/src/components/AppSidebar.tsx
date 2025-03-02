@@ -74,7 +74,7 @@ export default function AppSidebar() {
 		<Sidebar>
 			<SidebarHeader className="h-16">
 				<div className="flex justify-center items-center">
-					<img src={logo} alt="Logo" />
+					<img src={logo} alt="Logo" className="h-14" />
 				</div>
 			</SidebarHeader>
 			<SidebarContent className="pt-4">
