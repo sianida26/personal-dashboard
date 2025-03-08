@@ -1,7 +1,6 @@
 import { usePermissions } from "@/hooks/useAuth";
-import { DatePicker, Pagination } from "@repo/ui";
+import { DatePicker } from "@repo/ui";
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
 
 export const Route = createFileRoute("/_dashboardLayout/dev")({
 	component: RouteComponent,
@@ -11,8 +10,6 @@ export const Route = createFileRoute("/_dashboardLayout/dev")({
 
 function RouteComponent() {
 	usePermissions("dev-routes");
-
-	const [currentPage, setCurrentPage] = useState(1);
 
 	return <DatePicker />;
 }
