@@ -1,5 +1,5 @@
 import { usePermissions } from "@/hooks/useAuth";
-import { Pagination } from "@repo/ui";
+import { DatePicker, Pagination } from "@repo/ui";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
@@ -14,7 +14,5 @@ function RouteComponent() {
 
 	const [currentPage, setCurrentPage] = useState(1);
 
-	return (
-		<Pagination total={6} value={currentPage} onChange={setCurrentPage} />
-	);
+	return <DatePicker />;
 }

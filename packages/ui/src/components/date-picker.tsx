@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback } from "react";
 import type { ReactNode } from "react";
 import { Calendar, Day } from "./calendar";
 
@@ -190,7 +190,6 @@ export const DatePicker = <TMode extends DatePickerMode = "single">({
 	defaultValue,
 	value,
 	onChange,
-	defaultVisibleDate,
 	minDate,
 	maxDate,
 	highlightToday = true,
@@ -260,36 +259,6 @@ export const DatePicker = <TMode extends DatePickerMode = "single">({
 					return null;
 				})()
 			: null;
-
-	// Calculate the initial visible date
-	const initialVisibleDate = useMemo(() => {
-		if (defaultVisibleDate) return defaultVisibleDate;
-
-		if (mode === "single" && selectedSingleValue) {
-			return selectedSingleValue;
-		}
-
-		if (mode === "multiple" && selectedMultipleValue.length > 0) {
-			return selectedMultipleValue[0];
-		}
-
-		if (mode === "range" && selectedRangeValue) {
-			return selectedRangeValue.from;
-		}
-
-		return new Date();
-	}, [
-		defaultVisibleDate,
-		mode,
-		selectedSingleValue,
-		selectedMultipleValue,
-		selectedRangeValue,
-	]);
-
-	// State for the currently visible date in the calendar
-	const [visibleDate, setVisibleDate] = useState<Date | null>(
-		initialVisibleDate ?? null,
-	);
 
 	// Handle date selection based on mode
 	const handleDateSelect = useCallback(
@@ -513,16 +482,11 @@ export const DatePicker = <TMode extends DatePickerMode = "single">({
 		[excludeDate, minDate, maxDate],
 	);
 
-	// Handle date change in the calendar
-	const handleDateChange = useCallback((date: Date) => {
-		setVisibleDate(date);
-	}, []);
-
 	return (
 		<div className={`date-picker ${className}`}>
 			<Calendar
-				date={visibleDate || new Date()}
-				onDateChange={handleDateChange}
+				// date={visibleDate || new Date()}
+				// onDateChange={onChange}
 				excludeDate={combinedExcludeDate}
 				renderDay={renderDayWithSelection}
 				firstDayOfWeek={firstDayOfWeek}
