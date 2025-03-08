@@ -1,6 +1,6 @@
 ---
 description: Project Wide Project Structure to maintain consistency
-globs: 
+globs: *
 alwaysApply: false
 ---
 
