@@ -5,11 +5,7 @@ import { Calendar, Day } from "./calendar";
 /**
  * Enum for the selection mode of the DatePicker
  */
-export enum DatePickerMode {
-	Single = "single",
-	Multiple = "multiple",
-	Range = "range",
-}
+export type DatePickerMode = "single" | "multiple" | "range";
 
 /**
  * Type for a date range with from/to properties
@@ -27,128 +23,126 @@ export type DateRangeTuple = [Date | null, Date | null];
 /**
  * Props for the DatePicker component with generic type parameter for mode-specific value types
  */
-export interface DatePickerProps<
-	TMode extends DatePickerMode = DatePickerMode.Single,
-> {
-	/**
-	 * The mode of date selection
-	 * @default DatePickerMode.Single
-	 */
-	mode?: TMode;
+export interface DatePickerProps<TMode extends DatePickerMode = "single"> {
+		/**
+		 * The mode of date selection
+		 * @default DatePickerMode.Single
+		 */
+		mode?: TMode;
 
-	/**
-	 * Whether to allow deselection of dates
-	 * @default true
-	 */
-	allowDeselect?: boolean;
+		/**
+		 * Whether to allow deselection of dates
+		 * @default true
+		 */
+		allowDeselect?: boolean;
 
-	/**
-	 * The default selected date(s)
-	 */
-	defaultValue?: TMode extends DatePickerMode.Single
-		? Date | null
-		: TMode extends DatePickerMode.Multiple
-			? Date[]
-			: DateRange | DateRangeTuple;
+		/**
+		 * The default selected date(s)
+		 */
+		defaultValue?: TMode extends "single"
+			? Date | null
+			: TMode extends "multiple"
+				? Date[]
+				: DateRange | DateRangeTuple;
 
-	/**
-	 * The controlled selected date(s)
-	 */
-	value?: TMode extends DatePickerMode.Single
-		? Date | null
-		: TMode extends DatePickerMode.Multiple
-			? Date[]
-			: DateRange | DateRangeTuple;
+		/**
+		 * The controlled selected date(s)
+		 */
+		value?: TMode extends "single"
+			? Date | null
+			: TMode extends "multiple"
+				? Date[]
+				: DateRange | DateRangeTuple;
 
-	/**
-	 * Callback when date(s) selection changes
-	 */
-	onChange?: TMode extends DatePickerMode.Single
-		? (value: Date | null) => void
-		: TMode extends DatePickerMode.Multiple
-			? (value: Date[]) => void
-			: (value: DateRange | DateRangeTuple | null) => void;
+		/**
+		 * Callback when date(s) selection changes
+		 */
+		onChange?: TMode extends "single"
+			? (value: Date | null) => void
+			: TMode extends "multiple"
+				? (value: Date[]) => void
+				: (value: DateRange | DateRangeTuple | null) => void;
 
-	/**
-	 * The default visible date in the calendar
-	 */
-	defaultVisibleDate?: Date;
+		/**
+		 * The default visible date in the calendar
+		 */
+		defaultVisibleDate?: Date;
 
-	/**
-	 * The minimum selectable date
-	 */
-	minDate?: Date;
+		/**
+		 * The minimum selectable date
+		 */
+		minDate?: Date;
 
-	/**
-	 * The maximum selectable date
-	 */
-	maxDate?: Date;
+		/**
+		 * The maximum selectable date
+		 */
+		maxDate?: Date;
 
-	/**
-	 * Whether to highlight today's date
-	 * @default true
-	 */
-	highlightToday?: boolean;
+		/**
+		 * Whether to highlight today's date
+		 * @default true
+		 */
+		highlightToday?: boolean;
 
-	/**
-	 * Function to determine if a date should be disabled
-	 */
-	excludeDate?: (date: Date) => boolean;
+		/**
+		 * Function to determine if a date should be disabled
+		 */
+		excludeDate?: (date: Date) => boolean;
 
-	/**
-	 * Custom render function for day cells
-	 */
-	renderDay?: (date: Date) => ReactNode;
+		/**
+		 * Custom render function for day cells
+		 */
+		renderDay?: (date: Date) => ReactNode;
 
-	/**
-	 * First day of the week (0 = Sunday, 1 = Monday, etc.)
-	 * @default 1
-	 */
-	firstDayOfWeek?: number;
+		/**
+		 * First day of the week (0 = Sunday, 1 = Monday, etc.)
+		 * @default 1
+		 */
+		firstDayOfWeek?: number;
 
-	/**
-	 * Whether to hide dates outside the current month
-	 * @default false
-	 */
-	hideOutsideDates?: boolean;
+		/**
+		 * Whether to hide dates outside the current month
+		 * @default false
+		 */
+		hideOutsideDates?: boolean;
 
-	/**
-	 * Whether to hide weekday names
-	 * @default false
-	 */
-	hideWeekdays?: boolean;
+		/**
+		 * Whether to hide weekday names
+		 * @default false
+		 */
+		hideWeekdays?: boolean;
 
-	/**
-	 * Locale for date formatting
-	 * @default "default"
-	 */
-	locale?: string;
+		/**
+		 * Locale for date formatting
+		 * @default "default"
+		 */
+		locale?: string;
 
-	/**
-	 * Format for month labels
-	 */
-	monthLabelFormat?: string | ((month: Date) => ReactNode);
+		/**
+		 * Format for month labels
+		 */
+		monthLabelFormat?: string | ((month: Date) => ReactNode);
 
-	/**
-	 * Format for months list
-	 */
-	monthsListFormat?: string;
+		/**
+		 * Format for months list
+		 */
+		monthsListFormat?: string;
 
-	/**
-	 * Custom next icon
-	 */
-	nextIcon?: ReactNode;
+		/**
+		 * Custom next icon
+		 */
+		nextIcon?: ReactNode;
 
-	/**
-	 * Custom previous icon
-	 */
-	prevIcon?: ReactNode;
+		/**
+		 * Custom previous icon
+		 */
+		prevIcon?: ReactNode;
 
-	/**
-	 * Additional className for the component
-	 */
-	className?: string;
-}
+		/**
+		 * Additional className for the component
+		 */
+		className?: string;
+	}
 
 /**
  * Type guard to check if a value is a DateRange object
@@ -190,10 +184,8 @@ function rangeToTuple(range: DateRange | null): DateRangeTuple {
  * DatePicker component that extends Calendar with multiple date selection, range selection,
  * and other advanced features
  */
-export const DatePicker = <
-	TMode extends DatePickerMode = DatePickerMode.Single,
->({
-	mode = DatePickerMode.Single as TMode,
+export const DatePicker = <TMode extends DatePickerMode = "single">({
+	mode = "single" as TMode,
 	allowDeselect = true,
 	defaultValue,
 	value,
@@ -216,18 +208,16 @@ export const DatePicker = <
 }: DatePickerProps<TMode>) => {
 	// Initialize internal state based on controlled or uncontrolled usage
 	const [internalSingleValue, setInternalSingleValue] = useState<Date | null>(
-		mode === DatePickerMode.Single
-			? (defaultValue as Date | null) || null
-			: null,
+		mode === "single" ? (defaultValue as Date | null) || null : null,
 	);
 
 	const [internalMultipleValue, setInternalMultipleValue] = useState<Date[]>(
-		mode === DatePickerMode.Multiple ? (defaultValue as Date[]) || [] : [],
+		mode === "multiple" ? (defaultValue as Date[]) || [] : [],
 	);
 
 	const [internalRangeValue, setInternalRangeValue] =
 		useState<DateRange | null>(() => {
-			if (mode !== DatePickerMode.Range) return null;
+			if (mode !== "range") return null;
 
 			const defaultRangeValue = defaultValue as
 				| DateRange
@@ -244,21 +234,21 @@ export const DatePicker = <
 
 	// Determine the actual value to use (controlled or uncontrolled)
 	const selectedSingleValue =
-		mode === DatePickerMode.Single
+		mode === "single"
 			? value !== undefined
 				? (value as Date | null)
 				: internalSingleValue
 			: null;
 
 	const selectedMultipleValue =
-		mode === DatePickerMode.Multiple
+		mode === "multiple"
 			? value !== undefined
 				? (value as Date[])
 				: internalMultipleValue
 			: [];
 
 	const selectedRangeValue =
-		mode === DatePickerMode.Range
+		mode === "range"
 			? (() => {
 					if (value === undefined) return internalRangeValue;
 
@@ -275,18 +265,15 @@ export const DatePicker = <
 	const initialVisibleDate = useMemo(() => {
 		if (defaultVisibleDate) return defaultVisibleDate;
 
-		if (mode === DatePickerMode.Single && selectedSingleValue) {
+		if (mode === "single" && selectedSingleValue) {
 			return selectedSingleValue;
 		}
 
-		if (
-			mode === DatePickerMode.Multiple &&
-			selectedMultipleValue.length > 0
-		) {
+		if (mode === "multiple" && selectedMultipleValue.length > 0) {
 			return selectedMultipleValue[0];
 		}
 
-		if (mode === DatePickerMode.Range && selectedRangeValue) {
+		if (mode === "range" && selectedRangeValue) {
 			return selectedRangeValue.from;
 		}
 
@@ -307,7 +294,7 @@ export const DatePicker = <
 	// Handle date selection based on mode
 	const handleDateSelect = useCallback(
 		(date: Date) => {
-			if (mode === DatePickerMode.Single) {
+			if (mode === "single") {
 				// For single mode, toggle selection if allowDeselect is true
 				let newValue: Date | null = date;
 
@@ -329,7 +316,7 @@ export const DatePicker = <
 				(onChange as ((value: Date | null) => void) | undefined)?.(
 					newValue,
 				);
-			} else if (mode === DatePickerMode.Multiple) {
+			} else if (mode === "multiple") {
 				// For multiple mode, toggle dates in the array
 				const currentDates = [...selectedMultipleValue];
 				const dateIndex = currentDates.findIndex(
@@ -351,7 +338,7 @@ export const DatePicker = <
 				(onChange as ((value: Date[]) => void) | undefined)?.(
 					currentDates,
 				);
-			} else if (mode === DatePickerMode.Range) {
+			} else if (mode === "range") {
 				// For range mode, handle from/to selection
 				let newValue: DateRange | null = null;
 
@@ -422,19 +409,19 @@ export const DatePicker = <
 	// Check if a date is selected
 	const isDateSelected = useCallback(
 		(date: Date): boolean => {
-			if (mode === DatePickerMode.Single && selectedSingleValue) {
+			if (mode === "single" && selectedSingleValue) {
 				return (
 					selectedSingleValue.toDateString() === date.toDateString()
 				);
 			}
 
-			if (mode === DatePickerMode.Multiple) {
+			if (mode === "multiple") {
 				return selectedMultipleValue.some(
 					(d) => d.toDateString() === date.toDateString(),
 				);
 			}
 
-			if (mode === DatePickerMode.Range && selectedRangeValue) {
+			if (mode === "range" && selectedRangeValue) {
 				const { from, to } = selectedRangeValue;
 				return date >= from && date <= to;
 			}
@@ -447,7 +434,7 @@ export const DatePicker = <
 	// Check if a date is in range (for range mode)
 	const isDateInRange = useCallback(
 		(date: Date): boolean => {
-			if (mode !== DatePickerMode.Range || !selectedRangeValue) {
+			if (mode !== "range" || !selectedRangeValue) {
 				return false;
 			}
 
@@ -460,7 +447,7 @@ export const DatePicker = <
 	// Check if a date is the first date in range
 	const isFirstInRange = useCallback(
 		(date: Date): boolean => {
-			if (mode !== DatePickerMode.Range || !selectedRangeValue) {
+			if (mode !== "range" || !selectedRangeValue) {
 				return false;
 			}
 
@@ -474,7 +461,7 @@ export const DatePicker = <
 	// Check if a date is the last date in range
 	const isLastInRange = useCallback(
 		(date: Date): boolean => {
-			if (mode !== DatePickerMode.Range || !selectedRangeValue) {
+			if (mode !== "range" || !selectedRangeValue) {
 				return false;
 			}
 
