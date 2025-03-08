@@ -1,5 +1,5 @@
-import { useState, useCallback } from "react";
-import type { FC, ReactNode } from "react";
+import { useState, useCallback, useMemo } from "react";
+import type { ReactNode } from "react";
 import { Calendar, Day } from "./calendar";
 
 /**
@@ -12,14 +12,29 @@ export enum DatePickerMode {
 }
 
 /**
- * Props for the DatePicker component
+ * Type for a date range with from/to properties
  */
-export interface DatePickerProps {
+export type DateRange = {
+	from: Date;
+	to: Date;
+};
+
+/**
+ * Type for a date range represented as a tuple
+ */
+export type DateRangeTuple = [Date | null, Date | null];
+
+/**
+ * Props for the DatePicker component with generic type parameter for mode-specific value types
+ */
+export interface DatePickerProps<
+	TMode extends DatePickerMode = DatePickerMode.Single,
+> {
 	/**
 	 * The mode of date selection
 	 * @default DatePickerMode.Single
 	 */
-	mode?: DatePickerMode;
+	mode?: TMode;
 
 	/**
 	 * Whether to allow deselection of dates
@@ -30,17 +45,34 @@ export interface DatePickerProps {
 	/**
 	 * The default selected date(s)
 	 */
-	defaultValue?: Date | Date[] | { from: Date; to: Date };
+	defaultValue?: TMode extends DatePickerMode.Single
+		? Date | null
+		: TMode extends DatePickerMode.Multiple
+			? Date[]
+			: DateRange | DateRangeTuple;
 
 	/**
 	 * The controlled selected date(s)
 	 */
-	value?: Date | Date[] | { from: Date; to: Date };
+	value?: TMode extends DatePickerMode.Single
+		? Date | null
+		: TMode extends DatePickerMode.Multiple
+			? Date[]
+			: DateRange | DateRangeTuple;
 
 	/**
 	 * Callback when date(s) selection changes
 	 */
-	onChange?: (value: Date | Date[] | { from: Date; to: Date } | null) => void;
+	onChange?: TMode extends DatePickerMode.Single
+		? (value: Date | null) => void
+		: TMode extends DatePickerMode.Multiple
+			? (value: Date[]) => void
+			: (value: DateRange | DateRangeTuple | null) => void;
+
+	/**
+	 * The default visible date in the calendar
+	 */
+	defaultVisibleDate?: Date;
 
 	/**
 	 * The minimum selectable date
@@ -119,15 +151,54 @@ export interface DatePickerProps {
 }
 
 /**
+ * Type guard to check if a value is a DateRange object
+ */
+function isDateRange(value: unknown): value is DateRange {
+	return (
+		value !== null &&
+		typeof value === "object" &&
+		"from" in value &&
+		"to" in value
+	);
+}
+
+/**
+ * Type guard to check if a value is a DateRangeTuple
+ */
+function isDateRangeTuple(value: unknown): value is DateRangeTuple {
+	return Array.isArray(value) && value.length === 2;
+}
+
+/**
+ * Convert a DateRangeTuple to a DateRange object
+ */
+function tupleToRange(tuple: DateRangeTuple): DateRange | null {
+	const [from, to] = tuple;
+	if (!from || !to) return null;
+	return { from, to };
+}
+
+/**
+ * Convert a DateRange object to a DateRangeTuple
+ */
+function rangeToTuple(range: DateRange | null): DateRangeTuple {
+	if (!range) return [null, null];
+	return [range.from, range.to];
+}
+
+/**
  * DatePicker component that extends Calendar with multiple date selection, range selection,
  * and other advanced features
  */
-export const DatePicker: FC<DatePickerProps> = ({
-	mode = DatePickerMode.Single,
+export const DatePicker = <
+	TMode extends DatePickerMode = DatePickerMode.Single,
+>({
+	mode = DatePickerMode.Single as TMode,
 	allowDeselect = true,
 	defaultValue,
 	value,
 	onChange,
+	defaultVisibleDate,
 	minDate,
 	maxDate,
 	highlightToday = true,
@@ -142,162 +213,274 @@ export const DatePicker: FC<DatePickerProps> = ({
 	nextIcon,
 	prevIcon,
 	className = "",
-}) => {
+}: DatePickerProps<TMode>) => {
 	// Initialize internal state based on controlled or uncontrolled usage
-	const [internalValue, setInternalValue] = useState<
-		Date | Date[] | { from: Date; to: Date } | null
-	>(defaultValue || (mode === DatePickerMode.Multiple ? [] : null));
+	const [internalSingleValue, setInternalSingleValue] = useState<Date | null>(
+		mode === DatePickerMode.Single
+			? (defaultValue as Date | null) || null
+			: null,
+	);
+
+	const [internalMultipleValue, setInternalMultipleValue] = useState<Date[]>(
+		mode === DatePickerMode.Multiple ? (defaultValue as Date[]) || [] : [],
+	);
+
+	const [internalRangeValue, setInternalRangeValue] =
+		useState<DateRange | null>(() => {
+			if (mode !== DatePickerMode.Range) return null;
+
+			const defaultRangeValue = defaultValue as
+				| DateRange
+				| DateRangeTuple
+				| undefined;
+
+			if (!defaultRangeValue) return null;
+			if (isDateRange(defaultRangeValue)) return defaultRangeValue;
+			if (isDateRangeTuple(defaultRangeValue))
+				return tupleToRange(defaultRangeValue);
+
+			return null;
+		});
 
 	// Determine the actual value to use (controlled or uncontrolled)
-	const selectedValue = value !== undefined ? value : internalValue;
+	const selectedSingleValue =
+		mode === DatePickerMode.Single
+			? value !== undefined
+				? (value as Date | null)
+				: internalSingleValue
+			: null;
+
+	const selectedMultipleValue =
+		mode === DatePickerMode.Multiple
+			? value !== undefined
+				? (value as Date[])
+				: internalMultipleValue
+			: [];
+
+	const selectedRangeValue =
+		mode === DatePickerMode.Range
+			? (() => {
+					if (value === undefined) return internalRangeValue;
+
+					const rangeValue = value as DateRange | DateRangeTuple;
+					if (isDateRange(rangeValue)) return rangeValue;
+					if (isDateRangeTuple(rangeValue))
+						return tupleToRange(rangeValue);
+
+					return null;
+				})()
+			: null;
+
+	// Calculate the initial visible date
+	const initialVisibleDate = useMemo(() => {
+		if (defaultVisibleDate) return defaultVisibleDate;
+
+		if (mode === DatePickerMode.Single && selectedSingleValue) {
+			return selectedSingleValue;
+		}
+
+		if (
+			mode === DatePickerMode.Multiple &&
+			selectedMultipleValue.length > 0
+		) {
+			return selectedMultipleValue[0];
+		}
+
+		if (mode === DatePickerMode.Range && selectedRangeValue) {
+			return selectedRangeValue.from;
+		}
+
+		return new Date();
+	}, [
+		defaultVisibleDate,
+		mode,
+		selectedSingleValue,
+		selectedMultipleValue,
+		selectedRangeValue,
+	]);
+
+	// State for the currently visible date in the calendar
+	const [visibleDate, setVisibleDate] = useState<Date | null>(
+		initialVisibleDate ?? null,
+	);
 
 	// Handle date selection based on mode
 	const handleDateSelect = useCallback(
 		(date: Date) => {
-			let newValue: typeof selectedValue = null;
-
 			if (mode === DatePickerMode.Single) {
 				// For single mode, toggle selection if allowDeselect is true
+				let newValue: Date | null = date;
+
 				if (
-					selectedValue instanceof Date &&
-					selectedValue.toDateString() === date.toDateString() &&
+					selectedSingleValue &&
+					selectedSingleValue.toDateString() ===
+						date.toDateString() &&
 					allowDeselect
 				) {
 					newValue = null;
-				} else {
-					newValue = date;
 				}
+
+				// Update internal state if uncontrolled
+				if (value === undefined) {
+					setInternalSingleValue(newValue);
+				}
+
+				// Call onChange callback
+				(onChange as ((value: Date | null) => void) | undefined)?.(
+					newValue,
+				);
 			} else if (mode === DatePickerMode.Multiple) {
 				// For multiple mode, toggle dates in the array
-				const currentDates = Array.isArray(selectedValue)
-					? [...selectedValue]
-					: [];
+				const currentDates = [...selectedMultipleValue];
 				const dateIndex = currentDates.findIndex(
 					(d) => d.toDateString() === date.toDateString(),
 				);
 
 				if (dateIndex >= 0 && allowDeselect) {
 					currentDates.splice(dateIndex, 1);
-					newValue = currentDates;
 				} else if (dateIndex < 0) {
 					currentDates.push(date);
-					newValue = currentDates;
-				} else {
-					newValue = currentDates;
 				}
+
+				// Update internal state if uncontrolled
+				if (value === undefined) {
+					setInternalMultipleValue(currentDates);
+				}
+
+				// Call onChange callback
+				(onChange as ((value: Date[]) => void) | undefined)?.(
+					currentDates,
+				);
 			} else if (mode === DatePickerMode.Range) {
 				// For range mode, handle from/to selection
-				const currentRange =
-					selectedValue &&
-					typeof selectedValue === "object" &&
-					"from" in selectedValue
-						? { ...selectedValue }
-						: null;
+				let newValue: DateRange | null = null;
 
-				if (!currentRange || (currentRange.from && currentRange.to)) {
+				if (
+					!selectedRangeValue ||
+					(selectedRangeValue.from && selectedRangeValue.to)
+				) {
 					// Start a new range
 					newValue = { from: date, to: date };
-				} else if (currentRange.from && !currentRange.to) {
+				} else if (selectedRangeValue.from) {
 					// Complete the range
-					if (date < currentRange.from) {
-						newValue = { from: date, to: currentRange.from };
+					if (date < selectedRangeValue.from) {
+						newValue = { from: date, to: selectedRangeValue.from };
 					} else {
-						newValue = { from: currentRange.from, to: date };
+						newValue = { from: selectedRangeValue.from, to: date };
 					}
-				} else if (
-					currentRange.from &&
-					currentRange.from.toDateString() === date.toDateString() &&
+				}
+
+				// Handle deselection
+				if (
+					selectedRangeValue?.from &&
+					selectedRangeValue.from.toDateString() ===
+						date.toDateString() &&
+					selectedRangeValue.to &&
+					selectedRangeValue.to.toDateString() ===
+						date.toDateString() &&
 					allowDeselect
 				) {
-					// Deselect if clicking on the same date and allowDeselect is true
 					newValue = null;
 				}
-			}
 
-			// Update internal state if uncontrolled
-			if (value === undefined) {
-				setInternalValue(newValue);
-			}
+				// Update internal state if uncontrolled
+				if (value === undefined) {
+					setInternalRangeValue(newValue);
+				}
 
-			// Call onChange callback
-			onChange?.(newValue);
+				// Call onChange callback
+				const changeHandler = onChange as
+					| ((value: DateRange | DateRangeTuple | null) => void)
+					| undefined;
+
+				// Check if we need to convert to tuple format based on the original value type
+				if (changeHandler) {
+					if (
+						value !== undefined &&
+						isDateRangeTuple(value as DateRange | DateRangeTuple)
+					) {
+						changeHandler(
+							newValue ? rangeToTuple(newValue) : [null, null],
+						);
+					} else {
+						changeHandler(newValue);
+					}
+				}
+			}
 		},
-		[mode, selectedValue, allowDeselect, onChange, value],
+		[
+			mode,
+			selectedSingleValue,
+			selectedMultipleValue,
+			selectedRangeValue,
+			allowDeselect,
+			onChange,
+			value,
+		],
 	);
 
 	// Check if a date is selected
 	const isDateSelected = useCallback(
 		(date: Date): boolean => {
-			if (!selectedValue) return false;
-
-			if (selectedValue instanceof Date) {
-				return selectedValue.toDateString() === date.toDateString();
+			if (mode === DatePickerMode.Single && selectedSingleValue) {
+				return (
+					selectedSingleValue.toDateString() === date.toDateString()
+				);
 			}
 
-			if (Array.isArray(selectedValue)) {
-				return selectedValue.some(
+			if (mode === DatePickerMode.Multiple) {
+				return selectedMultipleValue.some(
 					(d) => d.toDateString() === date.toDateString(),
 				);
 			}
 
-			if ("from" in selectedValue && "to" in selectedValue) {
-				const { from, to } = selectedValue;
+			if (mode === DatePickerMode.Range && selectedRangeValue) {
+				const { from, to } = selectedRangeValue;
 				return date >= from && date <= to;
 			}
 
 			return false;
 		},
-		[selectedValue],
+		[mode, selectedSingleValue, selectedMultipleValue, selectedRangeValue],
 	);
 
 	// Check if a date is in range (for range mode)
 	const isDateInRange = useCallback(
 		(date: Date): boolean => {
-			if (
-				!selectedValue ||
-				!(typeof selectedValue === "object" && "from" in selectedValue)
-			) {
+			if (mode !== DatePickerMode.Range || !selectedRangeValue) {
 				return false;
 			}
 
-			const { from, to } = selectedValue;
+			const { from, to } = selectedRangeValue;
 			return date > from && date < to;
 		},
-		[selectedValue],
+		[mode, selectedRangeValue],
 	);
 
 	// Check if a date is the first date in range
 	const isFirstInRange = useCallback(
 		(date: Date): boolean => {
-			if (
-				!selectedValue ||
-				!(typeof selectedValue === "object" && "from" in selectedValue)
-			) {
+			if (mode !== DatePickerMode.Range || !selectedRangeValue) {
 				return false;
 			}
 
-			return date.toDateString() === selectedValue.from.toDateString();
+			return (
+				date.toDateString() === selectedRangeValue.from.toDateString()
+			);
 		},
-		[selectedValue],
+		[mode, selectedRangeValue],
 	);
 
 	// Check if a date is the last date in range
 	const isLastInRange = useCallback(
 		(date: Date): boolean => {
-			if (
-				!selectedValue ||
-				!(
-					typeof selectedValue === "object" &&
-					"from" in selectedValue &&
-					"to" in selectedValue
-				)
-			) {
+			if (mode !== DatePickerMode.Range || !selectedRangeValue) {
 				return false;
 			}
 
-			return date.toDateString() === selectedValue.to.toDateString();
+			return date.toDateString() === selectedRangeValue.to.toDateString();
 		},
-		[selectedValue],
+		[mode, selectedRangeValue],
 	);
 
 	// Custom day rendering with selection state
@@ -343,10 +526,16 @@ export const DatePicker: FC<DatePickerProps> = ({
 		[excludeDate, minDate, maxDate],
 	);
 
+	// Handle date change in the calendar
+	const handleDateChange = useCallback((date: Date) => {
+		setVisibleDate(date);
+	}, []);
+
 	return (
 		<div className={`date-picker ${className}`}>
 			<Calendar
-				onDateChange={onChange}
+				date={visibleDate || new Date()}
+				onDateChange={handleDateChange}
 				excludeDate={combinedExcludeDate}
 				renderDay={renderDayWithSelection}
 				firstDayOfWeek={firstDayOfWeek}
