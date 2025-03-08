@@ -32,6 +32,6 @@ export * from "./components/skeleton";
 export * from "./components/sonner";
 export * from "./components/table";
 export * from "./components/textarea";
+export * from "./components/timetable";
 export * from "./components/toast";
-// export * from "./components/toaster";
 export * from "./components/tooltip";

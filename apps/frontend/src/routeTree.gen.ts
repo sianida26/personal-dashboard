@@ -18,7 +18,6 @@ import { Route as R403Import } from './routes/403'
 import { Route as DashboardLayoutUsersImport } from './routes/_dashboardLayout/users'
 import { Route as DashboardLayoutRolesImport } from './routes/_dashboardLayout/roles'
 import { Route as DashboardLayoutDevImport } from './routes/_dashboardLayout/dev'
-import { Route as DashboardLayoutTimetableIndexImport } from './routes/_dashboardLayout/timetable/index'
 import { Route as DashboardLayoutDashboardIndexImport } from './routes/_dashboardLayout/dashboard/index'
 import { Route as DashboardLayoutUsersCreateImport } from './routes/_dashboardLayout/users/create'
 import { Route as DashboardLayoutRolesCreateImport } from './routes/_dashboardLayout/roles/create'
@@ -85,13 +84,6 @@ const DashboardLayoutDevRoute = DashboardLayoutDevImport.update({
   path: '/dev',
   getParentRoute: () => DashboardLayoutRoute,
 } as any)
-
-const DashboardLayoutTimetableIndexRoute =
-  DashboardLayoutTimetableIndexImport.update({
-    id: '/timetable/',
-    path: '/timetable/',
-    getParentRoute: () => DashboardLayoutRoute,
-  } as any)
 
 const DashboardLayoutDashboardIndexRoute =
   DashboardLayoutDashboardIndexImport.update({
@@ -247,13 +239,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutDashboardIndexImport
       parentRoute: typeof DashboardLayoutImport
     }
-    '/_dashboardLayout/timetable/': {
-      id: '/_dashboardLayout/timetable/'
-      path: '/timetable'
-      fullPath: '/timetable'
-      preLoaderRoute: typeof DashboardLayoutTimetableIndexImport
-      parentRoute: typeof DashboardLayoutImport
-    }
     '/_dashboardLayout/roles/delete/$id': {
       id: '/_dashboardLayout/roles/delete/$id'
       path: '/delete/$id'
@@ -342,7 +327,6 @@ interface DashboardLayoutRouteChildren {
   DashboardLayoutRolesRoute: typeof DashboardLayoutRolesRouteWithChildren
   DashboardLayoutUsersRoute: typeof DashboardLayoutUsersRouteWithChildren
   DashboardLayoutDashboardIndexRoute: typeof DashboardLayoutDashboardIndexRoute
-  DashboardLayoutTimetableIndexRoute: typeof DashboardLayoutTimetableIndexRoute
 }
 
 const DashboardLayoutRouteChildren: DashboardLayoutRouteChildren = {
@@ -350,7 +334,6 @@ const DashboardLayoutRouteChildren: DashboardLayoutRouteChildren = {
   DashboardLayoutRolesRoute: DashboardLayoutRolesRouteWithChildren,
   DashboardLayoutUsersRoute: DashboardLayoutUsersRouteWithChildren,
   DashboardLayoutDashboardIndexRoute: DashboardLayoutDashboardIndexRoute,
-  DashboardLayoutTimetableIndexRoute: DashboardLayoutTimetableIndexRoute,
 }
 
 const DashboardLayoutRouteWithChildren = DashboardLayoutRoute._addFileChildren(
@@ -370,7 +353,6 @@ export interface FileRoutesByFullPath {
   '/roles/create': typeof DashboardLayoutRolesCreateRoute
   '/users/create': typeof DashboardLayoutUsersCreateRoute
   '/dashboard': typeof DashboardLayoutDashboardIndexRoute
-  '/timetable': typeof DashboardLayoutTimetableIndexRoute
   '/roles/delete/$id': typeof DashboardLayoutRolesDeleteIdRoute
   '/roles/edit/$id': typeof DashboardLayoutRolesEditIdRoute
   '/users/delete/$userId': typeof DashboardLayoutUsersDeleteUserIdRoute
@@ -391,7 +373,6 @@ export interface FileRoutesByTo {
   '/roles/create': typeof DashboardLayoutRolesCreateRoute
   '/users/create': typeof DashboardLayoutUsersCreateRoute
   '/dashboard': typeof DashboardLayoutDashboardIndexRoute
-  '/timetable': typeof DashboardLayoutTimetableIndexRoute
   '/roles/delete/$id': typeof DashboardLayoutRolesDeleteIdRoute
   '/roles/edit/$id': typeof DashboardLayoutRolesEditIdRoute
   '/users/delete/$userId': typeof DashboardLayoutUsersDeleteUserIdRoute
@@ -413,7 +394,6 @@ export interface FileRoutesById {
   '/_dashboardLayout/roles/create': typeof DashboardLayoutRolesCreateRoute
   '/_dashboardLayout/users/create': typeof DashboardLayoutUsersCreateRoute
   '/_dashboardLayout/dashboard/': typeof DashboardLayoutDashboardIndexRoute
-  '/_dashboardLayout/timetable/': typeof DashboardLayoutTimetableIndexRoute
   '/_dashboardLayout/roles/delete/$id': typeof DashboardLayoutRolesDeleteIdRoute
   '/_dashboardLayout/roles/edit/$id': typeof DashboardLayoutRolesEditIdRoute
   '/_dashboardLayout/users/delete/$userId': typeof DashboardLayoutUsersDeleteUserIdRoute
@@ -436,7 +416,6 @@ export interface FileRouteTypes {
     | '/roles/create'
     | '/users/create'
     | '/dashboard'
-    | '/timetable'
     | '/roles/delete/$id'
     | '/roles/edit/$id'
     | '/users/delete/$userId'
@@ -456,7 +435,6 @@ export interface FileRouteTypes {
     | '/roles/create'
     | '/users/create'
     | '/dashboard'
-    | '/timetable'
     | '/roles/delete/$id'
     | '/roles/edit/$id'
     | '/users/delete/$userId'
@@ -476,7 +454,6 @@ export interface FileRouteTypes {
     | '/_dashboardLayout/roles/create'
     | '/_dashboardLayout/users/create'
     | '/_dashboardLayout/dashboard/'
-    | '/_dashboardLayout/timetable/'
     | '/_dashboardLayout/roles/delete/$id'
     | '/_dashboardLayout/roles/edit/$id'
     | '/_dashboardLayout/users/delete/$userId'
@@ -530,8 +507,7 @@ export const routeTree = rootRoute
         "/_dashboardLayout/dev",
         "/_dashboardLayout/roles",
         "/_dashboardLayout/users",
-        "/_dashboardLayout/dashboard/",
-        "/_dashboardLayout/timetable/"
+        "/_dashboardLayout/dashboard/"
       ]
     },
     "/_dashboardLayout/dev": {
@@ -580,10 +556,6 @@ export const routeTree = rootRoute
     },
     "/_dashboardLayout/dashboard/": {
       "filePath": "_dashboardLayout/dashboard/index.tsx",
-      "parent": "/_dashboardLayout"
-    },
-    "/_dashboardLayout/timetable/": {
-      "filePath": "_dashboardLayout/timetable/index.tsx",
       "parent": "/_dashboardLayout"
     },
     "/_dashboardLayout/roles/delete/$id": {
