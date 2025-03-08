@@ -194,14 +194,17 @@ interface WeekPickerProps {
 /**
  * WeekPicker component renders a calendar popover for selecting weeks.
  */
-function WeekPicker({ currentDate }: WeekPickerProps) {
+function WeekPicker({ currentDate, onChange }: WeekPickerProps) {
 	return (
 		<Popover>
 			<PopoverTrigger>
 				<button type="button">{currentDate.format("MMMM YYYY")}</button>
 			</PopoverTrigger>
 			<PopoverContent>
-				<Calendar />
+				<Calendar
+					date={currentDate.toDate()}
+					onDateChange={(date) => onChange(date)}
+				/>
 			</PopoverContent>
 		</Popover>
 	);
