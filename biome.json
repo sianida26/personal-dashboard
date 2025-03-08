@@ -30,7 +30,9 @@
 				"noBannedTypes": "info"
 			},
 			"correctness": {
-				"useExhaustiveDependencies": "info"
+				"useExhaustiveDependencies": "info",
+				"noUnusedVariables": "warn",
+				"noUnusedImports": "warn"
 			},
 			"suspicious": {
 				"noConsole": {
