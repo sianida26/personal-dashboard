@@ -22,11 +22,14 @@ import requestValidator from "../../utils/requestValidator";
 const usersRoute = new Hono<HonoEnv>()
 	.use(authInfo)
 	/**
-	 * Get All Users (With Metadata)
+	 * Get All Users With Metadata
 	 *
-	 * Query params:
-	 * - includeTrashed: boolean (default: false)\
-	 * - withMetadata: boolean
+	 * This endpoint retrieves a paginated list of users along with pagination metadata.
+	 * Query parameters:
+	 * - includeTrashed: boolean (default false) - include soft-deleted users if true.
+	 * - q: string - search query to filter users by name, username, email or id.
+	 * - page: number - current page.
+	 * - limit: number - records per page.
 	 */
 	.get(
 		"/",
@@ -35,48 +38,77 @@ const usersRoute = new Hono<HonoEnv>()
 		async (c) => {
 			const { includeTrashed, page, limit, q } = c.req.valid("query");
 
+			// Build where clause based on query parameters
+			const whereClause = and(
+				includeTrashed ? undefined : isNull(users.deletedAt),
+				q
+					? or(
+							ilike(users.name, q),
+							ilike(users.username, q),
+							ilike(users.email, q),
+							eq(users.id, q),
+						)
+					: undefined,
+			);
+
+			// Create a computed subquery for total count of users
 			const totalCountQuery = includeTrashed
 				? sql<number>`(SELECT count(*) FROM ${users})`
 				: sql<number>`(SELECT count(*) FROM ${users} WHERE ${users.deletedAt} IS NULL)`;
 
-			const result = await db
-				.select({
-					id: users.id,
-					name: users.name,
-					email: users.email,
-					username: users.username,
-					isEnabled: users.isEnabled,
-					createdAt: users.createdAt,
-					updatedAt: users.updatedAt,
-					...(includeTrashed ? { deletedAt: users.deletedAt } : {}),
-					fullCount: totalCountQuery,
-				})
-				.from(users)
-				.where(
-					and(
-						includeTrashed ? undefined : isNull(users.deletedAt),
-						q
-							? or(
-									ilike(users.name, q),
-									ilike(users.username, q),
-									ilike(users.email, q),
-									eq(users.id, q),
-								)
-							: undefined,
-					),
-				)
-				.orderBy(desc(users.createdAt))
-				.offset((page - 1) * limit)
-				.limit(limit);
+			// Calculate pagination offset
+			const offset = (page - 1) * limit;
+
+			// Execute the query using db.query.users.findMany
+			const result = await db.query.users.findMany({
+				columns: {
+					id: true,
+					name: true,
+					email: true,
+					username: true,
+					isEnabled: true,
+					createdAt: true,
+					updatedAt: true,
+					...(includeTrashed ? { deletedAt: true } : {}),
+				},
+				where: whereClause,
+				extras: {
+					fullCount: totalCountQuery.as("fullCount"),
+				},
+				with: {
+					rolesToUsers: {
+						with: {
+							role: {
+								columns: {
+									id: true,
+									name: true,
+									code: true,
+								},
+							},
+						},
+					},
+				},
+				orderBy: [desc(users.createdAt)],
+				offset: offset,
+				limit: limit,
+			});
+
+			// Remove the computed fullCount from each record and extract metadata
+			const data = result.map(({ fullCount, rolesToUsers, ...rest }) => {
+				return {
+					...rest,
+					roles: rolesToUsers.map((role) => role.role),
+				};
+			});
+			const totalItems = Number(result[0]?.fullCount) || 0;
+			const totalPages = Math.ceil(totalItems / limit);
 
 			return c.json({
-				data: result.map((d) => ({ ...d, fullCount: undefined })),
+				data,
 				_metadata: {
 					currentPage: page,
-					totalPages: Math.ceil(
-						(Number(result[0]?.fullCount) ?? 0) / limit,
-					),
-					totalItems: Number(result[0]?.fullCount) ?? 0,
+					totalPages,
+					totalItems,
 					perPage: limit,
 				},
 			});

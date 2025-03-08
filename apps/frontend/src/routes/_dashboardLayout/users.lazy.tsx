@@ -57,6 +57,31 @@ export default function UsersPage() {
 						),
 					header: "Status",
 				}),
+				helper.accessor("roles", {
+					cell: (info) =>
+						info.row.original.roles &&
+						info.row.original.roles.length > 0 ? (
+							info.row.original.roles.slice(0, 3).map((role) => (
+								<span
+									key={role.id}
+									className="chip"
+									style={{
+										display: "inline-block",
+										padding: "2px 6px",
+										marginRight: "4px",
+										backgroundColor: "#e0e0e0",
+										borderRadius: "12px",
+										fontSize: "0.8rem",
+									}}
+								>
+									{role.name}
+								</span>
+							))
+						) : (
+							<span>No roles</span>
+						),
+					header: "Roles",
+				}),
 				helper.display({
 					header: "Actions",
 					cell: (props) => (
