@@ -277,17 +277,36 @@ const usersRoute = new Hono<HonoEnv>()
 
 			if (!user[0]) return c.notFound();
 
-			await db
-				.update(users)
-				.set({
-					...userData,
-					...(userData.password
-						? { password: await hashPassword(userData.password) }
-						: {}),
-					updatedAt: new Date(),
-					isEnabled: userData.isEnabled,
-				})
-				.where(eq(users.id, userId));
+			await db.transaction(async (trx) => {
+				await db
+					.update(users)
+					.set({
+						...userData,
+						...(userData.password
+							? {
+									password: await hashPassword(
+										userData.password,
+									),
+								}
+							: {}),
+						updatedAt: new Date(),
+						isEnabled: userData.isEnabled,
+					})
+					.where(eq(users.id, userId));
+
+				// re sync roles
+				if (userData.roles) {
+					await db
+						.delete(rolesToUsers)
+						.where(eq(rolesToUsers.userId, userId));
+					await db.insert(rolesToUsers).values(
+						userData.roles.map((role) => ({
+							userId,
+							roleId: role,
+						})),
+					);
+				}
+			});
 
 			return c.json({
 				message: "User updated successfully",
