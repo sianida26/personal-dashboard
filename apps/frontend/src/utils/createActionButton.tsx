@@ -14,6 +14,7 @@ type Action = ButtonProps & {
 	action?: (() => void) | string;
 	permission?: boolean;
 	icon: React.ReactNode;
+	asLink?: boolean;
 };
 
 export default function createActionButtons(actions: Action[]) {
