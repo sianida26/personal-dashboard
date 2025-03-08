@@ -1,0 +1,35 @@
+---
+description: Project Wide Project Structure to maintain consistency
+globs: 
+alwaysApply: false
+---
+
+# Main Structure
+This project is a turborepo using bun as package manager
+
+Project structure:
+- apps
+-- backend: backend files: uses honojs
+-- frontend: frontend fiels: uses reactjs
+- packages
+-- data: for static data like permissions
+-- ui: for ui components, mainly shadcn components are here
+-- validation: for validation schemas, which will be imported to backend and frontend
+
+## Backend
+### Database
+The database uses Drizzle ORM, every schema are included in apps/backend/src/drizzle/schema/[modelName]Schema.ts, 
+The database uses PostgreSQL, make sure to import from "drizzle-orm/pg-core"
+any schema created should be imported in apps/backend/src/drizzle/index.ts and added into drizzle initialization
+
+### Routes and Handlers
+The routes and handlers are put together in apps/backend/src/routes/[name]Route.ts by default. if in one route handles many endpoints, we can split each route/handler into single files.
+Each route should be protected by some permission(s) check if applicable
+Use drizzle query instead of db.select() if possible
+
+The backend file templates can be found in apps/backend/turbo/generators/templates
+
+## Frontend
+The frontend uses vite, tanstack router, query.
+
+The frontend file templates can be found in apps/frontend/turbo/generators/templates/page-template
