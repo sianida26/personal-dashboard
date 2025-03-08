@@ -44,7 +44,7 @@ function RouteComponent() {
 					cell: (info) => info.getValue(),
 					header: "Description",
 				}),
-				helper.accessor("permissionsToRoles", {
+				helper.accessor("permissions", {
 					cell: (info) => info.getValue().length,
 					header: "Permissions",
 				}),

@@ -278,7 +278,7 @@ const usersRoute = new Hono<HonoEnv>()
 			if (!user[0]) return c.notFound();
 
 			await db.transaction(async (trx) => {
-				await db
+				await trx
 					.update(users)
 					.set({
 						...userData,
@@ -296,10 +296,8 @@ const usersRoute = new Hono<HonoEnv>()
 
 				// re sync roles
 				if (userData.roles) {
-					await db
-						.delete(rolesToUsers)
-						.where(eq(rolesToUsers.userId, userId));
-					await db.insert(rolesToUsers).values(
+					await trx.delete(rolesToUsers).where(eq(rolesToUsers.userId, userId));
+					await trx.insert(rolesToUsers).values(
 						userData.roles.map((role) => ({
 							userId,
 							roleId: role,
