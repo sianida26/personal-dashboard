@@ -47,11 +47,12 @@ export const Day: React.FC<DayProps> = ({
 		if (highlightToday && isToday) {
 			baseClass += " ring-2 ring-primary-500 ring-offset-1";
 		}
+	} else if (firstInRange) {
+		baseClass += "bg-primary/70 text-white rounded-l-full";
+	} else if (lastInRange) {
+		baseClass += "bg-primary/70 text-white rounded-r-full";
 	} else if (inRange) {
-		baseClass +=
-			firstInRange || lastInRange
-				? "bg-primary/70 text-white"
-				: "bg-primary/30";
+		baseClass += "bg-primary/30 hover:bg-primary/40";
 	} else if (highlightToday && isToday) {
 		baseClass += "bg-primary/20 font-bold";
 	} else if (outside) {

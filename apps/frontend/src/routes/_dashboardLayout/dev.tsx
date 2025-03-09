@@ -11,5 +11,5 @@ export const Route = createFileRoute("/_dashboardLayout/dev")({
 function RouteComponent() {
 	usePermissions("dev-routes");
 
-	return <DatePicker allowDeselect={true} />;
+	return <DatePicker allowDeselect={true} mode="range" />;
 }
