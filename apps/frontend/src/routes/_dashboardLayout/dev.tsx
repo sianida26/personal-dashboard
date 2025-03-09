@@ -1,6 +1,7 @@
 import { usePermissions } from "@/hooks/useAuth";
-import { DatePicker } from "@repo/ui";
+import { DatePicker, type DateRange } from "@repo/ui";
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 
 export const Route = createFileRoute("/_dashboardLayout/dev")({
 	component: RouteComponent,
@@ -11,5 +12,17 @@ export const Route = createFileRoute("/_dashboardLayout/dev")({
 function RouteComponent() {
 	usePermissions("dev-routes");
 
-	return <DatePicker allowDeselect={true} mode="range" />;
+	const [selectedRangeValue, setSelectedRangeValue] = useState<DateRange>({
+		from: new Date(),
+		to: null,
+	});
+
+	return (
+		<DatePicker
+			allowDeselect={true}
+			mode="range"
+			value={selectedRangeValue}
+			onChange={setSelectedRangeValue}
+		/>
+	);
 }
