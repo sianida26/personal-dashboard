@@ -589,7 +589,7 @@ export const DatePicker = <TMode extends DatePickerMode = "single">({
 
 	// Handle calendar navigation without changing selection
 	const handleCalendarDateChange = (newDate: Date) => {
-		handleDateSelect(newDate);
+		setVisibleDate(newDate);
 	};
 
 	// Create custom getDayProps to handle hover and range selection
