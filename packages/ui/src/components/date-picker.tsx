@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import type { ReactNode } from "react";
-import { Calendar, Day } from "./calendar";
+import { Calendar, type CalendarProps, Day } from "./calendar";
 
 /**
  * Enum for the selection mode of the DatePicker
@@ -23,126 +23,127 @@ export type DateRangeTuple = [Date | null, Date | null];
 /**
  * Props for the DatePicker component with generic type parameter for mode-specific value types
  */
-export interface DatePickerProps<TMode extends DatePickerMode = "single"> {
-		/**
-		 * The mode of date selection
-		 * @default DatePickerMode.Single
-		 */
-		mode?: TMode;
+export interface DatePickerProps<TMode extends DatePickerMode = "single">
+	extends Omit<CalendarProps, "date" | "onDateChange"> {
+	/**
+	 * The mode of date selection
+	 * @default DatePickerMode.Single
+	 */
+	mode?: TMode;
 
-		/**
-		 * Whether to allow deselection of dates
-		 * @default true
-		 */
-		allowDeselect?: boolean;
+	/**
+	 * Whether to allow deselection of dates
+	 * @default true
+	 */
+	allowDeselect?: boolean;
 
-		/**
-		 * The default selected date(s)
-		 */
-		defaultValue?: TMode extends "single"
-			? Date | null
-			: TMode extends "multiple"
-				? Date[]
-				: DateRange | DateRangeTuple;
+	/**
+	 * The default selected date(s)
+	 */
+	defaultValue?: TMode extends "single"
+		? Date | null
+		: TMode extends "multiple"
+			? Date[]
+			: DateRange | DateRangeTuple;
 
-		/**
-		 * The controlled selected date(s)
-		 */
-		value?: TMode extends "single"
-			? Date | null
-			: TMode extends "multiple"
-				? Date[]
-				: DateRange | DateRangeTuple;
+	/**
+	 * The controlled selected date(s)
+	 */
+	value?: TMode extends "single"
+		? Date | null
+		: TMode extends "multiple"
+			? Date[]
+			: DateRange | DateRangeTuple;
 
-		/**
-		 * Callback when date(s) selection changes
-		 */
-		onChange?: TMode extends "single"
-			? (value: Date | null) => void
-			: TMode extends "multiple"
-				? (value: Date[]) => void
-				: (value: DateRange | DateRangeTuple | null) => void;
+	/**
+	 * Callback when date(s) selection changes
+	 */
+	onChange?: TMode extends "single"
+		? (value: Date | null) => void
+		: TMode extends "multiple"
+			? (value: Date[]) => void
+			: (value: DateRange | DateRangeTuple | null) => void;
 
-		/**
-		 * The default visible date in the calendar
-		 */
-		defaultVisibleDate?: Date;
+	/**
+	 * The default visible date in the calendar
+	 */
+	defaultVisibleDate?: Date;
 
-		/**
-		 * The minimum selectable date
-		 */
-		minDate?: Date;
+	/**
+	 * The minimum selectable date
+	 */
+	minDate?: Date;
 
-		/**
-		 * The maximum selectable date
-		 */
-		maxDate?: Date;
+	/**
+	 * The maximum selectable date
+	 */
+	maxDate?: Date;
 
-		/**
-		 * Whether to highlight today's date
-		 * @default true
-		 */
-		highlightToday?: boolean;
+	/**
+	 * Whether to highlight today's date
+	 * @default true
+	 */
+	highlightToday?: boolean;
 
-		/**
-		 * Function to determine if a date should be disabled
-		 */
-		excludeDate?: (date: Date) => boolean;
+	/**
+	 * Function to determine if a date should be disabled
+	 */
+	excludeDate?: (date: Date) => boolean;
 
-		/**
-		 * Custom render function for day cells
-		 */
-		renderDay?: (date: Date) => ReactNode;
+	/**
+	 * Custom render function for day cells
+	 */
+	renderDay?: (date: Date) => ReactNode;
 
-		/**
-		 * First day of the week (0 = Sunday, 1 = Monday, etc.)
-		 * @default 1
-		 */
-		firstDayOfWeek?: number;
+	/**
+	 * First day of the week (0 = Sunday, 1 = Monday, etc.)
+	 * @default 1
+	 */
+	firstDayOfWeek?: number;
 
-		/**
-		 * Whether to hide dates outside the current month
-		 * @default false
-		 */
-		hideOutsideDates?: boolean;
+	/**
+	 * Whether to hide dates outside the current month
+	 * @default false
+	 */
+	hideOutsideDates?: boolean;
 
-		/**
-		 * Whether to hide weekday names
-		 * @default false
-		 */
-		hideWeekdays?: boolean;
+	/**
+	 * Whether to hide weekday names
+	 * @default false
+	 */
+	hideWeekdays?: boolean;
 
-		/**
-		 * Locale for date formatting
-		 * @default "default"
-		 */
-		locale?: string;
+	/**
+	 * Locale for date formatting
+	 * @default "default"
+	 */
+	locale?: string;
 
-		/**
-		 * Format for month labels
-		 */
-		monthLabelFormat?: string | ((month: Date) => ReactNode);
+	/**
+	 * Format for month labels
+	 */
+	monthLabelFormat?: string | ((month: Date) => ReactNode);
 
-		/**
-		 * Format for months list
-		 */
-		monthsListFormat?: string;
+	/**
+	 * Format for months list
+	 */
+	monthsListFormat?: string;
 
-		/**
-		 * Custom next icon
-		 */
-		nextIcon?: ReactNode;
+	/**
+	 * Custom next icon
+	 */
+	nextIcon?: ReactNode;
 
-		/**
-		 * Custom previous icon
-		 */
-		prevIcon?: ReactNode;
+	/**
+	 * Custom previous icon
+	 */
+	prevIcon?: ReactNode;
 
-		/**
-		 * Additional className for the component
-		 */
-		className?: string;
-	}
+	/**
+	 * Additional className for the component
+	 */
+	className?: string;
+}
 
 /**
  * Type guard to check if a value is a DateRange object
@@ -190,24 +191,15 @@ export const DatePicker = <TMode extends DatePickerMode = "single">({
 	defaultValue,
 	value,
 	onChange,
-	minDate,
-	maxDate,
-	highlightToday = false,
-	excludeDate,
-	renderDay,
-	firstDayOfWeek = 1,
-	hideOutsideDates = false,
-	hideWeekdays = false,
-	locale = "default",
-	monthLabelFormat,
-	monthsListFormat,
-	nextIcon,
-	prevIcon,
-	className = "",
+	defaultVisibleDate,
+	// We'll spread the rest of the props to Calendar
+	...calendarProps
 }: DatePickerProps<TMode>) => {
 	// Initialize internal state based on controlled or uncontrolled usage
 	const [internalSingleValue, setInternalSingleValue] = useState<Date | null>(
-		mode === "single" ? (defaultValue as Date | null) || null : null,
+		mode === "single"
+			? ((defaultValue as Date | null) ?? new Date())
+			: null,
 	);
 
 	const [internalMultipleValue, setInternalMultipleValue] = useState<Date[]>(
@@ -447,6 +439,11 @@ export const DatePicker = <TMode extends DatePickerMode = "single">({
 			const firstInRange = isFirstInRange(date);
 			const lastInRange = isLastInRange(date);
 
+			// Create a custom onClick handler that uses our handleDateSelect
+			const handleClick = () => {
+				handleDateSelect(date);
+			};
+
 			return (
 				<Day
 					date={date}
@@ -454,9 +451,9 @@ export const DatePicker = <TMode extends DatePickerMode = "single">({
 					inRange={inRange}
 					firstInRange={firstInRange}
 					lastInRange={lastInRange}
-					renderDay={renderDay}
-					highlightToday={highlightToday}
-					onClick={() => handleDateSelect(date)}
+					renderDay={calendarProps.renderDay}
+					highlightToday={calendarProps.highlightToday}
+					onClick={handleClick}
 				/>
 			);
 		},
@@ -465,39 +462,132 @@ export const DatePicker = <TMode extends DatePickerMode = "single">({
 			isDateInRange,
 			isFirstInRange,
 			isLastInRange,
-			renderDay,
-			highlightToday,
 			handleDateSelect,
+			calendarProps.renderDay,
+			calendarProps.highlightToday,
 		],
 	);
 
 	// Create a custom excludeDate function that combines the provided one with our own logic
 	const combinedExcludeDate = useCallback(
 		(date: Date) => {
-			if (excludeDate?.(date)) return true;
-			if (minDate && date < minDate) return true;
-			if (maxDate && date > maxDate) return true;
+			if (calendarProps.excludeDate?.(date)) return true;
+			if (calendarProps.minDate && date < calendarProps.minDate)
+				return true;
+			if (calendarProps.maxDate && date > calendarProps.maxDate)
+				return true;
 			return false;
 		},
-		[excludeDate, minDate, maxDate],
+		[
+			calendarProps.excludeDate,
+			calendarProps.minDate,
+			calendarProps.maxDate,
+		],
+	);
+
+	// Use defaultVisibleDate or the selected date as the initial visible date
+	const [visibleDate, setVisibleDate] = useState<Date>(() => {
+		if (defaultVisibleDate) return defaultVisibleDate;
+		if (mode === "single" && selectedSingleValue) {
+			return selectedSingleValue;
+		}
+		if (mode === "range" && selectedRangeValue?.from) {
+			return selectedRangeValue.from;
+		}
+		return new Date(); // Always default to today
+	});
+
+	// Handle calendar navigation without changing selection
+	const handleCalendarDateChange = (newDate: Date) => {
+		// This is called when a date is clicked in the calendar
+		handleDateSelect(newDate);
+	};
+
+	// Create custom getDayProps to handle our custom day selection logic
+	const getDayProps = useCallback(
+		(date: Date) => {
+			return {
+				onClick: (e: React.MouseEvent) => {
+					e.preventDefault();
+					e.stopPropagation();
+					handleDateSelect(date);
+				},
+			};
+		},
+		[handleDateSelect],
 	);
 
 	return (
-		<div className={`date-picker ${className}`}>
+		<div className={`date-picker ${calendarProps.className || ""}`}>
 			<Calendar
-				// date={visibleDate || new Date()}
-				// onDateChange={onChange}
+				{...calendarProps}
+				date={visibleDate}
+				onDateChange={handleCalendarDateChange}
 				excludeDate={combinedExcludeDate}
 				renderDay={renderDayWithSelection}
-				firstDayOfWeek={firstDayOfWeek}
-				hideOutsideDates={hideOutsideDates}
-				hideWeekdays={hideWeekdays}
-				highlightToday={highlightToday}
-				locale={locale}
-				monthLabelFormat={monthLabelFormat}
-				monthsListFormat={monthsListFormat}
-				nextIcon={nextIcon}
-				prevIcon={prevIcon}
+				getDayProps={getDayProps}
+				selected={mode === "single" ? selectedSingleValue : null}
+				className={undefined} // We apply className to the wrapper div
+				onNextMonth={() =>
+					setVisibleDate(
+						(prev) =>
+							new Date(
+								prev.getFullYear(),
+								prev.getMonth() + 1,
+								1,
+							),
+					)
+				}
+				onPrevMonth={() =>
+					setVisibleDate(
+						(prev) =>
+							new Date(
+								prev.getFullYear(),
+								prev.getMonth() - 1,
+								1,
+							),
+					)
+				}
+				onNextYear={() =>
+					setVisibleDate(
+						(prev) =>
+							new Date(
+								prev.getFullYear() + 1,
+								prev.getMonth(),
+								1,
+							),
+					)
+				}
+				onPrevYear={() =>
+					setVisibleDate(
+						(prev) =>
+							new Date(
+								prev.getFullYear() - 1,
+								prev.getMonth(),
+								1,
+							),
+					)
+				}
+				onNextDecade={() =>
+					setVisibleDate(
+						(prev) =>
+							new Date(
+								prev.getFullYear() + 10,
+								prev.getMonth(),
+								1,
+							),
+					)
+				}
+				onPrevDecade={() =>
+					setVisibleDate(
+						(prev) =>
+							new Date(
+								prev.getFullYear() - 10,
+								prev.getMonth(),
+								1,
+							),
+					)
+				}
 			/>
 		</div>
 	);

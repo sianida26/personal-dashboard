@@ -3,7 +3,8 @@ import { useState } from "react";
 
 type CalendarLevel = "decade" | "year" | "month";
 
-interface DayProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface DayProps
+	extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	static?: boolean;
 	date: Date;
 	outside?: boolean;
@@ -36,21 +37,23 @@ export const Day: React.FC<DayProps> = ({
 	if (hidden) return null;
 
 	const today = new Date();
-	const isToday =
-		highlightToday && date.toDateString() === today.toDateString();
+	const isToday = date.toDateString() === today.toDateString();
 	let baseClass = "h-8 w-8 m-0.5 text-sm rounded ";
 
 	if (disabled) {
 		baseClass += "bg-gray-100 text-gray-400 cursor-not-allowed";
 	} else if (selected) {
 		baseClass += "bg-primary text-white";
+		if (highlightToday && isToday) {
+			baseClass += " ring-2 ring-primary-500 ring-offset-1";
+		}
 	} else if (inRange) {
 		baseClass +=
 			firstInRange || lastInRange
 				? "bg-primary/70 text-white"
 				: "bg-primary/30";
-	} else if (isToday) {
-		baseClass += "bg-primary text-white";
+	} else if (highlightToday && isToday) {
+		baseClass += "bg-primary/20 font-bold";
 	} else if (outside) {
 		baseClass += "text-gray-400 hover:bg-blue-50";
 	} else {
@@ -70,7 +73,7 @@ export const Day: React.FC<DayProps> = ({
 	);
 };
 
-interface CalendarProps {
+export interface CalendarProps {
 	// Core props
 	date?: Date;
 	defaultDate?: Date;
@@ -118,402 +121,442 @@ interface CalendarProps {
 	onPrevYear?: () => void;
 	onYearSelect?: (year: Date) => void;
 	renderDay?: (date: Date) => React.ReactNode;
+	selected?: Date | null;
+	className?: string;
 }
 
-export const Calendar: React.FC<CalendarProps> = ({
-	date,
-	defaultDate,
-	defaultLevel = "month",
-	level,
-	firstDayOfWeek = 1,
-	hideOutsideDates = false,
-	hideWeekdays,
-	highlightToday = false,
-	locale = "default",
-	maxDate,
-	// maxLevel,
-	minDate,
-	// minLevel,
-	monthLabelFormat,
-	monthsListFormat,
-	static: isStatic,
-	nextIcon,
-	prevIcon,
-	nextLabel,
-	excludeDate,
-	getDayProps,
-	getMonthControlProps,
-	getYearControlProps,
-	// hasNextLevel,
-	onDateChange,
-	onLevelChange,
-	onMonthMouseEnter,
-	onMonthSelect,
-	onNextDecade,
-	onNextMonth,
-	onNextYear,
-	onPrevDecade,
-	onPrevMonth,
-	onPrevYear,
-	onYearSelect,
-	renderDay,
-}) => {
-	// Controlled vs. Uncontrolled
-	const [internalDate, setInternalDate] = useState(defaultDate || new Date());
-	const [internalLevel, setInternalLevel] =
-		useState<CalendarLevel>(defaultLevel);
+// Add this type to properly type the Calendar component with the Day property
+interface CalendarComponent extends React.FC<CalendarProps> {
+	Day: React.FC<DayProps>;
+}
 
-	const displayedDate = date || internalDate;
-	const currentLevel = level || internalLevel;
+export const Calendar = Object.assign(
+	function Calendar(props: CalendarProps) {
+		// all the existing implementation...
+		const {
+			date,
+			defaultDate,
+			defaultLevel = "month",
+			level,
+			firstDayOfWeek = 1,
+			hideOutsideDates = false,
+			hideWeekdays,
+			highlightToday = false,
+			locale = "default",
+			maxDate,
+			// maxLevel,
+			minDate,
+			// minLevel,
+			monthLabelFormat,
+			monthsListFormat,
+			static: isStatic,
+			nextIcon,
+			prevIcon,
+			nextLabel,
+			excludeDate,
+			getDayProps,
+			getMonthControlProps,
+			getYearControlProps,
+			// hasNextLevel,
+			onDateChange,
+			onLevelChange,
+			onMonthMouseEnter,
+			onMonthSelect,
+			onNextDecade,
+			onNextMonth,
+			onNextYear,
+			onPrevDecade,
+			onPrevMonth,
+			onPrevYear,
+			onYearSelect,
+			renderDay,
+			selected,
+			className,
+		} = props;
 
-	const setDate = (newDate: Date) => {
-		if (!date) setInternalDate(newDate);
-		onDateChange?.(newDate);
-	};
-
-	const setLevel = (newLevel: CalendarLevel) => {
-		if (!level) setInternalLevel(newLevel);
-		onLevelChange?.(newLevel);
-	};
-
-	const addMonths = (base: Date, count: number) => {
-		const d = new Date(base);
-		d.setMonth(d.getMonth() + count);
-		return d;
-	};
-
-	const addYears = (base: Date, count: number) => {
-		const d = new Date(base);
-		d.setFullYear(d.getFullYear() + count);
-		return d;
-	};
-
-	const generateMonthMatrix = (monthDate: Date) => {
-		const startOfMonth = new Date(
-			monthDate.getFullYear(),
-			monthDate.getMonth(),
-			1,
+		// Controlled vs. Uncontrolled
+		const [internalDate, setInternalDate] = useState(
+			defaultDate ?? new Date(),
 		);
-		const offset = (startOfMonth.getDay() - firstDayOfWeek + 7) % 7;
-		const startOfCalendar = new Date(startOfMonth);
-		startOfCalendar.setDate(startOfMonth.getDate() - offset);
+		const [internalLevel, setInternalLevel] =
+			useState<CalendarLevel>(defaultLevel);
 
-		const weeks: Date[][] = [];
-		const currentDay = new Date(startOfCalendar);
-		for (let w = 0; w < 6; w++) {
-			const week: Date[] = [];
-			for (let d = 0; d < 7; d++) {
-				week.push(new Date(currentDay));
-				currentDay.setDate(currentDay.getDate() + 1);
+		const displayedDate = date ?? internalDate;
+		const currentLevel = level ?? internalLevel;
+
+		const setDate = (newDate: Date) => {
+			if (!date) setInternalDate(newDate);
+			onDateChange?.(newDate);
+		};
+
+		const setLevel = (newLevel: CalendarLevel) => {
+			if (!level) setInternalLevel(newLevel);
+			onLevelChange?.(newLevel);
+		};
+
+		const addMonths = (base: Date, count: number) => {
+			const d = new Date(base);
+			d.setMonth(d.getMonth() + count);
+			return d;
+		};
+
+		const addYears = (base: Date, count: number) => {
+			const d = new Date(base);
+			d.setFullYear(d.getFullYear() + count);
+			return d;
+		};
+
+		const generateMonthMatrix = (monthDate: Date) => {
+			const startOfMonth = new Date(
+				monthDate.getFullYear(),
+				monthDate.getMonth(),
+				1,
+			);
+			const offset = (startOfMonth.getDay() - firstDayOfWeek + 7) % 7;
+			const startOfCalendar = new Date(startOfMonth);
+			startOfCalendar.setDate(startOfMonth.getDate() - offset);
+
+			const weeks: Date[][] = [];
+			const currentDay = new Date(startOfCalendar);
+			for (let w = 0; w < 6; w++) {
+				const week: Date[] = [];
+				for (let d = 0; d < 7; d++) {
+					week.push(new Date(currentDay));
+					currentDay.setDate(currentDay.getDate() + 1);
+				}
+				weeks.push(week);
 			}
-			weeks.push(week);
-		}
-		return weeks;
-	};
+			return weeks;
+		};
 
-	const generateYearMatrix = (yearDate: Date) => {
-		return Array.from(
-			{ length: 12 },
-			(_, i) => new Date(yearDate.getFullYear(), i, 1),
-		);
-	};
+		const generateYearMatrix = (yearDate: Date) => {
+			return Array.from(
+				{ length: 12 },
+				(_, i) => new Date(yearDate.getFullYear(), i, 1),
+			);
+		};
 
-	const generateDecadeRange = (centerYear: number) => {
-		const start = centerYear - 5;
-		return Array.from({ length: 12 }, (_, i) => new Date(start + i, 0, 1));
-	};
+		const generateDecadeRange = (centerYear: number) => {
+			const start = centerYear - 5;
+			return Array.from(
+				{ length: 12 },
+				(_, i) => new Date(start + i, 0, 1),
+			);
+		};
 
-	const isDisabledDay = (d: Date) => {
-		if (Number.isNaN(d.getTime())) return true;
-		if (excludeDate?.(d)) return true;
-		if (minDate && d < minDate) return true;
-		if (maxDate && d > maxDate) return true;
-		return false;
-	};
+		const isDisabledDay = (d: Date) => {
+			if (Number.isNaN(d.getTime())) return true;
+			if (excludeDate?.(d)) return true;
+			if (minDate && d < minDate) return true;
+			if (maxDate && d > maxDate) return true;
+			return false;
+		};
 
-	const renderMonthLevel = () => {
-		const weeks = generateMonthMatrix(displayedDate);
-		return (
-			<div className="space-y-2">
-				{!hideWeekdays && (
-					<div className="grid grid-cols-7 text-center font-semibold">
-						{Array.from({ length: 7 }).map((_, i) => {
-							const wDay = (firstDayOfWeek + i) % 7;
-							const label = new Date(2021, 5, 20 + wDay)
-								.toLocaleDateString(locale, {
-									weekday: "short",
-								})
-								.slice(0, 2);
-							return <div key={wDay}>{label}</div>;
+		const renderMonthLevel = () => {
+			const weeks = generateMonthMatrix(displayedDate);
+			// Use the selected prop for selection state if provided
+			const selectedDate =
+				typeof selected !== "undefined"
+					? selected
+					: date || internalDate;
+
+			return (
+				<div className="space-y-2">
+					{!hideWeekdays && (
+						<div className="grid grid-cols-7 text-center font-semibold">
+							{Array.from({ length: 7 }).map((_, i) => {
+								const wDay = (firstDayOfWeek + i) % 7;
+								const label = new Date(2021, 5, 20 + wDay)
+									.toLocaleDateString(locale, {
+										weekday: "short",
+									})
+									.slice(0, 2);
+								return <div key={wDay}>{label}</div>;
+							})}
+						</div>
+					)}
+					<div className="space-y-1">
+						{weeks.map((week) => {
+							const weekKey = week
+								.map((day) => day.getTime())
+								.join("-");
+							return (
+								<div key={weekKey} className="grid grid-cols-7">
+									{week.map((day, di) => {
+										const isPlaceholder = Number.isNaN(
+											day.getTime(),
+										);
+										const isOutside =
+											day.getMonth() !==
+												displayedDate.getMonth() ||
+											day.getFullYear() !==
+												displayedDate.getFullYear();
+										if (hideOutsideDates && isOutside) {
+											// Use the right method for avoiding array index as key
+											return (
+												<div
+													key={`outside-${day.getTime()}`}
+												/>
+											);
+										}
+										const disabled =
+											isPlaceholder || isDisabledDay(day);
+										const isSelected = selectedDate
+											? day.toDateString() ===
+												selectedDate.toDateString()
+											: false;
+
+										const dayProps =
+											getDayProps?.(day) || {};
+
+										return (
+											<Day
+												key={
+													isPlaceholder
+														? `placeholder-${di}`
+														: day.getTime()
+												}
+												date={day}
+												static={isStatic}
+												outside={isOutside}
+												selected={isSelected}
+												hidden={false}
+												inRange={false}
+												firstInRange={false}
+												lastInRange={false}
+												renderDay={renderDay}
+												highlightToday={highlightToday}
+												disabled={disabled}
+												onClick={() => {
+													if (
+														!disabled &&
+														!isStatic
+													) {
+														setDate(day);
+													}
+												}}
+												{...dayProps}
+											/>
+										);
+									})}
+								</div>
+							);
 						})}
 					</div>
-				)}
-				<div className="space-y-1">
-					{weeks.map((week) => {
-						const weekKey = week
-							.map((day) => day.getTime())
-							.join("-");
-						return (
-							<div key={weekKey} className="grid grid-cols-7">
-								{week.map((day, di) => {
-									const isPlaceholder = Number.isNaN(
-										day.getTime(),
-									);
-									const isOutside =
-										day.getMonth() !==
-											displayedDate.getMonth() ||
-										day.getFullYear() !==
-											displayedDate.getFullYear();
-									if (hideOutsideDates && isOutside) {
-										// biome-ignore lint/suspicious/noArrayIndexKey: it is not possible to use the date as key
-										return <div key={di} />;
-									}
-									const disabled =
-										isPlaceholder || isDisabledDay(day);
-									const selectedDate = date || internalDate;
-									const isSelected =
-										day.toDateString() ===
-										selectedDate.toDateString();
+				</div>
+			);
+		};
 
-									const dayProps = getDayProps?.(day) || {};
-									return (
-										<Day
-											key={
-												isPlaceholder
-													? `placeholder-${di}`
-													: day.getTime()
-											}
-											date={day}
-											static={isStatic}
-											outside={isOutside}
-											selected={isSelected}
-											hidden={false}
-											inRange={false}
-											firstInRange={false}
-											lastInRange={false}
-											renderDay={renderDay}
-											highlightToday={highlightToday}
-											disabled={disabled}
-											onClick={() => {
-												if (!disabled && !isStatic)
-													setDate(day);
-											}}
-											{...dayProps}
-										/>
-									);
-								})}
-							</div>
+		const renderYearLevel = () => {
+			const months = generateYearMatrix(displayedDate);
+			return (
+				<div className="grid grid-cols-3 gap-2">
+					{months.map((m) => {
+						const disabled = isDisabledDay(m);
+						const monthProps = getMonthControlProps?.(m) || {};
+						const handleClick = () => {
+							if (disabled || isStatic) return;
+							onMonthSelect?.(m);
+							setDate(
+								new Date(
+									displayedDate.getFullYear(),
+									m.getMonth(),
+									1,
+								),
+							);
+							setLevel("month");
+						};
+						const label =
+							typeof monthsListFormat === "string"
+								? m.toLocaleDateString(locale, {
+										month: monthsListFormat as
+											| "numeric"
+											| "2-digit"
+											| "long"
+											| "short"
+											| "narrow",
+									})
+								: m.toLocaleString(locale, { month: "short" });
+						return (
+							<button
+								key={m.toISOString()}
+								{...monthProps}
+								onMouseEnter={() => onMonthMouseEnter?.(m)}
+								onClick={handleClick}
+								className={`p-2 rounded text-sm ${
+									disabled
+										? "bg-gray-100 text-gray-400 cursor-not-allowed"
+										: "hover:bg-blue-100"
+								} ${monthProps.className || ""}`}
+							>
+								{label}
+							</button>
 						);
 					})}
 				</div>
-			</div>
-		);
-	};
+			);
+		};
 
-	const renderYearLevel = () => {
-		const months = generateYearMatrix(displayedDate);
-		return (
-			<div className="grid grid-cols-3 gap-2">
-				{months.map((m) => {
-					const disabled = isDisabledDay(m);
-					const monthProps = getMonthControlProps?.(m) || {};
-					const handleClick = () => {
-						if (disabled || isStatic) return;
-						onMonthSelect?.(m);
-						setDate(
-							new Date(
-								displayedDate.getFullYear(),
-								m.getMonth(),
-								1,
-							),
+		const renderDecadeLevel = () => {
+			const years = generateDecadeRange(displayedDate.getFullYear());
+			return (
+				<div className="grid grid-cols-3 gap-2">
+					{years.map((y) => {
+						const disabled = isDisabledDay(y);
+						const yearProps = getYearControlProps?.(y) || {};
+						const handleClick = () => {
+							if (disabled || isStatic) return;
+							onYearSelect?.(y);
+							setDate(
+								new Date(
+									y.getFullYear(),
+									displayedDate.getMonth(),
+									1,
+								),
+							);
+							setLevel("year");
+						};
+						return (
+							<button
+								key={y.getFullYear()}
+								{...yearProps}
+								onClick={handleClick}
+								className={`p-2 rounded text-sm ${
+									disabled
+										? "bg-gray-100 text-gray-400 cursor-not-allowed"
+										: "hover:bg-blue-100"
+								} ${yearProps.className || ""}`}
+							>
+								{y.getFullYear()}
+							</button>
 						);
-						setLevel("month");
-					};
-					const label =
-						typeof monthsListFormat === "string"
-							? m.toLocaleDateString(locale, {
-									month: monthsListFormat as
+					})}
+				</div>
+			);
+		};
+
+		const handlePrev = () => {
+			if (currentLevel === "month") {
+				onPrevMonth?.();
+				setDate(addMonths(displayedDate, -1));
+			} else if (currentLevel === "year") {
+				onPrevYear?.();
+				setDate(addYears(displayedDate, -1));
+			} else {
+				onPrevDecade?.();
+				setDate(addYears(displayedDate, -12));
+			}
+		};
+
+		const handleNext = () => {
+			if (currentLevel === "month") {
+				onNextMonth?.();
+				setDate(addMonths(displayedDate, 1));
+			} else if (currentLevel === "year") {
+				onNextYear?.();
+				setDate(addYears(displayedDate, 1));
+			} else {
+				onNextDecade?.();
+				setDate(addYears(displayedDate, 12));
+			}
+		};
+
+		const titleClick = () => {
+			if (currentLevel === "month") setLevel("year");
+			else if (currentLevel === "year") setLevel("decade");
+		};
+
+		const renderTitle = () => {
+			if (currentLevel === "month") {
+				const monthLabel =
+					typeof monthLabelFormat === "function"
+						? monthLabelFormat(displayedDate)
+						: typeof monthLabelFormat === "string"
+							? displayedDate.toLocaleDateString(locale, {
+									month: monthLabelFormat as
 										| "numeric"
 										| "2-digit"
 										| "long"
 										| "short"
 										| "narrow",
+									year: "numeric",
 								})
-							: m.toLocaleString(locale, { month: "short" });
-					return (
-						<button
-							key={m.toISOString()}
-							{...monthProps}
-							onMouseEnter={() => onMonthMouseEnter?.(m)}
-							onClick={handleClick}
-							className={`p-2 rounded text-sm ${
-								disabled
-									? "bg-gray-100 text-gray-400 cursor-not-allowed"
-									: "hover:bg-blue-100"
-							} ${monthProps.className || ""}`}
-						>
-							{label}
-						</button>
-					);
-				})}
-			</div>
-		);
-	};
-
-	const renderDecadeLevel = () => {
-		const years = generateDecadeRange(displayedDate.getFullYear());
-		return (
-			<div className="grid grid-cols-3 gap-2">
-				{years.map((y) => {
-					const disabled = isDisabledDay(y);
-					const yearProps = getYearControlProps?.(y) || {};
-					const handleClick = () => {
-						if (disabled || isStatic) return;
-						onYearSelect?.(y);
-						setDate(
-							new Date(
-								y.getFullYear(),
-								displayedDate.getMonth(),
-								1,
-							),
-						);
-						setLevel("year");
-					};
-					return (
-						<button
-							key={y.getFullYear()}
-							{...yearProps}
-							onClick={handleClick}
-							className={`p-2 rounded text-sm ${
-								disabled
-									? "bg-gray-100 text-gray-400 cursor-not-allowed"
-									: "hover:bg-blue-100"
-							} ${yearProps.className || ""}`}
-						>
-							{y.getFullYear()}
-						</button>
-					);
-				})}
-			</div>
-		);
-	};
-
-	const handlePrev = () => {
-		if (currentLevel === "month") {
-			onPrevMonth?.();
-			setDate(addMonths(displayedDate, -1));
-		} else if (currentLevel === "year") {
-			onPrevYear?.();
-			setDate(addYears(displayedDate, -1));
-		} else {
-			onPrevDecade?.();
-			setDate(addYears(displayedDate, -12));
-		}
-	};
-
-	const handleNext = () => {
-		if (currentLevel === "month") {
-			onNextMonth?.();
-			setDate(addMonths(displayedDate, 1));
-		} else if (currentLevel === "year") {
-			onNextYear?.();
-			setDate(addYears(displayedDate, 1));
-		} else {
-			onNextDecade?.();
-			setDate(addYears(displayedDate, 12));
-		}
-	};
-
-	const titleClick = () => {
-		if (currentLevel === "month") setLevel("year");
-		else if (currentLevel === "year") setLevel("decade");
-	};
-
-	const renderTitle = () => {
-		if (currentLevel === "month") {
-			const monthLabel =
-				typeof monthLabelFormat === "function"
-					? monthLabelFormat(displayedDate)
-					: typeof monthLabelFormat === "string"
-						? displayedDate.toLocaleDateString(locale, {
-								month: monthLabelFormat as
-									| "numeric"
-									| "2-digit"
-									| "long"
-									| "short"
-									| "narrow",
-								year: "numeric",
-							})
-						: displayedDate.toLocaleDateString(locale, {
-								month: "long",
-								year: "numeric",
-							});
-			return (
-				<button
-					onClick={titleClick}
-					type="button"
-					className="font-semibold hover:underline"
-				>
-					{monthLabel}
-				</button>
-			);
-		}
-		if (currentLevel === "year") {
+							: displayedDate.toLocaleDateString(locale, {
+									month: "long",
+									year: "numeric",
+								});
+				return (
+					<button
+						onClick={titleClick}
+						type="button"
+						className="font-semibold hover:underline"
+					>
+						{monthLabel}
+					</button>
+				);
+			}
+			if (currentLevel === "year") {
+				return (
+					<button
+						type="button"
+						onClick={titleClick}
+						className="font-semibold hover:underline"
+					>
+						{displayedDate.getFullYear()}
+					</button>
+				);
+			}
+			const yr = displayedDate.getFullYear();
 			return (
 				<button
 					type="button"
 					onClick={titleClick}
 					className="font-semibold hover:underline"
 				>
-					{displayedDate.getFullYear()}
+					{yr - 5} - {yr + 6}
 				</button>
 			);
-		}
-		const yr = displayedDate.getFullYear();
+		};
+
+		const renderContent = () => {
+			if (currentLevel === "month") return renderMonthLevel();
+			if (currentLevel === "year") return renderYearLevel();
+			return renderDecadeLevel();
+		};
+
 		return (
-			<button
-				type="button"
-				onClick={titleClick}
-				className="font-semibold hover:underline"
+			<div
+				className={`w-64 p-2 border border-gray-200 rounded shadow-sm space-y-2 ${className || ""}`}
 			>
-				{yr - 5} - {yr + 6}
-			</button>
-		);
-	};
-
-	const renderContent = () => {
-		if (currentLevel === "month") return renderMonthLevel();
-		if (currentLevel === "year") return renderYearLevel();
-		return renderDecadeLevel();
-	};
-
-	return (
-		<div className="w-64 p-2 border border-gray-200 rounded shadow-sm space-y-2">
-			<div className="flex items-center justify-between">
-				<button
-					type="button"
-					onClick={handlePrev}
-					className="p-1 hover:bg-gray-100 rounded"
-					aria-label="Previous"
-				>
-					{prevIcon || "<"}
-				</button>
-				{renderTitle()}
-				<button
-					type="button"
-					onClick={handleNext}
-					className="p-1 hover:bg-gray-100 rounded"
-					aria-label="Next"
-				>
-					{nextIcon || ">"}
-				</button>
-			</div>
-			{renderContent()}
-			{nextLabel && (
-				<div className="text-center text-sm text-gray-500">
-					{nextLabel}
+				<div className="flex items-center justify-between">
+					<button
+						type="button"
+						onClick={handlePrev}
+						className="p-1 hover:bg-gray-100 rounded"
+						aria-label="Previous"
+					>
+						{prevIcon || "<"}
+					</button>
+					{renderTitle()}
+					<button
+						type="button"
+						onClick={handleNext}
+						className="p-1 hover:bg-gray-100 rounded"
+						aria-label="Next"
+					>
+						{nextIcon || ">"}
+					</button>
 				</div>
-			)}
-		</div>
-	);
-};
+				{renderContent()}
+				{nextLabel && (
+					<div className="text-center text-sm text-gray-500">
+						{nextLabel}
+					</div>
+				)}
+			</div>
+		);
+	},
+	{
+		Day: Day,
+	},
+) as CalendarComponent;
