@@ -192,7 +192,7 @@ export const DatePicker = <TMode extends DatePickerMode = "single">({
 	onChange,
 	minDate,
 	maxDate,
-	highlightToday = true,
+	highlightToday = false,
 	excludeDate,
 	renderDay,
 	firstDayOfWeek = 1,
