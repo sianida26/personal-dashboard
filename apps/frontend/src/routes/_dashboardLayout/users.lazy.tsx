@@ -17,6 +17,8 @@ export default function UsersPage() {
 			title="Users"
 			endpoint={client.users.$get}
 			queryKey={["users"]}
+			sortableColumns={["name", "username"]}
+			columnBorders={true}
 			columnDefs={(helper) => [
 				helper.display({
 					header: "#",

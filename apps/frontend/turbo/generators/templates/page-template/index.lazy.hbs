@@ -16,6 +16,32 @@ export default function RouteComponent() {
 			title="{{title}}"
 			endpoint={client.{{dotCase endpoint}}.$get}
 			queryKey={["{{endpoint}}"]}
+			// Define which columns can be sorted
+			sortableColumns={["column1", "column2"]}
+			// Define which columns can be filtered
+			filterableColumns={[
+				{
+					id: "column1",
+					type: "text"
+				},
+				{
+					id: "status",
+					type: "select",
+					options: [
+						{ label: "Active", value: "active" },
+						{ label: "Inactive", value: "inactive" }
+					]
+				},
+				{
+					id: "createdAt",
+					type: "daterange",
+					dateFormat: "MMM dd, yyyy"
+				}
+			]}
+			// Enable column borders (optional)
+			columnBorders={true}
+			// Define which columns cannot be resized (optional)
+			nonResizableColumns={["column1"]}
 			columnDefs={(helper) => [
 				helper.display({
 					header: "#",
@@ -25,22 +51,22 @@ export default function RouteComponent() {
 				//TODO: Change the column1 and column2 to the actual column names
 				helper.accessor("column1", {
 					cell: (info) => info.getValue(),
-					header: ({ column }) => {
-						return (
-							<Button
-								variant="ghost"
-								onClick={() =>
-									column.toggleSorting(column.getIsSorted() === "asc")
-								}
-							>
-								Column1
-							</Button>
-						);
-					},
+					header: "Column1" // The sortable button will be added automatically
 				}),
 				helper.accessor("column2", {
 					cell: (info) => info.getValue(),
-					header: "Column2",
+					header: "Column2" // The sortable button will be added automatically
+				}),
+				helper.accessor("status", {
+					cell: (info) => info.getValue(),
+					header: "Status"
+				}),
+				helper.accessor("createdAt", {
+					cell: (info) => {
+						const date = info.getValue();
+						return date ? new Date(date).toLocaleDateString() : '-';
+					},
+					header: "Created At"
 				}),
 				helper.display({
 					header: "Actions",
