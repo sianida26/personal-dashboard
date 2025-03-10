@@ -8,7 +8,7 @@ import { zodResolver } from "mantine-form-zod-resolver";
 import { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
-import client from "../../honoClient";
+import client from "@/honoClient";
 
 export const Route = createLazyFileRoute("/login/")({
 	component: LoginPage,

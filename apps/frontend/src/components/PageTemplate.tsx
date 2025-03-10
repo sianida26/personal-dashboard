@@ -29,16 +29,16 @@ import {
 	TbArrowsSort,
 } from "react-icons/tb";
 import DashboardTable from "./DashboardTable";
-import { Button } from "../../../../packages/ui/src/components/button";
-import { Input } from "../../../../packages/ui/src/components/input";
-import { Pagination } from "../../../../packages/ui/src/components/pagination";
-import { Select } from "../../../../packages/ui/src/components/select";
-import { DatePicker } from "../../../../packages/ui/src/components/date-picker";
 import {
+	Button,
+	Input,
+	Pagination,
+	Select,
+	DatePicker,
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from "../../../../packages/ui/src/components/popover";
+} from "@repo/ui";
 import { format } from "date-fns";
 
 // Define filter types

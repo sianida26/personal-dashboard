@@ -6,8 +6,8 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "../../../../packages/ui/src/components/table";
-import { cn } from "../../../../packages/ui/src/utils/cn";
+} from "@repo/ui";
+import { cn } from "@repo/ui/utils";
 
 interface Props<TData> {
 	table: ReactTable<TData>;
