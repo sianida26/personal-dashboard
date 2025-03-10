@@ -1,5 +1,5 @@
 import { usePermissions } from "@/hooks/useAuth";
-import { DatePicker, DatePickerInput, type DateRange } from "@repo/ui";
+import { DatePickerInput, type DateRange } from "@repo/ui";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
@@ -23,7 +23,6 @@ function RouteComponent() {
 			mode="range"
 			value={selectedRangeValue}
 			onChange={(value: DateRange) => {
-				console.log("value", value);
 				setSelectedRangeValue(value);
 			}}
 		/>
