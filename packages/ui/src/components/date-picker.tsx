@@ -575,23 +575,6 @@ export const DatePicker = <TMode extends DatePickerMode = "single">({
 		],
 	);
 
-	// Use defaultVisibleDate or the selected date as the initial visible date
-	const [visibleDate, setVisibleDate] = useState<Date>(() => {
-		if (defaultVisibleDate) return defaultVisibleDate;
-		if (mode === "single" && selectedSingleValue) {
-			return selectedSingleValue;
-		}
-		if (mode === "range" && selectedRangeValue?.from) {
-			return selectedRangeValue.from;
-		}
-		return new Date(); // Always default to today
-	});
-
-	// Handle calendar navigation without changing selection
-	const handleCalendarDateChange = (newDate: Date) => {
-		setVisibleDate(newDate);
-	};
-
 	// Create custom getDayProps to handle hover and range selection
 	const getDayProps = useCallback(
 		(date: Date) => {
@@ -622,72 +605,10 @@ export const DatePicker = <TMode extends DatePickerMode = "single">({
 		<div className={`date-picker ${calendarProps.className || ""}`}>
 			<Calendar
 				{...calendarProps}
-				date={visibleDate}
-				onDateChange={handleCalendarDateChange}
 				excludeDate={combinedExcludeDate}
 				renderDay={renderDayWithSelection}
 				getDayProps={getDayProps}
 				selected={mode === "single" ? selectedSingleValue : null}
-				onNextMonth={() =>
-					setVisibleDate(
-						(prev) =>
-							new Date(
-								prev.getFullYear(),
-								prev.getMonth() + 1,
-								1,
-							),
-					)
-				}
-				onPrevMonth={() =>
-					setVisibleDate(
-						(prev) =>
-							new Date(
-								prev.getFullYear(),
-								prev.getMonth() - 1,
-								1,
-							),
-					)
-				}
-				onNextYear={() =>
-					setVisibleDate(
-						(prev) =>
-							new Date(
-								prev.getFullYear() + 1,
-								prev.getMonth(),
-								1,
-							),
-					)
-				}
-				onPrevYear={() =>
-					setVisibleDate(
-						(prev) =>
-							new Date(
-								prev.getFullYear() - 1,
-								prev.getMonth(),
-								1,
-							),
-					)
-				}
-				onNextDecade={() =>
-					setVisibleDate(
-						(prev) =>
-							new Date(
-								prev.getFullYear() + 10,
-								prev.getMonth(),
-								1,
-							),
-					)
-				}
-				onPrevDecade={() =>
-					setVisibleDate(
-						(prev) =>
-							new Date(
-								prev.getFullYear() - 10,
-								prev.getMonth(),
-								1,
-							),
-					)
-				}
 			/>
 		</div>
 	);
