@@ -18,11 +18,15 @@ export default function RouteComponent() {
 			queryKey={["{{endpoint}}"]}
 			// Define which columns can be sorted
 			sortableColumns={["column1", "column2"]}
+			// Enable server-side sorting (optional, default: false)
+			// serverSideSorting={true}
 			// Define which columns can be filtered
 			filterableColumns={[
 				{
 					id: "column1",
-					type: "text"
+					type: "text",
+					// Enable server-side filtering for this column (optional, default: false)
+					// serverSide: true
 				},
 				{
 					id: "status",
@@ -30,7 +34,9 @@ export default function RouteComponent() {
 					options: [
 						{ label: "Active", value: "active" },
 						{ label: "Inactive", value: "inactive" }
-					]
+					],
+					// Enable server-side filtering for this column (optional, default: false)
+					// serverSide: true
 				},
 				{
 					id: "createdAt",

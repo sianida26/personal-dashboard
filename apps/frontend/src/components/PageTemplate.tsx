@@ -45,12 +45,14 @@ import { format } from "date-fns";
 export type FilterType = "text" | "checkbox" | "date" | "daterange" | "select";
 
 export type FilterConfig<T> = {
-	id: Extract<keyof T, string>;
-	type: FilterType;
-	options?: { label: string; value: unknown }[];
-	// Date range format for filter validation
-	dateFormat?: string;
-};
+		id: Extract<keyof T, string>;
+		type: FilterType;
+		options?: { label: string; value: unknown }[];
+		// Date range format for filter validation
+		dateFormat?: string;
+		// Whether to filter on the server-side
+		serverSide?: boolean;
+	};
 
 // For date range filters
 export type DateRange = {
@@ -58,13 +60,41 @@ export type DateRange = {
 	to: Date | undefined;
 };
 
+// Enhanced query types for backend endpoint
+export type SortingParam = {
+	id: string;
+	desc: boolean;
+};
+
+export type FilterParam = {
+	id: string;
+	value: unknown;
+};
+
+// Type-safe union type for filter values based on filter type
+export type FilterValue =
+	| string
+	| number
+	| boolean
+	| string[]
+	| DateRange
+	| Date
+	| null;
+
+// Type to represent the queries that can be sent to the backend
+export interface QueryParams {
+	page: string;
+	limit: string;
+	q?: string;
+	// Typed sorting parameters
+	sort?: SortingParam[];
+	// Typed filtering parameters
+	filter?: FilterParam[];
+}
+
 type HonoEndpoint<T extends Record<string, unknown>> = (
 	args: Record<string, unknown> & {
-		query: {
-			page: string;
-			limit: string;
-			q?: string;
-		};
+		query: QueryParams;
 	},
 	options?: ClientRequestOptions,
 ) => Promise<ClientResponse<PaginatedResponse<T>>>;
@@ -81,6 +111,8 @@ type Props<T extends Record<string, unknown>> = {
 	queryKey?: any[];
 	// Define which columns can be sorted
 	sortableColumns?: Extract<keyof T, string>[];
+	// Whether to use server-side sorting
+	serverSideSorting?: boolean;
 	// Define which columns can be filtered and how
 	filterableColumns?: FilterConfig<T>[];
 	// Whether to show column borders
@@ -139,6 +171,33 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 	const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
 	const columnHelper = React.useMemo(() => getColumnHelper<T>(), []);
+
+	// Derive server-side sorting and filtering params when needed
+	const sortingParam = React.useMemo((): SortingParam[] | undefined => {
+		if (!props.serverSideSorting || sorting.length === 0) return undefined;
+
+		return sorting.map((sort) => ({
+			id: sort.id,
+			desc: sort.desc,
+		}));
+	}, [props.serverSideSorting, sorting]);
+
+	const filterParam = React.useMemo((): FilterParam[] | undefined => {
+		// Only include filters that are marked for server-side filtering
+		const serverSideFilters = columnFilters.filter((filter) => {
+			const filterConfig = props.filterableColumns?.find(
+				(fc) => fc.id === filter.id,
+			);
+			return filterConfig?.serverSide === true;
+		});
+
+		if (serverSideFilters.length === 0) return undefined;
+
+		return serverSideFilters.map((filter) => ({
+			id: filter.id,
+			value: filter.value,
+		}));
+	}, [props.filterableColumns, columnFilters]);
 
 	// Process column definitions to handle sortable columns
 	const processedColumnDefs = React.useMemo(() => {
@@ -227,17 +286,37 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 	]);
 
 	const query = useQuery({
-		queryKey: [...(props.queryKey ?? []), page, limit, q],
-		queryFn: () =>
-			fetchRPC(
+		queryKey: [
+			...(props.queryKey ?? []),
+			page,
+			limit,
+			q,
+			sortingParam,
+			filterParam,
+		],
+		queryFn: () => {
+			// Create a properly typed query object
+			const queryParams: QueryParams = {
+				limit: String(limit),
+				page: String(page),
+				q: q,
+			};
+
+			// Add optional params only when they exist
+			if (sortingParam) {
+				queryParams.sort = sortingParam;
+			}
+
+			if (filterParam) {
+				queryParams.filter = filterParam;
+			}
+
+			return fetchRPC(
 				props.endpoint({
-					query: {
-						limit: String(limit),
-						page: String(page),
-						q: q,
-					},
+					query: queryParams,
 				}),
-			),
+			);
+		},
 	});
 
 	const table = useReactTable({
@@ -253,6 +332,10 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 		onColumnFiltersChange: setColumnFilters,
 		enableColumnResizing: true,
 		columnResizeMode: "onChange",
+		// Disable client-side sorting if server-side sorting is enabled
+		manualSorting: props.serverSideSorting,
+		// Disable client-side filtering for server-side filtered columns
+		manualFiltering: true,
 		state: {
 			sorting,
 			columnFilters,
@@ -556,18 +639,27 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 									const column = table.getColumn(filter.id);
 									if (!column) return null;
 
+									const isServerSide = filter.serverSide === true;
+
 									return (
 										<div
 											key={filter.id}
-											className="border p-2 rounded"
+											className={`border p-2 rounded ${isServerSide ? "border-primary/30 bg-primary/5" : ""}`}
 										>
 											<div className="flex justify-between items-center mb-1">
-												<span className="font-medium">
-													{
-														column.columnDef
-															.header as string
-													}
-												</span>
+												<div className="flex items-center gap-1">
+													<span className="font-medium">
+														{
+															column.columnDef
+																.header as string
+														}
+													</span>
+													{isServerSide && (
+														<span className="text-xs bg-primary/20 text-primary px-1 rounded">
+															Server
+														</span>
+													)}
+												</div>
 												<Button
 													variant="ghost"
 													size="sm"
