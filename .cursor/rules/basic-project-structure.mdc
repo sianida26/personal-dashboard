@@ -31,5 +31,6 @@ The backend file templates can be found in apps/backend/turbo/generators/templat
 
 ## Frontend
 The frontend uses vite, tanstack router, query.
+The backend-frontend API connection uses Hono RPC, the fetcher can be found in apps/frontend/src/honoClient.ts
 
 The frontend file templates can be found in apps/frontend/turbo/generators/templates/page-template
