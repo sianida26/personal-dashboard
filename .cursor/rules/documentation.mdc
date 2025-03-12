@@ -1,7 +1,7 @@
 ---
-description: Every code should has clear documentations in comments and functions
-globs: *.tsx,*.ts,*.js
-alwaysApply: false
+description: 
+globs: 
+alwaysApply: true
 ---
 
 Each functions, potentially ambiguous block, variables, types should has clear documentation
