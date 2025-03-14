@@ -1,0 +1,8 @@
+---
+description: 
+globs: apps/frontend/**/*.ts,apps/frontend/**/*.tsx
+alwaysApply: false
+---
+If you fetch to the backend, it should be using fetchRPC() which imported from [fetchRPC.ts](mdc:apps/frontend/src/utils/fetchRPC.ts).
+
+Their usage example is `await fetchRPC(client.users.$get)`;
