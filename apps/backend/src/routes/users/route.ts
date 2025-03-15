@@ -1,4 +1,4 @@
-import { and, desc, eq, ilike, isNull, or, sql } from "drizzle-orm";
+import { and, desc, eq, ilike, isNull, or, sql, asc } from "drizzle-orm";
 import { Hono } from "hono";
 
 import {
@@ -19,6 +19,22 @@ import type HonoEnv from "../../types/HonoEnv";
 import { hashPassword } from "../../utils/passwordUtils";
 import requestValidator from "../../utils/requestValidator";
 
+// Define types for sorting and filtering parameters
+export interface SortingParam {
+	id: string;
+	desc: boolean;
+}
+
+export interface FilterParam {
+	id: string;
+	value: unknown;
+}
+
+export interface DateRange {
+	from?: Date;
+	to?: Date;
+}
+
 const usersRoute = new Hono<HonoEnv>()
 	.use(authInfo)
 	/**
@@ -30,6 +46,8 @@ const usersRoute = new Hono<HonoEnv>()
 	 * - q: string - search query to filter users by name, username, email or id.
 	 * - page: number - current page.
 	 * - limit: number - records per page.
+	 * - sort: SortingParam[] - sorting parameters.
+	 * - filter: FilterParam[] - filtering parameters.
 	 */
 	.get(
 		"/",
@@ -38,18 +56,92 @@ const usersRoute = new Hono<HonoEnv>()
 		async (c) => {
 			const { includeTrashed, page, limit, q } = c.req.valid("query");
 
+			// Parse sorting parameters
+			let sortParam: SortingParam[] | undefined;
+			try {
+				const sortQuery = c.req.query("sort");
+				if (sortQuery) {
+					sortParam = JSON.parse(sortQuery);
+				}
+			} catch (error) {
+				console.error("Error parsing sort parameter:", error);
+			}
+
+			// Parse filtering parameters
+			let filterParam: FilterParam[] | undefined;
+			try {
+				const filterQuery = c.req.query("filter");
+				if (filterQuery) {
+					filterParam = JSON.parse(filterQuery);
+				}
+			} catch (error) {
+				console.error("Error parsing filter parameter:", error);
+			}
+
 			// Build where clause based on query parameters
-			const whereClause = and(
-				includeTrashed ? undefined : isNull(users.deletedAt),
-				q
-					? or(
-							ilike(users.name, q),
-							ilike(users.username, q),
-							ilike(users.email, q),
-							eq(users.id, q),
-						)
-					: undefined,
-			);
+			const whereConditions = [];
+
+			// Add base condition for trashed items
+			if (!includeTrashed) {
+				whereConditions.push(isNull(users.deletedAt));
+			}
+
+			// Add global search condition
+			if (q) {
+				whereConditions.push(
+					or(
+						ilike(users.name, `%${q}%`),
+						ilike(users.username, `%${q}%`),
+						ilike(users.email, `%${q}%`),
+						eq(users.id, q),
+					),
+				);
+			}
+
+			// Process specific filters
+			if (filterParam?.length) {
+				for (const filter of filterParam) {
+					switch (filter.id) {
+						case "name":
+							if (typeof filter.value === "string") {
+								whereConditions.push(
+									ilike(users.name, `%${filter.value}%`),
+								);
+							}
+							break;
+
+						case "isEnabled":
+							if (typeof filter.value === "boolean") {
+								whereConditions.push(
+									eq(users.isEnabled, filter.value),
+								);
+							}
+							break;
+
+						case "createdAt":
+							if (typeof filter.value === "object") {
+								const dateRange = filter.value as DateRange;
+								if (dateRange.from) {
+									whereConditions.push(
+										sql`${users.createdAt} >= ${new Date(dateRange.from)}`,
+									);
+								}
+								if (dateRange.to) {
+									whereConditions.push(
+										sql`${users.createdAt} <= ${new Date(dateRange.to)}`,
+									);
+								}
+							}
+							break;
+					}
+				}
+			}
+
+			// Combine all where conditions
+			const whereClause =
+				whereConditions.length > 0
+					? and(...whereConditions)
+					: undefined;
 
 			// Create a computed subquery for total count of users
 			const totalCountQuery = includeTrashed
@@ -59,7 +151,55 @@ const usersRoute = new Hono<HonoEnv>()
 			// Calculate pagination offset
 			const offset = (page - 1) * limit;
 
-			// Execute the query using db.query.users.findMany
+			// Determine the orderBy configuration based on sorting parameters
+			const orderByConfig = [];
+
+			if (sortParam?.length) {
+				for (const sort of sortParam) {
+					switch (sort.id) {
+						case "name":
+							orderByConfig.push(
+								sort.desc ? desc(users.name) : asc(users.name),
+							);
+							break;
+						case "username":
+							orderByConfig.push(
+								sort.desc
+									? desc(users.username)
+									: asc(users.username),
+							);
+							break;
+						case "email":
+							orderByConfig.push(
+								sort.desc
+									? desc(users.email)
+									: asc(users.email),
+							);
+							break;
+						case "isEnabled":
+							orderByConfig.push(
+								sort.desc
+									? desc(users.isEnabled)
+									: asc(users.isEnabled),
+							);
+							break;
+						case "createdAt":
+							orderByConfig.push(
+								sort.desc
+									? desc(users.createdAt)
+									: asc(users.createdAt),
+							);
+							break;
+					}
+				}
+			}
+
+			// Add default sorting if no valid sort parameters
+			if (orderByConfig.length === 0) {
+				orderByConfig.push(desc(users.createdAt));
+			}
+
+			// Execute the query with all configurations
 			const result = await db.query.users.findMany({
 				columns: {
 					id: true,
@@ -88,7 +228,7 @@ const usersRoute = new Hono<HonoEnv>()
 						},
 					},
 				},
-				orderBy: [desc(users.createdAt)],
+				orderBy: orderByConfig,
 				offset: offset,
 				limit: limit,
 			});
@@ -296,7 +436,9 @@ const usersRoute = new Hono<HonoEnv>()
 
 				// re sync roles
 				if (userData.roles) {
-					await trx.delete(rolesToUsers).where(eq(rolesToUsers.userId, userId));
+					await trx
+						.delete(rolesToUsers)
+						.where(eq(rolesToUsers.userId, userId));
 					await trx.insert(rolesToUsers).values(
 						userData.roles.map((role) => ({
 							userId,

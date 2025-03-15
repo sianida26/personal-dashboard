@@ -18,6 +18,29 @@ export default function UsersPage() {
 			endpoint={client.users.$get}
 			queryKey={["users"]}
 			sortableColumns={["name", "username"]}
+			serverSideSorting={true}
+			filterableColumns={[
+				{
+					id: "name",
+					type: "text",
+					serverSide: true,
+				},
+				{
+					id: "isEnabled",
+					type: "select",
+					options: [
+						{ label: "Active", value: true },
+						{ label: "Inactive", value: false },
+					],
+					serverSide: true,
+				},
+				{
+					id: "createdAt",
+					type: "daterange",
+					serverSide: true,
+					dateFormat: "MMM dd, yyyy",
+				},
+			]}
 			columnBorders={true}
 			columnDefs={(helper) => [
 				helper.display({
@@ -83,6 +106,19 @@ export default function UsersPage() {
 							<span>No roles</span>
 						),
 					header: "Roles",
+				}),
+				helper.accessor("createdAt", {
+					cell: (info) => {
+						const date = info.getValue();
+						return date
+							? new Date(date).toLocaleDateString("en-US", {
+									year: "numeric",
+									month: "short",
+									day: "numeric",
+								})
+							: "-";
+					},
+					header: "Created At",
 				}),
 				helper.display({
 					header: "Actions",

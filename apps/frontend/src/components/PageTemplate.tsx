@@ -311,9 +311,29 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 				queryParams.filter = filterParam;
 			}
 
+			// Create the final query object with properly serialized parameters
+			const finalQueryParams: Record<string, string> = {
+				limit: String(limit),
+				page: String(page),
+			};
+
+			if (q) {
+				// Add search query if it exists
+				finalQueryParams.q = q;
+			}
+
+			if (sortingParam) {
+				// Properly serialize sort and filter parameters as JSON strings
+				finalQueryParams.sort = JSON.stringify(sortingParam);
+			}
+
+			if (filterParam) {
+				finalQueryParams.filter = JSON.stringify(filterParam);
+			}
+
 			return fetchRPC(
 				props.endpoint({
-					query: queryParams,
+					query: finalQueryParams as unknown as QueryParams,
 				}),
 			);
 		},
