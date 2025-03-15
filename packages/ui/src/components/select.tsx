@@ -173,7 +173,29 @@ export type SelectProps = {
 	withAsterisk?: boolean;
 };
 
-const Select = ({ ...props }: SelectProps) => {
+const Select = ({
+	defaultValue,
+	value,
+	onValueChange,
+	...props
+}: SelectProps) => {
+	const [_, setInternalValue] = React.useState<string | undefined>(
+		defaultValue,
+	);
+
+	// Determine whether the component is controlled or uncontrolled
+	const isControlled = value !== undefined;
+
+	const handleChange = (selectedValue: string | null) => {
+		if (!isControlled) {
+			setInternalValue(selectedValue || undefined);
+		}
+
+		if (onValueChange) {
+			onValueChange(selectedValue || "");
+		}
+	};
+
 	return (
 		<div>
 			{props.label && (
@@ -187,13 +209,14 @@ const Select = ({ ...props }: SelectProps) => {
 				</span>
 			)}
 			<NativeSelect
-				open={props.readOnly ? false : undefined}
+				open={props.readOnly === true ? false : undefined}
 				disabled={props.disabled}
-				defaultValue={props.defaultValue}
-				onValueChange={props.onValueChange}
+				defaultValue={defaultValue}
+				value={value}
+				onValueChange={handleChange}
 			>
-				<SelectTrigger disabled={props.disabled}>
-					<SelectValue placeholder={props.placeholder} />
+				<SelectTrigger /*  disabled={props.disabled} */>
+					<SelectValue /* placeholder={props.placeholder} */ />
 				</SelectTrigger>
 				<SelectContent>
 					{props.data?.map((item) => (
