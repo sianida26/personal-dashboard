@@ -6,13 +6,14 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "../../../../packages/ui/src/components/table";
+} from "@repo/ui";
 
 interface Props<TData> {
 	table: ReactTable<TData>;
+	onRowClick?: (row: TData) => void;
 }
 
-export default function DashboardTable<T>({ table }: Props<T>) {
+export default function DashboardTable<T>({ table, onRowClick }: Props<T>) {
 	return (
 		<div className="rounded-md border">
 			<Table>
@@ -42,6 +43,10 @@ export default function DashboardTable<T>({ table }: Props<T>) {
 										? "bg-muted"
 										: "bg-background"
 								}
+								onClick={() => onRowClick?.(row.original)}
+								style={{
+									cursor: onRowClick ? "pointer" : "default",
+								}}
 							>
 								{row.getVisibleCells().map((cell) => (
 									<TableCell
