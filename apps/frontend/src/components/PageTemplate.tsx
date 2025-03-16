@@ -15,10 +15,19 @@ import {
 } from "@tanstack/react-table";
 import type { ClientRequestOptions } from "hono";
 import type { ClientResponse } from "hono/client";
-import React, { type ReactNode, useState, memo } from "react";
+import React, {
+	type ReactNode,
+	useState,
+	memo,
+	useCallback,
+	useMemo,
+} from "react";
 import { TbPlus, TbSearch } from "react-icons/tb";
 import DashboardTable from "./DashboardTable";
-import { Button, Input, Pagination, Select } from "@repo/ui";
+import { Button } from "../../../../packages/ui/src/components/button";
+import { Input } from "../../../../packages/ui/src/components/input";
+import { Pagination } from "../../../../packages/ui/src/components/pagination";
+import { Select } from "../../../../packages/ui/src/components/select";
 
 type HonoEndpoint<T extends Record<string, unknown>> = (
 	args: Record<string, unknown> & {
@@ -116,18 +125,27 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 
 	const columnHelper = React.useMemo(() => getColumnHelper<T>(), []);
 
+	// Memoize the search callback
+	const handleSearch = useCallback((value: string) => {
+		setQ(value);
+		setPage(1); // Reset to first page when searching
+	}, []); // Empty deps since setQ and setPage are stable
+
+	// Memoize query parameters
+	const queryParams = useMemo(
+		() => ({
+			query: {
+				limit: String(limit),
+				page: String(page),
+				q: q,
+			},
+		}),
+		[limit, page, q],
+	);
+
 	const query = useQuery({
 		queryKey: [...(props.queryKey ?? []), page, limit, q],
-		queryFn: () =>
-			fetchRPC(
-				props.endpoint({
-					query: {
-						limit: String(limit),
-						page: String(page),
-						q: q,
-					},
-				}),
-			),
+		queryFn: () => fetchRPC(props.endpoint(queryParams)),
 	});
 
 	const table = useReactTable({
@@ -171,7 +189,9 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 					{/* Left */}
 					<div>
 						{/* Search */}
-						{withSearchBar && <SearchInput onSearch={setQ} />}
+						{withSearchBar && (
+							<SearchInput onSearch={handleSearch} />
+						)}
 					</div>
 
 					{/* Right - Action Buttons */}
