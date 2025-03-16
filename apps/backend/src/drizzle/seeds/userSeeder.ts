@@ -15,6 +15,7 @@ const userSeeder = async () => {
 		},
 	];
 
+	// biome-ignore lint/suspicious/noConsole: for displaying messages in console window
 	console.log("Seeding users...");
 
 	const memoizedRoleIds: Map<string, string> = new Map();
@@ -53,9 +54,11 @@ const userSeeder = async () => {
 					roleId,
 					userId: insertedUser.id,
 				});
+				// biome-ignore lint/suspicious/noConsole: for displaying messages in console window
 				console.log(`User ${user.name} created`);
 			}
 		} else {
+			// biome-ignore lint/suspicious/noConsole: for displaying messages in console window
 			console.log(`User ${user.name} already exists`);
 		}
 	}
