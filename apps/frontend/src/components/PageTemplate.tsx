@@ -15,7 +15,7 @@ import {
 } from "@tanstack/react-table";
 import type { ClientRequestOptions } from "hono";
 import type { ClientResponse } from "hono/client";
-import React, { type ReactNode, useState } from "react";
+import React, { type ReactNode, useState, memo } from "react";
 import { TbPlus, TbSearch } from "react-icons/tb";
 import DashboardTable from "./DashboardTable";
 import { Button } from "../../../../packages/ui/src/components/button";
@@ -44,6 +44,7 @@ type Props<T extends Record<string, unknown>> = {
 	columnDefs: (columnHelper: ColumnHelper<T>) => ColumnDef<any, any>[];
 	// biome-ignore lint/suspicious/noExplicitAny: any is used to allow for any type of queryKey
 	queryKey?: any[];
+	actionButtons?: React.ReactNode[];
 };
 
 /**
@@ -77,6 +78,34 @@ const createCreateButton = (
 
 const getColumnHelper = <T extends Record<string, unknown>>() =>
 	createColumnHelper<T>();
+
+type SearchInputProps = {
+	onSearch: (value: string) => void;
+};
+
+const SearchInput = memo(function SearchInput({ onSearch }: SearchInputProps) {
+	const [searchInput, setSearchInput] = useState("");
+
+	const debouncedSetQ = useDebouncedCallback((value: string) => {
+		onSearch(value);
+	}, 500);
+
+	const handleSearchInputChange = (value: string) => {
+		setSearchInput(value);
+		debouncedSetQ(value);
+	};
+
+	return (
+		<div className="flex">
+			<Input
+				leftSection={<TbSearch />}
+				value={searchInput}
+				onChange={(e) => handleSearchInputChange(e.target.value)}
+				placeholder="Search..."
+			/>
+		</div>
+	);
+});
 
 export default function PageTemplate<T extends Record<string, unknown>>(
 	props: Props<T>,
@@ -118,10 +147,6 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 		},
 	});
 
-	const handleSearchQueryChange = useDebouncedCallback((value: string) => {
-		setQ(value);
-	}, 500);
-
 	const handlePageChange = (page: number) => {
 		setPage(page);
 	};
@@ -149,23 +174,15 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 					{/* Left */}
 					<div>
 						{/* Search */}
-						{withSearchBar && (
-							<div className="flex">
-								<Input
-									leftSection={<TbSearch />}
-									value={q}
-									onChange={(e) =>
-										handleSearchQueryChange(e.target.value)
-									}
-									placeholder="Search..."
-									className=""
-								/>
-							</div>
-						)}
+						{withSearchBar && <SearchInput onSearch={setQ} />}
 					</div>
 
-					{/* Right */}
-					<div>{createCreateButton(props.createButton)}</div>
+					{/* Right - Action Buttons */}
+					<div className="flex gap-2">
+						{props.actionButtons}
+						{!props.actionButtons &&
+							createCreateButton(props.createButton)}
+					</div>
 				</div>
 
 				{/* Table Functionality */}
