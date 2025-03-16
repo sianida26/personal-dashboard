@@ -273,4 +273,4 @@ export const DatePickerInput = forwardRef<
 );
 
 // Add displayName for debugging
-DatePickerInput.displayName = "DatePickerInput"; 
+DatePickerInput.displayName = "DatePickerInput";

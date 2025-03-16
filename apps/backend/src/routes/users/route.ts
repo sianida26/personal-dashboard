@@ -296,7 +296,9 @@ const usersRoute = new Hono<HonoEnv>()
 
 				// re sync roles
 				if (userData.roles) {
-					await trx.delete(rolesToUsers).where(eq(rolesToUsers.userId, userId));
+					await trx
+						.delete(rolesToUsers)
+						.where(eq(rolesToUsers.userId, userId));
 					await trx.insert(rolesToUsers).values(
 						userData.roles.map((role) => ({
 							userId,

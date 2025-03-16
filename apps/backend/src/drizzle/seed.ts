@@ -1,4 +1,3 @@
-
 import permissionSeeder from "./seeds/permissionSeeder";
 import roleSeeder from "./seeds/rolesSeeder";
 import userSeeder from "./seeds/userSeeder";

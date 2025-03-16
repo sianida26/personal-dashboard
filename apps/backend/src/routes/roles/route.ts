@@ -46,14 +46,16 @@ const rolesRoute = new Hono<HonoEnv>()
 				),
 			});
 
-			const data = result.map(({ fullCount, permissionsToRoles, ...rest }) => {
-				return {
-					...rest,
-					permissions: permissionsToRoles.map(
-						(p) => p.permission.code,
-					),
-				};
-			});
+			const data = result.map(
+				({ fullCount, permissionsToRoles, ...rest }) => {
+					return {
+						...rest,
+						permissions: permissionsToRoles.map(
+							(p) => p.permission.code,
+						),
+					};
+				},
+			);
 
 			return c.json({
 				data,

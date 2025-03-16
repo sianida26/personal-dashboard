@@ -37,12 +37,7 @@
 			"suspicious": {
 				"noConsole": {
 					"options": {
-						"allow": [
-							"warn",
-							"error",
-							"time",
-							"timeEnd"
-						]
+						"allow": ["warn", "error", "time", "timeEnd"]
 					},
 					"level": "warn"
 				}

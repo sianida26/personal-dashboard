@@ -321,4 +321,4 @@ export default function Timetable<T extends Record<string, unknown> & Event>({
 			</div>
 		</div>
 	);
-} 
+}
