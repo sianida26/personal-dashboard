@@ -18,10 +18,7 @@ import type { ClientResponse } from "hono/client";
 import React, { type ReactNode, useState, memo } from "react";
 import { TbPlus, TbSearch } from "react-icons/tb";
 import DashboardTable from "./DashboardTable";
-import { Button } from "../../../../packages/ui/src/components/button";
-import { Input } from "../../../../packages/ui/src/components/input";
-import { Pagination } from "../../../../packages/ui/src/components/pagination";
-import { Select } from "../../../../packages/ui/src/components/select";
+import { Button, Input, Pagination, Select } from "@repo/ui";
 
 type HonoEndpoint<T extends Record<string, unknown>> = (
 	args: Record<string, unknown> & {

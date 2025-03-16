@@ -9,7 +9,7 @@ import {
 import type React from "react";
 import { useMemo } from "react";
 import { TbDeviceFloppy } from "react-icons/tb";
-import { Button } from "../../../../packages/ui/src/components/button";
+import { Button } from "@repo/ui";
 import { cn } from "@repo/ui/utils";
 
 export type FormTemplateProps<TForm> = {
