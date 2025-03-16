@@ -11,9 +11,9 @@ export type DatePickerMode = "single" | "multiple" | "range";
  * Type for a date range with from/to properties
  */
 export type DateRange = {
-		from: Date;
-		to: Date | null;
-	};
+	from: Date;
+	to: Date | null;
+};
 
 /**
  * Type for a date range represented as a tuple
@@ -24,126 +24,126 @@ export type DateRangeTuple = [Date | null, Date | null];
  * Props for the DatePicker component with generic type parameter for mode-specific value types
  */
 export interface DatePickerProps<TMode extends DatePickerMode = "single">
-		extends Omit<CalendarProps, "date" | "onDateChange"> {
-		/**
-		 * The mode of date selection
-		 * @default DatePickerMode.Single
-		 */
-		mode?: TMode;
+	extends Omit<CalendarProps, "date" | "onDateChange"> {
+	/**
+	 * The mode of date selection
+	 * @default DatePickerMode.Single
+	 */
+	mode?: TMode;
 
-		/**
-		 * Whether to allow deselection of dates
-		 * @default true
-		 */
-		allowDeselect?: boolean;
+	/**
+	 * Whether to allow deselection of dates
+	 * @default true
+	 */
+	allowDeselect?: boolean;
 
-		/**
-		 * The default selected date(s)
-		 */
-		defaultValue?: TMode extends "single"
-			? Date | null
-			: TMode extends "multiple"
-				? Date[]
-				: DateRange | DateRangeTuple;
+	/**
+	 * The default selected date(s)
+	 */
+	defaultValue?: TMode extends "single"
+		? Date | null
+		: TMode extends "multiple"
+			? Date[]
+			: DateRange | DateRangeTuple;
 
-		/**
-		 * The controlled selected date(s)
-		 */
-		value?: TMode extends "single"
-			? Date | null
-			: TMode extends "multiple"
-				? Date[]
-				: DateRange | DateRangeTuple;
+	/**
+	 * The controlled selected date(s)
+	 */
+	value?: TMode extends "single"
+		? Date | null
+		: TMode extends "multiple"
+			? Date[]
+			: DateRange | DateRangeTuple;
 
-		/**
-		 * Callback when date(s) selection changes
-		 */
-		onChange?: TMode extends "single"
-			? (value: Date | null) => void
-			: TMode extends "multiple"
-				? (value: Date[]) => void
-				: (value: DateRange) => void;
+	/**
+	 * Callback when date(s) selection changes
+	 */
+	onChange?: TMode extends "single"
+		? (value: Date | null) => void
+		: TMode extends "multiple"
+			? (value: Date[]) => void
+			: (value: DateRange) => void;
 
-		/**
-		 * The default visible date in the calendar
-		 */
-		defaultVisibleDate?: Date;
+	/**
+	 * The default visible date in the calendar
+	 */
+	defaultVisibleDate?: Date;
 
-		/**
-		 * The minimum selectable date
-		 */
-		minDate?: Date;
+	/**
+	 * The minimum selectable date
+	 */
+	minDate?: Date;
 
-		/**
-		 * The maximum selectable date
-		 */
-		maxDate?: Date;
+	/**
+	 * The maximum selectable date
+	 */
+	maxDate?: Date;
 
-		/**
-		 * Whether to highlight today's date
-		 * @default true
-		 */
-		highlightToday?: boolean;
+	/**
+	 * Whether to highlight today's date
+	 * @default true
+	 */
+	highlightToday?: boolean;
 
-		/**
-		 * Function to determine if a date should be disabled
-		 */
-		excludeDate?: (date: Date) => boolean;
+	/**
+	 * Function to determine if a date should be disabled
+	 */
+	excludeDate?: (date: Date) => boolean;
 
-		/**
-		 * Custom render function for day cells
-		 */
-		renderDay?: (date: Date) => ReactNode;
+	/**
+	 * Custom render function for day cells
+	 */
+	renderDay?: (date: Date) => ReactNode;
 
-		/**
-		 * First day of the week (0 = Sunday, 1 = Monday, etc.)
-		 * @default 1
-		 */
-		firstDayOfWeek?: number;
+	/**
+	 * First day of the week (0 = Sunday, 1 = Monday, etc.)
+	 * @default 1
+	 */
+	firstDayOfWeek?: number;
 
-		/**
-		 * Whether to hide dates outside the current month
-		 * @default false
-		 */
-		hideOutsideDates?: boolean;
+	/**
+	 * Whether to hide dates outside the current month
+	 * @default false
+	 */
+	hideOutsideDates?: boolean;
 
-		/**
-		 * Whether to hide weekday names
-		 * @default false
-		 */
-		hideWeekdays?: boolean;
+	/**
+	 * Whether to hide weekday names
+	 * @default false
+	 */
+	hideWeekdays?: boolean;
 
-		/**
-		 * Locale for date formatting
-		 * @default "default"
-		 */
-		locale?: string;
+	/**
+	 * Locale for date formatting
+	 * @default "default"
+	 */
+	locale?: string;
 
-		/**
-		 * Format for month labels
-		 */
-		monthLabelFormat?: string | ((month: Date) => ReactNode);
+	/**
+	 * Format for month labels
+	 */
+	monthLabelFormat?: string | ((month: Date) => ReactNode);
 
-		/**
-		 * Format for months list
-		 */
-		monthsListFormat?: string;
+	/**
+	 * Format for months list
+	 */
+	monthsListFormat?: string;
 
-		/**
-		 * Custom next icon
-		 */
-		nextIcon?: ReactNode;
+	/**
+	 * Custom next icon
+	 */
+	nextIcon?: ReactNode;
 
-		/**
-		 * Custom previous icon
-		 */
-		prevIcon?: ReactNode;
+	/**
+	 * Custom previous icon
+	 */
+	prevIcon?: ReactNode;
 
-		/**
-		 * Additional className for the component
-		 */
-		className?: string;
-	}
+	/**
+	 * Additional className for the component
+	 */
+	className?: string;
+}
 
 /**
  * Type guard to check if a value is a DateRange object

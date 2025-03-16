@@ -17,7 +17,7 @@ export default function generator(plop: PlopTypes.NodePlopAPI) {
 				message: "Does this schema have soft delete?",
 			},
 		],
-		actions: (data) => [
+		actions: () => [
 			// Add the schema file
 			{
 				type: "add",

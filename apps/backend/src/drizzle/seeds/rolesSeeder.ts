@@ -6,6 +6,7 @@ import { permissionsToRoles } from "../schema/permissionsToRoles";
 import { rolesSchema } from "../schema/roles";
 
 const roleSeeder = async () => {
+	// biome-ignore lint/suspicious/noConsole: for displaying messages in console window
 	console.log("Seeding roles...");
 
 	const memoizedPermissions: Map<string, string> = new Map();
@@ -20,6 +21,7 @@ const roleSeeder = async () => {
 		)[0];
 
 		if (insertedRole) {
+			// biome-ignore lint/suspicious/noConsole: for displaying messages in console window
 			console.log(`Role ${role.name} inserted`);
 		} else {
 			console.warn(`Role ${role.name} already exists`);
@@ -52,8 +54,6 @@ const roleSeeder = async () => {
 				memoizedPermissions.set(permissionCode, permission.id);
 			}
 
-			console.log("here");
-
 			const permissionId = memoizedPermissions.get(permissionCode);
 			if (!permissionId) {
 				throw new Error(
@@ -74,6 +74,7 @@ const roleSeeder = async () => {
 			// );
 
 			if (insertedPermission) {
+				// biome-ignore lint/suspicious/noConsole: for displaying messages in console window
 				console.log(
 					`Permission ${permissionCode} inserted to role ${role.name}`,
 				);

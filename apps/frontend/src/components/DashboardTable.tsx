@@ -12,10 +12,11 @@ import { cn } from "@repo/ui/utils";
 interface Props<TData> {
 	table: ReactTable<TData>;
 	columnBorders?: boolean;
+	onRowClick?: (row: TData) => void;
 }
 
 export default function DashboardTable<T>({
-	table,
+	table, onRowClick,
 	columnBorders = false,
 }: Props<T>) {
 	return (
@@ -82,7 +83,11 @@ export default function DashboardTable<T>({
 											? "bg-muted"
 											: "bg-background"
 									}
-								>
+									onClick={() => onRowClick?.(row.original)}
+								style={{
+									cursor: onRowClick ? "pointer" : "default",
+								}}
+							>
 									{row.getVisibleCells().map((cell) => (
 										<TableCell
 											key={cell.id}

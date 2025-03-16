@@ -17,19 +17,17 @@
 		"@hono/zod-validator": "^0.4.3",
 		"@repo/data": "workspace:*",
 		"@repo/validation": "workspace:*",
-		"dayjs": "^1.11.13",
 		"dotenv": "^16.4.7",
 		"drizzle-orm": "^0.40.0",
 		"jsonwebtoken": "^9.0.2",
 		"moment": "^2.30.1",
 		"postgres": "^3.4.5",
-		"sharp": "^0.33.5",
-		"zod": "^3.24.2"
+		"sharp": "^0.33.5"
 	},
 	"devDependencies": {
 		"@types/jsonwebtoken": "^9.0.9",
 		"drizzle-kit": "^0.30.5",
-		"pg": "^8.13.3",
+		"pg": "^8.14.0",
 		"tsx": "^4.19.3"
 	},
 	"exports": {

@@ -15,6 +15,7 @@ const migrationClient = postgres(dbUrl, { max: 1 });
 migrate(drizzle(migrationClient), {
 	migrationsFolder: "./src/drizzle/migrations",
 }).then(() => {
+	// biome-ignore lint/suspicious/noConsole: for displaying messages in console window
 	console.log("Migrations complete");
 	process.exit(0);
 });

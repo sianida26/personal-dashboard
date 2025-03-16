@@ -19,7 +19,13 @@ import {
 } from "@tanstack/react-table";
 import type { ClientRequestOptions } from "hono";
 import type { ClientResponse } from "hono/client";
-import React, { type ReactNode, useState } from "react";
+import React, {
+	type ReactNode,
+	useState,
+	memo,
+	useCallback,
+	useMemo,
+} from "react";
 import {
 	TbPlus,
 	TbSearch,
@@ -109,6 +115,7 @@ type Props<T extends Record<string, unknown>> = {
 	columnDefs: (columnHelper: ColumnHelper<T>) => ColumnDef<any, any>[];
 	// biome-ignore lint/suspicious/noExplicitAny: any is used to allow for any type of queryKey
 	queryKey?: any[];
+	actionButtons?: React.ReactNode[];
 	// Define which columns can be sorted
 	sortableColumns?: Extract<keyof T, string>[];
 	// Whether to use server-side sorting
@@ -157,6 +164,34 @@ const createCreateButton = (
 
 const getColumnHelper = <T extends Record<string, unknown>>() =>
 	createColumnHelper<T>();
+
+type SearchInputProps = {
+	onSearch: (value: string) => void;
+};
+
+const SearchInput = memo(function SearchInput({ onSearch }: SearchInputProps) {
+	const [searchInput, setSearchInput] = useState("");
+
+	const debouncedSetQ = useDebouncedCallback((value: string) => {
+		onSearch(value);
+	}, 500);
+
+	const handleSearchInputChange = (value: string) => {
+		setSearchInput(value);
+		debouncedSetQ(value);
+	};
+
+	return (
+		<div className="flex">
+			<Input
+				leftSection={<TbSearch />}
+				value={searchInput}
+				onChange={(e) => handleSearchInputChange(e.target.value)}
+				placeholder="Search..."
+			/>
+		</div>
+	);
+});
 
 export default function PageTemplate<T extends Record<string, unknown>>(
 	props: Props<T>,
@@ -285,58 +320,27 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 		columnHelper,
 	]);
 
-	const query = useQuery({
-		queryKey: [
-			...(props.queryKey ?? []),
-			page,
-			limit,
-			q,
-			sortingParam,
-			filterParam,
-		],
-		queryFn: () => {
-			// Create a properly typed query object
-			const queryParams: QueryParams = {
+	// Memoize the search callback
+	const handleSearch = useCallback((value: string) => {
+		setQ(value);
+		setPage(1); // Reset to first page when searching
+	}, []); // Empty deps since setQ and setPage are stable
+
+	// Memoize query parameters
+	const queryParams = useMemo(
+		() => ({
+			query: {
 				limit: String(limit),
 				page: String(page),
 				q: q,
-			};
+			},
+		}),
+		[limit, page, q],
+	);
 
-			// Add optional params only when they exist
-			if (sortingParam) {
-				queryParams.sort = sortingParam;
-			}
-
-			if (filterParam) {
-				queryParams.filter = filterParam;
-			}
-
-			// Create the final query object with properly serialized parameters
-			const finalQueryParams: Record<string, string> = {
-				limit: String(limit),
-				page: String(page),
-			};
-
-			if (q) {
-				// Add search query if it exists
-				finalQueryParams.q = q;
-			}
-
-			if (sortingParam) {
-				// Properly serialize sort and filter parameters as JSON strings
-				finalQueryParams.sort = JSON.stringify(sortingParam);
-			}
-
-			if (filterParam) {
-				finalQueryParams.filter = JSON.stringify(filterParam);
-			}
-
-			return fetchRPC(
-				props.endpoint({
-					query: finalQueryParams as unknown as QueryParams,
-				}),
-			);
-		},
+	const query = useQuery({
+		queryKey: [...(props.queryKey ?? []), page, limit, q],
+		queryFn: () => fetchRPC(props.endpoint(queryParams)),
 	});
 
 	const table = useReactTable({
@@ -361,10 +365,6 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 			columnFilters,
 		},
 	});
-
-	const handleSearchQueryChange = useDebouncedCallback((value: string) => {
-		setQ(value);
-	}, 500);
 
 	const handlePageChange = (page: number) => {
 		setPage(page);
@@ -594,47 +594,16 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 					<div className="flex items-center gap-4">
 						{/* Search */}
 						{withSearchBar && (
-							<div className="flex">
-								<Input
-									leftSection={<TbSearch />}
-									value={q}
-									onChange={(e) =>
-										handleSearchQueryChange(e.target.value)
-									}
-									placeholder="Search..."
-									className=""
-								/>
-							</div>
+							<SearchInput onSearch={handleSearch} />
 						)}
-
-						{/* Filter Button - Only show if filterableColumns are defined */}
-						{props.filterableColumns &&
-							props.filterableColumns.length > 0 && (
-								<div className="relative">
-									<Button
-										variant="outline"
-										onClick={() =>
-											setActiveFilters((prev) =>
-												prev.length
-													? []
-													: (props.filterableColumns?.map(
-															(f) => f.id,
-														) ?? []),
-											)
-										}
-										className="flex items-center gap-2"
-									>
-										<TbFilter />
-										{activeFilters.length
-											? `Filters (${activeFilters.length})`
-											: "Filters"}
-									</Button>
-								</div>
-							)}
 					</div>
 
-					{/* Right */}
-					<div>{createCreateButton(props.createButton)}</div>
+					{/* Right - Action Buttons */}
+					<div className="flex gap-2">
+						{props.actionButtons}
+						{!props.actionButtons &&
+							createCreateButton(props.createButton)}
+					</div>
 				</div>
 
 				{/* Active Filters */}

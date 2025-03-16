@@ -9,78 +9,90 @@ import type HonoEnv from "../types/HonoEnv";
 
 dayjs.extend(DayjsUTC);
 
+/**
+ * Types of logs supported by the Logger
+ * - error: For error logs
+ * - info: For informational logs
+ * - debug: For debug logs
+ * - request: For HTTP request logs
+ * - sql: For SQL query logs
+ */
 type LOG_TYPES = "error" | "info" | "debug" | "request" | "sql";
 
+/**
+ * Logger class for handling application logging
+ *
+ * This class manages logging to different files based on log type and current date.
+ * It dynamically creates log streams for each date, ensuring logs are written to
+ * files corresponding to the date they occurred, not when the logger was initialized.
+ */
 class Logger {
-	private errorLogFile: string;
-	private debugLogFile: string;
-	private infoLogFile: string;
-	private requestLogFile: string;
-	private sqlLogFile: string;
-	private errorLogStream: fs.WriteStream;
-	private debugLogStream: fs.WriteStream;
-	private infoLogStream: fs.WriteStream;
-	private requestLogStream: fs.WriteStream;
-	private sqlLogStream: fs.WriteStream;
+	/**
+	 * Dictionary of log streams indexed by date and then by log type
+	 * Format: { "YYYYMMDD": { "error": WriteStream, "info": WriteStream, ... } }
+	 */
+	private logStreams: Record<string, Record<LOG_TYPES, fs.WriteStream>>;
 
+	/**
+	 * Initializes a new Logger instance with an empty streams dictionary
+	 */
 	constructor() {
-		const currentDate = dayjs().utc().format("YYYYMMDD");
-
-		this.errorLogFile = `./logs/${currentDate}-error.log`;
-		this.infoLogFile = `./logs/${currentDate}-info.log`;
-		this.debugLogFile = `./logs/${currentDate}-debug.log`;
-		this.requestLogFile = `./logs/${currentDate}-access.log`;
-		this.sqlLogFile = `./logs/${currentDate}-sql.log`;
-		// this.logFile = "./logs/log.LOG";
-		this.errorLogStream = fs.createWriteStream(this.errorLogFile, {
-			flags: "a",
-		});
-
-		this.infoLogStream = fs.createWriteStream(this.infoLogFile, {
-			flags: "a",
-		});
-
-		this.debugLogStream = fs.createWriteStream(this.debugLogFile, {
-			flags: "a",
-		});
-
-		this.requestLogStream = fs.createWriteStream(this.requestLogFile, {
-			flags: "a",
-		});
-
-		this.sqlLogStream = fs.createWriteStream(this.sqlLogFile, {
-			flags: "a",
-		});
+		this.logStreams = {};
 	}
 
-	log(message: string, type: LOG_TYPES) {
-		const timestamp = dayjs().utc().toISOString();
+	/**
+	 * Gets or creates a log stream for the specified log type using the current date
+	 *
+	 * @param type - The type of log to get a stream for
+	 * @returns A WriteStream for the specified log type on the current date
+	 */
+	private getLogStream(type: LOG_TYPES): fs.WriteStream {
+		const currentDate = dayjs().utc().format("YYYYMMDD");
+		const dateKey = currentDate;
 
-		let stream: fs.WriteStream | null = null;
-
-		switch (type) {
-			case "error":
-				stream = this.errorLogStream;
-				break;
-			case "info":
-				stream = this.infoLogStream;
-				break;
-			case "debug":
-				stream = this.debugLogStream;
-				break;
-			case "request":
-				stream = this.requestLogStream;
-				break;
-			case "sql":
-				stream = this.sqlLogStream;
-				break;
-			default:
-				throw new Error("Invalid LOG TYPE");
+		// Initialize streams for this date if they don't exist
+		if (!this.logStreams[dateKey]) {
+			this.logStreams[dateKey] = {
+				error: fs.createWriteStream(`./logs/${currentDate}-error.log`, {
+					flags: "a",
+				}),
+				info: fs.createWriteStream(`./logs/${currentDate}-info.log`, {
+					flags: "a",
+				}),
+				debug: fs.createWriteStream(`./logs/${currentDate}-debug.log`, {
+					flags: "a",
+				}),
+				request: fs.createWriteStream(
+					`./logs/${currentDate}-access.log`,
+					{ flags: "a" },
+				),
+				sql: fs.createWriteStream(`./logs/${currentDate}-sql.log`, {
+					flags: "a",
+				}),
+			};
 		}
 
+		return this.logStreams[dateKey][type];
+	}
+
+	/**
+	 * Writes a log message to the appropriate log file
+	 *
+	 * @param message - The message to log
+	 * @param type - The type of log to write
+	 */
+	log(message: string, type: LOG_TYPES) {
+		const timestamp = dayjs().utc().toISOString();
+		const stream = this.getLogStream(type);
 		stream.write(`${timestamp} ${message}\n`);
 	}
 
+	/**
+	 * Logs an error with appropriate formatting based on error type
+	 *
+	 * @param error - The error object to log
+	 * @param c - Optional Hono context containing request information
+	 */
 	error(error: Error, c?: Context<HonoEnv>) {
 		if (!appEnv.LOG_ERROR) return;
 
@@ -120,8 +132,16 @@ class Logger {
 		}
 	}
 
+	/**
+	 * Logs an informational message
+	 *
+	 * @param message - The information message to log
+	 * @param c - Optional Hono context containing request information
+	 */
 	info(message: string, c?: Context<HonoEnv>) {
 		if (!appEnv.LOG_INFO) return;
+
+		// biome-ignore lint/suspicious/noConsole: This is a logger
 		console.log(`INFO: ${message}`);
 		this.log(
 			`${c?.req.method ?? "-"} ${c?.req.path ?? "-"} ${
@@ -131,8 +151,16 @@ class Logger {
 		);
 	}
 
+	/**
+	 * Logs a debug message
+	 *
+	 * @param message - The debug message to log
+	 * @param c - Optional Hono context containing request information
+	 */
 	debug(message: string, c?: Context<HonoEnv>) {
 		if (!appEnv.LOG_DEBUG) return;
+
+		// biome-ignore lint/suspicious/noConsole: This is a logger
 		console.log(`DEBUG: ${message}`);
 		this.log(
 			`${c?.req.method ?? "-"} ${c?.req.path ?? "-"} ${
@@ -142,6 +170,12 @@ class Logger {
 		);
 	}
 
+	/**
+	 * Logs an HTTP request with response information
+	 *
+	 * @param c - Hono context containing request and response information
+	 * @param responseTime - Optional response time in milliseconds
+	 */
 	request(c: Context<HonoEnv>, responseTime?: number) {
 		if (!appEnv.LOG_REQUEST) return;
 		const message = `${c.req.method} ${c.req.path} ${c.var.uid ?? "-"} ${
@@ -149,16 +183,27 @@ class Logger {
 		} ${c.res.status} ${responseTime ?? "-"} ${
 			c.req.header("User-Agent") ?? "-"
 		}`;
+
+		// biome-ignore lint/suspicious/noConsole: This is a logger
 		console.log(`REQ: ${message}`);
 		this.log(message, "request");
 	}
 
+	/**
+	 * Logs an SQL query with its parameters
+	 *
+	 * @param query - The SQL query string
+	 * @param params - The parameters used in the query
+	 */
 	sql(query: string, params: unknown[]) {
 		if (!appEnv.LOG_SQL) return;
 		this.log(`SQL: ${query} ${JSON.stringify(params)}`, "sql");
 	}
 }
 
+/**
+ * Singleton instance of the Logger class for application-wide use
+ */
 const appLogger = new Logger();
 
 export default appLogger;

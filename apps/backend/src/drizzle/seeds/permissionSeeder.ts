@@ -8,6 +8,7 @@ const permissionSeeder = async () => {
 		name: permission,
 	}));
 
+	// biome-ignore lint/suspicious/noConsole: for displaying messages in console window
 	console.log("Seeding permissions...");
 
 	await db
