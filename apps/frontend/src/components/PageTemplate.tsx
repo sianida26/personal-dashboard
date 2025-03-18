@@ -196,6 +196,18 @@ const SearchInput = memo(function SearchInput({
 	);
 });
 
+// Helper function to ensure type safety for column definitions
+export function createTypedColumnDefs<T extends Record<string, unknown>>(
+	columnDefsCreator: (
+		helper: ColumnHelper<T>,
+	) => Array<ColumnDef<T, unknown> | unknown>,
+): (helper: ColumnHelper<T>) => ColumnDef<T, unknown>[] {
+	return (helper) => {
+		const cols = columnDefsCreator(helper);
+		return cols as ColumnDef<T, unknown>[];
+	};
+}
+
 export default function PageTemplate<T extends Record<string, unknown>>(
 	props: Props<T>,
 ) {
@@ -663,4 +675,23 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 			<Outlet />
 		</div>
 	) : null;
+}
+
+// Create a more ergonomic version of PageTemplate that infers types from the endpoint
+export function createPageTemplate<TData extends Record<string, unknown>>(
+	props: Omit<Props<TData>, "columnDefs"> & {
+		columnDefs: (
+			helper: ColumnHelper<TData>,
+		) => Array<ReturnType<typeof createColumnHelper<TData>> | unknown>;
+	},
+) {
+	// This wrapper ensures type inference works without explicit generic parameters
+	return (
+		<PageTemplate<TData>
+			{...props}
+			columnDefs={(helper) =>
+				props.columnDefs(helper) as ColumnDef<TData, unknown>[]
+			}
+		/>
+	);
 }
