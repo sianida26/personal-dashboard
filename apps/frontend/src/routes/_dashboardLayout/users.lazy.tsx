@@ -55,7 +55,11 @@ export default function UsersPage() {
 			columnDefs={(helper) => [
 				helper.display({
 					header: "#",
-					cell: (props) => props.row.index + 1,
+					cell: (props) =>
+						props.table.getState().pagination.pageIndex *
+							props.table.getState().pagination.pageSize +
+						props.row.index +
+						1,
 					size: 1,
 				}),
 				helper.accessor("name", {
