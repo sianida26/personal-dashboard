@@ -4,6 +4,18 @@ import client from "@/honoClient";
 import createActionButtons from "@/utils/createActionButton";
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { TbEye, TbPencil, TbTrash } from "react-icons/tb";
+import type { ColumnDef } from "@tanstack/react-table";
+
+type User = {
+	roles: { id: string; code: string; name: string }[];
+	id: string;
+	username: string;
+	name: string;
+	email: string | null;
+	isEnabled: boolean | null;
+	createdAt: string | null;
+	updatedAt: string | null;
+};
 
 export const Route = createLazyFileRoute("/_dashboardLayout/users")({
 	component: UsersPage,
@@ -13,32 +25,30 @@ export default function UsersPage() {
 	const navigate = useNavigate();
 
 	return (
-		<PageTemplate
+		<PageTemplate<User>
 			title="Users"
 			endpoint={client.users.$get}
 			queryKey={["users"]}
 			sortableColumns={["name", "username"]}
-			serverSideSorting={true}
 			filterableColumns={[
-				{
-					id: "name",
-					type: "text",
-					serverSide: true,
-				},
 				{
 					id: "isEnabled",
 					type: "select",
 					options: [
-						{ label: "Active", value: true },
-						{ label: "Inactive", value: false },
+						{ label: "Active", value: "Active" },
+						{ label: "Inactive", value: "Inactive" },
 					],
-					serverSide: true,
+					label: "Status",
 				},
 				{
-					id: "createdAt",
-					type: "daterange",
-					serverSide: true,
-					dateFormat: "MMM dd, yyyy",
+					id: "roles",
+					type: "select",
+					options: [
+						{ label: "Administrator", value: "admin" },
+						{ label: "Moderator", value: "moderator" },
+						{ label: "User", value: "user" },
+					],
+					label: "User Role",
 				},
 			]}
 			columnBorders={true}
@@ -64,11 +74,11 @@ export default function UsersPage() {
 							</Button>
 						);
 					},
-				}),
+				}) as ColumnDef<User, unknown>,
 				helper.accessor("username", {
 					cell: (info) => info.getValue(),
 					header: "Username",
-				}),
+				}) as ColumnDef<User, unknown>,
 				helper.accessor("isEnabled", {
 					cell: (info) =>
 						info.getValue() ? (
@@ -81,7 +91,7 @@ export default function UsersPage() {
 							</Badge>
 						),
 					header: "Status",
-				}),
+				}) as ColumnDef<User, unknown>,
 				helper.accessor("roles", {
 					cell: (info) =>
 						info.row.original.roles &&
@@ -106,7 +116,7 @@ export default function UsersPage() {
 							<span>No roles</span>
 						),
 					header: "Roles",
-				}),
+				}) as ColumnDef<User, unknown>,
 				helper.accessor("createdAt", {
 					cell: (info) => {
 						const date = info.getValue();
@@ -119,7 +129,7 @@ export default function UsersPage() {
 							: "-";
 					},
 					header: "Created At",
-				}),
+				}) as ColumnDef<User, unknown>,
 				helper.display({
 					header: "Actions",
 					cell: (props) => (

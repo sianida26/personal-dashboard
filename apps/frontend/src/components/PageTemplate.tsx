@@ -13,7 +13,6 @@ import {
 	getFilteredRowModel,
 	getSortedRowModel,
 	useReactTable,
-	type Column,
 	type HeaderContext,
 	flexRender,
 } from "@tanstack/react-table";
@@ -39,64 +38,55 @@ import {
 	Button,
 	Input,
 	Pagination,
-	Select,
-	DatePicker,
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
+	SelectTrigger,
+	SelectValue,
+	SelectContent,
+	SelectItem,
+	NativeSelect,
 } from "@repo/ui";
-import { format } from "date-fns";
 
 // Define filter types
-export type FilterType = "text" | "checkbox" | "date" | "daterange" | "select";
+export type FilterType = "select";
 
+// Define column filter
+interface ColumnFilter {
+	id: string;
+	value: string;
+}
+
+// Define filter configuration
 export type FilterConfig<T> = {
-		id: Extract<keyof T, string>;
-		type: FilterType;
-		options?: { label: string; value: unknown }[];
-		// Date range format for filter validation
-		dateFormat?: string;
-		// Whether to filter on the server-side
-		serverSide?: boolean;
-	};
-
-// For date range filters
-export type DateRange = {
-	from: Date | undefined;
-	to: Date | undefined;
+	id: Extract<keyof T, string>;
+	label: string;
+	type: FilterType;
+	options: { label: string; value: string }[];
 };
 
-// Enhanced query types for backend endpoint
+// Define sorting parameter
 export type SortingParam = {
 	id: string;
 	desc: boolean;
 };
 
+// Define filter parameter
 export type FilterParam = {
 	id: string;
-	value: unknown;
+	value: string;
 };
-
-// Type-safe union type for filter values based on filter type
-export type FilterValue =
-	| string
-	| number
-	| boolean
-	| string[]
-	| DateRange
-	| Date
-	| null;
 
 // Type to represent the queries that can be sent to the backend
 export interface QueryParams {
-	page: string;
-	limit: string;
-	q?: string;
-	// Typed sorting parameters
-	sort?: SortingParam[];
-	// Typed filtering parameters
-	filter?: FilterParam[];
-}
+		page: string;
+		limit: string;
+		q?: string;
+		// Typed sorting parameters as stringified JSON
+		sort?: string;
+		// Typed filtering parameters as stringified JSON
+		filter?: string;
+	}
 
 type HonoEndpoint<T extends Record<string, unknown>> = (
 	args: Record<string, unknown> & {
@@ -105,28 +95,30 @@ type HonoEndpoint<T extends Record<string, unknown>> = (
 	options?: ClientRequestOptions,
 ) => Promise<ClientResponse<PaginatedResponse<T>>>;
 
-type Props<T extends Record<string, unknown>> = {
+export interface Props<T extends Record<string, unknown>> {
+	// Title of the page
 	title: string;
-	createButton?: string | true | React.ReactNode;
-	modals?: React.ReactNode[];
-	searchBar?: boolean | React.ReactNode;
+	// Endpoint to fetch data from
 	endpoint: HonoEndpoint<T>;
-	// biome-ignore lint/suspicious/noExplicitAny: any is used to allow for any type of columnDefs
-	columnDefs: (columnHelper: ColumnHelper<T>) => ColumnDef<any, any>[];
-	// biome-ignore lint/suspicious/noExplicitAny: any is used to allow for any type of queryKey
-	queryKey?: any[];
-	actionButtons?: React.ReactNode[];
-	// Define which columns can be sorted
+	// Column definitions
+	columnDefs: (helper: ColumnHelper<T>) => ColumnDef<T, unknown>[];
+	// Query key for React Query
+	queryKey?: unknown[];
+	// Whether to show search bar
+	searchBar?: boolean;
+	// Which columns can be sorted
 	sortableColumns?: Extract<keyof T, string>[];
-	// Whether to use server-side sorting
-	serverSideSorting?: boolean;
 	// Define which columns can be filtered and how
 	filterableColumns?: FilterConfig<T>[];
 	// Whether to show column borders
 	columnBorders?: boolean;
 	// Define which columns cannot be resized (all columns are resizable by default)
 	nonResizableColumns?: Extract<keyof T, string>[];
-};
+	// Modals to render
+	modals?: ReactNode[];
+	// Create button configuration
+	createButton?: boolean | string | ReactNode;
+}
 
 type ColumnFiltersState = Array<{
 	id: string;
@@ -204,35 +196,28 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 	const [limit, setLimit] = useState(10);
 	const [q, setQ] = useState("");
 	const [activeFilters, setActiveFilters] = useState<string[]>([]);
+	const [showFilterMenu, setShowFilterMenu] = useState(false);
 
 	const columnHelper = React.useMemo(() => getColumnHelper<T>(), []);
 
-	// Derive server-side sorting and filtering params when needed
+	// Memoize sorting parameters
 	const sortingParam = React.useMemo((): SortingParam[] | undefined => {
-		if (!props.serverSideSorting || sorting.length === 0) return undefined;
+		if (sorting.length === 0) return undefined;
 
 		return sorting.map((sort) => ({
 			id: sort.id,
 			desc: sort.desc,
 		}));
-	}, [props.serverSideSorting, sorting]);
+	}, [sorting]);
 
 	const filterParam = React.useMemo((): FilterParam[] | undefined => {
-		// Only include filters that are marked for server-side filtering
-		const serverSideFilters = columnFilters.filter((filter) => {
-			const filterConfig = props.filterableColumns?.find(
-				(fc) => fc.id === filter.id,
-			);
-			return filterConfig?.serverSide === true;
-		});
+		if (columnFilters.length === 0) return undefined;
 
-		if (serverSideFilters.length === 0) return undefined;
-
-		return serverSideFilters.map((filter) => ({
+		return columnFilters.map((filter) => ({
 			id: filter.id,
-			value: filter.value,
+			value: filter.value as string,
 		}));
-	}, [props.filterableColumns, columnFilters]);
+	}, [columnFilters]);
 
 	// Process column definitions to handle sortable columns
 	const processedColumnDefs = React.useMemo(() => {
@@ -332,14 +317,23 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 			query: {
 				limit: String(limit),
 				page: String(page),
-				q: q,
+				q: q || undefined,
+				sort: sortingParam ? JSON.stringify(sortingParam) : undefined,
+				filter: filterParam ? JSON.stringify(filterParam) : undefined,
 			},
 		}),
-		[limit, page, q],
+		[limit, page, q, sortingParam, filterParam],
 	);
 
 	const query = useQuery({
-		queryKey: [...(props.queryKey ?? []), page, limit, q],
+		queryKey: [
+			...(props.queryKey ?? []),
+			page,
+			limit,
+			q,
+			sortingParam,
+			filterParam,
+		],
 		queryFn: () => fetchRPC(props.endpoint(queryParams)),
 	});
 
@@ -356,9 +350,9 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 		onColumnFiltersChange: setColumnFilters,
 		enableColumnResizing: true,
 		columnResizeMode: "onChange",
-		// Disable client-side sorting if server-side sorting is enabled
-		manualSorting: props.serverSideSorting,
-		// Disable client-side filtering for server-side filtered columns
+		// All sorting is handled by the server
+		manualSorting: true,
+		// All filtering is handled by the server
 		manualFiltering: true,
 		state: {
 			sorting,
@@ -369,7 +363,7 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 	const handlePageChange = (page: number) => {
 		setPage(page);
 	};
-	
+
 	// Toggle a filter in the active filters list
 	const toggleFilter = (filterId: string) => {
 		setActiveFilters((prev) =>
@@ -379,196 +373,131 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 		);
 	};
 
+	// Reset all filters
+	const resetAllFilters = useCallback(() => {
+		setActiveFilters([]);
+		setColumnFilters([]);
+	}, []);
+
 	// Function to render filter inputs based on filter type
-	const renderFilterInput = (
-		filter: FilterConfig<T>,
-		column: Column<T, unknown>,
-	) => {
-		const currentFilterValue = column.getFilterValue();
+	const renderFilterInput = React.useCallback(
+		(filter: ColumnFilter) => {
+			const filterConfig = props.filterableColumns?.find(
+				(fc) => fc.id === filter.id,
+			);
 
-		switch (filter.type) {
-			case "text":
-				return (
-					<Input
-						value={(currentFilterValue as string) ?? ""}
-						onChange={(e) => column.setFilterValue(e.target.value)}
-						placeholder={`Filter ${column.id}`}
-						className="mb-2"
-					/>
-				);
+			if (!filterConfig) return null;
 
-			case "select":
-				return (
-					<Select
-						defaultValue={(currentFilterValue as string) ?? ""}
-						onValueChange={(value) => column.setFilterValue(value)}
-						data={
-							filter.options?.map((opt) => ({
-								label: opt.label,
-								value: String(opt.value),
-							})) ?? []
-						}
-						placeholder={`Select ${column.id}`}
-					/>
-				);
-
-			case "checkbox":
-				if (!filter.options) return null;
-				return (
-					<div className="flex flex-col gap-1 mb-2">
-						{filter.options.map((option) => (
-							<label
+			return (
+				<NativeSelect
+					value={filter.value}
+					defaultValue={filterConfig.options[0].value}
+					onValueChange={(value) => {
+						setColumnFilters((prev) => {
+							const newFilters = prev.filter(
+								(f) => f.id !== filter.id,
+							);
+							if (value !== undefined) {
+								newFilters.push({
+									id: filter.id,
+									value,
+								});
+							}
+							return newFilters;
+						});
+					}}
+				>
+					<SelectTrigger>
+						<SelectValue placeholder="Select a value" />
+					</SelectTrigger>
+					<SelectContent>
+						{filterConfig.options.map((option) => (
+							<SelectItem
 								key={String(option.value)}
-								className="flex items-center gap-2"
+								value={String(option.value)}
 							>
-								<input
-									type="checkbox"
-									checked={
-										Array.isArray(currentFilterValue)
-											? (
-													currentFilterValue as unknown[]
-												).includes(option.value)
-											: false
-									}
-									onChange={(e) => {
-										const values = Array.isArray(
-											currentFilterValue,
-										)
-											? [
-													...(currentFilterValue as unknown[]),
-												]
-											: [];
-
-										if (e.target.checked) {
-											column.setFilterValue([
-												...values,
-												option.value,
-											]);
-										} else {
-											column.setFilterValue(
-												values.filter(
-													(v) => v !== option.value,
-												),
-											);
-										}
-									}}
-								/>
 								{option.label}
-							</label>
+							</SelectItem>
 						))}
-					</div>
-				);
+					</SelectContent>
+				</NativeSelect>
+			);
+		},
+		[props.filterableColumns],
+	);
 
-			case "date":
-				return (
-					<div className="mb-2">
-						<Popover>
-							<PopoverTrigger asChild>
-								<Button
-									variant="outline"
-									className="w-full justify-start text-left font-normal"
-								>
-									{currentFilterValue instanceof Date ? (
-										format(
-											currentFilterValue as Date,
-											filter.dateFormat ?? "PPP",
-										)
-									) : (
-										<span className="text-muted-foreground">
-											Pick a date
-										</span>
-									)}
-								</Button>
-							</PopoverTrigger>
-							<PopoverContent
-								className="w-auto p-0"
-								align="start"
-							>
-								<DatePicker
-									mode="single"
-									value={currentFilterValue as Date}
-									onChange={(date: Date | null) =>
-										column.setFilterValue(date)
-									}
-								/>
-							</PopoverContent>
-						</Popover>
-					</div>
-				);
+	const handleRemoveFilter = useCallback((id: string) => {
+		setColumnFilters((prev) => prev.filter((f) => f.id !== id));
+		setActiveFilters((prev) => prev.filter((f) => f !== id));
+	}, []);
 
-			case "daterange": {
-				const dateRange = (currentFilterValue as DateRange) || {
-					from: undefined,
-					to: undefined,
-				};
-				return (
-					<div className="mb-2">
-						<Popover>
-							<PopoverTrigger asChild>
-								<Button
-									variant="outline"
-									className="w-full justify-start text-left font-normal"
-								>
-									{dateRange.from ? (
-										dateRange.to ? (
-											<>
-												{format(
-													dateRange.from,
-													filter.dateFormat ?? "PPP",
-												)}{" "}
-												-{" "}
-												{format(
-													dateRange.to,
-													filter.dateFormat ?? "PPP",
-												)}
-											</>
-										) : (
-											format(
-												dateRange.from,
-												filter.dateFormat ?? "PPP",
-											)
-										)
-									) : (
-										<span className="text-muted-foreground">
-											Pick date range
-										</span>
-									)}
-								</Button>
-							</PopoverTrigger>
-							<PopoverContent
-								className="w-auto p-0"
-								align="start"
-							>
-								<DatePicker
-									mode="range"
-									value={
-										dateRange.from && dateRange.to
-											? {
-													from: dateRange.from,
-													to: dateRange.to,
-												}
-											: undefined
-									}
-									onChange={(range: {
-										from: Date;
-										to: Date | null;
-									}) =>
-										column.setFilterValue({
-											from: range.from,
-											to: range.to,
-										})
-									}
-								/>
-							</PopoverContent>
-						</Popover>
-					</div>
-				);
-			}
+	const renderFilterChips = React.useCallback(() => {
+		return activeFilters.map((filterId) => {
+			const filter = columnFilters.find((f) => f.id === filterId);
+			if (!filter) return null;
 
-			default:
-				return null;
-		}
-	};
+			const filterConfig = props.filterableColumns?.find(
+				(fc) => fc.id === filter.id,
+			);
+			if (!filterConfig) return null;
+
+			const filterValue = filter.value;
+			let displayValue = "";
+
+			displayValue =
+				filterConfig.options.find((o) => o.value === filterValue)
+					?.label ?? String(filterValue);
+
+			return (
+				<div
+					key={filter.id}
+					className="bg-muted flex items-center gap-1 pl-2 pr-1 py-1 rounded-md text-sm relative group"
+				>
+					<Popover>
+						<PopoverTrigger asChild>
+							<div className="flex items-center cursor-pointer">
+								<span className="font-medium">
+									{filterConfig.label}:
+								</span>
+								<span className="ml-1">{displayValue}</span>
+							</div>
+						</PopoverTrigger>
+						<PopoverContent
+							className="w-80 p-4"
+							align="start"
+							sideOffset={5}
+						>
+							<div className="space-y-4">
+								<div className="flex items-center justify-between">
+									<h4 className="font-medium">
+										{filterConfig.label}
+									</h4>
+								</div>
+								{renderFilterInput({
+									id: filter.id,
+									value: filter.value as string,
+								})}
+							</div>
+						</PopoverContent>
+					</Popover>
+					<Button
+						variant="ghost"
+						size="sm"
+						onClick={() => handleRemoveFilter(filter.id)}
+						className="h-auto p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+					>
+						×
+					</Button>
+				</div>
+			);
+		});
+	}, [
+		activeFilters,
+		columnFilters,
+		props.filterableColumns,
+		renderFilterInput,
+		handleRemoveFilter,
+	]);
 
 	const totalPages = query.data?._metadata?.totalPages ?? 1;
 	const currentPage = page;
@@ -579,6 +508,7 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 				return <Navigate to="/403" replace />;
 			}
 		}
+		return <div>Error: {query.error.message}</div>;
 	}
 
 	return query.data ? (
@@ -588,130 +518,138 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 
 			{/* Card */}
 			<div className="rounded-lg border shadow-lg p-4 bg-background">
-				{/* Top Section */}
-				<div className="flex justify-between">
-					{/* Left */}
-					<div className="flex items-center gap-4">
-						{/* Search */}
-						{withSearchBar && (
-							<SearchInput onSearch={handleSearch} />
+				{/* Filter Bar - New UI */}
+				<div className="flex flex-col gap-4">
+					<div className="flex flex-col gap-2">
+						<div className="flex items-center justify-between">
+							<h1 className="text-2xl font-bold">
+								{props.title}
+							</h1>
+							<div className="flex items-center gap-2">
+								{props.createButton &&
+									createCreateButton(props.createButton)}
+							</div>
+						</div>
+						<div className="flex items-center gap-2">
+							{withSearchBar && (
+								<SearchInput
+									onSearch={(value) => setQ(value)}
+								/>
+							)}
+							<Popover
+								open={showFilterMenu}
+								onOpenChange={setShowFilterMenu}
+							>
+								<PopoverTrigger asChild>
+									<Button
+										variant="outline"
+										size="icon"
+										className="shrink-0"
+									>
+										<TbFilter />
+									</Button>
+								</PopoverTrigger>
+								<PopoverContent
+									className="w-80 p-4"
+									align="start"
+									sideOffset={5}
+								>
+									<div className="space-y-4">
+										<div className="flex items-center justify-between">
+											<h4 className="font-medium">
+												Add filter
+											</h4>
+										</div>
+										<div className="grid gap-2">
+											{props.filterableColumns?.map(
+												(filter) => {
+													const isActive =
+														activeFilters.includes(
+															filter.id,
+														);
+
+													return (
+														<div
+															key={filter.id}
+															className="grid grid-cols-[1fr_auto] items-center"
+														>
+															<span className="text-sm">
+																{filter.label}
+															</span>
+															<Button
+																variant="outline"
+																size="sm"
+																onClick={() => {
+																	if (
+																		isActive
+																	) {
+																		handleRemoveFilter(
+																			filter.id,
+																		);
+																	} else {
+																		setColumnFilters(
+																			(
+																				prev,
+																			) => [
+																				...prev,
+																				{
+																					id: filter.id,
+																					value: filter
+																						.options[0]
+																						.value,
+																				},
+																			],
+																		);
+																		setActiveFilters(
+																			(
+																				prev,
+																			) => [
+																				...prev,
+																				filter.id,
+																			],
+																		);
+																	}
+																	setShowFilterMenu(
+																		false,
+																	);
+																}}
+															>
+																{isActive
+																	? "Remove"
+																	: "Add"}
+															</Button>
+														</div>
+													);
+												},
+											)}
+										</div>
+									</div>
+								</PopoverContent>
+							</Popover>
+						</div>
+						{activeFilters.length > 0 && (
+							<div className="flex flex-wrap gap-2">
+								{renderFilterChips()}
+							</div>
 						)}
 					</div>
-
-					{/* Right - Action Buttons */}
-					<div className="flex gap-2">
-						{props.actionButtons}
-						{!props.actionButtons &&
-							createCreateButton(props.createButton)}
-					</div>
-				</div>
-
-				{/* Active Filters */}
-				{props.filterableColumns && activeFilters.length > 0 && (
-					<div className="mt-4 p-4 border rounded-md">
-						<div className="flex justify-between items-center mb-2">
-							<h3 className="font-medium">Active Filters</h3>
-							<Button
-								variant="ghost"
-								size="sm"
-								onClick={() => setActiveFilters([])}
-							>
-								Clear All
-							</Button>
+					<DashboardTable
+						table={table}
+						columnBorders={props.columnBorders}
+					/>
+					<div className="flex items-center justify-between">
+						<div className="flex items-center gap-2">
+							<span className="text-sm text-muted-foreground">
+								Page {currentPage} of {totalPages}
+							</span>
 						</div>
-						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-							{props.filterableColumns
-								.filter((filter) =>
-									activeFilters.includes(filter.id),
-								)
-								.map((filter) => {
-									const column = table.getColumn(filter.id);
-									if (!column) return null;
-
-									const isServerSide = filter.serverSide === true;
-
-									return (
-										<div
-											key={filter.id}
-											className={`border p-2 rounded ${isServerSide ? "border-primary/30 bg-primary/5" : ""}`}
-										>
-											<div className="flex justify-between items-center mb-1">
-												<div className="flex items-center gap-1">
-													<span className="font-medium">
-														{
-															column.columnDef
-																.header as string
-														}
-													</span>
-													{isServerSide && (
-														<span className="text-xs bg-primary/20 text-primary px-1 rounded">
-															Server
-														</span>
-													)}
-												</div>
-												<Button
-													variant="ghost"
-													size="sm"
-													onClick={() =>
-														toggleFilter(filter.id)
-													}
-													className="h-6 w-6 p-0"
-												>
-													×
-												</Button>
-											</div>
-											{renderFilterInput(filter, column)}
-										</div>
-									);
-								})}
-						</div>
-					</div>
-				)}
-
-				{/* Table Functionality */}
-				<div className="flex flex-col">
-					{/* Table */}
-					<div className="mt-4">
-						<DashboardTable
-							table={table}
-							columnBorders={props.columnBorders}
+						<Pagination
+							value={currentPage}
+							total={totalPages}
+							onChange={setPage}
 						/>
 					</div>
-
-					{/* Pagination */}
-					{query.data && (
-						<div className="pt-4 flex-wrap flex items-center gap-4">
-							<Select
-								label="Items per page"
-								defaultValue={String(limit)}
-								onValueChange={(value) => {
-									setPage(1);
-									setLimit(Number(value));
-								}}
-								data={[
-									"5",
-									"10",
-									"20",
-									"50",
-									"100",
-									"200",
-									"500",
-								]}
-							/>
-
-							<p>
-								Showing {query.data.data.length} of{" "}
-								{query.data._metadata.totalItems}
-							</p>
-						</div>
-					)}
 				</div>
-
-				<Pagination
-					total={totalPages}
-					value={currentPage}
-					onChange={handlePageChange}
-				/>
 
 				{/* The Modals */}
 				{props.modals?.map((modal) => {

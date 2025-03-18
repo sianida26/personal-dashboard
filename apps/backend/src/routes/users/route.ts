@@ -111,9 +111,25 @@ const usersRoute = new Hono<HonoEnv>()
 							break;
 
 						case "isEnabled":
-							if (typeof filter.value === "boolean") {
+							if (typeof filter.value === "string") {
 								whereConditions.push(
-									eq(users.isEnabled, filter.value),
+									eq(
+										users.isEnabled,
+										filter.value === "Active",
+									),
+								);
+							}
+							break;
+
+						case "roles":
+							if (typeof filter.value === "string") {
+								whereConditions.push(
+									sql`EXISTS (
+										SELECT 1 FROM ${rolesToUsers}
+										JOIN ${rolesSchema} ON ${rolesToUsers.roleId} = ${rolesSchema.id}
+										WHERE ${rolesToUsers.userId} = ${users.id}
+										AND ${rolesSchema.code} = ${filter.value}
+									)`,
 								);
 							}
 							break;
