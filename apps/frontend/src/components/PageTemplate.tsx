@@ -649,7 +649,7 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 					/>
 					<div className="flex items-center justify-between">
 						<div className="flex items-center gap-2">
-							<span className="text-sm text-muted-foreground">
+							<span className="text-sm text-muted-foreground whitespace-nowrap">
 								Page {currentPage} of {totalPages}
 							</span>
 						</div>
