@@ -525,117 +525,117 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 				{/* Filter Bar - New UI */}
 				<div className="flex flex-col gap-4">
 					<div className="flex flex-col gap-2">
-						<div className="flex items-center justify-between">
+						<div className="flex items-center justify-between gap-2">
 							<div className="flex items-center gap-2">
+								{withSearchBar && (
+									<SearchInput
+										onSearch={memoizedSearchCallback}
+										initialValue={q}
+									/>
+								)}
+								{/* Only show filter button if there are filterable columns */}
+								{props.filterableColumns &&
+									props.filterableColumns.length > 0 && (
+										<Popover
+											open={showFilterMenu}
+											onOpenChange={setShowFilterMenu}
+										>
+											<PopoverTrigger asChild>
+												<Button
+													variant="outline"
+													size="icon"
+													className="shrink-0"
+												>
+													<TbFilter />
+												</Button>
+											</PopoverTrigger>
+											<PopoverContent
+												className="w-80 p-4"
+												align="start"
+												sideOffset={5}
+											>
+												<div className="space-y-4">
+													<div className="flex items-center justify-between">
+														<h4 className="font-medium">
+															Add filter
+														</h4>
+													</div>
+													<div className="grid gap-2">
+														{props.filterableColumns?.map(
+															(filter) => {
+																const isActive =
+																	activeFilters.includes(
+																		filter.id,
+																	);
+
+																return (
+																	<div
+																		key={
+																			filter.id
+																		}
+																		className="grid grid-cols-[1fr_auto] items-center"
+																	>
+																		<span className="text-sm">
+																			{
+																				filter.label
+																			}
+																		</span>
+																		<Button
+																			variant="outline"
+																			size="sm"
+																			onClick={() => {
+																				if (
+																					isActive
+																				) {
+																					handleRemoveFilter(
+																						filter.id,
+																					);
+																				} else {
+																					setColumnFilters(
+																						(
+																							prev,
+																						) => [
+																							...prev,
+																							{
+																								id: filter.id,
+																								value: filter
+																									.options[0]
+																									.value,
+																							},
+																						],
+																					);
+																					setActiveFilters(
+																						(
+																							prev,
+																						) => [
+																							...prev,
+																							filter.id,
+																						],
+																					);
+																				}
+																				setShowFilterMenu(
+																					false,
+																				);
+																			}}
+																		>
+																			{isActive
+																				? "Remove"
+																				: "Add"}
+																		</Button>
+																	</div>
+																);
+															},
+														)}
+													</div>
+												</div>
+											</PopoverContent>
+										</Popover>
+									)}
+							</div>
+							<div className="flex items-center">
 								{props.createButton &&
 									createCreateButton(props.createButton)}
 							</div>
-						</div>
-						<div className="flex items-center gap-2">
-							{withSearchBar && (
-								<SearchInput
-									onSearch={memoizedSearchCallback}
-									initialValue={q}
-								/>
-							)}
-							{/* Only show filter button if there are filterable columns */}
-							{props.filterableColumns &&
-								props.filterableColumns.length > 0 && (
-									<Popover
-										open={showFilterMenu}
-										onOpenChange={setShowFilterMenu}
-									>
-										<PopoverTrigger asChild>
-											<Button
-												variant="outline"
-												size="icon"
-												className="shrink-0"
-											>
-												<TbFilter />
-											</Button>
-										</PopoverTrigger>
-										<PopoverContent
-											className="w-80 p-4"
-											align="start"
-											sideOffset={5}
-										>
-											<div className="space-y-4">
-												<div className="flex items-center justify-between">
-													<h4 className="font-medium">
-														Add filter
-													</h4>
-												</div>
-												<div className="grid gap-2">
-													{props.filterableColumns?.map(
-														(filter) => {
-															const isActive =
-																activeFilters.includes(
-																	filter.id,
-																);
-
-															return (
-																<div
-																	key={
-																		filter.id
-																	}
-																	className="grid grid-cols-[1fr_auto] items-center"
-																>
-																	<span className="text-sm">
-																		{
-																			filter.label
-																		}
-																	</span>
-																	<Button
-																		variant="outline"
-																		size="sm"
-																		onClick={() => {
-																			if (
-																				isActive
-																			) {
-																				handleRemoveFilter(
-																					filter.id,
-																				);
-																			} else {
-																				setColumnFilters(
-																					(
-																						prev,
-																					) => [
-																						...prev,
-																						{
-																							id: filter.id,
-																							value: filter
-																								.options[0]
-																								.value,
-																						},
-																					],
-																				);
-																				setActiveFilters(
-																					(
-																						prev,
-																					) => [
-																						...prev,
-																						filter.id,
-																					],
-																				);
-																			}
-																			setShowFilterMenu(
-																				false,
-																			);
-																		}}
-																	>
-																		{isActive
-																			? "Remove"
-																			: "Add"}
-																	</Button>
-																</div>
-															);
-														},
-													)}
-												</div>
-											</div>
-										</PopoverContent>
-									</Popover>
-								)}
 						</div>
 						{activeFilters.length > 0 && (
 							<div className="flex flex-wrap gap-2">

@@ -16,6 +16,7 @@ export default function UsersPage() {
 		title: "Users",
 		endpoint: client.users.$get,
 		queryKey: ["users"],
+		createButton: "Create User",
 		sortableColumns: ["name", "username"],
 		filterableColumns: [
 			{
