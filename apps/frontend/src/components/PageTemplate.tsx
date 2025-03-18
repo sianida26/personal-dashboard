@@ -80,14 +80,14 @@ export type FilterParam = {
 
 // Type to represent the queries that can be sent to the backend
 export interface QueryParams {
-		page: string;
-		limit: string;
-		q?: string;
-		// Typed sorting parameters as stringified JSON
-		sort?: string;
-		// Typed filtering parameters as stringified JSON
-		filter?: string;
-	}
+	page: string;
+	limit: string;
+	q?: string;
+	// Typed sorting parameters as stringified JSON
+	sort?: string;
+	// Typed filtering parameters as stringified JSON
+	filter?: string;
+}
 
 type HonoEndpoint<T extends Record<string, unknown>> = (
 	args: Record<string, unknown> & {

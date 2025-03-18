@@ -16,7 +16,8 @@ interface Props<TData> {
 }
 
 export default function DashboardTable<T>({
-	table, onRowClick,
+	table,
+	onRowClick,
 	columnBorders = false,
 }: Props<T>) {
 	return (
@@ -84,10 +85,12 @@ export default function DashboardTable<T>({
 											: "bg-background"
 									}
 									onClick={() => onRowClick?.(row.original)}
-								style={{
-									cursor: onRowClick ? "pointer" : "default",
-								}}
-							>
+									style={{
+										cursor: onRowClick
+											? "pointer"
+											: "default",
+									}}
+								>
 									{row.getVisibleCells().map((cell) => (
 										<TableCell
 											key={cell.id}
