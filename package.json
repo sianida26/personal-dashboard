@@ -4,6 +4,7 @@
 	"scripts": {
 		"build": "turbo build",
 		"dev": "turbo dev",
+		"check": "bunx tsc --noEmit && bun lint && bun format",
 		"lint": "biome lint --write --diagnostic-level warn",
 		"format": "biome format --write --diagnostic-level warn"
 	},
