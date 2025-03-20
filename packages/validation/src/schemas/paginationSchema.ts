@@ -7,5 +7,53 @@ export const paginationRequestSchema = z.object({
 		.transform((v) => v?.toLowerCase() === "true"),
 	page: z.coerce.number().int().min(1).default(0),
 	limit: z.coerce.number().int().min(1).max(1000).default(1),
+	sort: z
+		.string()
+		.optional()
+		.transform((value) => {
+			if (!value) return undefined;
+			try {
+				return value
+					.split(",")
+					.map((item) => {
+						const parts = item.split(":");
+						if (!parts[0]) return undefined;
+						return {
+							id: parts[0].trim(),
+							desc: parts[1]?.toLowerCase() === "desc",
+						};
+					})
+					.filter(
+						(item): item is { id: string; desc: boolean } =>
+							item !== undefined,
+					);
+			} catch {
+				return undefined;
+			}
+		}),
+	filter: z
+		.string()
+		.optional()
+		.transform((value) => {
+			if (!value) return undefined;
+			try {
+				return value
+					.split(",")
+					.map((item) => {
+						const parts = item.split(":");
+						if (!parts[0]) return undefined;
+						return {
+							id: parts[0].trim(),
+							value: parts[1]?.trim(),
+						};
+					})
+					.filter(
+						(item): item is { id: string; value: string } =>
+							item !== undefined,
+					);
+			} catch {
+				return undefined;
+			}
+		}),
 	q: z.string().default(""),
 });
