@@ -1,13 +1,14 @@
 import {
-	Button,
 	type ButtonProps,
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
+	buttonVariants,
 } from "@repo/ui";
 import { Link } from "@tanstack/react-router";
 import type React from "react";
+import { cn } from "@repo/ui/utils";
 
 type Action = ButtonProps & {
 	label: string;
@@ -22,25 +23,38 @@ export default function createActionButtons(actions: Action[]) {
 		action.permission ? (
 			<TooltipProvider key={action.label}>
 				<Tooltip>
-					<TooltipTrigger>
+					<TooltipTrigger asChild>
 						{typeof action.action === "string" ||
 						action.action === undefined ? (
-							<Link to={action.action ?? "#"}>
-								<Button size="icon" {...action}>
-									{action.icon}
-								</Button>
-							</Link>
-						) : (
-							<Button
-								onClick={action.action}
-								size="icon"
-								{...action}
+							<Link
+								to={action.action ?? "#"}
+								className={cn(
+									buttonVariants({
+										variant: action.variant,
+										size: action.size ?? "icon",
+										className: action.className,
+									}),
+								)}
 							>
 								{action.icon}
-							</Button>
+							</Link>
+						) : (
+							<button
+								type="button"
+								onClick={action.action}
+								className={cn(
+									buttonVariants({
+										variant: action.variant,
+										size: action.size ?? "icon",
+										className: action.className,
+									}),
+								)}
+							>
+								{action.icon}
+							</button>
 						)}
 					</TooltipTrigger>
-					<TooltipContent className="">
+					<TooltipContent>
 						<p>{action.label}</p>
 					</TooltipContent>
 				</Tooltip>
