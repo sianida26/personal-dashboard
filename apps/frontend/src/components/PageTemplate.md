@@ -32,7 +32,7 @@ function MyPage() {
 | `queryKey` | `unknown[]` | Optional cache key for React Query |
 | `searchBar` | `boolean` | Whether to show search bar (defaults to true) |
 | `createButton` | `boolean \| string \| ReactNode` | Configuration for create button |
-| `modals` | `ReactNode[]` | Optional modals to render |
+| `modals` | `(ReactNode \| LazyExoticComponent<React.ComponentType>)[]` | Optional modals to render. Supports both regular React nodes and lazy-loaded components |
 | `topContent` | `ReactNode` | Optional content to be rendered on the left side of create button |
 
 ### Sorting Props
@@ -174,3 +174,29 @@ export interface PaginatedResponse<T> {
 - Pagination controls
 - Optional create button with customizable text/component
 - Support for custom modals 
+
+## Modal Support
+
+The `modals` prop accepts an array of either React nodes or lazy-loaded components. This allows for both immediate rendering and code-splitting of modal components:
+
+```tsx
+import { lazy } from 'react';
+
+// Regular modal
+const RegularModal = () => <div>Regular Modal</div>;
+
+// Lazy-loaded modal
+const LazyModal = lazy(() => import('./LazyModal'));
+
+function MyPage() {
+  return createPageTemplate({
+    // ... other props
+    modals: [
+      <RegularModal key="regular" />, // Regular React node
+      LazyModal // Lazy-loaded component
+    ]
+  });
+}
+```
+
+When using lazy-loaded modals, they will be automatically wrapped in a Suspense boundary with a null fallback. 
