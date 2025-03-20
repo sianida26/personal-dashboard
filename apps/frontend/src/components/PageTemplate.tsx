@@ -635,7 +635,7 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 										</Popover>
 									)}
 							</div>
-							<div className="flex items-center">
+							<div className="flex items-center gap-4">
 								{props.topContent}
 								{props.createButton &&
 									createCreateButton(props.createButton)}
