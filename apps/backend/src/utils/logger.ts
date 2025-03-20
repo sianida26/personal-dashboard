@@ -178,11 +178,34 @@ class Logger {
 	 */
 	request(c: Context<HonoEnv>, responseTime?: number) {
 		if (!appEnv.LOG_REQUEST) return;
+
+		// Get request body and query as strings, handle potential JSON parsing errors
+		let bodyStr = "-";
+		let queryStr = "-";
+
+		try {
+			const body = c.req.raw.body;
+			if (body) {
+				bodyStr = JSON.stringify(body);
+			}
+		} catch (_) {
+			bodyStr = "[unparseable body]";
+		}
+
+		try {
+			const url = new URL(c.req.url);
+			if (url.search) {
+				queryStr = url.search;
+			}
+		} catch (_) {
+			queryStr = "[unparseable query]";
+		}
+
 		const message = `${c.req.method} ${c.req.path} ${c.var.uid ?? "-"} ${
 			c.var.requestId ?? "-"
-		} ${c.res.status} ${responseTime ?? "-"} ${
+		} ${c.res.status} ${responseTime ?? "-"}ms ${
 			c.req.header("User-Agent") ?? "-"
-		}`;
+		}\nQUERY:${queryStr}\nBODY:${bodyStr}\n`;
 
 		// biome-ignore lint/suspicious/noConsole: This is a logger
 		console.log(`REQ: ${message}`);

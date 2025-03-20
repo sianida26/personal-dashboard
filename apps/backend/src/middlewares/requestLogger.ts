@@ -21,10 +21,20 @@ const requestLogger = createMiddleware<HonoEnv>(async (c, next) => {
 	//check wether should be logged or not based on the env value
 	if (appEnv.LOG_REQUEST) {
 		const startTime = performance.now();
+
+		// Clone the request to preserve the body for logging
+		const originalRequest = c.req.raw.clone();
+		
 		await next();
+		
 		const endTime = performance.now();
 		const responseTime = Math.floor(endTime - startTime);
+
+		// Replace the original request with our cloned version for logging
+		const originalReq = c.req.raw;
+		c.req.raw = originalRequest;
 		appLogger.request(c, responseTime);
+		c.req.raw = originalReq;
 	} else {
 		await next();
 	}
