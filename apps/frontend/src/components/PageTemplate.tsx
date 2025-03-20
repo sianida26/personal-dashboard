@@ -98,31 +98,31 @@ type HonoEndpoint<T extends Record<string, unknown>> = (
 ) => Promise<ClientResponse<PaginatedResponse<T>>>;
 
 export interface Props<T extends Record<string, unknown>> {
-		// Title of the page
-		title: string;
-		// Endpoint to fetch data from
-		endpoint: HonoEndpoint<T>;
-		// Column definitions
-		columnDefs: (helper: ColumnHelper<T>) => ColumnDef<T, unknown>[];
-		// Query key for React Query
-		queryKey?: unknown[];
-		// Whether to show search bar
-		searchBar?: boolean;
-		// Which columns can be sorted
-		sortableColumns?: Extract<keyof T, string>[];
-		// Define which columns can be filtered and how
-		filterableColumns?: FilterConfig<T>[];
-		// Whether to show column borders
-		columnBorders?: boolean;
-		// Define which columns cannot be resized (all columns are resizable by default)
-		nonResizableColumns?: Extract<keyof T, string>[];
-		// Modals to render
-		modals?: (ReactNode | LazyExoticComponent<React.ComponentType>)[];
-		// Create button configuration
-		createButton?: boolean | string | ReactNode;
-		// Additional content to be rendered on the left side of create button
-		topContent?: ReactNode;
-	}
+	// Title of the page
+	title: string;
+	// Endpoint to fetch data from
+	endpoint: HonoEndpoint<T>;
+	// Column definitions
+	columnDefs: (helper: ColumnHelper<T>) => ColumnDef<T, unknown>[];
+	// Query key for React Query
+	queryKey?: unknown[];
+	// Whether to show search bar
+	searchBar?: boolean;
+	// Which columns can be sorted
+	sortableColumns?: Extract<keyof T, string>[];
+	// Define which columns can be filtered and how
+	filterableColumns?: FilterConfig<T>[];
+	// Whether to show column borders
+	columnBorders?: boolean;
+	// Define which columns cannot be resized (all columns are resizable by default)
+	nonResizableColumns?: Extract<keyof T, string>[];
+	// Modals to render
+	modals?: (ReactNode | LazyExoticComponent<React.ComponentType>)[];
+	// Create button configuration
+	createButton?: boolean | string | ReactNode;
+	// Additional content to be rendered on the left side of create button
+	topContent?: ReactNode;
+}
 
 type ColumnFiltersState = Array<{
 	id: string;
@@ -677,7 +677,11 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 							{React.createElement(modal as React.ComponentType)}
 						</React.Suspense>
 					);
-					return <React.Fragment key={modalKey}>{ModalComponent}</React.Fragment>;
+					return (
+						<React.Fragment key={modalKey}>
+							{ModalComponent}
+						</React.Fragment>
+					);
 				})}
 			</div>
 
