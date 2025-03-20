@@ -19,17 +19,6 @@ import type HonoEnv from "../../types/HonoEnv";
 import { hashPassword } from "../../utils/passwordUtils";
 import requestValidator from "../../utils/requestValidator";
 
-// Define types for sorting and filtering parameters
-export interface SortingParam {
-	id: string;
-	desc: boolean;
-}
-
-export interface FilterParam {
-	id: string;
-	value: unknown;
-}
-
 export interface DateRange {
 	from?: Date;
 	to?: Date;
@@ -54,29 +43,14 @@ const usersRoute = new Hono<HonoEnv>()
 		checkPermission("users.readAll"),
 		requestValidator("query", paginationRequestSchema),
 		async (c) => {
-			const { includeTrashed, page, limit, q } = c.req.valid("query");
-
-			// Parse sorting parameters
-			let sortParam: SortingParam[] | undefined;
-			try {
-				const sortQuery = c.req.query("sort");
-				if (sortQuery) {
-					sortParam = JSON.parse(sortQuery);
-				}
-			} catch (error) {
-				console.error("Error parsing sort parameter:", error);
-			}
-
-			// Parse filtering parameters
-			let filterParam: FilterParam[] | undefined;
-			try {
-				const filterQuery = c.req.query("filter");
-				if (filterQuery) {
-					filterParam = JSON.parse(filterQuery);
-				}
-			} catch (error) {
-				console.error("Error parsing filter parameter:", error);
-			}
+			const {
+				includeTrashed,
+				page,
+				limit,
+				q,
+				filter: filterParams,
+				sort: sortParams,
+			} = c.req.valid("query");
 
 			// Build where clause based on query parameters
 			const whereConditions = [];
@@ -98,9 +72,8 @@ const usersRoute = new Hono<HonoEnv>()
 				);
 			}
 
-			// Process specific filters
-			if (filterParam?.length) {
-				for (const filter of filterParam) {
+			if (filterParams) {
+				for (const filter of filterParams) {
 					switch (filter.id) {
 						case "name":
 							if (typeof filter.value === "string") {
@@ -170,8 +143,8 @@ const usersRoute = new Hono<HonoEnv>()
 			// Determine the orderBy configuration based on sorting parameters
 			const orderByConfig = [];
 
-			if (sortParam?.length) {
-				for (const sort of sortParam) {
+			if (sortParams?.length) {
+				for (const sort of sortParams) {
 					switch (sort.id) {
 						case "name":
 							orderByConfig.push(
