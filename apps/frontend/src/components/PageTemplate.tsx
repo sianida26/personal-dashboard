@@ -119,6 +119,8 @@ export interface Props<T extends Record<string, unknown>> {
 	modals?: ReactNode[];
 	// Create button configuration
 	createButton?: boolean | string | ReactNode;
+	// Additional content to be rendered on the left side of create button
+	topContent?: ReactNode;
 }
 
 type ColumnFiltersState = Array<{
@@ -633,6 +635,7 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 									)}
 							</div>
 							<div className="flex items-center">
+								{props.topContent}
 								{props.createButton &&
 									createCreateButton(props.createButton)}
 							</div>

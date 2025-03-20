@@ -33,6 +33,7 @@ function MyPage() {
 | `searchBar` | `boolean` | Whether to show search bar (defaults to true) |
 | `createButton` | `boolean \| string \| ReactNode` | Configuration for create button |
 | `modals` | `ReactNode[]` | Optional modals to render |
+| `topContent` | `ReactNode` | Optional content to be rendered on the left side of create button |
 
 ### Sorting Props
 
