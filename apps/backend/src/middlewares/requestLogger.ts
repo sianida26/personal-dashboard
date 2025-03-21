@@ -24,9 +24,9 @@ const requestLogger = createMiddleware<HonoEnv>(async (c, next) => {
 
 		// Clone the request to preserve the body for logging
 		const originalRequest = c.req.raw.clone();
-		
+
 		await next();
-		
+
 		const endTime = performance.now();
 		const responseTime = Math.floor(endTime - startTime);
 
