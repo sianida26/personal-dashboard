@@ -1,7 +1,7 @@
 import { zValidator } from "@hono/zod-validator";
 import type { PermissionCode } from "@repo/data";
 import { loginSchema } from "@repo/validation";
-import { and, eq, isNull, ne, or } from "drizzle-orm";
+import { and, eq, isNull, ne, or, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
@@ -24,9 +24,15 @@ const authRoutes = new Hono<HonoEnv>()
 				isNull(users.deletedAt),
 				eq(users.isEnabled, true),
 				or(
-					eq(users.username, formData.username),
+					eq(
+						sql`LOWER(${users.username})`,
+						formData.username.toLowerCase(),
+					),
 					and(
-						eq(users.email, formData.username),
+						eq(
+							sql`LOWER(${users.email})`,
+							formData.username.toLowerCase(),
+						),
 						ne(users.email, ""),
 					),
 				),
