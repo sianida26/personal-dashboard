@@ -3,8 +3,7 @@ import {
 	type AuthenticationProvider,
 	type ClientOptions,
 } from "@microsoft/microsoft-graph-client";
-import { ConfidentialClientApplication } from "@azure/msal-node";
-import appEnv from "../../appEnv";
+import { msalClient } from "./msalClient";
 
 /**
  * Microsoft Graph authentication provider that uses an access token
@@ -28,17 +27,6 @@ export const createGraphClientForUser = (accessToken: string) => {
 	};
 	return Client.initWithMiddleware(clientOptions);
 };
-
-/**
- * Microsoft MSAL confidential client application
- */
-export const msalClient = new ConfidentialClientApplication({
-	auth: {
-		clientId: appEnv.MICROSOFT_CLIENT_ID ?? "",
-		authority: `https://login.microsoftonline.com/${appEnv.MICROSOFT_TENANT_ID ?? ""}`,
-		clientSecret: appEnv.MICROSOFT_CLIENT_SECRET ?? "",
-	},
-});
 
 /**
  * Retrieves a new access token for a user with their Microsoft refresh token
