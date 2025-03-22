@@ -1,6 +1,7 @@
 import { configDotenv } from "dotenv";
 import { drizzle } from "drizzle-orm/postgres-js";
 import appEnv from "../appEnv";
+import * as appSettingsSchema from "./schema/appSettingsSchema";
 import * as permissionsSchema from "./schema/permissions";
 import * as permissionsToRolesSchema from "./schema/permissionsToRoles";
 import * as permissionsToUsersSchema from "./schema/permissionsToUsers";
@@ -20,6 +21,7 @@ const db = drizzle({
 		...permissionsToRolesSchema,
 		...permissionsToUsersSchema,
 		...rolesToUsersSchema,
+		...appSettingsSchema,
 	},
 	logger: new SqlLogger(),
 });

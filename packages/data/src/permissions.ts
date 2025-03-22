@@ -10,6 +10,7 @@ export const permissions = [
 	"roles.create",
 	"roles.update",
 	"roles.delete",
+	"APP_SETTINGS_MANAGE",
 ] as const;
 
 export const generalPermissions = ["authenticated-only", "guest-only"] as const;

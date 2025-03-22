@@ -28,6 +28,19 @@ const sidebarMenus: SidebarMenu[] = [
 			},
 		],
 	},
+	{
+		label: "System",
+		type: "group",
+		children: [
+			{
+				label: "App Settings",
+				icon: { tb: "TbSettings" },
+				allowedPermissions: ["APP_SETTINGS_MANAGE"],
+				link: "/app-settings",
+				color: "blue",
+			},
+		],
+	},
 ];
 
 export default sidebarMenus;

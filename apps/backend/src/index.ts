@@ -7,6 +7,7 @@ import DashboardError from "./errors/DashboardError";
 import authTokenMiddleware from "./middlewares/authTokenMiddleware";
 import requestLogger from "./middlewares/requestLogger";
 import authRoutes from "./routes/auth/route";
+import appSettingsRoutes from "./routes/appSettingsRoute";
 import dashboardRoutes from "./routes/dashboard/routes";
 import devRoutes from "./routes/dev/route";
 import permissionRoutes from "./routes/permissions/route";
@@ -33,6 +34,7 @@ const routes = app
 	.route("/dashboard", dashboardRoutes)
 	.route("/roles", rolesRoute)
 	.route("/dev", devRoutes)
+	.route("/app-settings", appSettingsRoutes)
 	.get("/test", (c) => {
 		return c.json({
 			message: "Server is up",
