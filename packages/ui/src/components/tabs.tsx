@@ -278,7 +278,7 @@ const TabTrigger = ({
 			tabIndex={isActive ? 0 : -1}
 			data-value={value}
 			className={cn(
-				"inline-flex h-10 items-center justify-center whitespace-nowrap px-4 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+				"inline-flex h-10 w-full items-center justify-around whitespace-nowrap px-4 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
 				isActive
 					? "border-b-2 border-foreground text-foreground"
 					: "text-muted-foreground hover:text-foreground",
