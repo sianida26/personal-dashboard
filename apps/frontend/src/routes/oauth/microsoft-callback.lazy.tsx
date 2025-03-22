@@ -10,4 +10,4 @@ export const Route = createLazyFileRoute("/oauth/microsoft-callback")({
 
 function MicrosoftCallbackPage() {
 	return <MicrosoftCallback />;
-} 
+}

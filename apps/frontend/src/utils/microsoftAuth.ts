@@ -1,4 +1,3 @@
-
 /**
  * Handles the Microsoft OAuth callback
  * @param sessionId The session ID returned from the Microsoft OAuth callback

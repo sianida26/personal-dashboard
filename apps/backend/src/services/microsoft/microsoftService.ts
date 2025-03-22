@@ -122,4 +122,4 @@ export async function getEmails(userId: string, limit = 10) {
 		console.error("Error getting emails:", error);
 		return null;
 	}
-} 
+}

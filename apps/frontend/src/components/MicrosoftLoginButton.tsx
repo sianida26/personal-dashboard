@@ -34,4 +34,4 @@ export default function MicrosoftLoginButton({
 			<span>Sign in with Microsoft</span>
 		</button>
 	);
-} 
+}
