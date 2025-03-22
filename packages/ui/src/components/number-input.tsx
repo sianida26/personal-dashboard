@@ -7,39 +7,51 @@ import { LuChevronDown, LuChevronUp } from "react-icons/lu";
  * Extends InputProps for numeric-specific behavior.
  */
 export interface NumberInputProps
-	extends Omit<InputProps, "type" | "value" | "onChange"> {
-	/**
-	 * Current numeric value (controlled).
-	 */
-	value?: number;
-	/**
-	 * Default numeric value (uncontrolled).
-	 */
-	defaultValue?: number;
-	/**
-	 * Callback when value changes (numeric).
-	 */
-	onChange?(value: number): void;
-	/**
-	 * Minimum value allowed.
-	 */
-	min?: number;
-	/**
-	 * Maximum value allowed.
-	 */
-	max?: number;
-	/**
-	 * Increment/decrement step.
-	 */
-	step?: number;
-	/**
-	 * Determine how clamping is applied.
-	 * "none" - do not clamp the value.
-	 * "blur" - clamp the value on blur.
-	 * "strict" - clamp the value immediately on change.
-	 */
-	clampBehavior?: "none" | "blur" | "strict";
-}
+		extends Omit<InputProps, "type" | "value" | "onChange"> {
+		/**
+		 * Current numeric value (controlled).
+		 */
+		value?: number;
+		/**
+		 * Default numeric value (uncontrolled).
+		 */
+		defaultValue?: number;
+		/**
+		 * Callback when value changes (numeric).
+		 */
+		onChange?(value: number): void;
+		/**
+		 * Minimum value allowed.
+		 */
+		min?: number;
+		/**
+		 * Maximum value allowed.
+		 */
+		max?: number;
+		/**
+		 * Increment/decrement step.
+		 */
+		step?: number;
+		/**
+		 * Determine how clamping is applied.
+		 * "none" - do not clamp the value.
+		 * "blur" - clamp the value on blur.
+		 * "strict" - clamp the value immediately on change.
+		 */
+		clampBehavior?: "none" | "blur" | "strict";
+		/**
+		 * Text prefix to add before the number.
+		 */
+		prefix?: string;
+		/**
+		 * Character to use as thousands separator.
+		 */
+		thousandSeparator?: string;
+		/**
+		 * Character to use as decimal separator.
+		 */
+		decimalSeparator?: string;
+	}
 
 export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 	(
@@ -51,6 +63,9 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 			max,
 			step = 1,
 			clampBehavior = "blur",
+			prefix = "",
+			thousandSeparator = "",
+			decimalSeparator = ".",
 			...props
 		},
 		ref,
@@ -72,8 +87,73 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 			}
 		}, [isControlled, value]);
 
+		// Format value for display
+		const formatValue = (val: string): string => {
+			if (!val) return "";
+
+			const parsedNum = parseValue(val);
+			if (parsedNum === null) return val;
+
+			let integerPart = "";
+			let decimalPart = "";
+
+			// Split the value into integer and decimal parts
+			const dotIndex = val.indexOf(".");
+			if (dotIndex !== -1) {
+				integerPart = val.substring(0, dotIndex);
+				decimalPart = val.substring(dotIndex + 1);
+			} else {
+				integerPart = val;
+			}
+
+			// Format the integer part with thousand separators if needed
+			if (thousandSeparator && integerPart.length > 3) {
+				integerPart = integerPart.replace(
+					/\B(?=(\d{3})+(?!\d))/g,
+					thousandSeparator,
+				);
+			}
+
+			// Join the parts with the decimal separator
+			const formattedValue = decimalPart
+				? `${integerPart}${decimalSeparator}${decimalPart}`
+				: integerPart;
+
+			return prefix + formattedValue;
+		};
+
+		// Unformat value for processing
+		const unformatValue = (val: string): string => {
+			if (!val) return "";
+
+			let result = val;
+			if (prefix) {
+				result = result.replace(prefix, "");
+			}
+
+			if (thousandSeparator) {
+				result = result.replace(
+					new RegExp(
+						thousandSeparator.replace(
+							/[.*+?^${}()|[\]\\]/g,
+							"\\$&",
+						),
+						"g",
+					),
+					"",
+				);
+			}
+
+			if (decimalSeparator && decimalSeparator !== ".") {
+				result = result.replace(decimalSeparator, ".");
+			}
+
+			return result;
+		};
+
 		const parseValue = (val: string) => {
-			const numeric = Number.parseFloat(val);
+			const unformatted = unformatValue(val);
+			const numeric = Number.parseFloat(unformatted);
 			return Number.isNaN(numeric) ? null : numeric;
 		};
 
@@ -111,6 +191,16 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 			event: React.ChangeEvent<HTMLInputElement>,
 		) => {
 			const rawValue = event.target.value;
+
+			// Skip processing if the value doesn't pass basic validation
+			// This allows user to type partial values like just a decimal point
+			if (rawValue === "" || rawValue === prefix) {
+				if (!isControlled) {
+					setInternalValue("");
+				}
+				onChange?.(Number.NaN);
+				return;
+			}
 
 			if (clampBehavior === "strict") {
 				// Immediately clamp on each change
@@ -174,18 +264,25 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 			</div>
 		);
 
+		// Format the display value
+		const displayValue = internalValue
+			? formatValue(internalValue)
+			: internalValue;
+
 		return (
 			<Input
 				ref={ref}
 				{...props}
-				type="number"
-				value={internalValue}
+				type="text"
+				inputMode="decimal"
+				value={displayValue}
 				onChange={handleInputChange}
 				onBlur={handleBlur}
 				rightSection={rightSection}
 				classNames={{
 					rightSection:
 						"right-[0.4px] h-full rounded-r-sm overflow-clip",
+					...props.classNames,
 				}}
 			/>
 		);
