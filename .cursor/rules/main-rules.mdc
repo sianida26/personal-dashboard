@@ -7,3 +7,4 @@ alwaysApply: true
 - Avoid using the `any` type.
 - Ensure the UI and UX are optimal.
 - Review each change for security vulnerabilities.
+- environment variables for backend should be retrieved from [appEnv.ts](mdc:apps/backend/src/appEnv.ts)
