@@ -13,6 +13,7 @@ import authInfo from "../../middlewares/authInfo";
 import type HonoEnv from "../../types/HonoEnv";
 import { generateAccessToken } from "../../utils/authUtils";
 import { checkPassword } from "../../utils/passwordUtils";
+import microsoftRouter from "./microsoft/route";
 
 const authRoutes = new Hono<HonoEnv>()
 	.post("/login", zValidator("json", loginSchema), async (c) => {
@@ -129,6 +130,7 @@ const authRoutes = new Hono<HonoEnv>()
 		return c.json({
 			message: "Logged out successfully",
 		});
-	});
-
+	})
+	//Microsoft OAuth Routes
+	.route("/microsoft", microsoftRouter);
 export default authRoutes;

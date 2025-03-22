@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
 import client from "@/honoClient";
-
+import { FaMicrosoft } from "react-icons/fa";
 export const Route = createLazyFileRoute("/login/")({
 	component: LoginPage,
 });
@@ -169,6 +169,10 @@ export default function LoginPage() {
 							<Button variant="outline" className="w-full">
 								<FcGoogle />
 								Google
+							</Button>
+							<Button variant="outline" className="w-full">
+								<FaMicrosoft />
+								Microsoft
 							</Button>
 						</div>
 					</div>

@@ -35,6 +35,7 @@ const envSchema = z.object({
 	APP_HOST: z.string().ip().default("127.0.0.1"),
 	APP_PORT: z.coerce.number().int(),
 	BASE_URL: z.string(),
+	FRONTEND_URL: z.string(),
 
 	//Database
 	DATABASE_URL: z.string(),
