@@ -1,0 +1,9 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+- Use the null‑coalescing operator (??) instead of ||.
+- Avoid using the `any` type.
+- Ensure the UI and UX are optimal.
+- Review each change for security vulnerabilities.

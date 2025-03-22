@@ -1,5 +1,0 @@
----
-description: use ?? instead of || for providing fallback values
-globs: *.ts, *.tsx
-alwaysApply: false
----
