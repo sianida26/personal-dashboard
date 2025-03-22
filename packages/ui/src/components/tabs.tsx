@@ -102,7 +102,7 @@ const Tabs = ({
 		<TabsContext.Provider value={contextValue}>
 			<div
 				className={cn(
-					"tabs",
+					"tabs w-full",
 					orientation === "vertical" && "tabs-vertical",
 					className,
 					classNames?.root,
@@ -128,7 +128,7 @@ const TabList = ({ className, children, ...props }: TabListProps) => {
 	return (
 		<div
 			className={cn(
-				"inline-flex h-10 items-center justify-start gap-4 border-b border-border",
+				"flex w-full h-10 items-center justify-start gap-4 border-b border-border",
 				orientation === "vertical" && "flex-col",
 				className,
 			)}
