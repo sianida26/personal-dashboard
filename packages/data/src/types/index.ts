@@ -1,1 +1,1 @@
-export * from "./PaginatedResponse.js";
+export * from "./PaginatedResponse";

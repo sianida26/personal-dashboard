@@ -1,8 +1,9 @@
 import { z } from "zod";
+import { APP_SETTING_KEYS } from "@repo/data";
 
 export const appSettingSchema = z.object({
 	id: z.string().optional(),
-	key: z.string().min(1, "Key is required"),
+	key: z.enum(APP_SETTING_KEYS),
 	value: z.string().min(1, "Value is required"),
 	createdAt: z.coerce.date().optional(),
 	updatedAt: z.coerce.date().optional(),
@@ -13,10 +14,12 @@ export const appSettingCreateSchema = appSettingSchema.omit({
 	createdAt: true,
 	updatedAt: true,
 });
-export const appSettingUpdateSchema = appSettingSchema.omit({
-	createdAt: true,
-	updatedAt: true,
+
+export const appSettingUpdateSchema = z.object({
+	id: z.string(),
+	value: z.string().min(1, "Value is required"),
 });
+
 export const appSettingDeleteSchema = z.object({ id: z.string() });
 
 export type AppSetting = z.infer<typeof appSettingSchema>;

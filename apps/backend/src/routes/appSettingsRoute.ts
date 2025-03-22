@@ -5,11 +5,9 @@ import db from "../drizzle";
 import { appSettings } from "../drizzle/schema/appSettingsSchema";
 import { eq } from "drizzle-orm";
 import { notFound } from "../errors/DashboardError";
-import {
-	appSettingCreateSchema,
-	appSettingUpdateSchema,
-} from "@repo/validation";
+import { appSettingUpdateSchema } from "@repo/validation";
 import type { PaginatedResponse } from "@repo/data/types";
+import { APP_SETTING_KEYS, DEFAULT_APP_SETTINGS } from "@repo/data";
 import checkPermission from "../middlewares/checkPermission";
 
 // Create a router for app settings
@@ -98,29 +96,13 @@ const appSettingsRouter = new Hono<HonoEnv>()
 
 		return c.json(setting);
 	})
-	.post(
-		"/",
-		checkPermission("APP_SETTINGS_MANAGE"),
-		zValidator("json", appSettingCreateSchema),
-		async (c) => {
-			const data = c.req.valid("json");
-
-			// Check if key already exists
-			const existingSetting = await db.query.appSettings.findFirst({
-				where: eq(appSettings.key, data.key),
-			});
-
-			if (existingSetting) {
-				return c.json({ error: "Key already exists" }, 400);
-			}
-
-			const result = await db
-				.insert(appSettings)
-				.values(data)
-				.returning();
-			return c.json(result[0]);
-		},
-	)
+	.get("/keys", async (c) => {
+		// Return all available setting keys
+		return c.json({
+			keys: APP_SETTING_KEYS,
+			defaultValues: DEFAULT_APP_SETTINGS,
+		});
+	})
 	.put(
 		"/:id",
 		checkPermission("APP_SETTINGS_MANAGE"),
@@ -140,42 +122,14 @@ const appSettingsRouter = new Hono<HonoEnv>()
 				});
 			}
 
-			// Check if updated key would conflict with another setting
-			if (data.key !== existingSetting.key) {
-				const keyConflict = await db.query.appSettings.findFirst({
-					where: eq(appSettings.key, data.key),
-				});
-
-				if (keyConflict) {
-					return c.json({ error: "Key already exists" }, 400);
-				}
-			}
-
 			const result = await db
 				.update(appSettings)
-				.set({ ...data, updatedAt: new Date() })
+				.set({ value: data.value, updatedAt: new Date() })
 				.where(eq(appSettings.id, id))
 				.returning();
 
 			return c.json(result[0]);
 		},
-	)
-	.delete("/:id", checkPermission("APP_SETTINGS_MANAGE"), async (c) => {
-		const id = c.req.param("id");
+	);
 
-		// Check if setting exists
-		const existingSetting = await db.query.appSettings.findFirst({
-			where: eq(appSettings.id, id),
-		});
-
-		if (!existingSetting) {
-			throw notFound({
-				message: `Setting with id ${id} not found`,
-			});
-		}
-
-		await db.delete(appSettings).where(eq(appSettings.id, id));
-		return c.json({ success: true });
-	});
-
-export default appSettingsRouter; 
+export default appSettingsRouter;

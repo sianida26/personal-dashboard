@@ -1,3 +1,4 @@
+import { seedAppSettings } from "./seeds/appSettingsSeed";
 import permissionSeeder from "./seeds/permissionSeeder";
 import roleSeeder from "./seeds/rolesSeeder";
 import userSeeder from "./seeds/userSeeder";
@@ -8,6 +9,7 @@ import userSeeder from "./seeds/userSeeder";
 	await permissionSeeder();
 	await roleSeeder();
 	await userSeeder();
+	await seedAppSettings();
 })().then(() => {
 	// biome-ignore lint/suspicious/noConsole: new line for console
 	console.log("\n");

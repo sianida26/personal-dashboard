@@ -9,4 +9,4 @@ export const appSettings = pgTable("app_settings", {
 	value: text("value").notNull(),
 	createdAt: timestamp("created_at").defaultNow(),
 	updatedAt: timestamp("updated_at").defaultNow(),
-}); 
+});
