@@ -161,22 +161,30 @@ const SelectSeparator = React.forwardRef<
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
 
 export type SelectProps = {
-	disabled?: boolean;
-	id?: string;
-	label?: React.ReactNode;
-	placeholder?: string;
-	readOnly?: boolean;
-	data?: ({ value: string; label: React.ReactNode } | string)[];
-	defaultValue?: string;
-	onValueChange?: (value: string) => void;
-	value?: string;
-	withAsterisk?: boolean;
-};
+		disabled?: boolean;
+		id?: string;
+		label?: React.ReactNode;
+		placeholder?: string;
+		readOnly?: boolean;
+		data?: ({ value: string; label: React.ReactNode } | string)[];
+		defaultValue?: string;
+		/**
+		 * @deprecated Use onChange instead
+		 * TODO: Remove this prop in the next major version
+		 */
+		onValueChange?: (value: string) => void;
+		onChange?: (value: string) => void;
+		value?: string;
+		withAsterisk?: boolean;
+		required?: boolean;
+		error?: React.ReactNode;
+	};
 
 const Select = ({
 	defaultValue,
 	value,
 	onValueChange,
+	onChange,
 	...props
 }: SelectProps) => {
 	const [_, setInternalValue] = React.useState<string | undefined>(
@@ -188,11 +196,15 @@ const Select = ({
 
 	const handleChange = (selectedValue: string | null) => {
 		if (!isControlled) {
-			setInternalValue(selectedValue || undefined);
+			setInternalValue(selectedValue ?? undefined);
 		}
 
-		if (onValueChange) {
-			onValueChange(selectedValue || "");
+		// Support both onChange and onValueChange (deprecated)
+		// TODO: Remove onValueChange support in the next major version
+		if (onChange) {
+			onChange(selectedValue ?? "");
+		} else if (onValueChange) {
+			onValueChange(selectedValue ?? "");
 		}
 	};
 
@@ -203,7 +215,7 @@ const Select = ({
 					<Label htmlFor={props.id} className="">
 						{props.label}
 					</Label>
-					{props.withAsterisk && (
+					{(props.withAsterisk || props.required) && (
 						<span className="text-red-500">*</span>
 					)}
 				</span>
@@ -214,8 +226,13 @@ const Select = ({
 				defaultValue={defaultValue}
 				value={value}
 				onValueChange={handleChange}
+				required={props.required}
 			>
-				<SelectTrigger /*  disabled={props.disabled} */>
+				<SelectTrigger
+					className={cn(
+						props.error && "border-red-500",
+					)} /*  disabled={props.disabled} */
+				>
 					<SelectValue /* placeholder={props.placeholder} */ />
 				</SelectTrigger>
 				<SelectContent>
@@ -229,6 +246,9 @@ const Select = ({
 					))}
 				</SelectContent>
 			</NativeSelect>
+			{props.error && (
+				<div className="mt-1 text-sm text-red-500">{props.error}</div>
+			)}
 		</div>
 	);
 };
