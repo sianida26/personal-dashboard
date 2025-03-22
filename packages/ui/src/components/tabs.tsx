@@ -128,7 +128,7 @@ const TabList = ({ className, children, ...props }: TabListProps) => {
 	return (
 		<div
 			className={cn(
-				"inline-flex items-center gap-1 rounded-lg bg-muted p-1 text-muted-foreground",
+				"inline-flex h-10 items-center justify-start gap-4 border-b border-border",
 				orientation === "vertical" && "flex-col",
 				className,
 			)}
@@ -278,10 +278,10 @@ const TabTrigger = ({
 			tabIndex={isActive ? 0 : -1}
 			data-value={value}
 			className={cn(
-				"inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+				"inline-flex h-10 items-center justify-center whitespace-nowrap px-4 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
 				isActive
-					? "bg-background text-foreground shadow-sm"
-					: "text-muted-foreground hover:bg-muted/80 hover:text-foreground",
+					? "border-b-2 border-foreground text-foreground"
+					: "text-muted-foreground hover:text-foreground",
 				className,
 			)}
 			disabled={disabled}
@@ -318,7 +318,7 @@ const TabPanel = ({ className, value, children, ...props }: TabPanelProps) => {
 			id={`panel-${value}`}
 			aria-labelledby={`tab-${value}`}
 			className={cn(
-				"mt-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+				"mt-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
 				className,
 			)}
 			{...props}
