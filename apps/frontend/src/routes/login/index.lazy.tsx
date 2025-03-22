@@ -9,7 +9,8 @@ import { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
 import client from "@/honoClient";
-import { FaMicrosoft } from "react-icons/fa";
+import MicrosoftLoginButton from "@/components/MicrosoftLoginButton";
+
 export const Route = createLazyFileRoute("/login/")({
 	component: LoginPage,
 });
@@ -165,15 +166,13 @@ export default function LoginPage() {
 							</div>
 						</div>
 
-						<div className="w-full">
+						{/* Social login buttons */}
+						<div className="w-full flex flex-col gap-2">
 							<Button variant="outline" className="w-full">
-								<FcGoogle />
-								Google
+								<FcGoogle className="mr-2" />
+								<span>Google</span>
 							</Button>
-							<Button variant="outline" className="w-full">
-								<FaMicrosoft />
-								Microsoft
-							</Button>
+							<MicrosoftLoginButton className="w-full" />
 						</div>
 					</div>
 				</div>
