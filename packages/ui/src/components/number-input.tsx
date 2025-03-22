@@ -34,9 +34,11 @@ export interface NumberInputProps
 		step?: number;
 		/**
 		 * Determine how clamping is applied.
-		 * "none" - do not clamp the value.
-		 * "blur" - clamp the value on blur.
-		 * "strict" - clamp the value immediately on change.
+		 * - "none" - do not clamp the value.
+		 * - "blur" - clamp the value on blur.
+		 * - "strict" - clamp the value immediately on change.
+		 *
+		 * default: "blur"
 		 */
 		clampBehavior?: "none" | "blur" | "strict";
 		/**
