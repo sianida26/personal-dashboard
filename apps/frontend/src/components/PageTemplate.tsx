@@ -48,6 +48,7 @@ import {
 	SelectContent,
 	SelectItem,
 	NativeSelect,
+	Select,
 } from "@repo/ui";
 
 // Define filter types
@@ -122,6 +123,10 @@ export interface Props<T extends Record<string, unknown>> {
 	createButton?: boolean | string | ReactNode;
 	// Additional content to be rendered on the left side of create button
 	topContent?: ReactNode;
+	// Page size options
+	pageSizeOptions?: number[];
+	// Default page size
+	defaultPageSize?: number;
 }
 
 type ColumnFiltersState = Array<{
@@ -215,11 +220,14 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 	props: Props<T>,
 ) {
 	const withSearchBar = Boolean(props.searchBar ?? true);
+	// Default page size options if not provided
+	const pageSizeOptions = props.pageSizeOptions ?? [5, 10, 25, 50, 100, 500];
+	const defaultPageSize = props.defaultPageSize ?? 10;
 
 	const [sorting, setSorting] = React.useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [page, setPage] = useState(1);
-	const [limit] = useState(10);
+	const [limit, setLimit] = useState(defaultPageSize);
 	const [q, setQ] = useState("");
 	const [activeFilters, setActiveFilters] = useState<string[]>([]);
 	const [showFilterMenu, setShowFilterMenu] = useState(false);
@@ -335,6 +343,13 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 	const memoizedSearchCallback = useCallback((value: string) => {
 		setQ(value);
 		setPage(1); // Reset to first page when searching
+	}, []);
+
+	// Handle page size change
+	const handlePageSizeChange = useCallback((value: string) => {
+		const newLimit = Number.parseInt(value, 10);
+		setLimit(newLimit);
+		setPage(1); // Reset to first page when changing page size
 	}, []);
 
 	// Memoize query parameters
@@ -652,7 +667,15 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 						columnBorders={props.columnBorders}
 					/>
 					<div className="flex items-center justify-between">
-						<div className="flex items-center gap-2">
+						<div className="flex items-center gap-4">
+							<Select
+								value={String(limit)}
+								onValueChange={handlePageSizeChange}
+								data={pageSizeOptions.map((size) => ({
+									value: String(size),
+									label: `${size} per page`,
+								}))}
+							/>
 							<span className="text-sm text-muted-foreground whitespace-nowrap">
 								Page {currentPage} of {totalPages}
 							</span>

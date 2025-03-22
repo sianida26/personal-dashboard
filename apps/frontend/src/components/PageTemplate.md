@@ -34,6 +34,8 @@ function MyPage() {
 | `createButton` | `boolean \| string \| ReactNode` | Configuration for create button |
 | `modals` | `(ReactNode \| LazyExoticComponent<React.ComponentType>)[]` | Optional modals to render. Supports both regular React nodes and lazy-loaded components |
 | `topContent` | `ReactNode` | Optional content to be rendered on the left side of create button |
+| `pageSizeOptions` | `number[]` | Array of available page size options (defaults to [5, 10, 25, 50, 100, 500]) |
+| `defaultPageSize` | `number` | Default page size (defaults to 10) |
 
 ### Sorting Props
 
@@ -101,6 +103,16 @@ type FilterParam = {
 };
 ```
 
+## Pagination
+
+The component handles pagination on the server side and provides:
+
+1. A dropdown to select the number of items per page (defaults to options: 5, 10, 25, 50, 100, 500)
+2. Page navigation controls
+3. Current page and total pages display
+
+You can customize the available page size options using the `pageSizeOptions` prop and set the default page size with `defaultPageSize`.
+
 ## Example Usage
 
 ```tsx
@@ -126,6 +138,8 @@ function UsersPage() {
       }
     ],
     columnBorders: true,
+    pageSizeOptions: [10, 20, 50, 100], // Custom page size options
+    defaultPageSize: 20, // Set a different default page size
     columnDefs: (helper) => [
       helper.accessor("name", {
         header: "Name",
@@ -171,7 +185,7 @@ export interface PaginatedResponse<T> {
 - Filter button to show/hide available filters
 - Active filters displayed as chips with edit/remove functionality
 - Column width adjustment by dragging edges (for resizable columns)
-- Pagination controls
+- Pagination controls with configurable items per page
 - Optional create button with customizable text/component
 - Support for custom modals 
 
