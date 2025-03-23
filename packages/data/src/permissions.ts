@@ -11,6 +11,7 @@ export const permissions = [
 	"roles.update",
 	"roles.delete",
 	"APP_SETTINGS_MANAGE",
+	"graph-admin",
 ] as const;
 
 export const generalPermissions = ["authenticated-only", "guest-only"] as const;

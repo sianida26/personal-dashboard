@@ -7,7 +7,7 @@ process.env = { ...process.env, ...loadEnv("", process.cwd()) };
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [react(), TanStackRouterVite(), tailwindcss()],
+	plugins: [TanStackRouterVite(), react(), tailwindcss()],
 	resolve: {
 		alias: {
 			"@": "/src",

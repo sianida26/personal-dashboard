@@ -39,6 +39,13 @@ const sidebarMenus: SidebarMenu[] = [
 				link: "/app-settings",
 				color: "blue",
 			},
+			{
+				label: "Admin",
+				icon: { tb: "TbChartBar" },
+				allowedPermissions: ["graph-admin"],
+				link: "/admin",
+				color: "purple",
+			},
 		],
 	},
 ];
