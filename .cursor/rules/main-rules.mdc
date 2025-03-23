@@ -9,3 +9,4 @@ alwaysApply: true
 - Review each change for security vulnerabilities.
 - environment variables for backend should be retrieved from [appEnv.ts](mdc:apps/backend/src/appEnv.ts) 
 - do not run migrations automatically
+- do not run commands for starting server
