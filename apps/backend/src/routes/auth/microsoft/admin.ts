@@ -49,6 +49,24 @@ const microsoftAdminRouter = new Hono<HonoEnv>()
 	})
 	// Authentication flow
 	.get("/login", async (c) => {
+		// Verify the CSRF token from the request
+		const csrfToken = c.req.query("csrf_token");
+		const storedCsrfToken = getCookie(c, "ms_admin_csrf_token");
+
+		if (!csrfToken || !storedCsrfToken || csrfToken !== storedCsrfToken) {
+			throw unauthorized({
+				message: "Invalid or missing CSRF token",
+			});
+		}
+
+		// Clear the CSRF token after use
+		setCookie(c, "ms_admin_csrf_token", "", {
+			httpOnly: true,
+			secure: appEnv.APP_ENV === "production",
+			path: "/",
+			maxAge: 0, // Expire immediately
+		});
+
 		// Generate state parameter for security
 		const state = createId();
 		// Store state in a cookie to verify on callback
@@ -178,6 +196,21 @@ const microsoftAdminRouter = new Hono<HonoEnv>()
 			},
 			expiresAt: null, // We don't expose exact expiration time to the frontend
 		});
+	})
+	// Add an endpoint to generate a CSRF token for the Admin frontend
+	.get("/csrf-token", async (c) => {
+		// Generate a CSRF token
+		const csrfToken = createId();
+
+		// Set the token in a cookie
+		setCookie(c, "ms_admin_csrf_token", csrfToken, {
+			httpOnly: true,
+			secure: appEnv.APP_ENV === "production",
+			path: "/",
+			maxAge: 60 * 10, // 10 minutes
+		});
+
+		return c.json({ csrfToken });
 	})
 	.get("/users", async (c) => {
 		try {

@@ -70,13 +70,18 @@ export default function AdminOperations() {
 			setAuthenticating(true);
 			setAuthMessage(null);
 
-			// Update the URL to match the route in index.ts
-			window.location.href = `${import.meta.env.VITE_BACKEND_BASE_URL}/auth/microsoft/admin/login`;
+			// First, get a CSRF token from the backend
+			const csrfResponse = await fetchRPC<{ csrfToken: string }>(
+				client.auth.microsoft.admin["csrf-token"].$get(),
+			);
+
+			// Then, redirect to the login endpoint with the CSRF token
+			window.location.href = `${import.meta.env.VITE_BACKEND_BASE_URL}/auth/microsoft/admin/login?csrf_token=${csrfResponse.csrfToken}`;
 		} catch (error) {
 			setAuthMessage({
 				type: "error",
 				message:
-					error instanceof Error
+					error instanceof ResponseError
 						? error.message
 						: "Authentication failed",
 			});
