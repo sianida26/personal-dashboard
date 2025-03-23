@@ -1,4 +1,4 @@
-import { createFileRoute, Navigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { usePermissions } from "../../hooks/useAuth";
 import AdminOperations from "@/pages/AdminOperations";
 

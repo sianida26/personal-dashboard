@@ -17,4 +17,4 @@ export const microsoftAdminTokens = pgTable("microsoft_admin_tokens", {
 	expiresAt: timestamp("expires_at", { mode: "date" }).notNull(),
 	createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
 	updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
-}); 
+});

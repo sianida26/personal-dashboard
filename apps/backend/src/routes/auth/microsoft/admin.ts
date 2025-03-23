@@ -8,7 +8,6 @@ import { setCookie, getCookie } from "hono/cookie";
 import db from "../../../drizzle";
 import { microsoftAdminTokens } from "../../../drizzle/schema/microsoftAdmin";
 import authInfo from "../../../middlewares/authInfo";
-import { isUserAdmin } from "../../../services/microsoft/authHelpers";
 import { createGraphClientForAdmin } from "../../../services/microsoft/graphClient";
 import checkPermission from "../../../middlewares/checkPermission";
 

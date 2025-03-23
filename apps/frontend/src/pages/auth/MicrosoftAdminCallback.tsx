@@ -54,7 +54,7 @@ export default function MicrosoftAdminCallback() {
 				);
 
 				// Redirect to admin dashboard
-				navigate({ to: "/admin" });
+				navigate({ to: "/graph-admin" });
 			} catch (err) {
 				console.error("Error in Microsoft admin callback:", err);
 				setError(
@@ -102,4 +102,4 @@ export default function MicrosoftAdminCallback() {
 			</div>
 		</div>
 	);
-} 
+}
