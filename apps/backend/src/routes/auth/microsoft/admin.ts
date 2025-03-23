@@ -10,11 +10,26 @@ import { microsoftAdminTokens } from "../../../drizzle/schema/microsoftAdmin";
 import authInfo from "../../../middlewares/authInfo";
 import { createGraphClientForAdmin } from "../../../services/microsoft/graphClient";
 import checkPermission from "../../../middlewares/checkPermission";
+import { and, eq, gt } from "drizzle-orm";
 
 // Define a separate redirect URI for admin authentication
 const ADMIN_REDIRECT_URI = `${appEnv.BASE_URL}/auth/microsoft/admin/callback`;
 // Admin requires additional scopes for application-level permissions
 const ADMIN_SCOPES = ["User.Read.All", "Group.Read.All", "Directory.Read.All"];
+
+// In-memory map to store valid CSRF tokens
+// This will be lost on server restart, but that's acceptable for auth flow
+const validCsrfTokens = new Map<string, { timestamp: number }>();
+
+// Cleanup expired tokens periodically (tokens older than 10 minutes)
+setInterval(() => {
+	const now = Date.now();
+	for (const [token, data] of validCsrfTokens.entries()) {
+		if (now - data.timestamp > 10 * 60 * 1000) {
+			validCsrfTokens.delete(token);
+		}
+	}
+}, 60 * 1000); // Run cleanup every minute
 
 /**
  * Microsoft Admin Router
@@ -41,21 +56,15 @@ const microsoftAdminRouter = new Hono<HonoEnv>()
 	.get("/login", async (c) => {
 		// Verify the CSRF token from the request
 		const csrfToken = c.req.query("csrf_token");
-		const storedCsrfToken = getCookie(c, "ms_admin_csrf_token");
 
-		if (!csrfToken || !storedCsrfToken || csrfToken !== storedCsrfToken) {
+		if (!csrfToken || !validCsrfTokens.has(csrfToken)) {
 			throw unauthorized({
 				message: "Invalid or missing CSRF token",
 			});
 		}
 
-		// Clear the CSRF token after use
-		setCookie(c, "ms_admin_csrf_token", "", {
-			httpOnly: true,
-			secure: appEnv.APP_ENV === "production",
-			path: "/",
-			maxAge: 0, // Expire immediately
-		});
+		// Remove the token from the valid tokens map
+		validCsrfTokens.delete(csrfToken);
 
 		// Generate state parameter for security
 		const state = createId();
@@ -135,7 +144,7 @@ const microsoftAdminRouter = new Hono<HonoEnv>()
 			});
 
 			// Redirect back to the admin page
-			return c.redirect(`${appEnv.FRONTEND_URL}/admin`);
+			return c.redirect(`${appEnv.FRONTEND_URL}/graph-admin`);
 		} catch (error) {
 			return c.json(
 				{
@@ -155,7 +164,6 @@ const microsoftAdminRouter = new Hono<HonoEnv>()
 	.use(checkPermission("ms-graph.read"))
 	// Admin API operations
 	.get("/status", async (c) => {
-		// Get the current user ID from the middleware
 		const userId = c.var.uid;
 		if (!userId) {
 			throw unauthorized({
@@ -180,7 +188,24 @@ const microsoftAdminRouter = new Hono<HonoEnv>()
 			});
 		}
 
-		// Try to get a Graph client (this will automatically check for valid tokens)
+		// Check if we have any valid tokens in the database
+		const now = new Date();
+		const adminToken = await db.query.microsoftAdminTokens.findFirst({
+			where: and(
+				eq(microsoftAdminTokens.tokenType, "admin"),
+				gt(microsoftAdminTokens.expiresAt, now),
+			),
+			orderBy: (tokens) => [tokens.createdAt],
+		});
+
+		// If no token exists, return unauthenticated status
+		if (!adminToken) {
+			throw unauthorized({
+				message: "No valid Microsoft Graph admin token found",
+			});
+		}
+
+		// Try to get a Graph client
 		const graphClient = await createGraphClientForAdmin();
 
 		// If successful, get basic organization info to verify token works
@@ -207,14 +232,10 @@ const microsoftAdminRouter = new Hono<HonoEnv>()
 		// Generate a CSRF token
 		const csrfToken = createId();
 
-		// Set the token in a cookie
-		setCookie(c, "ms_admin_csrf_token", csrfToken, {
-			httpOnly: true,
-			secure: appEnv.APP_ENV === "production",
-			path: "/",
-			maxAge: 60 * 10, // 10 minutes
-		});
+		// Store the token in our valid tokens map with timestamp
+		validCsrfTokens.set(csrfToken, { timestamp: Date.now() });
 
+		// Return the token directly in the JSON response
 		return c.json({ csrfToken });
 	})
 	.get("/users", async (c) => {
@@ -274,6 +295,19 @@ const microsoftAdminRouter = new Hono<HonoEnv>()
 				{ status: 500 },
 			);
 		}
+	})
+	// Add a deauthenticate endpoint to revoke Microsoft admin access
+	.post("/deauthenticate", async (c) => {
+		// Delete all Microsoft admin tokens from the database
+		const result = await db
+			.delete(microsoftAdminTokens)
+			.where(eq(microsoftAdminTokens.tokenType, "admin"));
+
+		return c.json({
+			success: true,
+			message: "Successfully deauthenticated from Microsoft Graph API",
+			tokensRemoved: result.count,
+		});
 	});
 
 export default microsoftAdminRouter;

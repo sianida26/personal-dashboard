@@ -54,7 +54,7 @@ const validateMicrosoftOAuth = () => {
 export async function createGraphClientForAdmin() {
 	try {
 		validateMicrosoftOAuth();
-		
+
 		// Check if we have a valid token in the database
 		const now = new Date();
 		const adminToken = await db.query.microsoftAdminTokens.findFirst({
@@ -72,8 +72,18 @@ export async function createGraphClientForAdmin() {
 
 		// Otherwise, get a new token using client credentials flow
 		const msalClient = getMsalClient();
+
+		// NOTE: If you're seeing "Insufficient privileges" errors (403), you need to:
+		// 1. Go to Azure Portal -> App registrations -> [Your app] -> API permissions
+		// 2. Add the necessary application permissions (not delegated) for Microsoft Graph
+		// 3. Get admin consent for the application permissions
+		// Common permissions needed: User.Read.All, Group.Read.All, Directory.Read.All
+
+		// Use client credentials flow for app-only permissions
+		// This is different from user interactive auth
 		const tokenResponse = await msalClient.acquireTokenByClientCredential({
-			scopes: ["https://graph.microsoft.com/.default"], // Use .default to request all configured permissions
+			scopes: ["https://graph.microsoft.com/.default"],
+			skipCache: true, // Skip cache to ensure we get a fresh token
 		});
 
 		if (!tokenResponse?.accessToken) {
@@ -100,6 +110,7 @@ export async function createGraphClientForAdmin() {
 		// Create and return client with admin token
 		return createGraphClientForUser(tokenResponse.accessToken);
 	} catch (error) {
+		console.error("Error creating admin Graph client:", error);
 		throw new Error(`Failed to create admin Graph client: ${error}`);
 	}
 }
@@ -116,7 +127,7 @@ export async function refreshAccessToken(
 ) {
 	try {
 		validateMicrosoftOAuth();
-		
+
 		// First try the existing token with a simple request
 		const client = createGraphClientForUser(accessToken);
 		await client.api("/me").select("id").get();
@@ -128,7 +139,7 @@ export async function refreshAccessToken(
 		try {
 			// Get the MSAL client (this will throw if MS OAuth is not enabled)
 			const msalClient = getMsalClient();
-			
+
 			// Use silent token acquisition (requires implementing an account cache)
 			// This is a placeholder - in a real implementation, you'd need to store
 			// and retrieve refresh tokens or use MSAL's token cache
@@ -142,7 +153,8 @@ export async function refreshAccessToken(
 					account,
 				};
 
-				const response = await msalClient.acquireTokenSilent(silentRequest);
+				const response =
+					await msalClient.acquireTokenSilent(silentRequest);
 				return response.accessToken;
 			}
 

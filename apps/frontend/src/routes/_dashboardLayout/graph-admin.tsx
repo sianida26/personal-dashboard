@@ -11,7 +11,7 @@ import {
 	CardTitle,
 } from "@repo/ui";
 import { Alert, AlertDescription, AlertTitle } from "@repo/ui";
-import { UserCircle, RefreshCcw, CheckCircle } from "lucide-react";
+import { UserCircle, RefreshCcw, CheckCircle, LogOut } from "lucide-react";
 import ResponseError from "@/errors/ResponseError";
 import fetchRPC from "@/utils/fetchRPC";
 import client from "@/honoClient";
@@ -40,6 +40,7 @@ function GraphAdmin() {
 	usePermissions(["ms-graph.read"]);
 
 	const [authenticating, setAuthenticating] = useState(false);
+	const [deauthenticating, setDeauthenticating] = useState(false);
 	const [authMessage, setAuthMessage] = useState<{
 		type: "success" | "error";
 		message: string;
@@ -81,12 +82,12 @@ function GraphAdmin() {
 			setAuthenticating(true);
 			setAuthMessage(null);
 
-			// First, get a CSRF token from the backend
+			// Get a CSRF token from the backend
 			const csrfResponse = await fetchRPC<{ csrfToken: string }>(
 				client.auth.microsoft.admin["csrf-token"].$get(),
 			);
 
-			// Then, redirect to the login endpoint with the CSRF token
+			// Redirect to the login endpoint with the CSRF token
 			window.location.href = `${import.meta.env.VITE_BACKEND_BASE_URL}/auth/microsoft/admin/login?csrf_token=${csrfResponse.csrfToken}`;
 		} catch (error) {
 			setAuthMessage({
@@ -97,6 +98,35 @@ function GraphAdmin() {
 						: "Authentication failed",
 			});
 			setAuthenticating(false);
+		}
+	};
+
+	// Function to deauthenticate from Microsoft Graph
+	const deauthenticateFromMicrosoft = async () => {
+		try {
+			setDeauthenticating(true);
+			setAuthMessage(null);
+
+			// Call the deauthenticate endpoint
+			await fetchRPC(client.auth.microsoft.admin.deauthenticate.$post());
+
+			setAuthMessage({
+				type: "success",
+				message: "Successfully deauthenticated from Microsoft Graph",
+			});
+
+			// Refresh authentication status
+			setAuthStatus({ authenticated: false });
+		} catch (error) {
+			setAuthMessage({
+				type: "error",
+				message:
+					error instanceof ResponseError
+						? error.message
+						: "Failed to deauthenticate",
+			});
+		} finally {
+			setDeauthenticating(false);
 		}
 	};
 
@@ -140,67 +170,72 @@ function GraphAdmin() {
 										({authStatus.adminUser.email})
 									</p>
 								)}
-								<p className="text-sm text-green-600 mt-2">
-									The backend can now perform Microsoft Graph
-									admin operations.
-								</p>
 							</div>
 						</div>
 					) : (
-						<>
-							{authMessage && (
-								<Alert
-									className={`mb-4 ${authMessage.type === "error" ? "bg-red-50" : "bg-green-50"}`}
-								>
-									<AlertTitle>
-										{authMessage.type === "success"
-											? "Success"
-											: "Error"}
-									</AlertTitle>
-									<AlertDescription>
-										{authMessage.message}
-									</AlertDescription>
-								</Alert>
-							)}
-							<p className="mb-4 text-gray-600">
-								Microsoft Graph authentication is required for
-								admin operations. Click the button below to
-								authenticate.
-							</p>
-							<Button
-								onClick={authenticateWithMicrosoft}
-								disabled={authenticating}
-								className="gap-2"
-								type="button"
-							>
-								{authenticating ? (
-									<>
-										<RefreshCcw className="h-4 w-4 animate-spin" />
-										Authenticating...
-									</>
-								) : (
-									<>
-										<UserCircle className="h-4 w-4" />
-										Authenticate with Microsoft
-									</>
-								)}
-							</Button>
-						</>
+						<div className="flex items-center space-x-2">
+							<UserCircle className="h-5 w-5 text-gray-400" />
+							<span>Not authenticated with Microsoft Graph</span>
+						</div>
+					)}
+
+					{authMessage && (
+						<Alert
+							className={`mt-4 ${
+								authMessage.type === "error"
+									? "bg-red-50 text-red-900"
+									: "bg-green-50 text-green-900"
+							}`}
+						>
+							<AlertTitle>
+								{authMessage.type === "error"
+									? "Error"
+									: "Success"}
+							</AlertTitle>
+							<AlertDescription>
+								{authMessage.message}
+							</AlertDescription>
+						</Alert>
 					)}
 				</CardContent>
-				{authStatus?.authenticated && (
-					<CardFooter className="flex justify-end border-t pt-4">
+				<CardFooter className="flex justify-end space-x-2">
+					{authStatus?.authenticated ? (
 						<Button
-							onClick={checkAuthStatus}
-							variant="outline"
-							type="button"
-							className="gap-2"
+							variant="destructive"
+							onClick={deauthenticateFromMicrosoft}
+							disabled={deauthenticating}
 						>
-							<RefreshCcw className="h-4 w-4" />
-							Refresh Status
+							{deauthenticating ? (
+								<>
+									<RefreshCcw className="h-4 w-4 mr-2 animate-spin" />
+									Deauthenticating...
+								</>
+							) : (
+								<>
+									<LogOut className="h-4 w-4 mr-2" />
+									Deauthenticate
+								</>
+							)}
 						</Button>
-					</CardFooter>
-				)}
+					) : (
+						<Button
+							onClick={authenticateWithMicrosoft}
+							disabled={authenticating}
+						>
+							{authenticating ? (
+								<>
+									<RefreshCcw className="h-4 w-4 mr-2 animate-spin" />
+									Authenticating...
+								</>
+							) : (
+								<>
+									<UserCircle className="h-4 w-4 mr-2" />
+									Authenticate with Microsoft
+								</>
+							)}
+						</Button>
+					)}
+				</CardFooter>
 			</Card>
 		</div>
 	);
