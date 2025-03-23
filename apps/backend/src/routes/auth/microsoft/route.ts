@@ -23,10 +23,21 @@ if (
 }
 
 const REDIRECT_URI = `${appEnv.BASE_URL}/auth/microsoft/callback`;
+// Define a separate redirect URI for admin authentication
+const ADMIN_REDIRECT_URI = `${appEnv.BASE_URL}/auth/microsoft/admin-callback`;
 const SCOPES = ["user.read"];
+// Admin requires additional scopes for application-level permissions
+const ADMIN_SCOPES = [
+	"user.read",
+	"User.Read.All",
+	"Group.Read.All",
+	"Directory.Read.All",
+];
 
 // Frontend callback route to receive the authorization result
 const FRONTEND_CALLBACK_ROUTE = "/oauth/microsoft-callback";
+// Frontend callback route for admin authorization
+const FRONTEND_ADMIN_CALLBACK_ROUTE = "/oauth/microsoft-admin-callback";
 
 // Store for temp auth sessions
 const tempAuthSessions = new Map<
@@ -41,6 +52,68 @@ const tempAuthSessions = new Map<
 		};
 	}
 >();
+
+// Store for admin sessions
+const adminAuthSessions = new Map<
+	string,
+	{
+		accessToken: string;
+		user: {
+			id: string;
+			name: string;
+			permissions: PermissionCode[];
+			roles: string[];
+			isAdmin: boolean;
+		};
+	}
+>();
+
+// Helper function to check if a user has admin permissions
+async function isUserAdmin(userId: string): Promise<boolean> {
+	// Get user with permissions and roles
+	const userRecord = await db.query.users.findFirst({
+		where: eq(users.id, userId),
+		with: {
+			permissionsToUsers: {
+				with: {
+					permission: true,
+				},
+			},
+			rolesToUsers: {
+				with: {
+					role: {
+						with: {
+							permissionsToRoles: {
+								with: {
+									permission: true,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	});
+
+	if (!userRecord) return false;
+
+	// Check for admin permission or role
+	// Customize this check based on your permission/role structure
+	const hasAdminPermission = userRecord.permissionsToUsers.some(
+		(p) => p.permission.code === "ADMIN_ACCESS",
+	);
+
+	// If your app uses role-based permissions, check roles too
+	const hasAdminRole = userRecord.rolesToUsers.some(
+		(r) =>
+			r.role.name === "Admin" ||
+			r.role.permissionsToRoles.some(
+				(p) => p.permission.code === "ADMIN_ACCESS",
+			),
+	);
+
+	return hasAdminPermission || hasAdminRole;
+}
 
 const microsoftRouter = new Hono<HonoEnv>()
 	.use(async (_, next) => {
@@ -71,6 +144,175 @@ const microsoftRouter = new Hono<HonoEnv>()
 		});
 
 		return c.redirect(authCodeUrl);
+	})
+	// Add a new route for admin login
+	.get("/admin-login", async (c) => {
+		// Generate state parameter for security
+		const state = createId();
+		// Store state in a cookie to verify on callback
+		setCookie(c, "microsoft_admin_auth_state", state, {
+			httpOnly: true,
+			secure: appEnv.APP_ENV === "production",
+			path: "/",
+			maxAge: 60 * 10, // 10 minutes
+		});
+
+		const authCodeUrl = await msalClient.getAuthCodeUrl({
+			scopes: ADMIN_SCOPES,
+			redirectUri: ADMIN_REDIRECT_URI,
+			state,
+		});
+
+		return c.redirect(authCodeUrl);
+	})
+	// Add admin callback handler
+	.get("/admin-callback", async (c) => {
+		const code = c.req.query("code");
+		const state = c.req.query("state");
+		const storedState = getCookie(c, "microsoft_admin_auth_state");
+
+		if (!state || !storedState || state !== storedState) {
+			// Validate state parameter to prevent CSRF attacks
+			throw unauthorized({
+				message: "Invalid state parameter",
+			});
+		}
+
+		if (!code) {
+			throw notFound({
+				message: "Authorization code not found",
+			});
+		}
+
+		try {
+			// Exchange code for tokens
+			const tokenResponse = await msalClient.acquireTokenByCode({
+				code,
+				scopes: ADMIN_SCOPES,
+				redirectUri: ADMIN_REDIRECT_URI,
+			});
+
+			if (
+				!tokenResponse?.account?.homeAccountId ||
+				!tokenResponse.accessToken
+			) {
+				throw unauthorized({
+					message: "Failed to authenticate with Microsoft",
+				});
+			}
+
+			// Get user info from Microsoft Graph
+			const graphClient = createGraphClientForUser(
+				tokenResponse.accessToken,
+			);
+			const userInfo = await graphClient
+				.api("/me")
+				.select("id,displayName,mail,userPrincipalName")
+				.get();
+
+			// Find user in our database
+			const userRecord = await db.query.users.findFirst({
+				where: eq(
+					users.email,
+					userInfo.mail ?? userInfo.userPrincipalName,
+				),
+				with: {
+					permissionsToUsers: {
+						with: {
+							permission: true,
+						},
+					},
+					rolesToUsers: {
+						with: {
+							role: {
+								with: {
+									permissionsToRoles: {
+										with: {
+											permission: true,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			});
+
+			if (!userRecord) {
+				throw unauthorized({
+					message:
+						"User not found or not authorized for admin access",
+				});
+			}
+
+			// Check if user has admin permissions
+			const hasAdminAccess = await isUserAdmin(userRecord.id);
+
+			if (!hasAdminAccess) {
+				throw unauthorized({
+					message: "User does not have administrator privileges",
+				});
+			}
+
+			// Generate a session ID for the admin
+			const sessionId = createId();
+
+			// Get all permissions from both direct assignments and roles
+			const directPermissions = userRecord.permissionsToUsers.map(
+				(p) => p.permission.code,
+			);
+			const rolePermissions = userRecord.rolesToUsers.flatMap((r) =>
+				r.role.permissionsToRoles.map((p) => p.permission.code),
+			);
+
+			// Combine and deduplicate permissions
+			const allPermissions = [
+				...new Set([...directPermissions, ...rolePermissions]),
+			] as PermissionCode[];
+
+			// Get roles
+			const roles = userRecord.rolesToUsers.map((r) => r.role.name);
+
+			// Store session
+			adminAuthSessions.set(sessionId, {
+				accessToken: tokenResponse.accessToken,
+				user: {
+					id: userRecord.id,
+					name: userRecord.name,
+					permissions: allPermissions,
+					roles,
+					isAdmin: true,
+				},
+			});
+
+			// Redirect to frontend with session ID
+			return c.redirect(
+				`${appEnv.FRONTEND_URL}${FRONTEND_ADMIN_CALLBACK_ROUTE}?session=${sessionId}`,
+			);
+		} catch (error) {
+			// Redirect to frontend with error
+			return c.redirect(
+				`${appEnv.FRONTEND_URL}/auth/error?message=${encodeURIComponent(
+					error instanceof Error ? error.message : "Unknown error",
+				)}`,
+			);
+		}
+	})
+	// Add endpoint to retrieve admin auth data
+	.get("/admin-auth-data/:sessionId", async (c) => {
+		const sessionId = c.req.param("sessionId");
+		const session = adminAuthSessions.get(sessionId);
+
+		if (!session) {
+			throw notFound({
+				message: "Admin session not found",
+			});
+		}
+
+		// Remove session after retrieving it
+		adminAuthSessions.delete(sessionId);
+
+		return c.json(session);
 	})
 	.get("/callback", async (c) => {
 		const code = c.req.query("code");
@@ -157,7 +399,8 @@ const microsoftRouter = new Hono<HonoEnv>()
 					isEnabled: true,
 				});
 
-				userRecord = await db.query.users.findFirst({
+				// Query the newly created user
+				const createdUserRecord = await db.query.users.findFirst({
 					where: eq(users.id, newUserId),
 					with: {
 						permissionsToUsers: {
@@ -181,16 +424,27 @@ const microsoftRouter = new Hono<HonoEnv>()
 					},
 				});
 
-				if (!userRecord) {
+				// Assign to userRecord if it exists
+				if (createdUserRecord) {
+					userRecord = createdUserRecord;
+				} else {
 					throw new Error("Failed to create user");
 				}
 			}
+
+			// Ensure userRecord is defined before proceeding
+			if (!userRecord) {
+				throw new Error("User record not found");
+			}
+
+			// At this point, userRecord is guaranteed to be defined
+			const user = userRecord;
 
 			// Find or create Microsoft account link
 			const existingMicrosoftAccount =
 				await db.query.microsoftUsers.findFirst({
 					where: and(
-						eq(microsoftUsers.userId, userRecord.id),
+						eq(microsoftUsers.userId, user.id),
 						eq(microsoftUsers.microsoftId, userInfo.id),
 					),
 				});
@@ -198,7 +452,7 @@ const microsoftRouter = new Hono<HonoEnv>()
 			if (!existingMicrosoftAccount) {
 				// Link Microsoft account to user
 				await db.insert(microsoftUsers).values({
-					userId: userRecord.id,
+					userId: user.id,
 					microsoftId: userInfo.id,
 					accessToken: tokenResponse.accessToken,
 				});
@@ -212,21 +466,21 @@ const microsoftRouter = new Hono<HonoEnv>()
 
 			// Generate JWT token for our app
 			const accessToken = await generateAccessToken({
-				uid: userRecord.id,
+				uid: user.id,
 			});
 
 			// Collect all permissions the user has, both user-specific and role-specific
 			const permissions = new Set<PermissionCode>();
 
 			// Add user-specific permissions to the set
-			for (const userPermission of userRecord.permissionsToUsers) {
+			for (const userPermission of user.permissionsToUsers) {
 				permissions.add(
 					userPermission.permission.code as PermissionCode,
 				);
 			}
 
 			// Add role-specific permissions to the set
-			for (const userRole of userRecord.rolesToUsers) {
+			for (const userRole of user.rolesToUsers) {
 				for (const rolePermission of userRole.role.permissionsToRoles) {
 					permissions.add(
 						rolePermission.permission.code as PermissionCode,
@@ -238,12 +492,10 @@ const microsoftRouter = new Hono<HonoEnv>()
 			const authData = {
 				accessToken,
 				user: {
-					id: userRecord.id,
-					name: userRecord.name,
+					id: user.id,
+					name: user.name,
 					permissions: Array.from(permissions),
-					roles: userRecord.rolesToUsers.map(
-						(role) => role.role.name,
-					),
+					roles: user.rolesToUsers.map((role) => role.role.name),
 				},
 			};
 

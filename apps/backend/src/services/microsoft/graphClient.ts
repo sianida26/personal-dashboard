@@ -29,6 +29,29 @@ export const createGraphClientForUser = (accessToken: string) => {
 };
 
 /**
+ * Creates a Microsoft Graph client with application permissions (admin privileges)
+ * This uses client credentials flow instead of delegated permissions
+ * @returns A configured Microsoft Graph client with admin permissions
+ */
+export async function createGraphClientForAdmin() {
+	try {
+		// Get token using client credentials flow (app-only permissions)
+		const tokenResponse = await msalClient.acquireTokenByClientCredential({
+			scopes: ["https://graph.microsoft.com/.default"], // Use .default to request all configured permissions
+		});
+
+		if (!tokenResponse?.accessToken) {
+			throw new Error("Failed to acquire admin token");
+		}
+
+		// Create and return client with admin token
+		return createGraphClientForUser(tokenResponse.accessToken);
+	} catch (error) {
+		throw new Error(`Failed to create admin Graph client: ${error}`);
+	}
+}
+
+/**
  * Retrieves a new access token for a user with their Microsoft refresh token
  * @param microsoftId The Microsoft user ID
  * @param accessToken The current access token (will be refreshed if needed)

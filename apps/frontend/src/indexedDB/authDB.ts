@@ -4,36 +4,41 @@ import Dexie from "dexie";
  * Interface representing the authentication data stored in the IndexedDB.
  */
 export interface AuthData {
-	/**
-	 * The unique key for the authentication record.
-	 */
-	key: string;
+		/**
+		 * The unique key for the authentication record.
+		 */
+		key: string;
 
-	/**
-	 * The ID of the user.
-	 */
-	userId: string | null;
+		/**
+		 * The ID of the user.
+		 */
+		userId: string | null;
 
-	/**
-	 * The name of the user.
-	 */
-	userName: string | null;
+		/**
+		 * The name of the user.
+		 */
+		userName: string | null;
 
-	/**
-	 * The permissions granted to the user.
-	 */
-	permissions: string[] | null;
+		/**
+		 * The permissions granted to the user.
+		 */
+		permissions: string[] | null;
 
-	/**
-	 * The roles assigned to the user.
-	 */
-	roles: string[] | null;
+		/**
+		 * The roles assigned to the user.
+		 */
+		roles: string[] | null;
 
-	/**
-	 * The access token for authentication.
-	 */
-	accessToken: string | null;
-}
+		/**
+		 * The access token for authentication.
+		 */
+		accessToken: string | null;
+
+		/**
+		 * Whether the user is authenticated as admin.
+		 */
+		isAdmin?: boolean;
+	}
 
 /**
  * Class representing the authentication database using Dexie.js.

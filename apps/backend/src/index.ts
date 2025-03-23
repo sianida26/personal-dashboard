@@ -13,6 +13,7 @@ import devRoutes from "./routes/dev/route";
 import permissionRoutes from "./routes/permissions/route";
 import rolesRoute from "./routes/roles/route";
 import usersRoute from "./routes/users/route";
+import adminMicrosoftRoutes from "./routes/admin/microsoft/route";
 import type HonoEnv from "./types/HonoEnv";
 import appLogger from "./utils/logger";
 
@@ -35,6 +36,7 @@ const routes = app
 	.route("/roles", rolesRoute)
 	.route("/dev", devRoutes)
 	.route("/app-settings", appSettingsRoutes)
+	.route("/api/admin/microsoft", adminMicrosoftRoutes)
 	.get("/test", (c) => {
 		return c.json({
 			message: "Server is up",
