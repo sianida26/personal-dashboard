@@ -2,7 +2,7 @@ import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { usePermissions } from "../../hooks/useAuth";
 import AdminOperations from "@/pages/AdminOperations";
 
-export const Route = createFileRoute("/_dashboardLayout/admin")({
+export const Route = createFileRoute("/_dashboardLayout/graph-admin")({
 	component: AdminWrapper,
 	staticData: {
 		title: "Admin Operations",
@@ -10,8 +10,8 @@ export const Route = createFileRoute("/_dashboardLayout/admin")({
 });
 
 function AdminWrapper() {
-	// Check if user has the required permission
-	usePermissions("graph-admin");
+	// Check if user has both required permissions
+	usePermissions(["ms-graph.read"]);
 
 	// Redirect to the admin page which is defined outside the dashboard layout
 	return <AdminOperations />;

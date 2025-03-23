@@ -46,10 +46,10 @@ export default function AdminOperations() {
 		try {
 			setIsLoading(true);
 			// Use direct fetch for the status endpoint
-			const response = await fetchRPC(
+			const response = await fetchRPC<AdminAuthStatus>(
 				client.auth.microsoft.admin.status.$get(),
 			);
-			setAuthStatus(response as AdminAuthStatus);
+			setAuthStatus(response);
 		} catch (error) {
 			setAuthMessage({
 				type: "error",

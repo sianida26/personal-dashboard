@@ -10,6 +10,7 @@ import { microsoftAdminTokens } from "../../../drizzle/schema/microsoftAdmin";
 import authInfo from "../../../middlewares/authInfo";
 import { isUserAdmin } from "../../../services/microsoft/authHelpers";
 import { createGraphClientForAdmin } from "../../../services/microsoft/graphClient";
+import checkPermission from "../../../middlewares/checkPermission";
 
 if (
 	!appEnv.MICROSOFT_CLIENT_ID ||
@@ -128,17 +129,8 @@ const microsoftAdminRouter = new Hono<HonoEnv>()
 	})
 	// Only allow authenticated users with admin permissions to access the admin auth flow
 	.use(authInfo)
-	.use(async (c, next) => {
-		const userId = c.var.uid;
-
-		if (!userId) {
-			throw unauthorized({
-				message: "Authentication required",
-			});
-		}
-
-		await next();
-	})
+	// Add permission check for admin API operations
+	.use(checkPermission("ms-graph.read"))
 	// Admin API operations
 	.get("/status", async (c) => {
 		// Get the current user ID from the middleware

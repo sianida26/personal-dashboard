@@ -40,10 +40,10 @@ const sidebarMenus: SidebarMenu[] = [
 				color: "blue",
 			},
 			{
-				label: "Admin",
+				label: "Microsoft Graph Admin",
 				icon: { tb: "TbChartBar" },
-				allowedPermissions: ["graph-admin"],
-				link: "/admin",
+				allowedPermissions: ["ms-graph.read"],
+				link: "/graph-admin",
 				color: "purple",
 			},
 		],
