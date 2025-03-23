@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import type HonoEnv from "../../../types/HonoEnv";
 import appEnv from "../../../appEnv";
 import { notFound, unauthorized } from "../../../errors/DashboardError";
-import { msalClient } from "../../../services/microsoft/msalClient";
+import { getMsalClient } from "../../../services/microsoft/msalClient";
 import { createId } from "@paralleldrive/cuid2";
 import { setCookie, getCookie } from "hono/cookie";
 import db from "../../../drizzle";
@@ -10,16 +10,6 @@ import { microsoftAdminTokens } from "../../../drizzle/schema/microsoftAdmin";
 import authInfo from "../../../middlewares/authInfo";
 import { createGraphClientForAdmin } from "../../../services/microsoft/graphClient";
 import checkPermission from "../../../middlewares/checkPermission";
-
-if (
-	!appEnv.MICROSOFT_CLIENT_ID ||
-	!appEnv.MICROSOFT_CLIENT_SECRET ||
-	!appEnv.MICROSOFT_TENANT_ID
-) {
-	throw new Error(
-		"MICROSOFT_CLIENT_ID, MICROSOFT_CLIENT_SECRET, and MICROSOFT_TENANT_ID must be set",
-	);
-}
 
 // Define a separate redirect URI for admin authentication
 const ADMIN_REDIRECT_URI = `${appEnv.BASE_URL}/auth/microsoft/admin/callback`;
@@ -77,13 +67,27 @@ const microsoftAdminRouter = new Hono<HonoEnv>()
 			maxAge: 60 * 10, // 10 minutes
 		});
 
-		const authCodeUrl = await msalClient.getAuthCodeUrl({
-			scopes: ADMIN_SCOPES,
-			redirectUri: ADMIN_REDIRECT_URI,
-			state,
-		});
+		try {
+			const msalClient = getMsalClient();
+			const authCodeUrl = await msalClient.getAuthCodeUrl({
+				scopes: ADMIN_SCOPES,
+				redirectUri: ADMIN_REDIRECT_URI,
+				state,
+			});
 
-		return c.redirect(authCodeUrl);
+			return c.redirect(authCodeUrl);
+		} catch (error) {
+			return c.json(
+				{
+					success: false,
+					message:
+						error instanceof Error
+							? error.message
+							: "Unknown error",
+				},
+				{ status: 500 },
+			);
+		}
 	})
 	.get("/callback", async (c) => {
 		const code = c.req.query("code");
@@ -105,6 +109,7 @@ const microsoftAdminRouter = new Hono<HonoEnv>()
 
 		try {
 			// Exchange code for tokens
+			const msalClient = getMsalClient();
 			const tokenResponse = await msalClient.acquireTokenByCode({
 				code,
 				scopes: ADMIN_SCOPES,

@@ -10,18 +10,11 @@ import { generateAccessToken } from "../../../utils/authUtils";
 import { getCookie, setCookie } from "hono/cookie";
 import { createId } from "@paralleldrive/cuid2";
 import type { PermissionCode } from "@repo/data";
-import { msalClient } from "../../../services/microsoft/msalClient";
+import { getMsalClient } from "../../../services/microsoft/msalClient";
 import microsoftAdminRouter from "./admin";
-if (
-	!appEnv.MICROSOFT_CLIENT_ID ||
-	!appEnv.MICROSOFT_CLIENT_SECRET ||
-	!appEnv.MICROSOFT_TENANT_ID
-) {
-	throw new Error(
-		"MICROSOFT_CLIENT_ID, MICROSOFT_CLIENT_SECRET, and MICROSOFT_TENANT_ID must be set",
-	);
-}
 
+// Move the validation check inside the router middleware
+// to allow the module to be imported even when Microsoft OAuth is disabled
 const REDIRECT_URI = `${appEnv.BASE_URL}/auth/microsoft/callback`;
 // Define a separate redirect URI for admin authentication
 const ADMIN_REDIRECT_URI = `${appEnv.BASE_URL}/auth/microsoft/admin-callback`;
@@ -115,11 +108,13 @@ async function isUserAdmin(userId: string): Promise<boolean> {
 	return hasAdminPermission || hasAdminRole;
 }
 
+/**
+ * Microsoft authentication router
+ */
 const microsoftRouter = new Hono<HonoEnv>()
 	.use(async (_, next) => {
-		//check if feature flag for microsoft auth is enabled
-		const isMicrosoftAuthEnabled = appEnv.ENABLE_MICROSOFT_OAUTH;
-		if (!isMicrosoftAuthEnabled) {
+		// Check if Microsoft OAuth is enabled
+		if (!appEnv.ENABLE_MICROSOFT_OAUTH) {
 			throw notFound({
 				message: "Microsoft authentication is not enabled",
 			});
@@ -137,6 +132,8 @@ const microsoftRouter = new Hono<HonoEnv>()
 			maxAge: 60 * 10, // 10 minutes
 		});
 
+		// Create authorization URL using MSAL
+		const msalClient = getMsalClient();
 		const authCodeUrl = await msalClient.getAuthCodeUrl({
 			scopes: SCOPES,
 			redirectUri: REDIRECT_URI,
@@ -157,7 +154,7 @@ const microsoftRouter = new Hono<HonoEnv>()
 			maxAge: 60 * 10, // 10 minutes
 		});
 
-		const authCodeUrl = await msalClient.getAuthCodeUrl({
+		const authCodeUrl = await getMsalClient().getAuthCodeUrl({
 			scopes: ADMIN_SCOPES,
 			redirectUri: ADMIN_REDIRECT_URI,
 			state,
@@ -186,7 +183,7 @@ const microsoftRouter = new Hono<HonoEnv>()
 
 		try {
 			// Exchange code for tokens
-			const tokenResponse = await msalClient.acquireTokenByCode({
+			const tokenResponse = await getMsalClient().acquireTokenByCode({
 				code,
 				scopes: ADMIN_SCOPES,
 				redirectUri: ADMIN_REDIRECT_URI,
@@ -333,7 +330,8 @@ const microsoftRouter = new Hono<HonoEnv>()
 		}
 
 		try {
-			// Exchange code for tokens
+			// Exchange code for tokens using MSAL
+			const msalClient = getMsalClient();
 			const tokenResponse = await msalClient.acquireTokenByCode({
 				code,
 				scopes: SCOPES,

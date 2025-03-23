@@ -3,10 +3,11 @@ import {
 	type AuthenticationProvider,
 	type ClientOptions,
 } from "@microsoft/microsoft-graph-client";
-import { msalClient } from "./msalClient";
+import { getMsalClient } from "./msalClient";
 import db from "../../drizzle";
 import { microsoftAdminTokens } from "../../drizzle/schema/microsoftAdmin";
 import { and, eq, gt } from "drizzle-orm";
+import appEnv from "../../appEnv";
 
 /**
  * Microsoft Graph authentication provider that uses an access token
@@ -32,12 +33,28 @@ export const createGraphClientForUser = (accessToken: string) => {
 };
 
 /**
+ * Validates that Microsoft OAuth is properly configured and enabled
+ * @throws Error if Microsoft OAuth is not enabled or msalClient is not available
+ */
+const validateMicrosoftOAuth = () => {
+	if (!appEnv.ENABLE_MICROSOFT_OAUTH) {
+		throw new Error("Microsoft authentication is not enabled");
+	}
+
+	if (!getMsalClient()) {
+		throw new Error("Microsoft authentication client is not available");
+	}
+};
+
+/**
  * Creates a Microsoft Graph client with application permissions (admin privileges)
  * This uses client credentials flow and stores the token in the database for persistence
  * @returns A configured Microsoft Graph client with admin permissions
  */
 export async function createGraphClientForAdmin() {
 	try {
+		validateMicrosoftOAuth();
+		
 		// Check if we have a valid token in the database
 		const now = new Date();
 		const adminToken = await db.query.microsoftAdminTokens.findFirst({
@@ -54,6 +71,7 @@ export async function createGraphClientForAdmin() {
 		}
 
 		// Otherwise, get a new token using client credentials flow
+		const msalClient = getMsalClient();
 		const tokenResponse = await msalClient.acquireTokenByClientCredential({
 			scopes: ["https://graph.microsoft.com/.default"], // Use .default to request all configured permissions
 		});
@@ -97,6 +115,8 @@ export async function refreshAccessToken(
 	accessToken: string,
 ) {
 	try {
+		validateMicrosoftOAuth();
+		
 		// First try the existing token with a simple request
 		const client = createGraphClientForUser(accessToken);
 		await client.api("/me").select("id").get();
@@ -106,6 +126,9 @@ export async function refreshAccessToken(
 	} catch (_) {
 		// Token is expired, try to get a new one using MSAL
 		try {
+			// Get the MSAL client (this will throw if MS OAuth is not enabled)
+			const msalClient = getMsalClient();
+			
 			// Use silent token acquisition (requires implementing an account cache)
 			// This is a placeholder - in a real implementation, you'd need to store
 			// and retrieve refresh tokens or use MSAL's token cache
@@ -119,8 +142,7 @@ export async function refreshAccessToken(
 					account,
 				};
 
-				const response =
-					await msalClient.acquireTokenSilent(silentRequest);
+				const response = await msalClient.acquireTokenSilent(silentRequest);
 				return response.accessToken;
 			}
 
