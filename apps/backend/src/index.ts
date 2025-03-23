@@ -6,16 +6,16 @@ import appEnv from "./appEnv";
 import DashboardError from "./errors/DashboardError";
 import authTokenMiddleware from "./middlewares/authTokenMiddleware";
 import requestLogger from "./middlewares/requestLogger";
-import authRoutes from "./routes/auth/route";
 import appSettingsRoutes from "./routes/appSettingsRoute";
 import dashboardRoutes from "./routes/dashboard/routes";
 import devRoutes from "./routes/dev/route";
 import permissionRoutes from "./routes/permissions/route";
 import rolesRoute from "./routes/roles/route";
 import usersRoute from "./routes/users/route";
-import adminMicrosoftRoutes from "./routes/admin/microsoft/route";
 import type HonoEnv from "./types/HonoEnv";
 import appLogger from "./utils/logger";
+import authRouter from "./routes/auth/route";
+import microsoftAdminRouter from "./routes/auth/microsoft/admin";
 
 configDotenv();
 
@@ -29,14 +29,14 @@ const routes = app
 		}),
 	)
 	.use(authTokenMiddleware)
-	.route("/auth", authRoutes)
+	.route("/auth", authRouter)
+	.route("/auth/microsoft/admin", microsoftAdminRouter)
 	.route("/users", usersRoute)
 	.route("/permissions", permissionRoutes)
 	.route("/dashboard", dashboardRoutes)
 	.route("/roles", rolesRoute)
 	.route("/dev", devRoutes)
 	.route("/app-settings", appSettingsRoutes)
-	.route("/api/admin/microsoft", adminMicrosoftRoutes)
 	.get("/test", (c) => {
 		return c.json({
 			message: "Server is up",

@@ -11,7 +11,7 @@ import { getCookie, setCookie } from "hono/cookie";
 import { createId } from "@paralleldrive/cuid2";
 import type { PermissionCode } from "@repo/data";
 import { msalClient } from "../../../services/microsoft/msalClient";
-
+import microsoftAdminRouter from "./admin";
 if (
 	!appEnv.MICROSOFT_CLIENT_ID ||
 	!appEnv.MICROSOFT_CLIENT_SECRET ||
@@ -537,6 +537,7 @@ const microsoftRouter = new Hono<HonoEnv>()
 		tempAuthSessions.delete(sessionId);
 
 		return c.json(authData);
-	});
+	})
+	.route("/admin", microsoftAdminRouter);
 
 export default microsoftRouter;

@@ -4,6 +4,9 @@ import {
 	type ClientOptions,
 } from "@microsoft/microsoft-graph-client";
 import { msalClient } from "./msalClient";
+import db from "../../drizzle";
+import { microsoftAdminTokens } from "../../drizzle/schema/microsoftAdmin";
+import { and, eq, gt } from "drizzle-orm";
 
 /**
  * Microsoft Graph authentication provider that uses an access token
@@ -30,12 +33,27 @@ export const createGraphClientForUser = (accessToken: string) => {
 
 /**
  * Creates a Microsoft Graph client with application permissions (admin privileges)
- * This uses client credentials flow instead of delegated permissions
+ * This uses client credentials flow and stores the token in the database for persistence
  * @returns A configured Microsoft Graph client with admin permissions
  */
 export async function createGraphClientForAdmin() {
 	try {
-		// Get token using client credentials flow (app-only permissions)
+		// Check if we have a valid token in the database
+		const now = new Date();
+		const adminToken = await db.query.microsoftAdminTokens.findFirst({
+			where: and(
+				eq(microsoftAdminTokens.tokenType, "admin"),
+				gt(microsoftAdminTokens.expiresAt, now),
+			),
+			orderBy: (tokens) => [tokens.createdAt],
+		});
+
+		// If we have a valid token, use it
+		if (adminToken) {
+			return createGraphClientForUser(adminToken.accessToken);
+		}
+
+		// Otherwise, get a new token using client credentials flow
 		const tokenResponse = await msalClient.acquireTokenByClientCredential({
 			scopes: ["https://graph.microsoft.com/.default"], // Use .default to request all configured permissions
 		});
@@ -43,6 +61,23 @@ export async function createGraphClientForAdmin() {
 		if (!tokenResponse?.accessToken) {
 			throw new Error("Failed to acquire admin token");
 		}
+
+		// Calculate expiration time (typically 1 hour from now but could vary)
+		const expiresInSeconds = tokenResponse.expiresOn
+			? Math.floor(
+					(tokenResponse.expiresOn.getTime() - Date.now()) / 1000,
+				)
+			: 3600;
+		const expiresAt = new Date();
+		expiresAt.setSeconds(expiresAt.getSeconds() + expiresInSeconds);
+
+		// Store the token in the database for persistence
+		await db.insert(microsoftAdminTokens).values({
+			tokenType: "admin",
+			accessToken: tokenResponse.accessToken,
+			scope: tokenResponse.scopes.join(" "),
+			expiresAt,
+		});
 
 		// Create and return client with admin token
 		return createGraphClientForUser(tokenResponse.accessToken);

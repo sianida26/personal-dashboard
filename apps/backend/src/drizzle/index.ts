@@ -9,6 +9,7 @@ import * as rolesSchema from "./schema/roles";
 import * as rolesToUsersSchema from "./schema/rolesToUsers";
 import * as usersSchema from "./schema/users";
 import SqlLogger from "./utils/SqlLogger";
+import * as microsoftAdmin from "./schema/microsoftAdmin";
 
 configDotenv();
 
@@ -22,6 +23,7 @@ const db = drizzle({
 		...permissionsToUsersSchema,
 		...rolesToUsersSchema,
 		...appSettingsSchema,
+		...microsoftAdmin,
 	},
 	logger: new SqlLogger(),
 });

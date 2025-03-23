@@ -1,214 +1,191 @@
+import { useState, useEffect } from "react";
 import { Button } from "@repo/ui";
 import {
 	Card,
 	CardContent,
 	CardDescription,
+	CardFooter,
 	CardHeader,
 	CardTitle,
 } from "@repo/ui";
 import { Alert, AlertDescription, AlertTitle } from "@repo/ui";
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import useAuth from "../hooks/useAuth";
-import { loginWithMicrosoftAsAdmin } from "../utils/microsoftAuth";
-import { Separator } from "@repo/ui";
+import { UserCircle, RefreshCcw, CheckCircle } from "lucide-react";
+import ResponseError from "@/errors/ResponseError";
+import fetchRPC from "@/utils/fetchRPC";
+import client from "@/honoClient";
 
-// Define interface for Microsoft Graph user objects
-interface MicrosoftGraphUser {
-	id: string;
-	displayName: string;
-	mail?: string;
-	userPrincipalName: string;
+interface AdminAuthStatus {
+	authenticated: boolean;
+	organization?: string;
+	error?: string;
+	expiresAt?: null;
+	adminUser?: {
+		id: string;
+		name: string;
+		email: string;
+	};
 }
 
-/**
- * Admin Operations Page Component
- *
- * This page allows authenticated users to:
- * 1. Authenticate as an admin user via Microsoft
- * 2. Perform admin-specific operations using the Microsoft Graph API
- */
+// Simplified admin operations component that only handles authentication
 export default function AdminOperations() {
-	const auth = useAuth();
-	const [adminActionResult, setAdminActionResult] = useState<string | null>(
-		null,
-	);
-	const [error, setError] = useState<string | null>(null);
+	const [authenticating, setAuthenticating] = useState(false);
+	const [authMessage, setAuthMessage] = useState<{
+		type: "success" | "error";
+		message: string;
+	} | null>(null);
+	const [authStatus, setAuthStatus] = useState<AdminAuthStatus | null>(null);
+	const [isLoading, setIsLoading] = useState(true);
 
-	// Check if user is authenticated as admin
-	const isAdminAuthenticated = auth.user?.isAdmin === true;
+	// Check authentication status on load
+	useEffect(() => {
+		checkAuthStatus();
+	}, []);
 
-	// Sample admin operation - list users
-	const {
-		data: users,
-		isLoading,
-		refetch,
-	} = useQuery<MicrosoftGraphUser[]>({
-		queryKey: ["admin-users"],
-		queryFn: async () => {
-			try {
-				setError(null);
-				// This would call your backend endpoint that uses the admin Graph client
-				const response = await fetch(
-					`${import.meta.env.VITE_BACKEND_BASE_URL}/api/admin/users`,
-					{
-						headers: {
-							Authorization: `Bearer ${auth.accessToken}`,
-						},
-					},
-				);
-
-				if (!response.ok) {
-					throw new Error("Failed to fetch users as admin");
-				}
-
-				return await response.json();
-			} catch (err) {
-				setError(
-					err instanceof Error
-						? err.message
-						: "Failed to perform admin operation",
-				);
-				return [];
-			}
-		},
-		enabled: false, // Don't run automatically
-	});
-
-	// Handle admin authentication
-	const handleAdminAuth = () => {
-		loginWithMicrosoftAsAdmin();
+	// Function to check Microsoft Graph admin authentication status
+	const checkAuthStatus = async () => {
+		try {
+			setIsLoading(true);
+			// Use direct fetch for the status endpoint
+			const response = await fetchRPC(
+				client.auth.microsoft.admin.status.$get(),
+			);
+			setAuthStatus(response as AdminAuthStatus);
+		} catch (error) {
+			setAuthMessage({
+				type: "error",
+				message:
+					error instanceof ResponseError
+						? error.message
+						: "Failed to check authentication status",
+			});
+			setAuthStatus({ authenticated: false });
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
-	// Example admin action
-	const performAdminAction = async () => {
+	// Function to authenticate with Microsoft Graph as admin
+	const authenticateWithMicrosoft = async () => {
 		try {
-			setError(null);
-			setAdminActionResult("Performing admin operation...");
+			setAuthenticating(true);
+			setAuthMessage(null);
 
-			// This would call your backend endpoint that uses the admin Graph client
-			const response = await fetch(
-				`${import.meta.env.VITE_BACKEND_BASE_URL}/api/admin/action`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${auth.accessToken}`,
-					},
-				},
-			);
-
-			if (!response.ok) {
-				throw new Error("Failed to perform admin operation");
-			}
-
-			const result = await response.json();
-			setAdminActionResult(
-				`Operation completed successfully: ${result.message}`,
-			);
-		} catch (err) {
-			setError(
-				err instanceof Error
-					? err.message
-					: "Failed to perform admin operation",
-			);
-			setAdminActionResult(null);
+			// Update the URL to match the route in index.ts
+			window.location.href = `${import.meta.env.VITE_BACKEND_BASE_URL}/auth/microsoft/admin/login`;
+		} catch (error) {
+			setAuthMessage({
+				type: "error",
+				message:
+					error instanceof Error
+						? error.message
+						: "Authentication failed",
+			});
+			setAuthenticating(false);
 		}
 	};
 
 	return (
-		<div className="container mx-auto py-8">
-			<h1 className="text-3xl font-bold mb-6">
-				Microsoft Graph Admin Operations
+		<div className="container mx-auto px-4 py-8">
+			<h1 className="text-3xl font-bold mb-8">
+				Microsoft Graph Admin Authentication
 			</h1>
 
-			{!isAdminAuthenticated ? (
-				<Card>
-					<CardHeader>
-						<CardTitle>Admin Authentication Required</CardTitle>
-						<CardDescription>
-							You need to authenticate as an admin to access these
-							operations
-						</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<Button onClick={handleAdminAuth}>
-							Authenticate as Admin
-						</Button>
-					</CardContent>
-				</Card>
-			) : (
-				<>
-					<Card className="mb-6">
-						<CardHeader>
-							<CardTitle>Admin Operations</CardTitle>
-							<CardDescription>
-								You are authenticated as an admin user (
-								{auth.user?.name})
-							</CardDescription>
-						</CardHeader>
-						<CardContent className="space-y-4">
+			<Card>
+				<CardHeader>
+					<CardTitle>Microsoft Graph Authentication</CardTitle>
+					<CardDescription>
+						Authenticate with Microsoft to enable admin operations
+						in the backend. This will not affect your current login
+						session.
+					</CardDescription>
+				</CardHeader>
+				<CardContent>
+					{isLoading ? (
+						<div className="flex items-center justify-center p-4">
+							<RefreshCcw className="h-6 w-6 animate-spin text-gray-400" />
+						</div>
+					) : authStatus?.authenticated ? (
+						<div className="bg-green-50 p-4 rounded-md flex items-start">
+							<CheckCircle className="h-5 w-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
 							<div>
-								<Button onClick={() => refetch()}>
-									List Users (Admin Operation)
-								</Button>
+								<p className="font-semibold text-green-800">
+									Successfully authenticated with Microsoft
+									Graph
+								</p>
+								<p className="text-green-700 mt-1">
+									Connected to: {authStatus.organization}
+								</p>
+								{authStatus.adminUser && (
+									<p className="text-green-700 mt-1">
+										Authenticated by:{" "}
+										<span className="font-medium">
+											{authStatus.adminUser.name}
+										</span>{" "}
+										({authStatus.adminUser.email})
+									</p>
+								)}
+								<p className="text-sm text-green-600 mt-2">
+									The backend can now perform Microsoft Graph
+									admin operations.
+								</p>
 							</div>
-
-							<Separator />
-
-							<div>
-								<Button onClick={performAdminAction}>
-									Perform Other Admin Action
-								</Button>
-							</div>
-
-							{error && (
-								<Alert variant="destructive">
-									<AlertTitle>Error</AlertTitle>
-									<AlertDescription>{error}</AlertDescription>
-								</Alert>
-							)}
-
-							{adminActionResult && (
-								<Alert>
-									<AlertTitle>Result</AlertTitle>
+						</div>
+					) : (
+						<>
+							{authMessage && (
+								<Alert
+									className={`mb-4 ${authMessage.type === "error" ? "bg-red-50" : "bg-green-50"}`}
+								>
+									<AlertTitle>
+										{authMessage.type === "success"
+											? "Success"
+											: "Error"}
+									</AlertTitle>
 									<AlertDescription>
-										{adminActionResult}
+										{authMessage.message}
 									</AlertDescription>
 								</Alert>
 							)}
-						</CardContent>
-					</Card>
-
-					{isLoading ? (
-						<div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mx-auto" />
-					) : users && users.length > 0 ? (
-						<Card>
-							<CardHeader>
-								<CardTitle>Users (Admin View)</CardTitle>
-								<CardDescription>
-									Users retrieved using admin permissions
-								</CardDescription>
-							</CardHeader>
-							<CardContent>
-								<ul className="divide-y">
-									{users?.map((user: MicrosoftGraphUser) => (
-										<li key={user.id} className="py-2">
-											<div className="font-medium">
-												{user.displayName}
-											</div>
-											<div className="text-sm text-gray-500">
-												{user.mail ||
-													user.userPrincipalName}
-											</div>
-										</li>
-									))}
-								</ul>
-							</CardContent>
-						</Card>
-					) : null}
-				</>
-			)}
+							<p className="mb-4 text-gray-600">
+								Microsoft Graph authentication is required for
+								admin operations. Click the button below to
+								authenticate.
+							</p>
+							<Button
+								onClick={authenticateWithMicrosoft}
+								disabled={authenticating}
+								className="gap-2"
+								type="button"
+							>
+								{authenticating ? (
+									<>
+										<RefreshCcw className="h-4 w-4 animate-spin" />
+										Authenticating...
+									</>
+								) : (
+									<>
+										<UserCircle className="h-4 w-4" />
+										Authenticate with Microsoft
+									</>
+								)}
+							</Button>
+						</>
+					)}
+				</CardContent>
+				{authStatus?.authenticated && (
+					<CardFooter className="flex justify-end border-t pt-4">
+						<Button
+							onClick={checkAuthStatus}
+							variant="outline"
+							type="button"
+							className="gap-2"
+						>
+							<RefreshCcw className="h-4 w-4" />
+							Refresh Status
+						</Button>
+					</CardFooter>
+				)}
+			</Card>
 		</div>
 	);
 } 
