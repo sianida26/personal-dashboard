@@ -47,7 +47,8 @@ const microsoftAdminRouter = new Hono<HonoEnv>()
 		const isMicrosoftAuthEnabled = appEnv.ENABLE_MICROSOFT_OAUTH;
 		if (!isMicrosoftAuthEnabled) {
 			throw notFound({
-				message: "Microsoft authentication is not enabled",
+				message:
+					"Microsoft authentication is disabled. Please check the ENABLE_MICROSOFT_OAUTH environment variable in the backend configuration.",
 			});
 		}
 		await next();
