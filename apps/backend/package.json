@@ -16,7 +16,7 @@
 		"check": "bunx tsc --noEmit && bun lint && bun format"
 	},
 	"dependencies": {
-		"@azure/msal-node": "^3.4.0",
+		"@azure/msal-node": "^3.4.1",
 		"@hono/node-server": "^1.14.0",
 		"@hono/zod-validator": "^0.4.3",
 		"@microsoft/microsoft-graph-client": "^3.0.7",
@@ -31,7 +31,7 @@
 	},
 	"devDependencies": {
 		"@types/jsonwebtoken": "^9.0.9",
-		"drizzle-kit": "^0.30.5",
+		"drizzle-kit": "^0.30.6",
 		"pg": "^8.14.1",
 		"tsx": "^4.19.3"
 	},
