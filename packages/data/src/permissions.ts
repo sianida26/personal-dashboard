@@ -10,7 +10,8 @@ export const permissions = [
 	"roles.create",
 	"roles.update",
 	"roles.delete",
-	"APP_SETTINGS_MANAGE",
+	"app-settings.read",
+	"app-settings.edit",
 	"ms-graph.read",
 ] as const;
 

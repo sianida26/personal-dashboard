@@ -16,7 +16,7 @@ export const appSettingCreateSchema = appSettingSchema.omit({
 
 export const appSettingUpdateSchema = z.object({
 	id: z.string(),
-	value: z.string().min(1, "Value is required"),
+	value: z.string().optional(),
 });
 
 export const appSettingDeleteSchema = z.object({ id: z.string() });

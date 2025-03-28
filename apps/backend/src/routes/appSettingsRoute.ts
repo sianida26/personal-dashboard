@@ -2,87 +2,159 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import type HonoEnv from "../types/HonoEnv";
 import db from "../drizzle";
-import { eq } from "drizzle-orm";
+import { asc, eq, and, ilike, or, desc, sql } from "drizzle-orm";
 import { notFound } from "../errors/DashboardError";
-import { appSettingUpdateSchema } from "@repo/validation";
-import type { PaginatedResponse } from "@repo/data/types";
+import {
+	appSettingUpdateSchema,
+	paginationRequestSchema,
+} from "@repo/validation";
 import checkPermission from "../middlewares/checkPermission";
 import { appSettingsSchema } from "../drizzle/schema/appSettingsSchema";
 import { appSettings } from "@repo/data";
+import requestValidator from "../utils/requestValidator";
+import authInfo from "../middlewares/authInfo";
 
 // Create a router for app settings
 const appSettingsRouter = new Hono<HonoEnv>()
-	.get("/", async (c) => {
-		const { page = "1", limit = "10", q = "", sort } = c.req.query();
+	.use(authInfo)
+	//get all app settings
+	.get(
+		"/",
+		checkPermission("app-settings.read"),
+		requestValidator("query", paginationRequestSchema),
+		async (c) => {
+			const {
+				page,
+				limit,
+				q,
+				sort,
+				filter: filterParams,
+			} = c.req.valid("query");
 
-		const currentPage = Number.parseInt(page, 10);
-		const perPage = Number.parseInt(limit, 10);
+			// Build where clause based on query parameters
+			const whereConditions = [];
 
-		// Get all settings first
-		const settings = await db
-			.select()
-			.from(appSettingsSchema)
-			.orderBy(appSettingsSchema.key);
-
-		// Filter by search query if provided
-		let filteredSettings = settings;
-		if (q) {
-			const lowerQ = q.toLowerCase();
-			filteredSettings = settings.filter(
-				(setting) =>
-					setting.key.toLowerCase().includes(lowerQ) ||
-					setting.value.toLowerCase().includes(lowerQ),
-			);
-		}
-
-		// Apply sorting if provided
-		if (sort) {
-			try {
-				const sortOptions = JSON.parse(sort);
-				if (Array.isArray(sortOptions) && sortOptions.length > 0) {
-					// Simple implementation of sort - this can be enhanced
-					const { id, desc } = sortOptions[0];
-					filteredSettings = [...filteredSettings].sort((a, b) => {
-						const valA = a[id as keyof typeof a];
-						const valB = b[id as keyof typeof b];
-
-						if (valA && valB) {
-							if (valA < valB) return desc ? 1 : -1;
-							if (valA > valB) return desc ? -1 : 1;
-						}
-						return 0;
-					});
-				}
-			} catch (e) {
-				console.error("Error parsing sort parameter:", e);
+			// Add global search condition
+			if (q) {
+				whereConditions.push(
+					or(
+						ilike(appSettingsSchema.key, `%${q}%`),
+						ilike(appSettingsSchema.value, `%${q}%`),
+						eq(appSettingsSchema.id, q),
+					),
+				);
 			}
-		}
 
-		// Calculate pagination values
-		const totalItems = filteredSettings.length;
-		const totalPages = Math.ceil(totalItems / perPage);
-		const offset = (currentPage - 1) * perPage;
+			// Add filter conditions
+			if (filterParams) {
+				for (const filter of filterParams) {
+					switch (filter.id) {
+						case "key":
+							if (typeof filter.value === "string") {
+								whereConditions.push(
+									ilike(
+										appSettingsSchema.key,
+										`%${filter.value}%`,
+									),
+								);
+							}
+							break;
+						case "value":
+							if (typeof filter.value === "string") {
+								whereConditions.push(
+									ilike(
+										appSettingsSchema.value,
+										`%${filter.value}%`,
+									),
+								);
+							}
+							break;
+					}
+				}
+			}
 
-		// Get the slice of data for the current page
-		const paginatedSettings = filteredSettings.slice(
-			offset,
-			offset + perPage,
-		);
+			// Combine all where conditions
+			const whereClause =
+				whereConditions.length > 0
+					? and(...whereConditions)
+					: undefined;
 
-		// Return formatted response
-		const response: PaginatedResponse<(typeof paginatedSettings)[0]> = {
-			data: paginatedSettings,
-			_metadata: {
-				currentPage,
-				totalPages,
-				perPage,
-				totalItems,
-			},
-		};
+			// Calculate pagination offset
+			const offset = (page - 1) * limit;
 
-		return c.json(response);
-	})
-	.get("/:id", async (c) => {
+			// Determine the orderBy configuration based on sorting parameters
+			const orderByConfig = [];
+
+			if (sort?.length) {
+				for (const sortParam of sort) {
+					switch (sortParam.id) {
+						case "key":
+							orderByConfig.push(
+								sortParam.desc
+									? desc(appSettingsSchema.key)
+									: asc(appSettingsSchema.key),
+							);
+							break;
+						case "value":
+							orderByConfig.push(
+								sortParam.desc
+									? desc(appSettingsSchema.value)
+									: asc(appSettingsSchema.value),
+							);
+							break;
+						case "createdAt":
+							orderByConfig.push(
+								sortParam.desc
+									? desc(appSettingsSchema.createdAt)
+									: asc(appSettingsSchema.createdAt),
+							);
+							break;
+						case "updatedAt":
+							orderByConfig.push(
+								sortParam.desc
+									? desc(appSettingsSchema.updatedAt)
+									: asc(appSettingsSchema.updatedAt),
+							);
+							break;
+					}
+				}
+			}
+
+			// Add default sorting if no valid sort parameters
+			if (orderByConfig.length === 0) {
+				orderByConfig.push(desc(appSettingsSchema.createdAt));
+			}
+
+			// Execute the query with all configurations
+			const result = await db.query.appSettingsSchema.findMany({
+				where: whereClause,
+				orderBy: orderByConfig,
+				offset: offset,
+				limit: limit,
+			});
+
+			// Get total count for pagination
+			const totalCount = await db
+				.select({ count: sql<number>`count(*)` })
+				.from(appSettingsSchema)
+				.where(whereClause);
+
+			const totalItems = Number(totalCount[0]?.count) || 0;
+			const totalPages = Math.ceil(totalItems / limit);
+
+			return c.json({
+				data: result,
+				_metadata: {
+					currentPage: page,
+					totalPages,
+					totalItems,
+					perPage: limit,
+				},
+			});
+		},
+	)
+	//get a single app setting
+	.get("/:id", checkPermission("app-settings.read"), async (c) => {
 		const id = c.req.param("id");
 		const setting = await db.query.appSettingsSchema.findFirst({
 			where: eq(appSettingsSchema.id, id),
@@ -96,16 +168,18 @@ const appSettingsRouter = new Hono<HonoEnv>()
 
 		return c.json(setting);
 	})
-	.get("/keys", async (c) => {
+	//get all app setting keys
+	.get("/keys", checkPermission("app-settings.read"), async (c) => {
 		// Return all available setting keys
 		return c.json({
 			keys: appSettings.map((setting) => setting.key),
 			defaultValues: appSettings.map((setting) => setting.defaultValue),
 		});
 	})
+	//update a single app setting
 	.put(
 		"/:id",
-		checkPermission("APP_SETTINGS_MANAGE"),
+		checkPermission("app-settings.edit"),
 		zValidator("json", appSettingUpdateSchema),
 		async (c) => {
 			const id = c.req.param("id");
