@@ -9,6 +9,8 @@ import {
 } from "drizzle-orm/pg-core";
 import { permissionsToUsers } from "./permissionsToUsers";
 import { rolesToUsers } from "./rolesToUsers";
+import { oauthGoogle } from "./oauthGoogle";
+import { oauthMicrosoft } from "./oauthMicrosoft";
 
 export const users = pgTable("users", {
 	id: text("id")
@@ -17,24 +19,22 @@ export const users = pgTable("users", {
 	name: varchar("name", { length: 255 }).notNull(),
 	username: varchar("username").notNull().unique(),
 	email: varchar("email"),
-	password: text("password").notNull(),
-	jobTitle: varchar("job_title", { length: 255 }),
+	password: text("password"),
 	isEnabled: boolean("is_enable").default(true),
 	createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
 	updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
 	deletedAt: timestamp("deleted_at", { mode: "date" }),
 });
 
-export const microsoftUsers = pgTable("microsoft_users", {
-	id: varchar("id", { length: 255 })
-		.primaryKey()
-		.$defaultFn(() => createId()),
-	userId: text("user_id").references(() => users.id),
-	microsoftId: varchar("microsoft_id", { length: 255 }).notNull(),
-	accessToken: text("access_token").notNull(),
-});
-
-export const usersRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ many, one }) => ({
 	permissionsToUsers: many(permissionsToUsers),
 	rolesToUsers: many(rolesToUsers),
+	oauthGoogle: one(oauthGoogle, {
+		fields: [users.id],
+		references: [oauthGoogle.userId],
+	}),
+	oauthMicrosoft: one(oauthMicrosoft, {
+		fields: [users.id],
+		references: [oauthMicrosoft.userId],
+	}),
 }));
