@@ -36,6 +36,13 @@
       "when": 1742705362695,
       "tag": "0004_uneven_absorbing_man",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1743189474898,
+      "tag": "0005_harsh_vindicator",
+      "breakpoints": true
     }
   ]
 }
