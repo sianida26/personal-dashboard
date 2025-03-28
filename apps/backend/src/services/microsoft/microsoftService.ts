@@ -1,8 +1,7 @@
 import { eq } from "drizzle-orm";
 import db from "../../drizzle";
-import { microsoftUsers } from "../../drizzle/schema/users";
 import { refreshAccessToken, createGraphClientForUser } from "./graphClient";
-
+import { oauthMicrosoft } from "../../drizzle/schema/oauthMicrosoft";
 /**
  * Get a Microsoft Graph client for a user
  * @param userId The internal user ID in our system
@@ -11,8 +10,8 @@ import { refreshAccessToken, createGraphClientForUser } from "./graphClient";
 export async function getGraphClientForUser(userId: string) {
 	try {
 		// Find the user's Microsoft account
-		const microsoftAccount = await db.query.microsoftUsers.findFirst({
-			where: eq(microsoftUsers.userId, userId),
+		const microsoftAccount = await db.query.oauthMicrosoft.findFirst({
+			where: eq(oauthMicrosoft.userId, userId),
 		});
 
 		if (!microsoftAccount) {
@@ -21,16 +20,16 @@ export async function getGraphClientForUser(userId: string) {
 
 		// Refresh the access token if needed
 		const accessToken = await refreshAccessToken(
-			microsoftAccount.microsoftId,
-			microsoftAccount.accessToken,
+			microsoftAccount.providerId,
+			microsoftAccount.accessToken ?? "",
 		);
 
 		// Update the access token in the database if it changed
 		if (accessToken !== microsoftAccount.accessToken) {
 			await db
-				.update(microsoftUsers)
+				.update(oauthMicrosoft)
 				.set({ accessToken })
-				.where(eq(microsoftUsers.id, microsoftAccount.id));
+				.where(eq(oauthMicrosoft.id, microsoftAccount.id));
 		}
 
 		// Create and return the Graph client

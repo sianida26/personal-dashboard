@@ -2,13 +2,13 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import type HonoEnv from "../types/HonoEnv";
 import db from "../drizzle";
-import { appSettings } from "../drizzle/schema/appSettingsSchema";
 import { eq } from "drizzle-orm";
 import { notFound } from "../errors/DashboardError";
 import { appSettingUpdateSchema } from "@repo/validation";
 import type { PaginatedResponse } from "@repo/data/types";
-import { APP_SETTING_KEYS, DEFAULT_APP_SETTINGS } from "@repo/data";
 import checkPermission from "../middlewares/checkPermission";
+import { appSettingsSchema } from "../drizzle/schema/appSettingsSchema";
+import { appSettings } from "@repo/data";
 
 // Create a router for app settings
 const appSettingsRouter = new Hono<HonoEnv>()
@@ -21,8 +21,8 @@ const appSettingsRouter = new Hono<HonoEnv>()
 		// Get all settings first
 		const settings = await db
 			.select()
-			.from(appSettings)
-			.orderBy(appSettings.key);
+			.from(appSettingsSchema)
+			.orderBy(appSettingsSchema.key);
 
 		// Filter by search query if provided
 		let filteredSettings = settings;
@@ -84,8 +84,8 @@ const appSettingsRouter = new Hono<HonoEnv>()
 	})
 	.get("/:id", async (c) => {
 		const id = c.req.param("id");
-		const setting = await db.query.appSettings.findFirst({
-			where: eq(appSettings.id, id),
+		const setting = await db.query.appSettingsSchema.findFirst({
+			where: eq(appSettingsSchema.id, id),
 		});
 
 		if (!setting) {
@@ -99,8 +99,8 @@ const appSettingsRouter = new Hono<HonoEnv>()
 	.get("/keys", async (c) => {
 		// Return all available setting keys
 		return c.json({
-			keys: APP_SETTING_KEYS,
-			defaultValues: DEFAULT_APP_SETTINGS,
+			keys: appSettings.map((setting) => setting.key),
+			defaultValues: appSettings.map((setting) => setting.defaultValue),
 		});
 	})
 	.put(
@@ -112,8 +112,8 @@ const appSettingsRouter = new Hono<HonoEnv>()
 			const data = c.req.valid("json");
 
 			// Check if setting exists
-			const existingSetting = await db.query.appSettings.findFirst({
-				where: eq(appSettings.id, id),
+			const existingSetting = await db.query.appSettingsSchema.findFirst({
+				where: eq(appSettingsSchema.id, id),
 			});
 
 			if (!existingSetting) {
@@ -123,9 +123,9 @@ const appSettingsRouter = new Hono<HonoEnv>()
 			}
 
 			const result = await db
-				.update(appSettings)
+				.update(appSettingsSchema)
 				.set({ value: data.value, updatedAt: new Date() })
-				.where(eq(appSettings.id, id))
+				.where(eq(appSettingsSchema.id, id))
 				.returning();
 
 			return c.json(result[0]);

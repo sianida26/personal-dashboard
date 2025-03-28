@@ -1,7 +1,7 @@
 import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { createId } from "@paralleldrive/cuid2";
 
-export const appSettings = pgTable("app_settings", {
+export const appSettingsSchema = pgTable("app_settings", {
 	id: text("id")
 		.primaryKey()
 		.$defaultFn(() => createId()),

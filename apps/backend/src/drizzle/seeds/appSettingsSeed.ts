@@ -1,6 +1,6 @@
 import { appSettings } from "@repo/data";
 import db from "..";
-import { appSettings as appSettingsSchema } from "../schema/appSettingsSchema";
+import { appSettingsSchema } from "../schema/appSettingsSchema";
 import { eq } from "drizzle-orm";
 
 /**

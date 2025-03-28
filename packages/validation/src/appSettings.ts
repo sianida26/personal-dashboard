@@ -1,9 +1,8 @@
+import { appSettingKeys } from "@repo/data";
 import { z } from "zod";
-import { APP_SETTING_KEYS } from "@repo/data";
-
 export const appSettingSchema = z.object({
 	id: z.string().optional(),
-	key: z.enum(APP_SETTING_KEYS),
+	key: z.enum(appSettingKeys as [string, ...string[]]),
 	value: z.string().min(1, "Value is required"),
 	createdAt: z.coerce.date().optional(),
 	updatedAt: z.coerce.date().optional(),

@@ -29,6 +29,8 @@ export default function LoginPage() {
 	const [errorMessage, setErrorMessage] = useState("");
 	const navigate = useNavigate();
 
+	const authSettings = Route.useLoaderData();
+
 	const { isAuthenticated, saveAuthData } = useAuth();
 
 	const form = useForm<FormSchema>({
@@ -131,49 +133,63 @@ export default function LoginPage() {
 							</Alert>
 						)}
 
-						<form
-							className="flex flex-col w-full gap-4"
-							onSubmit={form.onSubmit(handleSubmit)}
-						>
-							<TextInput
-								label="Username"
-								disabled={loginMutation.isPending}
-								{...form.getInputProps("username")}
-							/>
-							<TextInput
-								label="Password"
-								type="password"
-								disabled={loginMutation.isPending}
-								{...form.getInputProps("password")}
-							/>
-
-							<Button
-								disabled={loginMutation.isPending}
-								type="submit"
+						{authSettings.enableUsernameAndPasswordLogin && (
+							<form
+								className="flex flex-col w-full gap-4"
+								onSubmit={form.onSubmit(handleSubmit)}
 							>
-								Sign In
-							</Button>
-						</form>
+								<TextInput
+									label="Username"
+									disabled={loginMutation.isPending}
+									{...form.getInputProps("username")}
+								/>
+								<TextInput
+									label="Password"
+									type="password"
+									disabled={loginMutation.isPending}
+									{...form.getInputProps("password")}
+								/>
 
-						<div className="relative w-full">
-							<div className="absolute inset-0 flex items-center">
-								<span className="w-full border-t" />
-							</div>
-							<div className="relative flex justify-center text-xs uppercase">
-								<span className="bg-background px-2 text-muted-foreground">
-									Or continue with
-								</span>
-							</div>
-						</div>
+								<Button
+									disabled={loginMutation.isPending}
+									type="submit"
+								>
+									Sign In
+								</Button>
+							</form>
+						)}
 
-						{/* Social login buttons */}
-						<div className="w-full flex flex-col gap-2">
-							<Button variant="outline" className="w-full">
-								<FcGoogle className="mr-2" />
-								<span>Google</span>
-							</Button>
-							<MicrosoftLoginButton className="w-full" />
-						</div>
+						{(authSettings.enableGoogleOAuth ||
+							authSettings.enableMicrosoftOAuth) && (
+							<>
+								<div className="relative w-full">
+									<div className="absolute inset-0 flex items-center">
+										<span className="w-full border-t" />
+									</div>
+									<div className="relative flex justify-center text-xs uppercase">
+										<span className="bg-background px-2 text-muted-foreground">
+											Or continue with
+										</span>
+									</div>
+								</div>
+
+								{/* Social login buttons */}
+								<div className="w-full flex flex-col gap-2">
+									{authSettings.enableGoogleOAuth && (
+										<Button
+											variant="outline"
+											className="w-full"
+										>
+											<FcGoogle className="mr-2" />
+											<span>Google</span>
+										</Button>
+									)}
+									{authSettings.enableMicrosoftOAuth && (
+										<MicrosoftLoginButton className="w-full" />
+									)}
+								</div>
+							</>
+						)}
 					</div>
 				</div>
 

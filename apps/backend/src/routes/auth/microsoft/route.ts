@@ -5,13 +5,14 @@ import { notFound, unauthorized } from "../../../errors/DashboardError";
 import { createGraphClientForUser } from "../../../services/microsoft/graphClient";
 import { and, eq } from "drizzle-orm";
 import db from "../../../drizzle";
-import { microsoftUsers, users } from "../../../drizzle/schema/users";
+import { users } from "../../../drizzle/schema/users";
 import { generateAccessToken } from "../../../utils/authUtils";
 import { getCookie, setCookie } from "hono/cookie";
 import { createId } from "@paralleldrive/cuid2";
 import type { PermissionCode } from "@repo/data";
 import { getMsalClient } from "../../../services/microsoft/msalClient";
 import microsoftAdminRouter from "./admin";
+import { oauthMicrosoft } from "../../../drizzle/schema/oauthMicrosoft";
 
 // Move the validation check inside the router middleware
 // to allow the module to be imported even when Microsoft OAuth is disabled
@@ -440,26 +441,26 @@ const microsoftRouter = new Hono<HonoEnv>()
 
 			// Find or create Microsoft account link
 			const existingMicrosoftAccount =
-				await db.query.microsoftUsers.findFirst({
+				await db.query.oauthMicrosoft.findFirst({
 					where: and(
-						eq(microsoftUsers.userId, user.id),
-						eq(microsoftUsers.microsoftId, userInfo.id),
+						eq(oauthMicrosoft.userId, user.id),
+						eq(oauthMicrosoft.providerId, userInfo.id),
 					),
 				});
 
 			if (!existingMicrosoftAccount) {
 				// Link Microsoft account to user
-				await db.insert(microsoftUsers).values({
+				await db.insert(oauthMicrosoft).values({
 					userId: user.id,
-					microsoftId: userInfo.id,
+					providerId: userInfo.id,
 					accessToken: tokenResponse.accessToken,
 				});
 			} else {
 				// Update access token
 				await db
-					.update(microsoftUsers)
+					.update(oauthMicrosoft)
 					.set({ accessToken: tokenResponse.accessToken })
-					.where(eq(microsoftUsers.id, existingMicrosoftAccount.id));
+					.where(eq(oauthMicrosoft.id, existingMicrosoftAccount.id));
 			}
 
 			// Generate JWT token for our app

@@ -1,4 +1,4 @@
-// App Settings
+// base definition, NOT used for typing the array
 export type AppSetting = {
 	key: string;
 	name: string;
@@ -6,10 +6,18 @@ export type AppSetting = {
 	defaultValue: string;
 };
 
-export const appSettings: AppSetting[] = [
+export const appSettings = [
 	/**
 	 * Default Settings
 	 */
+	// Username and Password Login
+	{
+		key: "login.usernameAndPassword.enabled",
+		name: "Username and Password Login Enabled",
+		description: "Enable Username and Password Login",
+		defaultValue: "true",
+	},
+
 	// Google OAuth
 	{
 		key: "oauth.google.enabled",
@@ -49,4 +57,10 @@ export const appSettings: AppSetting[] = [
 		description: "Microsoft OAuth Tenant ID",
 		defaultValue: "",
 	},
-];
+] as const satisfies readonly AppSetting[];
+
+export const appSettingKeys = appSettings.map(
+	(s) => s.key,
+) as unknown as readonly (typeof appSettings)[number]["key"][];
+
+export type AppSettingKey = (typeof appSettings)[number]["key"];

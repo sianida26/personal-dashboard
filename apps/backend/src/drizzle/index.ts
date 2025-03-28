@@ -8,8 +8,10 @@ import * as permissionsToUsersSchema from "./schema/permissionsToUsers";
 import * as rolesSchema from "./schema/roles";
 import * as rolesToUsersSchema from "./schema/rolesToUsers";
 import * as usersSchema from "./schema/users";
-import SqlLogger from "./utils/SqlLogger";
 import * as microsoftAdmin from "./schema/microsoftAdmin";
+import * as oauthGoogleSchema from "./schema/oauthGoogle";
+import * as oauthMicrosoftSchema from "./schema/oauthMicrosoft";
+import SqlLogger from "./utils/SqlLogger";
 
 configDotenv();
 
@@ -24,6 +26,8 @@ const db = drizzle({
 		...rolesToUsersSchema,
 		...appSettingsSchema,
 		...microsoftAdmin,
+		...oauthGoogleSchema,
+		...oauthMicrosoftSchema,
 	},
 	logger: new SqlLogger(),
 });
