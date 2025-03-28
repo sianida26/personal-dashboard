@@ -122,7 +122,7 @@ const appSettingsRouter = new Hono<HonoEnv>()
 
 			// Add default sorting if no valid sort parameters
 			if (orderByConfig.length === 0) {
-				orderByConfig.push(desc(appSettingsSchema.createdAt));
+				orderByConfig.push(asc(appSettingsSchema.key));
 			}
 
 			// Execute the query with all configurations
@@ -143,7 +143,13 @@ const appSettingsRouter = new Hono<HonoEnv>()
 			const totalPages = Math.ceil(totalItems / limit);
 
 			return c.json({
-				data: result,
+				data: result.map((setting) => ({
+					...setting,
+					value: appSettings.find((s) => s.key === setting.key)
+						?.secret
+						? "********"
+						: setting.value,
+				})),
 				_metadata: {
 					currentPage: page,
 					totalPages,

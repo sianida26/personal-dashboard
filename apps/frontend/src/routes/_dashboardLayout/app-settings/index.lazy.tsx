@@ -3,6 +3,7 @@ import client from "@/honoClient";
 import createActionButtons from "@/utils/createActionButton";
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { TbPencil } from "react-icons/tb";
+import dayjs from "dayjs";
 
 export const Route = createLazyFileRoute("/_dashboardLayout/app-settings/")({
 	component: RouteComponent,
@@ -21,6 +22,10 @@ function RouteComponent() {
 			}),
 			helper.accessor("createdAt", {
 				header: "Created At",
+				cell: (info) =>
+					info.getValue()
+						? dayjs(info.getValue()).format("DD MMM YYYY, HH:mm:ss")
+						: "-",
 			}),
 			helper.display({
 				header: "Actions",

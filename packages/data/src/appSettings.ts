@@ -1,10 +1,11 @@
 // base definition, NOT used for typing the array
 export type AppSetting = {
-	key: string;
-	name: string;
-	description: string;
-	defaultValue: string;
-};
+		key: string;
+		name: string;
+		description: string;
+		defaultValue: string;
+		secret?: boolean;
+	};
 
 export const appSettings = [
 	/**
@@ -16,6 +17,7 @@ export const appSettings = [
 		name: "Username and Password Login Enabled",
 		description: "Enable Username and Password Login",
 		defaultValue: "true",
+		secret: false,
 	},
 
 	// Google OAuth
@@ -24,6 +26,7 @@ export const appSettings = [
 		name: "Google OAuth Enabled",
 		description: "Enable Google OAuth",
 		defaultValue: "false",
+		secret: false,
 	},
 
 	// Microsoft OAuth
@@ -32,30 +35,35 @@ export const appSettings = [
 		name: "Microsoft OAuth Enabled",
 		description: "Enable Microsoft OAuth",
 		defaultValue: "false",
+		secret: false,
 	},
 	{
 		key: "oauth.microsoft.clientId",
 		name: "Microsoft OAuth Client ID",
 		description: "Microsoft OAuth Client ID",
 		defaultValue: "",
+		secret: true,
 	},
 	{
 		key: "oauth.microsoft.clientSecret",
 		name: "Microsoft OAuth Client Secret",
 		description: "Microsoft OAuth Client Secret",
 		defaultValue: "",
+		secret: true,
 	},
 	{
 		key: "oauth.microsoft.redirectUri",
 		name: "Microsoft OAuth Redirect URI",
 		description: "Microsoft OAuth Redirect URI",
 		defaultValue: "",
+		secret: false,
 	},
 	{
 		key: "oauth.microsoft.tenantId",
 		name: "Microsoft OAuth Tenant ID",
 		description: "Microsoft OAuth Tenant ID",
 		defaultValue: "",
+		secret: true,
 	},
 ] as const satisfies readonly AppSetting[];
 
