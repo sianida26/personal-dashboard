@@ -1,35 +1,60 @@
-import { createId } from "@paralleldrive/cuid2";
-import {
-	APP_SETTING_KEYS,
-	DEFAULT_APP_SETTINGS,
-	type AppSettingKey,
-} from "@repo/data";
-import db from "../../drizzle";
-import { appSettings } from "../schema/appSettingsSchema";
+import { appSettings } from "@repo/data";
+import db from "..";
+import { appSettings as appSettingsSchema } from "../schema/appSettingsSchema";
+import { eq } from "drizzle-orm";
 
-export async function seedAppSettings() {
-	// biome-ignore lint/suspicious/noConsole: for logging in console
+/**
+ * Seeds the app settings in the database.
+ *
+ * This seeder performs the following operations:
+ * 1. Removes any database records that don't exist in appSettings.ts
+ * 2. Inserts new settings from appSettings.ts if they don't exist
+ *
+ * Note: This is a destructive operation for database records that don't exist in appSettings.ts.
+ * Any settings in the database that are not defined in appSettings.ts will be deleted.
+ * Existing settings will not be updated even if their default values in appSettings.ts have changed.
+ *
+ */
+const appSettingsSeeder = async () => {
+	const appSettingsSeedData = appSettings.map((setting) => ({
+		key: setting.key,
+		value: setting.defaultValue,
+	}));
+
+	// biome-ignore lint/suspicious/noConsole: for displaying messages in console window
 	console.log("Seeding app settings...");
 
-	// Get existing settings
-	const existingSettings = await db.query.appSettings.findMany();
-	const existingKeys = existingSettings.map((setting) => setting.key);
+	// Get all existing settings
+	const existingSettings = await db.select().from(appSettingsSchema);
+	const existingKeys = new Set(
+		existingSettings.map((setting) => setting.key),
+	);
+	const validKeys = new Set(appSettings.map((setting) => setting.key));
 
-	// Insert missing settings
-	for (const key of APP_SETTING_KEYS) {
-		if (!existingKeys.includes(key as string)) {
-			await db.insert(appSettings).values({
-				id: createId(),
-				key: key as string,
-				value: DEFAULT_APP_SETTINGS[key as AppSettingKey],
-				createdAt: new Date(),
-				updatedAt: new Date(),
-			});
-			// biome-ignore lint/suspicious/noConsole: for logging in console
-			console.log(`Added app setting: ${key}`);
-		}
+	// Remove settings that don't exist in appSettings.ts
+	const keysToDelete = existingKeys.difference(validKeys);
+	if (keysToDelete.size > 0) {
+		await db
+			.delete(appSettingsSchema)
+			.where(
+				eq(
+					appSettingsSchema.key,
+					Array.from(keysToDelete)[0] as string,
+				),
+			);
+
+		// biome-ignore lint/suspicious/noConsole: for displaying messages in console window
+		console.log(`Deleted ${keysToDelete.size} obsolete settings`);
 	}
 
-	// biome-ignore lint/suspicious/noConsole: for logging in console
-	console.log("App settings seeding complete.");
-}
+	// Insert only new settings
+	await db
+		.insert(appSettingsSchema)
+		.values(appSettingsSeedData)
+		.onConflictDoNothing();
+
+	// biome-ignore lint/suspicious/noConsole: for displaying messages in console window
+	console.log(`Seeded ${appSettingsSeedData.length} app settings`);
+};
+
+export default appSettingsSeeder;

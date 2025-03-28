@@ -1,14 +1,52 @@
-// Define the allowed app settings keys
-export const APP_SETTING_KEYS = ["MAINTENANCE_MODE"] as const;
-
-export type AppSettingKey = (typeof APP_SETTING_KEYS)[number];
-
-// Define descriptions for settings
-export const APP_SETTING_DESCRIPTIONS: Record<AppSettingKey, string> = {
-	MAINTENANCE_MODE: "Enable maintenance mode (true/false)",
+// App Settings
+export type AppSetting = {
+	key: string;
+	name: string;
+	description: string;
+	defaultValue: string;
 };
 
-// Define default values for settings
-export const DEFAULT_APP_SETTINGS: Record<AppSettingKey, string> = {
-	MAINTENANCE_MODE: "false",
-}; 
+export const appSettings: AppSetting[] = [
+	/**
+	 * Default Settings
+	 */
+	// Google OAuth
+	{
+		key: "oauth.google.enabled",
+		name: "Google OAuth Enabled",
+		description: "Enable Google OAuth",
+		defaultValue: "false",
+	},
+
+	// Microsoft OAuth
+	{
+		key: "oauth.microsoft.enabled",
+		name: "Microsoft OAuth Enabled",
+		description: "Enable Microsoft OAuth",
+		defaultValue: "false",
+	},
+	{
+		key: "oauth.microsoft.clientId",
+		name: "Microsoft OAuth Client ID",
+		description: "Microsoft OAuth Client ID",
+		defaultValue: "",
+	},
+	{
+		key: "oauth.microsoft.clientSecret",
+		name: "Microsoft OAuth Client Secret",
+		description: "Microsoft OAuth Client Secret",
+		defaultValue: "",
+	},
+	{
+		key: "oauth.microsoft.redirectUri",
+		name: "Microsoft OAuth Redirect URI",
+		description: "Microsoft OAuth Redirect URI",
+		defaultValue: "",
+	},
+	{
+		key: "oauth.microsoft.tenantId",
+		name: "Microsoft OAuth Tenant ID",
+		description: "Microsoft OAuth Tenant ID",
+		defaultValue: "",
+	},
+];
