@@ -35,7 +35,7 @@ const sidebarMenus: SidebarMenu[] = [
 			{
 				label: "App Settings",
 				icon: { tb: "TbSettings" },
-				allowedPermissions: ["APP_SETTINGS_MANAGE"],
+				allowedPermissions: ["app-settings.read"],
 				link: "/app-settings",
 				color: "blue",
 			},
