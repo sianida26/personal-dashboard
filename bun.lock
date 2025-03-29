@@ -32,6 +32,7 @@
       "dependencies": {
         "@azure/msal-node": "^3.4.1",
         "@hono/node-server": "^1.14.0",
+        "@hono/oauth-providers": "^0.7.0",
         "@hono/zod-validator": "^0.4.3",
         "@microsoft/microsoft-graph-client": "^3.0.7",
         "@repo/data": "workspace:*",
@@ -267,6 +268,8 @@
     "@floating-ui/utils": ["@floating-ui/utils@0.2.9", "", {}, "sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg=="],
 
     "@hono/node-server": ["@hono/node-server@1.14.0", "", { "peerDependencies": { "hono": "^4" } }, "sha512-YUCxJwgHRKSqjrdTk9e4VMGKN27MK5r4+MGPyZTgKH+IYbK+KtYbHeOcPGJ91KGGD6RIQiz2dAHxvjauNhOS8g=="],
+
+    "@hono/oauth-providers": ["@hono/oauth-providers@0.7.0", "", { "peerDependencies": { "hono": ">=3.*" } }, "sha512-TKaIKUCzkyM3VmpFKoakx81/83sl1DXcbAOLCKN/7sK5ODwDKKLo309KMJw+se42BL4VM6k/ysyqSZwgNonDTw=="],
 
     "@hono/zod-validator": ["@hono/zod-validator@0.4.3", "", { "peerDependencies": { "hono": ">=3.9.0", "zod": "^3.19.1" } }, "sha512-xIgMYXDyJ4Hj6ekm9T9Y27s080Nl9NXHcJkOvkXPhubOLj8hZkOL8pDnnXfvCf5xEE8Q4oMFenQUZZREUY2gqQ=="],
 

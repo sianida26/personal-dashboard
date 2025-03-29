@@ -28,6 +28,20 @@ export const appSettings = [
 		defaultValue: "false",
 		secret: false,
 	},
+	{
+		key: "oauth.google.clientId",
+		name: "Google OAuth Client ID",
+		description: "Google OAuth Client ID",
+		defaultValue: "",
+		secret: true,
+	},
+	{
+		key: "oauth.google.clientSecret",
+		name: "Google OAuth Client Secret",
+		description: "Google OAuth Client Secret",
+		defaultValue: "",
+		secret: true,
+	},
 
 	// Microsoft OAuth
 	{

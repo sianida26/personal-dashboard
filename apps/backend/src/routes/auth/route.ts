@@ -16,6 +16,7 @@ import { checkPassword } from "../../utils/passwordUtils";
 import microsoftRouter from "./microsoft/route";
 import { getAppSettingValue } from "../../services/appSettings/appSettingServices";
 import checkPermission from "../../middlewares/checkPermission";
+import googleOAuthRoutes from "./google/route";
 
 const authRoutes = new Hono<HonoEnv>()
 	// Username and Password Login
@@ -208,6 +209,9 @@ const authRoutes = new Hono<HonoEnv>()
 				enableUsernameAndPasswordLogin === "true",
 		});
 	})
+	//Google OAuth Routes
+	.route("/google", googleOAuthRoutes)
 	//Microsoft OAuth Routes
 	.route("/microsoft", microsoftRouter);
+
 export default authRoutes;
