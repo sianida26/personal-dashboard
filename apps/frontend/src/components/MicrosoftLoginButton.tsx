@@ -15,7 +15,7 @@ export default function MicrosoftLoginButton({
 		<button
 			type="button"
 			onClick={loginWithMicrosoft}
-			className={`flex items-center justify-center gap-2 rounded px-4 py-2 text-white bg-[#2f2f2f] hover:bg-[#242424] transition-colors ${className}`}
+			className={`cursor-pointer flex items-center justify-center gap-2 rounded px-4 py-2 text-white bg-[#2f2f2f] hover:bg-[#242424] transition-colors ${className}`}
 		>
 			<svg
 				width="20"
