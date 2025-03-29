@@ -11,6 +11,7 @@ import authInfo from "../../../middlewares/authInfo";
 import { createGraphClientForAdmin } from "../../../services/microsoft/graphClient";
 import checkPermission from "../../../middlewares/checkPermission";
 import { and, eq, gt } from "drizzle-orm";
+import { getAppSettingValue } from "../../../services/appSettings/appSettingServices";
 
 // Define a separate redirect URI for admin authentication
 const ADMIN_REDIRECT_URI = `${appEnv.BASE_URL}/auth/microsoft/admin/callback`;
@@ -44,11 +45,12 @@ setInterval(() => {
 const microsoftAdminRouter = new Hono<HonoEnv>()
 	.use(async (_, next) => {
 		//check if feature flag for microsoft auth is enabled
-		const isMicrosoftAuthEnabled = appEnv.ENABLE_MICROSOFT_OAUTH;
+		const isMicrosoftAuthEnabled = await getAppSettingValue(
+			"oauth.microsoft.enabled",
+		);
 		if (!isMicrosoftAuthEnabled) {
 			throw notFound({
-				message:
-					"Microsoft authentication is disabled. Please check the ENABLE_MICROSOFT_OAUTH environment variable in the backend configuration.",
+				message: "Microsoft authentication is disabled.",
 			});
 		}
 		await next();
@@ -78,7 +80,7 @@ const microsoftAdminRouter = new Hono<HonoEnv>()
 		});
 
 		try {
-			const msalClient = getMsalClient();
+			const msalClient = await getMsalClient();
 			const authCodeUrl = await msalClient.getAuthCodeUrl({
 				scopes: ADMIN_SCOPES,
 				redirectUri: ADMIN_REDIRECT_URI,
@@ -119,7 +121,7 @@ const microsoftAdminRouter = new Hono<HonoEnv>()
 
 		try {
 			// Exchange code for tokens
-			const msalClient = getMsalClient();
+			const msalClient = await getMsalClient();
 			const tokenResponse = await msalClient.acquireTokenByCode({
 				code,
 				scopes: ADMIN_SCOPES,

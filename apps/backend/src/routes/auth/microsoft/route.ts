@@ -13,6 +13,7 @@ import type { PermissionCode } from "@repo/data";
 import { getMsalClient } from "../../../services/microsoft/msalClient";
 import microsoftAdminRouter from "./admin";
 import { oauthMicrosoft } from "../../../drizzle/schema/oauthMicrosoft";
+import { getAppSettingValue } from "../../../services/appSettings/appSettingServices";
 
 // Move the validation check inside the router middleware
 // to allow the module to be imported even when Microsoft OAuth is disabled
@@ -115,7 +116,10 @@ async function isUserAdmin(userId: string): Promise<boolean> {
 const microsoftRouter = new Hono<HonoEnv>()
 	.use(async (_, next) => {
 		// Check if Microsoft OAuth is enabled
-		if (!appEnv.ENABLE_MICROSOFT_OAUTH) {
+		const isMicrosoftAuthEnabled = await getAppSettingValue(
+			"oauth.microsoft.enabled",
+		);
+		if (!isMicrosoftAuthEnabled) {
 			throw notFound({
 				message: "Microsoft authentication is not enabled",
 			});
@@ -134,7 +138,7 @@ const microsoftRouter = new Hono<HonoEnv>()
 		});
 
 		// Create authorization URL using MSAL
-		const msalClient = getMsalClient();
+		const msalClient = await getMsalClient();
 		const authCodeUrl = await msalClient.getAuthCodeUrl({
 			scopes: SCOPES,
 			redirectUri: REDIRECT_URI,
@@ -155,7 +159,8 @@ const microsoftRouter = new Hono<HonoEnv>()
 			maxAge: 60 * 10, // 10 minutes
 		});
 
-		const authCodeUrl = await getMsalClient().getAuthCodeUrl({
+		const msalClient = await getMsalClient();
+		const authCodeUrl = await msalClient.getAuthCodeUrl({
 			scopes: ADMIN_SCOPES,
 			redirectUri: ADMIN_REDIRECT_URI,
 			state,
@@ -184,7 +189,8 @@ const microsoftRouter = new Hono<HonoEnv>()
 
 		try {
 			// Exchange code for tokens
-			const tokenResponse = await getMsalClient().acquireTokenByCode({
+			const msalClient = await getMsalClient();
+			const tokenResponse = await msalClient.acquireTokenByCode({
 				code,
 				scopes: ADMIN_SCOPES,
 				redirectUri: ADMIN_REDIRECT_URI,
@@ -332,7 +338,7 @@ const microsoftRouter = new Hono<HonoEnv>()
 
 		try {
 			// Exchange code for tokens using MSAL
-			const msalClient = getMsalClient();
+			const msalClient = await getMsalClient();
 			const tokenResponse = await msalClient.acquireTokenByCode({
 				code,
 				scopes: SCOPES,

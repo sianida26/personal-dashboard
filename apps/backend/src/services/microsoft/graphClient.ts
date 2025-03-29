@@ -7,7 +7,7 @@ import { getMsalClient } from "./msalClient";
 import db from "../../drizzle";
 import { microsoftAdminTokens } from "../../drizzle/schema/microsoftAdmin";
 import { and, eq, gt } from "drizzle-orm";
-import appEnv from "../../appEnv";
+import { getAppSettingValue } from "../appSettings/appSettingServices";
 
 /**
  * Microsoft Graph authentication provider that uses an access token
@@ -36,8 +36,11 @@ export const createGraphClientForUser = (accessToken: string) => {
  * Validates that Microsoft OAuth is properly configured and enabled
  * @throws Error if Microsoft OAuth is not enabled or msalClient is not available
  */
-const validateMicrosoftOAuth = () => {
-	if (!appEnv.ENABLE_MICROSOFT_OAUTH) {
+const validateMicrosoftOAuth = async () => {
+	const isMicrosoftAuthEnabled = await getAppSettingValue(
+		"oauth.microsoft.enabled",
+	);
+	if (!isMicrosoftAuthEnabled) {
 		throw new Error("Microsoft authentication is not enabled");
 	}
 
@@ -71,7 +74,7 @@ export async function createGraphClientForAdmin() {
 		}
 
 		// Otherwise, get a new token using client credentials flow
-		const msalClient = getMsalClient();
+		const msalClient = await getMsalClient();
 
 		// NOTE: If you're seeing "Insufficient privileges" errors (403), you need to:
 		// 1. Go to Azure Portal -> App registrations -> [Your app] -> API permissions
@@ -138,7 +141,7 @@ export async function refreshAccessToken(
 		// Token is expired, try to get a new one using MSAL
 		try {
 			// Get the MSAL client (this will throw if MS OAuth is not enabled)
-			const msalClient = getMsalClient();
+			const msalClient = await getMsalClient();
 
 			// Use silent token acquisition (requires implementing an account cache)
 			// This is a placeholder - in a real implementation, you'd need to store

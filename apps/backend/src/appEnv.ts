@@ -22,13 +22,6 @@ const logSchema = (defaultValue: "true" | "false") =>
 		.default(defaultValue)
 		.transform((value) => value === "true");
 
-// Feature flag schema to enable/disable features
-const featureFlagSchema = (defaultValue: "false") =>
-	z
-		.enum(["true", "false"])
-		.default(defaultValue)
-		.transform((value) => value === "true");
-
 const envSchema = z.object({
 	//Application
 	APP_ENV: z.enum(["development", "production"]),
@@ -50,15 +43,6 @@ const envSchema = z.object({
 	LOG_DEBUG: logSchema("false"),
 	LOG_REQUEST: logSchema("true"),
 	LOG_SQL: logSchema("true"),
-
-	//Feature Flags
-	ENABLE_MICROSOFT_OAUTH: featureFlagSchema("false"),
-
-	//Microsoft OAuth (only required if ENABLE_MICROSOFT_OAUTH is true)
-	MICROSOFT_CLIENT_ID: z.string().optional(),
-	MICROSOFT_CLIENT_SECRET: z.string().optional(),
-	MICROSOFT_TENANT_ID: z.string().optional(),
-	MICROSOFT_REDIRECT_URI: z.string().optional(),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
