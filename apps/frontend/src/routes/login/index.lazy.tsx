@@ -10,6 +10,7 @@ import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
 import client from "@/honoClient";
 import MicrosoftLoginButton from "@/components/MicrosoftLoginButton";
+import { loginWithGoogle } from "@/utils/googleAuth";
 
 export const Route = createLazyFileRoute("/login/")({
 	component: LoginPage,
@@ -179,6 +180,7 @@ export default function LoginPage() {
 										<Button
 											variant="outline"
 											className="w-full"
+											onClick={() => loginWithGoogle()}
 										>
 											<FcGoogle className="mr-2" />
 											<span>Google</span>
