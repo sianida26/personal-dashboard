@@ -13,6 +13,7 @@
 		"@mantine/form": "^7.17.3",
 		"@mantine/hooks": "^7.17.3",
 		"@repo/data": "workspace:*",
+		"@repo/hooks": "workspace:*",
 		"@repo/ui": "workspace:*",
 		"@repo/validation": "workspace:*",
 		"@tanstack/react-query": "^5.71.3",

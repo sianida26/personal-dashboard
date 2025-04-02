@@ -1,0 +1,11 @@
+{
+    "name": "@repo/hooks",
+    "private": true,
+    "scripts": {},
+    "exports": {
+        ".": "./src/index.ts"
+    },
+    "devDependencies": {
+        "@repo/typescript-config": "workspace:*"
+    }
+}
