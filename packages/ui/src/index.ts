@@ -3,6 +3,7 @@ export * from "./components/alert-dialog";
 export * from "./components/alert";
 export * from "./components/avatar";
 export * from "./components/badge";
+export * from "./components/breadcrumbs";
 export * from "./components/button";
 export * from "./components/calendar";
 export * from "./components/card";
