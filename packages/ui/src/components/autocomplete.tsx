@@ -45,6 +45,9 @@ export interface AutocompleteProps {
 		/** Whether the component is read-only */
 		readOnly?: boolean;
 
+		/** Whether to show a clear button when a value is selected */
+		clearable?: boolean;
+
 		/** Function called when the input is focused */
 		onFocus?: React.FocusEventHandler<HTMLInputElement>;
 
@@ -85,6 +88,7 @@ export function Autocomplete({
 		onSearchChange,
 		disabled = false,
 		readOnly = false,
+		clearable = false,
 		onFocus,
 		onBlur,
 		error,
@@ -95,6 +99,7 @@ export function Autocomplete({
 		withAsterisk = false,
 	}: AutocompleteProps) {
 		const combobox = useCombobox();
+		const containerRef = React.useRef<HTMLDivElement>(null);
 
 		// Get selected option
 		const selectedOption = React.useMemo(
@@ -167,6 +172,24 @@ export function Autocomplete({
 			}
 		}, [combobox.dropdownOpened, selectedOption, isControlled]);
 
+		// Add click outside handler to close the dropdown
+		React.useEffect(() => {
+			const handleClickOutside = (event: MouseEvent) => {
+				if (
+					containerRef.current &&
+					!containerRef.current.contains(event.target as Node) &&
+					combobox.dropdownOpened
+				) {
+					combobox.closeDropdown();
+				}
+			};
+
+			document.addEventListener("mousedown", handleClickOutside);
+			return () => {
+				document.removeEventListener("mousedown", handleClickOutside);
+			};
+		}, [combobox]);
+
 		// Custom focus handler
 		const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
 			onFocus?.(e);
@@ -178,71 +201,103 @@ export function Autocomplete({
 		// Custom blur handler
 		const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
 			onBlur?.(e);
-			// Don't close immediately as it may prevent option selection
-			setTimeout(() => {
-				if (!combobox.dropdownOpened) {
-					// Reset to selected value if nothing was selected
-					if (!isControlled && selectedOption) {
-						setUncontrolledSearchValue(
-							String(selectedOption.label),
-						);
-					}
-				}
-			}, 100);
 		};
 
-		return (
-			<Combobox
-				store={combobox}
-				onOptionSubmit={handleOptionSubmit}
-				classNames={{
-					dropdown: classNames?.dropdown,
-					option: classNames?.option,
-					empty: classNames?.empty,
-				}}
-				className={cn(classNames?.root)}
-			>
-				<Combobox.Target>
-					<Input
-						value={searchValue}
-						onChange={handleSearchChange}
-						placeholder={placeholder}
-						onClick={() => !readOnly && combobox.openDropdown()}
-						onFocus={handleFocus}
-						onBlur={handleBlur}
-						disabled={disabled}
-						readOnly={readOnly}
-						label={label}
-						withAsterisk={withAsterisk}
-						className={cn(
-							error &&
-								"border-destructive focus-visible:ring-destructive",
-							classNames?.input,
-						)}
-						aria-invalid={!!error}
-					/>
-				</Combobox.Target>
+		// Handle clear button click
+		const handleClear = (e: React.MouseEvent) => {
+			e.stopPropagation(); // Prevent dropdown from opening
+			onChange(null);
 
-				{!readOnly && (
-					<Combobox.Dropdown>
-						<Combobox.Options>
-							{filteredOptions.length > 0 ? (
-								filteredOptions.map((option) => (
-									<Combobox.Option
-										key={option.value}
-										value={option.value}
-										disabled={option.disabled}
-										className={option.className}
-									>
-										{option.label}
-									</Combobox.Option>
-								))
-							) : (
-								<Combobox.Empty>{emptyMessage}</Combobox.Empty>
+			if (!isControlled) {
+				setUncontrolledSearchValue("");
+			} else {
+				onSearchChange?.("");
+			}
+		};
+
+		// Clear button element
+		const clearButton =
+			clearable && value && !disabled && !readOnly ? (
+				<button
+					type="button"
+					onClick={handleClear}
+					className="h-4 w-4 rounded-full text-gray-400 hover:text-gray-600 focus:outline-none"
+					tabIndex={-1}
+					aria-label="Clear"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="2"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+					>
+						<title>Clear selection</title>
+						<line x1="18" y1="6" x2="6" y2="18" />
+						<line x1="6" y1="6" x2="18" y2="18" />
+					</svg>
+				</button>
+			) : null;
+
+		return (
+			<div ref={containerRef}>
+				<Combobox
+					store={combobox}
+					onOptionSubmit={handleOptionSubmit}
+					classNames={{
+						dropdown: classNames?.dropdown,
+						option: classNames?.option,
+						empty: classNames?.empty,
+					}}
+					className={cn(classNames?.root)}
+				>
+					<Combobox.Target>
+						<Input
+							value={searchValue}
+							onChange={handleSearchChange}
+							placeholder={placeholder}
+							onClick={() => !readOnly && combobox.openDropdown()}
+							onFocus={handleFocus}
+							onBlur={handleBlur}
+							disabled={disabled}
+							readOnly={readOnly}
+							label={label}
+							withAsterisk={withAsterisk}
+							rightSection={clearButton}
+							className={cn(
+								error &&
+									"border-destructive focus-visible:ring-destructive",
+								classNames?.input,
 							)}
-						</Combobox.Options>
-					</Combobox.Dropdown>
-				)}
-			</Combobox>
+							aria-invalid={!!error}
+						/>
+					</Combobox.Target>
+
+					{!readOnly && (
+						<Combobox.Dropdown>
+							<Combobox.Options>
+								{filteredOptions.length > 0 ? (
+									filteredOptions.map((option) => (
+										<Combobox.Option
+											key={option.value}
+											value={option.value}
+											disabled={option.disabled}
+											className={option.className}
+										>
+											{option.label}
+										</Combobox.Option>
+									))
+								) : (
+									<Combobox.Empty>
+										{emptyMessage}
+									</Combobox.Empty>
+								)}
+							</Combobox.Options>
+						</Combobox.Dropdown>
+					)}
+				</Combobox>
+			</div>
 		);
 	}
