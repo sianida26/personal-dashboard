@@ -1,4 +1,7 @@
 import {
+	Autocomplete,
+	type AutocompleteOption,
+	type AutocompleteProps,
 	Checkbox,
 	type CheckboxProps,
 	DateTimePicker,
@@ -60,6 +63,11 @@ type SelectType = {
 	type: "select";
 } & SelectProps;
 
+type AutocompleteType = {
+	type: "autocomplete";
+	options: AutocompleteOption[];
+} & Omit<AutocompleteProps, "options">;
+
 type Group = {
 	type: "group";
 	inputs: AcceptedInput[];
@@ -99,6 +107,7 @@ type AcceptedInput = (
 	| NumberInputType
 	| SelectType
 	| DateTimePickerType
+	| AutocompleteType
 	// | ChipType
 	| Group
 	| CheckboxType
@@ -159,6 +168,15 @@ function createInputComponents(options: Options) {
 			case "select":
 				return (
 					<Select
+						{...input}
+						key={key}
+						readOnly={options.readonlyAll || input.readOnly}
+						disabled={options.disableAll || input.disabled}
+					/>
+				);
+			case "autocomplete":
+				return (
+					<Autocomplete
 						{...input}
 						key={key}
 						readOnly={options.readonlyAll || input.readOnly}
