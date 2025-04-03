@@ -172,9 +172,9 @@ export function Autocomplete({
 			}
 		}, [combobox.dropdownOpened, selectedOption, isControlled]);
 
-		// Add click outside handler to close the dropdown
-		React.useEffect(() => {
-			const handleClickOutside = (event: MouseEvent) => {
+		// Memoize click outside handler
+		const handleClickOutside = React.useCallback(
+			(event: MouseEvent) => {
 				if (
 					containerRef.current &&
 					!containerRef.current.contains(event.target as Node) &&
@@ -182,13 +182,16 @@ export function Autocomplete({
 				) {
 					combobox.closeDropdown();
 				}
-			};
+			},
+			[combobox.closeDropdown, combobox.dropdownOpened],
+		);
 
+		React.useEffect(() => {
 			document.addEventListener("mousedown", handleClickOutside);
 			return () => {
 				document.removeEventListener("mousedown", handleClickOutside);
 			};
-		}, [combobox]);
+		}, [handleClickOutside]);
 
 		// Custom focus handler
 		const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
