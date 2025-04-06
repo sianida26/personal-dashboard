@@ -271,8 +271,6 @@ function useCombobox(options: UseComboboxOptions = {}): ComboboxStore {
 		}
 	};
 
-	// These implementations would be more complete in a real component
-	// For brevity, I'm providing simplified versions
 	const selectActiveOption = () => null;
 	const selectFirstOption = () => null;
 	const selectNextOption = () => null;
@@ -423,11 +421,15 @@ const Options = React.forwardRef<
 >(({ className, children, ...others }, ref) => {
 	const { store, classNames } = useComboboxContext();
 
+	// Only set the listId once when the component mounts
 	React.useEffect(() => {
-		store.setListId(
-			`combobox-options-${Math.random().toString(36).slice(2, 11)}`,
-		);
-	}, [store]);
+		// Generate a random ID only once
+		if (!store.listId) {
+			store.setListId(
+				`combobox-options-${Math.random().toString(36).slice(2, 11)}`,
+			);
+		}
+	}, []);
 
 	return (
 		<div
