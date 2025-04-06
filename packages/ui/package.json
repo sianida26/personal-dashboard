@@ -28,12 +28,12 @@
 		"class-variance-authority": "^0.7.1",
 		"cmdk": "1.1.1",
 		"next-themes": "^0.4.6",
-		"recharts": "^2.15.1",
-		"sonner": "^2.0.2"
+		"recharts": "^2.15.2",
+		"sonner": "^2.0.3"
 	},
 	"devDependencies": {
 		"@repo/typescript-config": "workspace:*",
 		"clsx": "^2.1.1",
-		"tailwind-merge": "^3.0.2"
+		"tailwind-merge": "^3.1.0"
 	}
 }
