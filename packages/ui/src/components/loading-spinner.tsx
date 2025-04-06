@@ -5,7 +5,7 @@ export type LoadingSpinnerProps = {
 };
 
 //https://github.com/shadcn-ui/taxonomy/blob/651f984e52edd65d40ccd55e299c1baeea3ff017/components/user-auth-form.tsx#L111
-const LoadingSpinner = ({ className }: LoadingSpinnerProps) => {
+export const LoadingSpinner = ({ className }: LoadingSpinnerProps) => {
 	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
