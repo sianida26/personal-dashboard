@@ -65,9 +65,15 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 				ref={ref}
 				{...props}
 			>
-				{loading ? <LoadingSpinner /> : leftSection}
-				{props.children}
-				{rightSection}
+				{asChild ? (
+					props.children
+				) : (
+					<>
+						{loading ? <LoadingSpinner /> : leftSection}
+						{props.children}
+						{rightSection}
+					</>
+				)}
 			</Comp>
 		);
 	},
