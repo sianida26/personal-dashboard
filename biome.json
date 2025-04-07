@@ -40,7 +40,8 @@
 						"allow": ["warn", "error", "time", "timeEnd"]
 					},
 					"level": "warn"
-				}
+				},
+				"noArrayIndexKey": "warn"
 			}
 		}
 	},
