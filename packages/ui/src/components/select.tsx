@@ -183,6 +183,20 @@ export type SelectProps = {
 		withAsterisk?: boolean;
 		required?: boolean;
 		error?: React.ReactNode;
+		/** Class name for the root element */
+		className?: string;
+		/** Class names for different parts of the select */
+		classNames?: Partial<{
+			root: string;
+			label: string;
+			trigger: string;
+			content: string;
+			item: string;
+		}>;
+		/** Focus event handler */
+		onFocus?: React.FocusEventHandler<HTMLButtonElement>;
+		/** Blur event handler */
+		onBlur?: React.FocusEventHandler<HTMLButtonElement>;
 	};
 
 const Select = ({
@@ -192,6 +206,10 @@ const Select = ({
 	onChange,
 	data,
 	options,
+	className,
+	classNames,
+	onFocus,
+	onBlur,
 	...props
 }: SelectProps) => {
 	const [_, setInternalValue] = React.useState<string | undefined>(
@@ -228,10 +246,10 @@ const Select = ({
 	};
 
 	return (
-		<div>
+		<div className={cn(classNames?.root, className)}>
 			{props.label && (
 				<span>
-					<Label htmlFor={props.id} className="">
+					<Label htmlFor={props.id} className={cn(classNames?.label)}>
 						{props.label}
 					</Label>
 					{(props.withAsterisk || props.required) && (
@@ -248,17 +266,22 @@ const Select = ({
 				required={props.required}
 			>
 				<SelectTrigger
+					id={props.id}
 					className={cn(
 						props.error && "border-red-500",
+						classNames?.trigger,
 					)} /*  disabled={props.disabled} */
+					onFocus={onFocus}
+					onBlur={onBlur}
 				>
 					<SelectValue placeholder={props.placeholder} />
 				</SelectTrigger>
-				<SelectContent>
+				<SelectContent className={cn(classNames?.content)}>
 					{currentOptions?.map((item) => (
 						<SelectItem
 							key={typeof item === "string" ? item : item.value}
 							value={typeof item === "string" ? item : item.value}
+							className={cn(classNames?.item)}
 						>
 							{typeof item === "string" ? item : item.label}
 						</SelectItem>
