@@ -166,7 +166,12 @@ export type SelectProps = {
 		label?: React.ReactNode;
 		placeholder?: string;
 		readOnly?: boolean;
+		/**
+		 * @deprecated Use `options` instead. This prop will be removed in a future version.
+		 */
 		data?: ({ value: string; label: React.ReactNode } | string)[];
+		/** The options to display in the select dropdown. */
+		options?: ({ value: string; label: React.ReactNode } | string)[];
 		defaultValue?: string;
 		/**
 		 * @deprecated Use onChange instead
@@ -185,6 +190,8 @@ const Select = ({
 	value,
 	onValueChange,
 	onChange,
+	data,
+	options,
 	...props
 }: SelectProps) => {
 	const [_, setInternalValue] = React.useState<string | undefined>(
@@ -193,6 +200,18 @@ const Select = ({
 
 	// Determine whether the component is controlled or uncontrolled
 	const isControlled = value !== undefined;
+
+	// Warn if deprecated 'data' prop is used
+	React.useEffect(() => {
+		if (data && process.env.NODE_ENV !== "production") {
+			console.warn(
+				'The "data" prop in the Select component is deprecated and will be removed in a future version. Please use the "options" prop instead.',
+			);
+		}
+	}, [data]);
+
+	// Use options if provided, otherwise fallback to data
+	const currentOptions = options ?? data;
 
 	const handleChange = (selectedValue: string | null) => {
 		if (!isControlled) {
@@ -233,10 +252,10 @@ const Select = ({
 						props.error && "border-red-500",
 					)} /*  disabled={props.disabled} */
 				>
-					<SelectValue /* placeholder={props.placeholder} */ />
+					<SelectValue placeholder={props.placeholder} />
 				</SelectTrigger>
 				<SelectContent>
-					{props.data?.map((item) => (
+					{currentOptions?.map((item) => (
 						<SelectItem
 							key={typeof item === "string" ? item : item.value}
 							value={typeof item === "string" ? item : item.value}
