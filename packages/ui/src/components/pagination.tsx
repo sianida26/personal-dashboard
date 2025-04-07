@@ -136,18 +136,30 @@ const PaginationEllipsis = ({
 );
 PaginationEllipsis.displayName = "PaginationEllipsis";
 
-export type PaginationProps = {
-	boundaries?: number;
-	className?: string;
-	onChange?: (value: number) => void;
-	siblings?: number;
-	total: number;
-	value?: number;
+export type PaginationClassNames = {
+	root: string;
+	content: string;
+	item: string;
+	button: string;
+	ellipsis: string;
+	next: string;
+	previous: string;
 };
+
+export type PaginationProps = {
+		boundaries?: number;
+		className?: string;
+		classNames?: Partial<PaginationClassNames>;
+		onChange?: (value: number) => void;
+		siblings?: number;
+		total: number;
+		value?: number;
+	};
 
 const Pagination = ({
 	boundaries = 1,
 	className,
+	classNames,
 	onChange,
 	siblings = 1,
 	total,
@@ -196,10 +208,11 @@ const Pagination = ({
 	};
 
 	return (
-		<NativePagination className={className}>
-			<PaginationContent>
-				<PaginationItem>
+		<NativePagination className={cn(classNames?.root, className)}>
+			<PaginationContent className={classNames?.content}>
+				<PaginationItem className={classNames?.item}>
 					<PaginationPrevious
+						className={classNames?.previous}
 						onClick={() => onChange?.(Math.max(1, value - 1))}
 						disabled={value <= 1}
 					/>
@@ -207,11 +220,15 @@ const Pagination = ({
 				{getPageNumbers().map((page) => (
 					<PaginationItem
 						key={page === "dots" ? `dots-${Math.random()}` : page}
+						className={classNames?.item}
 					>
 						{page === "dots" ? (
-							<PaginationEllipsis />
+							<PaginationEllipsis
+								className={classNames?.ellipsis}
+							/>
 						) : (
 							<PaginationButton
+								className={classNames?.button}
 								isActive={page === value}
 								onClick={() => onChange?.(page)}
 							>
@@ -220,8 +237,9 @@ const Pagination = ({
 						)}
 					</PaginationItem>
 				))}
-				<PaginationItem>
+				<PaginationItem className={classNames?.item}>
 					<PaginationNext
+						className={classNames?.next}
 						onClick={() => onChange?.(Math.min(total, value + 1))}
 						disabled={value >= total}
 					/>
