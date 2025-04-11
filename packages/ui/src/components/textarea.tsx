@@ -3,14 +3,29 @@ import * as React from "react";
 import { Label } from "./label";
 
 export interface TextareaProps
-	extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-	label?: string;
-	error?: React.ReactNode;
-	withAsterisk?: boolean;
-	classNames?: {
-		textarea?: string;
-	};
-}
+		extends Omit<
+			React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+			"value" | "onChange"
+		> {
+		/** The value of the textarea */
+		value?: string;
+		/** Callback fired when the value changes */
+		onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+		/** Callback fired when the textarea receives focus */
+		onFocus?: (event: React.FocusEvent<HTMLTextAreaElement>) => void;
+		/** Callback fired when the textarea loses focus */
+		onBlur?: (event: React.FocusEvent<HTMLTextAreaElement>) => void;
+		/** The label text for the textarea */
+		label?: string;
+		/** Error message to display below the textarea */
+		error?: React.ReactNode;
+		/** Whether to show an asterisk (*) next to the label */
+		withAsterisk?: boolean;
+		/** Custom class names for styling */
+		classNames?: {
+			textarea?: string;
+		};
+	}
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 	({ className, label, error, withAsterisk, classNames, ...props }, ref) => {
@@ -18,12 +33,13 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 			<div className={cn("relative w-full", className)}>
 				{label && (
 					<span>
-						<Label htmlFor={props.id} className="">
+						<Label
+							withAsterisk={withAsterisk}
+							htmlFor={props.id}
+							className=""
+						>
 							{label}
 						</Label>
-						{withAsterisk && (
-							<span className="text-red-500">*</span>
-						)}
 					</span>
 				)}
 				<textarea
