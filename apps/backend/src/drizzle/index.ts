@@ -11,6 +11,7 @@ import * as usersSchema from "./schema/users";
 import * as microsoftAdmin from "./schema/microsoftAdmin";
 import * as oauthGoogleSchema from "./schema/oauthGoogle";
 import * as oauthMicrosoftSchema from "./schema/oauthMicrosoft";
+import * as kvStore from "./schema/kvStore";
 import SqlLogger from "./utils/SqlLogger";
 
 configDotenv();
@@ -28,6 +29,7 @@ const db = drizzle({
 		...microsoftAdmin,
 		...oauthGoogleSchema,
 		...oauthMicrosoftSchema,
+		...kvStore,
 	},
 	logger: new SqlLogger(),
 });
