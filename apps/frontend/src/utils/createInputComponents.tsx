@@ -6,6 +6,8 @@ import {
 	type CheckboxProps,
 	DateTimePicker,
 	type DateTimePickerProps,
+	Dropzone,
+	type DropzoneProps,
 	FileInput,
 	type FileInputProps,
 	FormGroup,
@@ -100,6 +102,22 @@ type DateTimePickerType = {
 	type: "datetime-picker";
 } & DateTimePickerProps;
 
+type DropzoneType = {
+	type: "dropzone";
+	/**
+	 * Optional element to render inside the dropzone when no action is happening
+	 */
+	idleContent?: React.ReactNode;
+	/**
+	 * Optional element to render inside the dropzone when files are being accepted
+	 */
+	acceptContent?: React.ReactNode;
+	/**
+	 * Optional element to render inside the dropzone when files are being rejected
+	 */
+	rejectContent?: React.ReactNode;
+} & Omit<DropzoneProps, "children">;
+
 type AcceptedInput = (
 	| TextInputType
 	| MultiSelectInputType
@@ -114,6 +132,7 @@ type AcceptedInput = (
 	| TextareaType
 	| RadioGroupType
 	| FileInputType
+	| DropzoneType
 	| CustomType
 ) &
 	GeneralInputProps;
@@ -256,6 +275,32 @@ function createInputComponents(options: Options) {
 						})}
 						{/* </Group> */}
 					</RadioGroup>
+				);
+			}
+
+			case "dropzone": {
+				const {
+					idleContent,
+					acceptContent,
+					rejectContent,
+					...dropzoneProps
+				} = input;
+				return (
+					<Dropzone
+						{...dropzoneProps}
+						key={key}
+						disabled={options.disableAll || input.disabled}
+					>
+						{acceptContent && (
+							<Dropzone.Accept>{acceptContent}</Dropzone.Accept>
+						)}
+						{rejectContent && (
+							<Dropzone.Reject>{rejectContent}</Dropzone.Reject>
+						)}
+						{idleContent && (
+							<Dropzone.Idle>{idleContent}</Dropzone.Idle>
+						)}
+					</Dropzone>
 				);
 			}
 

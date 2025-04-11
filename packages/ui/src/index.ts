@@ -17,6 +17,7 @@ export * from "./components/date-picker-input";
 export * from "./components/datetime-picker";
 export * from "./components/dialog";
 export * from "./components/dropdown-menu";
+export * from "./components/dropzone";
 export * from "./components/file-input";
 export * from "./components/form-group";
 export * from "./components/input";
