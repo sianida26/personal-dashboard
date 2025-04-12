@@ -16,7 +16,7 @@ export interface TextareaProps
 		/** Callback fired when the textarea loses focus */
 		onBlur?: (event: React.FocusEvent<HTMLTextAreaElement>) => void;
 		/** The label text for the textarea */
-		label?: string;
+		label?: React.ReactNode;
 		/** Error message to display below the textarea */
 		error?: React.ReactNode;
 		/** Whether to show an asterisk (*) next to the label */
@@ -24,6 +24,7 @@ export interface TextareaProps
 		/** Custom class names for styling */
 		classNames?: {
 			textarea?: string;
+			label?: string;
 		};
 	}
 
@@ -36,7 +37,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 						<Label
 							withAsterisk={withAsterisk}
 							htmlFor={props.id}
-							className=""
+							className={classNames?.label}
 						>
 							{label}
 						</Label>
