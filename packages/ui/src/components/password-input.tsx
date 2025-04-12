@@ -5,9 +5,12 @@ import { TbEye, TbEyeClosed } from "react-icons/tb";
 import { Input, type InputProps } from "./input";
 
 export interface PasswordInputProps extends InputProps {
-	isPasswordVisible?: boolean;
-	onPasswordVisibilityChange?: (isVisible: boolean) => void;
-}
+		isPasswordVisible?: boolean;
+		onPasswordVisibilityChange?: (isVisible: boolean) => void;
+		classNames?: Partial<{
+			input: string;
+		}>;
+	}
 
 const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
 	(
@@ -16,6 +19,7 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
 			id,
 			isPasswordVisible: controlledVisibility,
 			onPasswordVisibilityChange,
+			classNames,
 			...props
 		},
 		ref,
@@ -32,12 +36,12 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
 		};
 
 		return (
-			<div className="relative w-full">
+			<div className={cn("relative w-full", className)}>
 				<div className="relative">
 					<Input
 						type={isPasswordVisible ? "text" : "password"}
 						id={id}
-						className={cn("pr-10", className)}
+						className={classNames?.input}
 						rightSection={
 							<button
 								type="button"
