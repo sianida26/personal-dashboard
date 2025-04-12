@@ -31,17 +31,15 @@ export interface TextareaProps
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 	({ className, label, error, withAsterisk, classNames, ...props }, ref) => {
 		return (
-			<div className={cn("relative w-full", className)}>
+			<div className={cn("relative w-full gap-2", className)}>
 				{label && (
-					<span>
-						<Label
-							withAsterisk={withAsterisk}
-							htmlFor={props.id}
-							className={classNames?.label}
-						>
-							{label}
-						</Label>
-					</span>
+					<Label
+						withAsterisk={withAsterisk}
+						htmlFor={props.id}
+						className={classNames?.label}
+					>
+						{label}
+					</Label>
 				)}
 				<textarea
 					className={cn(
