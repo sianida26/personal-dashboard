@@ -29,7 +29,7 @@ const Label = React.forwardRef<
 			{...props}
 		>
 			{children}
-			{withAsterisk && <span className="text-red-500">*</span>}
+			{withAsterisk && <span className="text-red-500 ml-1">*</span>}
 		</LabelPrimitive.Root>
 	);
 });
