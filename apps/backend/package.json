@@ -16,19 +16,19 @@
 		"check": "bunx tsc --noEmit && bun lint && bun format"
 	},
 	"dependencies": {
-		"@azure/msal-node": "^3.4.1",
-		"@hono/node-server": "^1.14.0",
+		"@azure/msal-node": "^3.5.0",
+		"@hono/node-server": "^1.14.1",
 		"@hono/oauth-providers": "^0.7.1",
 		"@hono/zod-validator": "^0.4.3",
 		"@microsoft/microsoft-graph-client": "^3.0.7",
 		"@repo/data": "workspace:*",
 		"@repo/validation": "workspace:*",
-		"dotenv": "^16.4.7",
+		"dotenv": "^16.5.0",
 		"drizzle-orm": "^0.41.0",
 		"jsonwebtoken": "^9.0.2",
 		"moment": "^2.30.1",
 		"postgres": "^3.4.5",
-		"sharp": "^0.34.0"
+		"sharp": "^0.34.1"
 	},
 	"devDependencies": {
 		"@types/jsonwebtoken": "^9.0.9",
