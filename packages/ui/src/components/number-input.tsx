@@ -1,65 +1,47 @@
+/**
+ * NumberInput.tsx
+ *
+ * A fully-featured numeric input component supporting:
+ * - Controlled and uncontrolled modes
+ * - Prefix, thousand and decimal separators
+ * - Customizable clamp behavior (none, blur, strict)
+ * - Increment/decrement controls
+ * - Decimal or integer-only input
+ */
+
 import * as React from "react";
 import { Input, type InputProps } from "./input";
 import { cn } from "../utils";
 import { LuChevronDown, LuChevronUp } from "react-icons/lu";
 
 /**
- * Extends InputProps for numeric-specific behavior.
+ * Props for <NumberInput>
  */
 export interface NumberInputProps
-		extends Omit<InputProps, "type" | "value" | "onChange"> {
-		/**
-		 * Current numeric value (controlled).
-		 */
-		value?: number;
-		/**
-		 * Default numeric value (uncontrolled).
-		 */
-		defaultValue?: number;
-		/**
-		 * Callback when value changes (numeric).
-		 */
-		onChange?(value: number): void;
-		/**
-		 * Minimum value allowed.
-		 */
-		min?: number;
-		/**
-		 * Maximum value allowed.
-		 */
-		max?: number;
-		/**
-		 * Increment/decrement step.
-		 */
-		step?: number;
-		/**
-		 * Determine how clamping is applied.
-		 * - "none" - do not clamp the value.
-		 * - "blur" - clamp the value on blur.
-		 * - "strict" - clamp the value immediately on change.
-		 *
-		 * default: "blur"
-		 */
-		clampBehavior?: "none" | "blur" | "strict";
-		/**
-		 * Text prefix to add before the number.
-		 */
-		prefix?: string;
-		/**
-		 * Character to use as thousands separator.
-		 */
-		thousandSeparator?: string;
-		/**
-		 * Character to use as decimal separator.
-		 */
-		decimalSeparator?: string;
-		/**
-		 * Whether decimal values are allowed.
-		 *
-		 * @default true
-		 */
-		allowDecimals?: boolean;
-	}
+	extends Omit<InputProps, "type" | "value" | "onChange"> {
+	/** Controlled numeric value. Pass `null` to clear. */
+	value?: number | null;
+	/** Default initial numeric value (uncontrolled mode). */
+	defaultValue?: number;
+	/** Callback when the numeric value changes. Receives `number` or `null`. */
+	onChange?(value: number | null): void;
+	/** Minimum allowable value (inclusive). */
+	min?: number;
+	/** Maximum allowable value (inclusive). */
+	max?: number;
+	/** Step amount for arrows. @default 1 */
+	step?: number;
+	/** Clamp behavior: none, blur, strict. @default "blur" */
+	clampBehavior?: "none" | "blur" | "strict";
+	/** Text prefix (e.g. "$“). */
+	prefix?: string;
+	/** Thousands separator char (e.g. ","). */
+	thousandSeparator?: string;
+	/** Decimal separator char (e.g. "."). */
+	decimalSeparator?: string;
+	/** Allow decimals? @default true */
+	allowDecimals?: boolean;
+}
 
 export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 	(
@@ -79,212 +61,147 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 		},
 		ref,
 	) => {
-		// Are we controlled?
-		const isControlled = value !== undefined;
+		const sep = decimalSeparator;
+		const thou = thousandSeparator;
 
-		// Keep a string state so the user can freely type (including empty).
-		const [internalValue, setInternalValue] = React.useState<string>(() => {
-			if (isControlled && value != null) return String(value);
-			if (defaultValue != null) return String(defaultValue);
-			return "";
-		});
+		function format(n: number) {
+			const [i = "0", d = ""] = n.toString().split(".");
+			let iFmt = i;
+			if (thou && i.length > 3)
+				iFmt = i.replace(/\B(?=(\d{3})+(?!\d))/g, thou);
+			return prefix + (d && allowDecimals ? `${iFmt}${sep}${d}` : iFmt);
+		}
 
-		// Keep internalValue in sync if controlled
+		function parse(txt: string): number | null {
+			let t = txt.replace(prefix, "");
+			if (thou) {
+				const esc = thou.replace(/[-\\/\\^$*+?.()|[\]{}]/g, "\\$&");
+				t = t.replace(new RegExp(esc, "g"), "");
+			}
+			if (sep !== ".") t = t.replace(sep, ".");
+			if (!/^-?\d*\.?\d*$/.test(t)) return null;
+			if (t === "." || t === "-" || t === "-.") return null;
+			const num = Number.parseFloat(t);
+			return Number.isNaN(num) ? null : num;
+		}
+
+		function clamp(n: number) {
+			let r = n;
+			if (min != null && r < min) r = min;
+			if (max != null && r > max) r = max;
+			return r;
+		}
+
+		const isEditing = React.useRef(false);
+		const initialNum = value ?? defaultValue ?? null;
+		const [internalNum, setInternalNum] = React.useState<number | null>(
+			initialNum,
+		);
+		const [text, setText] = React.useState<string>(
+			initialNum != null ? format(initialNum) : "",
+		);
+
 		React.useEffect(() => {
-			if (isControlled) {
-				setInternalValue(value != null ? String(value) : "");
+			if (!isEditing.current) {
+				const v = value ?? null;
+				setInternalNum(v);
+				setText(v != null ? format(v) : "");
 			}
-		}, [isControlled, value]);
+		}, [value]);
 
-		// Format value for display
-		const formatValue = (val: string): string => {
-			if (!val) return "";
-
-			const parsedNum = parseValue(val);
-			if (parsedNum === null) return val;
-
-			let integerPart = "";
-			let decimalPart = "";
-
-			// Split the value into integer and decimal parts
-			const dotIndex = val.indexOf(".");
-			if (dotIndex !== -1) {
-				integerPart = val.substring(0, dotIndex);
-				decimalPart = val.substring(dotIndex + 1);
-			} else {
-				integerPart = val;
-			}
-
-			// Format the integer part with thousand separators if needed
-			if (thousandSeparator && integerPart.length > 3) {
-				integerPart = integerPart.replace(
-					/\B(?=(\d{3})+(?!\d))/g,
-					thousandSeparator,
-				);
-			}
-
-			// Join the parts with the decimal separator
-			const formattedValue =
-				decimalPart && allowDecimals
-					? `${integerPart}${decimalSeparator}${decimalPart}`
-					: integerPart;
-
-			return prefix + formattedValue;
+		const handleFocus = () => {
+			isEditing.current = true;
 		};
 
-		// Unformat value for processing
-		const unformatValue = (val: string): string => {
-			if (!val) return "";
-
-			let result = val;
-			if (prefix) {
-				result = result.replace(prefix, "");
-			}
-
-			if (thousandSeparator) {
-				result = result.replace(
-					new RegExp(
-						thousandSeparator.replace(
-							/[.*+?^${}()|[\]\\]/g,
-							"\\$&",
-						),
-						"g",
-					),
-					"",
-				);
-			}
-
-			if (decimalSeparator && decimalSeparator !== ".") {
-				result = result.replace(decimalSeparator, ".");
-			}
-
-			return result;
-		};
-
-		const parseValue = (val: string) => {
-			const unformatted = unformatValue(val);
-
-			// If decimals are not allowed, remove any decimal part
-			const sanitized =
-				!allowDecimals && unformatted.includes(".")
-					? unformatted.split(".")[0]
-					: unformatted;
-
-			const numeric = Number.parseFloat(sanitized || "");
-			return Number.isNaN(numeric) ? null : numeric;
-		};
-
-		const clampValue = (val: number) => {
-			let clamped = val;
-			if (min !== undefined && clamped < min) clamped = min;
-			if (max !== undefined && clamped > max) clamped = max;
-			return clamped;
-		};
-
-		/**
-		 * Apply logic to final value:
-		 * - If user typed a valid number, clamp if needed.
-		 * - If user typed empty or invalid, fall back to min if present, otherwise 0.
-		 */
-		const commitValue = (raw: string) => {
-			const parsed = parseValue(raw);
-
-			let finalVal: number;
-			if (parsed === null) {
-				// user typed empty or invalid
-				finalVal = min !== undefined ? min : 0;
-			} else {
-				finalVal =
-					clampBehavior === "strict" ? clampValue(parsed) : parsed;
-			}
-
-			if (!isControlled) {
-				setInternalValue(String(finalVal));
-			}
-			onChange?.(clampValue(finalVal));
-		};
-
-		const handleInputChange = (
-			event: React.ChangeEvent<HTMLInputElement>,
-		) => {
-			const rawValue = event.target.value;
-
-			// Skip processing if the value doesn't pass basic validation
-			// This allows user to type partial values like just a decimal point
-			if (rawValue === "" || rawValue === prefix) {
-				if (!isControlled) {
-					setInternalValue("");
+		const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+			isEditing.current = false;
+			const p = parse(text);
+			if (p == null) {
+				if (min != null) {
+					setInternalNum(min);
+					setText(format(min));
+					onChange?.(min);
+				} else {
+					setInternalNum(null);
+					setText("");
+					onChange?.(null);
 				}
-				onChange?.(Number.NaN);
+			} else {
+				const final = clampBehavior !== "none" ? clamp(p) : p;
+				setInternalNum(final);
+				setText(format(final));
+				onChange?.(final);
+			}
+			props.onBlur?.(e);
+		};
+
+		const handleChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
+			const raw = e.target.value;
+			// validation regex: prefix? minus? digits/thou* optional decSep digits*
+			const esc = (s: string) =>
+				s.replace(/[-\\/\\^$*+?.()|[\]{}]/g, "\\$&");
+			const prefixPart = prefix ? esc(prefix) : "";
+			const thouPart = thou ? esc(thou) : "";
+			const sepPart = esc(sep);
+			const pattern = new RegExp(
+				`^${prefixPart}[-]?([0-9${thouPart}]*)(?:${sepPart}[0-9]*)?$`,
+			);
+			if (!pattern.test(raw)) {
+				// ignore invalid keystrokes
 				return;
 			}
-
-			// Reject if decimal separator is entered but decimals are not allowed
-			if (!allowDecimals) {
-				const separator = decimalSeparator || ".";
-				if (
-					rawValue.includes(separator) ||
-					(separator !== "." && rawValue.includes("."))
-				) {
-					return;
+			setText(raw);
+			if (!raw || raw === prefix) return;
+			if ((allowDecimals && raw.endsWith(sep)) || raw === `${prefix}-`)
+				return;
+			const p = parse(raw);
+			if (p != null) {
+				if (clampBehavior === "strict") {
+					const c = clamp(p);
+					setInternalNum(c);
+					setText(format(c));
+					onChange?.(c);
+				} else {
+					setInternalNum(p);
+					onChange?.(p);
 				}
 			}
-
-			if (clampBehavior === "strict") {
-				// Immediately clamp on each change
-				commitValue(rawValue);
-			} else {
-				// Let user type freely; store raw input
-				if (!isControlled) {
-					setInternalValue(rawValue);
-				}
-				// Call onChange with numeric value or NaN
-				const parsed = parseValue(rawValue);
-				onChange?.(parsed ?? Number.NaN);
-			}
 		};
 
-		const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-			// Only clamp on blur if clampBehavior === "blur"
-			if (clampBehavior === "blur") {
-				commitValue(internalValue);
-			}
-			props.onBlur?.(event);
+		const inc = () => {
+			const next = clamp((internalNum ?? 0) + step);
+			setInternalNum(next);
+			setText(format(next));
+			onChange?.(next);
+		};
+		const dec = () => {
+			const next = clamp((internalNum ?? 0) - step);
+			setInternalNum(next);
+			setText(format(next));
+			onChange?.(next);
 		};
 
-		const numericValue = parseValue(internalValue) ?? 0;
-		const isAtMin = min !== undefined && numericValue <= min;
-		const isAtMax = max !== undefined && numericValue >= max;
+		const atMin = min != null && internalNum != null && internalNum <= min;
+		const atMax = max != null && internalNum != null && internalNum >= max;
 
-		const increment = () => {
-			const parsed = parseValue(internalValue) ?? 0;
-			commitValue(String(parsed + step));
-		};
-
-		const decrement = () => {
-			const parsed = parseValue(internalValue) ?? 0;
-			commitValue(String(parsed - step));
-		};
-
-		// Right section with up/down arrows
 		const rightSection = (
 			<div className="flex flex-col h-full">
 				<button
 					type="button"
-					onClick={increment}
-					disabled={isAtMax}
+					onClick={inc}
+					disabled={atMax}
 					className={cn(
-						"flex items-center h-full justify-center leading-none w-6 hover:bg-primary/10 disabled:opacity-50 disabled:cursor-not-allowed",
+						"flex items-center h-full justify-center w-6 hover:bg-primary/10 disabled:opacity-50",
 					)}
 				>
 					<LuChevronUp />
 				</button>
 				<button
 					type="button"
-					onClick={decrement}
-					disabled={isAtMin}
+					onClick={dec}
+					disabled={atMin}
 					className={cn(
-						"flex items-center h-full justify-center leading-none w-6 hover:bg-primary/10 disabled:opacity-50 disabled:cursor-not-allowed",
+						"flex items-center h-full justify-center w-6 hover:bg-primary/10 disabled:opacity-50",
 					)}
 				>
 					<LuChevronDown />
@@ -292,19 +209,15 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 			</div>
 		);
 
-		// Format the display value
-		const displayValue = internalValue
-			? formatValue(internalValue)
-			: internalValue;
-
 		return (
 			<Input
 				ref={ref}
 				{...props}
 				type="text"
 				inputMode={allowDecimals ? "decimal" : "numeric"}
-				value={displayValue}
-				onChange={handleInputChange}
+				value={text}
+				onFocus={handleFocus}
+				onChange={handleChangeText}
 				onBlur={handleBlur}
 				rightSection={rightSection}
 				classNames={{
@@ -316,5 +229,4 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 		);
 	},
 );
-
 NumberInput.displayName = "NumberInput";
