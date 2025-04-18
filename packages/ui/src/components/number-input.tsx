@@ -53,6 +53,12 @@ export interface NumberInputProps
 		 * Character to use as decimal separator.
 		 */
 		decimalSeparator?: string;
+		/**
+		 * Whether decimal values are allowed.
+		 *
+		 * @default true
+		 */
+		allowDecimals?: boolean;
 	}
 
 export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
@@ -68,6 +74,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 			prefix = "",
 			thousandSeparator = "",
 			decimalSeparator = ".",
+			allowDecimals = true,
 			...props
 		},
 		ref,
@@ -117,9 +124,10 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 			}
 
 			// Join the parts with the decimal separator
-			const formattedValue = decimalPart
-				? `${integerPart}${decimalSeparator}${decimalPart}`
-				: integerPart;
+			const formattedValue =
+				decimalPart && allowDecimals
+					? `${integerPart}${decimalSeparator}${decimalPart}`
+					: integerPart;
 
 			return prefix + formattedValue;
 		};
@@ -155,7 +163,14 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 
 		const parseValue = (val: string) => {
 			const unformatted = unformatValue(val);
-			const numeric = Number.parseFloat(unformatted);
+
+			// If decimals are not allowed, remove any decimal part
+			const sanitized =
+				!allowDecimals && unformatted.includes(".")
+					? unformatted.split(".")[0]
+					: unformatted;
+
+			const numeric = Number.parseFloat(sanitized || "");
 			return Number.isNaN(numeric) ? null : numeric;
 		};
 
@@ -202,6 +217,17 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 				}
 				onChange?.(Number.NaN);
 				return;
+			}
+
+			// Reject if decimal separator is entered but decimals are not allowed
+			if (!allowDecimals) {
+				const separator = decimalSeparator || ".";
+				if (
+					rawValue.includes(separator) ||
+					(separator !== "." && rawValue.includes("."))
+				) {
+					return;
+				}
 			}
 
 			if (clampBehavior === "strict") {
@@ -276,7 +302,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
 				ref={ref}
 				{...props}
 				type="text"
-				inputMode="decimal"
+				inputMode={allowDecimals ? "decimal" : "numeric"}
 				value={displayValue}
 				onChange={handleInputChange}
 				onBlur={handleBlur}
