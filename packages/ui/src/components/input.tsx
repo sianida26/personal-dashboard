@@ -173,7 +173,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 									? "border-destructive focus-visible:ring-destructive"
 									: "border-input focus-visible:ring-ring"
 							}`,
-							className,
+							classNames?.input,
 						)}
 						ref={ref}
 						onChange={handleChange}
