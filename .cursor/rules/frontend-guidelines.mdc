@@ -1,6 +1,6 @@
 ---
 description: 
-globs: 
+globs: apps/frontend/**/*
 alwaysApply: false
 ---
 The following rules should always be followed when working within the `apps/frontend` directory.
