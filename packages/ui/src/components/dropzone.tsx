@@ -338,34 +338,47 @@ const DropzoneComponent = React.forwardRef<HTMLDivElement, DropzoneProps>(
 				// Check file type
 				if (acceptMimeTypes) {
 					const fileType = file.type || "";
-					const fileExtension = file.name.split(".").pop() || "";
+					const fileExtension =
+						file.name.split(".").pop()?.toLowerCase() || "";
 					let accepted = false;
 
-					for (const [mimeType, extensions] of Object.entries(
-						acceptMimeTypes,
-					)) {
+					for (const [
+						mimeTypeOrExtKey,
+						associatedExtensions,
+					] of Object.entries(acceptMimeTypes)) {
 						// If mime type matches directly
-						if (fileType === mimeType) {
+						if (fileType === mimeTypeOrExtKey) {
 							accepted = true;
 							break;
 						}
 
 						// If mime type pattern matches (e.g., image/*)
 						if (
-							mimeType.endsWith("/*") &&
-							fileType.startsWith(mimeType.replace("/*", ""))
+							mimeTypeOrExtKey.endsWith("/*") &&
+							fileType.startsWith(
+								mimeTypeOrExtKey.replace("/*", ""),
+							)
 						) {
 							accepted = true;
 							break;
 						}
 
-						// If extension matches
+						// If extension matches within associated extensions array
+						const requiredExtensions = associatedExtensions.map(
+							(ext) =>
+								ext.toLowerCase().startsWith(".")
+									? ext.toLowerCase()
+									: `.${ext.toLowerCase()}`,
+						);
+						if (requiredExtensions.includes(`.${fileExtension}`)) {
+							accepted = true;
+							break;
+						}
+
+						// --- ADDED CHECK --- Check if the key itself is the required extension
 						if (
-							extensions.some(
-								(ext) =>
-									ext.toLowerCase() ===
-									`.${fileExtension.toLowerCase()}`,
-							)
+							mimeTypeOrExtKey.startsWith(".") &&
+							mimeTypeOrExtKey === `.${fileExtension}`
 						) {
 							accepted = true;
 							break;
@@ -383,7 +396,6 @@ const DropzoneComponent = React.forwardRef<HTMLDivElement, DropzoneProps>(
 					acceptedFiles.push(file);
 				}
 			}
-
 			return { acceptedFiles, rejectedFiles };
 		};
 
@@ -437,7 +449,8 @@ const DropzoneComponent = React.forwardRef<HTMLDivElement, DropzoneProps>(
 
 					setStatus(hasAcceptedFiles ? "accept" : "reject");
 				} catch (error) {
-					console.error("Error checking dragged files:", error);
+					console.error(error);
+					//TODO: Add error handling
 					setStatus("reject");
 				}
 			}
