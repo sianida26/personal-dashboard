@@ -1,0 +1,83 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+The following rules should always be followed when working within the `apps/frontend` directory.
+
+# Frontend (`apps/frontend`)
+
+## Core Technologies
+
+- **Framework/Library:** ReactJS with Vite
+- **Routing:** TanStack Router
+- **State Management/Caching:** TanStack Query
+- **API Client:** Hono RPC (`src/honoClient.ts`)
+
+## Directory Structure & Conventions
+
+- **Forms:**
+  - Forms should use `mantine-form`.
+  - Validation schemas must be imported from `@repo/validation`.
+  - Always use the `validate` function from `@repo/validation` to apply schema-based validation.
+
+
+- **API Communication:**
+  - Use the Hono RPC client defined in `src/honoClient.ts`.
+  - Always use `fetchRPC()` for making requests to the backend.
+  - Refer to the request schema to properly structure the request payload.
+  - Example usage:
+    ```ts
+    fetchRPC(users[id].$get) // for GET /users/:id
+    fetchRPC(users.$post({ json: data })) // for POST /users
+    fetchRPC(a.b.c.$method) // for nested subroutes like /a/b/c with specific HTTP method
+    ```
+
+- **Main Entry Point:** `src/main.tsx` mounts the React application.
+- **Root Component:** `src/App.tsx` serves as the main application wrapper/layout.
+- **Routing:**
+  - Route definitions and associated page components reside in `src/routes/`.
+  - TanStack Router configuration is managed here using file-based routing conventions.
+  - `src/routeTree.gen.ts` is an auto-generated file; DO NOT edit manually.
+- **Components:**
+  - Prefer using components from `@repo/ui` (Shadcn) where applicable.
+- **API Communication:**
+  - Use the Hono RPC client defined in `src/honoClient.ts`.
+  - Fetch data using the `fetchRPC()` utility function from `src/utils/fetchRPC.ts`.
+  - Integrate backend calls with TanStack Query for caching, refetching, and state management (e.g., using `useQuery`, `useMutation`).
+- **State Management:**
+  - Primarily use TanStack Query for server state.
+  - Use React Context (`src/contexts/`) for global UI state if necessary.
+  - Use local component state (`useState`, `useReducer`) for component-level state.
+- **Hooks:**
+  - Place custom React hooks in `src/hooks/`.
+- **Utilities:**
+  - General utility functions should be placed in `src/utils/`.
+- **Types:**
+  - Define frontend-specific TypeScript types and interfaces in `src/types/`.
+  - Leverage types inferred from the Hono RPC client where possible.
+- **Styling:**
+  - Global styles are defined in `src/index.css` or within `src/styles/`.
+  - Use CSS Modules or a CSS-in-JS solution (like Tailwind CSS, if configured via PostCSS in `vite.config.mts`) for component-level styles, often co-located with the component.
+- **Assets:**
+  - Static assets like images and fonts are stored in `src/assets/` or the `public/` directory.
+- **Error Handling:**
+  - Implement frontend error handling using components in `src/errors/`, such as React Error Boundaries.
+- **Client-Side Storage:**
+  - Logic related to IndexedDB or other client-side storage resides in `src/indexedDB/` if used.
+
+## Code Style & Best Practices
+
+- **React:** Follow standard React best practices (e.g., rules of hooks, component composition).
+- **TypeScript:**
+  - Avoid `any`. Use specific types, `unknown`, or types inferred from libraries (like TanStack Query or Hono RPC).
+  - Use the null-coalescing operator (`??`) for default values.
+- **Imports:** Use absolute imports configured via `tsconfig.json` (e.g., `@/*`) or relative paths consistently.
+- **Accessibility (a11y):** Ensure components and interactions are accessible.
+- **Performance:** Be mindful of bundle size and rendering performance. Use React.lazy, memoization, and other optimization techniques where appropriate.
+- **Dependencies:** Manage dependencies using Bun via the `package.json` file.
+
+## Operations
+
+- **Development Server:** Do not run commands to start the development server automatically.
+
