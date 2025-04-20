@@ -713,7 +713,13 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 	) : null;
 }
 
-// Create a more ergonomic version of PageTemplate that infers types from the endpoint
+/**
+ * @deprecated import from `@utils/createPageTemplate` instead
+ * Creates a PageTemplate with type inference for the column definitions.
+ *
+ * @param props - The props for the PageTemplate.
+ * @returns A PageTemplate component with type inference for the column definitions.
+ */
 export function createPageTemplate<TData extends Record<string, unknown>>(
 	props: Omit<Props<TData>, "columnDefs"> & {
 		columnDefs: (
