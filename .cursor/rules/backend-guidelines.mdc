@@ -75,6 +75,23 @@ The following rules should always be followed when working within the `apps/back
 - **Testing:**
   - Test files should be co-located with the code they test or follow standard naming conventions (e.g., `*.test.ts`).
 
+## HTTP Methods
+
+- **GET**: Use for retrieving data.
+- **POST**: Use for creating data or executing actions.
+- **PUT**: Use for updating existing data (partial or full).
+- **DELETE**: Use for deleting data.
+
+## Endpoint Return Rules
+
+- Each endpoint **must have only one return statement**.
+- Do **not** use multiple `return` statements scattered in the function.
+- Use control flow and throw errors to escape logic.
+- For error cases, throw one of the following:
+  - `notFound()` for 404 cases.
+  - `forbidden()` for 403 cases.
+  - `new DashboardError({...})` for other application-specific errors.
+
 ## Code Style & Best Practices
 
 - **Imports:** Use relative paths for imports within the `apps/backend` module.

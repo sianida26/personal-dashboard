@@ -16,6 +16,12 @@ The following rules should always be followed when working within the `apps/fron
 
 ## Directory Structure & Conventions
 
+- **File Naming Convention:**
+
+  - Dynamic route files **must** use parameterized naming.
+  - For example, instead of `detail.tsx`, the correct filename is `detail.$id.tsx` to represent dynamic segments like `/detail/:id`.
+  - This ensures compatibility with TanStack Router's file-based routing and avoids runtime errors.
+
 - **Table Pages:**
 
   - Use `createPageTemplate()` import from `@/utils/createPageTemplate` for pages that display table-based data.
@@ -38,6 +44,8 @@ The following rules should always be followed when working within the `apps/fron
   - Forms should use `mantine-form`.
   - Validation schemas must be imported from `@repo/validation`.
   - Always use the `validate` function from `@repo/validation` to apply schema-based validation.
+  - Do **not** define types only. Ensure the schema is used by passing `validate: zodResolver(yourSchema)` to the form configuration.
+  - `zodResolver` must be imported from `@mantine/form`.
 
 - **API Communication:**
 
@@ -107,6 +115,38 @@ The following rules should always be followed when working within the `apps/fron
 - **Client-Side Storage:**
 
   - Logic related to IndexedDB or other client-side storage resides in `src/indexedDB/` if used.
+
+- **Mutations:**
+
+  - Prefer using `useMutation` from TanStack Query for mutating data.
+  - Always call `fetchRPC()` inside the mutation function.
+  - Example:
+    ```ts
+    const mutation = useMutation({
+      mutationFn: async () => {
+        await fetchRPC(client.users.$post({ json: form.values }));
+      },
+      onSuccess: () => {
+        navigate({ to: "/users" });
+        showNotification({
+          title: "Success",
+          message: "User created successfully",
+          color: "green",
+        });
+      },
+      onError: (error) => {
+        console.error(error);
+        if (error instanceof FormResponseError) {
+          form.setErrors(error.formErrors);
+        }
+        showNotification({
+          title: "Error",
+          message: "Error creating user",
+          color: "red",
+        });
+      },
+    });
+    ```
 
 ## Code Style & Best Practices
 
