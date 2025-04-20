@@ -16,6 +16,22 @@ The following rules should always be followed when working within the `apps/fron
 
 ## Directory Structure & Conventions
 
+- **Table Pages:**
+  - Use `createPageTemplate()` for pages that display table-based data.
+  - This helps enforce a consistent layout and integration with filtering, sorting, and action columns.
+  - Example:
+    ```ts
+    return createPageTemplate({
+      title: "Users",
+      endpoint: client.users.$get,
+      queryKey: ["users"],
+      createButton: "Create User",
+      sortableColumns: ["name", "username"],
+      filterableColumns: [...],
+      columnDefs: (helper) => [...],
+    });
+    ```
+
 - **Forms:**
   - Forms should use `mantine-form`.
   - Validation schemas must be imported from `@repo/validation`.
