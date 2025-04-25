@@ -10,11 +10,8 @@ import * as React from "react";
 import { Label } from "./label";
 
 export type NativeSelectProps = SelectPrimitiveProps;
-
 const NativeSelect = SelectPrimitive.Root;
-
 const SelectGroup = SelectPrimitive.Group;
-
 const SelectValue = SelectPrimitive.Value;
 
 type SelectTriggerProps = React.ComponentPropsWithoutRef<
@@ -30,7 +27,7 @@ const SelectTrigger = React.forwardRef<
 	<SelectPrimitive.Trigger
 		ref={ref}
 		className={cn(
-			"flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs ring-offset-background placeholder:text-muted-foreground focus:outline-hidden focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+			"flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
 			className,
 		)}
 		{...props}
@@ -197,6 +194,8 @@ export type SelectProps = {
 		onFocus?: React.FocusEventHandler<HTMLButtonElement>;
 		/** Blur event handler */
 		onBlur?: React.FocusEventHandler<HTMLButtonElement>;
+		/** If true, shows a search input to filter options */
+		searchable?: boolean;
 	};
 
 const Select = ({
@@ -206,6 +205,7 @@ const Select = ({
 	onChange,
 	data,
 	options,
+	searchable = false,
 	className,
 	classNames,
 	onFocus,
@@ -215,11 +215,6 @@ const Select = ({
 	const [_, setInternalValue] = React.useState<string | undefined>(
 		defaultValue,
 	);
-
-	// Determine whether the component is controlled or uncontrolled
-	const isControlled = value !== undefined;
-
-	// Warn if deprecated 'data' prop is used
 	React.useEffect(() => {
 		if (data && process.env.NODE_ENV !== "production") {
 			console.warn(
@@ -228,22 +223,33 @@ const Select = ({
 		}
 	}, [data]);
 
-	// Use options if provided, otherwise fallback to data
 	const currentOptions = options ?? data;
+	const [filter, setFilter] = React.useState("");
+
+	const filteredOptions = searchable
+		? (currentOptions ?? []).filter((item) => {
+				const label = typeof item === "string" ? item : item.label;
+				return label
+					?.toString()
+					.toLowerCase()
+					.includes(filter.toLowerCase());
+			})
+		: currentOptions;
 
 	const handleChange = (selectedValue: string | null) => {
-		if (!isControlled) {
+		if (value === undefined) {
 			setInternalValue(selectedValue ?? undefined);
 		}
-
-		// Support both onChange and onValueChange (deprecated)
-		// TODO: Remove onValueChange support in the next major version
 		if (onChange) {
 			onChange(selectedValue ?? "");
 		} else if (onValueChange) {
 			onValueChange(selectedValue ?? "");
 		}
 	};
+
+	const displayedOptions = searchable
+		? filteredOptions
+		: (currentOptions ?? []);
 
 	return (
 		<div className={cn(classNames?.root, className)}>
@@ -264,20 +270,32 @@ const Select = ({
 				value={value}
 				onValueChange={handleChange}
 				required={props.required}
+				onOpenChange={(open) => open && setFilter("")}
 			>
 				<SelectTrigger
 					id={props.id}
 					className={cn(
 						props.error && "border-red-500",
 						classNames?.trigger,
-					)} /*  disabled={props.disabled} */
+					)}
 					onFocus={onFocus}
 					onBlur={onBlur}
 				>
 					<SelectValue placeholder={props.placeholder} />
 				</SelectTrigger>
 				<SelectContent className={cn(classNames?.content)}>
-					{currentOptions?.map((item) => (
+					{searchable && (
+						<div className="p-2">
+							<input
+								type="text"
+								value={filter}
+								onChange={(e) => setFilter(e.target.value)}
+								placeholder="Search..."
+								className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring mb-2"
+							/>
+						</div>
+					)}
+					{displayedOptions?.map((item) => (
 						<SelectItem
 							key={typeof item === "string" ? item : item.value}
 							value={typeof item === "string" ? item : item.value}
