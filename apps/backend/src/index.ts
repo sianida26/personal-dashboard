@@ -16,16 +16,35 @@ import type HonoEnv from "./types/HonoEnv";
 import appLogger from "./utils/logger";
 import authRouter from "./routes/auth/route";
 import microsoftAdminRouter from "./routes/auth/microsoft/admin";
+import { rateLimiter } from "hono-rate-limiter";
 
 configDotenv();
 
 const app = new Hono<HonoEnv>();
 
+/**
+ * Global rate limiter for protected routes (non-auth).
+ * Allows up to 1000 requests per minute per IP.
+ * Uses in-memory store (not suitable for multi-instance production).
+ */
 const routes = app
 	.use(requestLogger)
 	.use(
 		cors({
 			origin: "*",
+		}),
+	)
+	.use(
+		rateLimiter({
+			windowMs: 60 * 1000, // 1 minute
+			limit: 1000, // 1000 requests per window per IP
+			keyGenerator: (c) =>
+				c.req.header("x-forwarded-for") ||
+				c.req.header("cf-connecting-ip") ||
+				c.req.header("x-real-ip") ||
+				c.req.header("host") ||
+				"unknown",
+			standardHeaders: true,
 		}),
 	)
 	.use(authTokenMiddleware)

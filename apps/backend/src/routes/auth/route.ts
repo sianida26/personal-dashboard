@@ -17,8 +17,22 @@ import microsoftRouter from "./microsoft/route";
 import { getAppSettingValue } from "../../services/appSettings/appSettingServices";
 import checkPermission from "../../middlewares/checkPermission";
 import googleOAuthRoutes from "./google/route";
+import { rateLimiter } from "hono-rate-limiter";
 
 const authRoutes = new Hono<HonoEnv>()
+	.use(
+		rateLimiter({
+			windowMs: 60 * 1000, // 1 minute
+			limit: 15, // 5 requests per window per IP
+			keyGenerator: (c) =>
+				c.req.header("x-forwarded-for") ||
+				c.req.header("cf-connecting-ip") ||
+				c.req.header("x-real-ip") ||
+				c.req.header("host") ||
+				"unknown",
+			standardHeaders: true,
+		}),
+	)
 	// Username and Password Login
 	.post(
 		"/login",
