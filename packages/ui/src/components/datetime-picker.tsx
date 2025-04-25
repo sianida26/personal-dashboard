@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { CalendarIcon } from "@radix-ui/react-icons";
-import { format } from "date-fns";
+import dayjs from "dayjs";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Button } from "./button";
 import { cn } from "../utils";
@@ -116,7 +116,7 @@ export function DateTimePicker({
 						>
 							<CalendarIcon className="mr-2 h-4 w-4" />
 							{date ? (
-								format(date, "MM/dd/yyyy HH:mm")
+								dayjs(date).format("MM/DD/YYYY HH:mm")
 							) : (
 								<span>MM/DD/YYYY HH:mm</span>
 							)}
