@@ -3,45 +3,64 @@ description:
 globs: 
 alwaysApply: true
 ---
-The following rules should always be followed.
+# Project Development Rules and Guidelines
 
-# Project Structure & Technologies
-- This project is a Turborepo using Bun as the package manager.
+## Related READMEs
+Refer to any related `README.md` files, whether located inside an app, package, or any subfolder, for specific development guidelines and rules.
+
+## Project Structure & Technologies
+- **Monorepo:** Turborepo managed with Bun.
 - **Structure:**
-    - `apps/backend`: HonoJS backend.
-    - `apps/frontend`: ReactJS frontend (Vite, Tanstack Router/Query).
-    - `packages/data`: Static data (e.g., permissions).
-    - `packages/ui`: UI components (primarily Shadcn).
-    - `packages/validation`: Zod validation schemas (used by both backend and frontend).
+  - `apps/backend`: HonoJS backend.
+  - `apps/frontend`: ReactJS frontend (Vite, Tanstack Router/Query).
+  - `packages/data`: Static data (e.g., permissions).
+  - `packages/ui`: UI components (Shadcn based).
+  - `packages/validation`: Zod validation schemas.
 
-# Backend (`apps/backend`)
+## Backend (`apps/backend`)
 - **Framework:** HonoJS.
 - **Database:**
-    - ORM: Drizzle ORM with PostgreSQL.
-    - Schema Location: `apps/backend/src/drizzle/schema/[modelName]Schema.ts`.
-    - Schema Imports: Import all schemas into `apps/backend/src/drizzle/index.ts` and add them to the Drizzle initialization.
-    - Use `drizzle-orm/pg-core` for imports.
-    - Prefer Drizzle query (`db.query...`) over `db.select()`.
+  - ORM: Drizzle ORM with PostgreSQL.
+  - Schemas located at: `src/drizzle/schema/[modelName]Schema.ts`
+  - Import all schemas into: `src/drizzle/index.ts`
+  - Use `drizzle-orm/pg-core` for all imports.
+  - Prefer using `db.query...` over `db.select()`.
 - **Routing:**
-    - Routes/Handlers: Colocate in `apps/backend/src/routes/[name]Route.ts`. Split into separate files if a route handles many endpoints.
-    - Permissions: Protect routes with permission checks where applicable.
-- **Environment Variables:** Retrieve from `apps/backend/src/appEnv.ts`.
-- **Templates:** Find templates in `apps/backend/turbo/generators/templates`.
+  - Define routes/handlers in `src/routes/[name]Route.ts`.
+  - Split files if a route has too many endpoints.
+  - Enforce permission checks where necessary.
+- **Environment Variables:**
+  - Load via `src/appEnv.ts`.
+- **Templates:**
+  - Available at: `turbo/generators/templates`.
 
-# Frontend (`apps/frontend`)
+## Frontend (`apps/frontend`)
 - **Framework/Libs:** ReactJS, Vite, Tanstack Router, Tanstack Query.
 - **API Communication:**
-    - Use Hono RPC via the client in `apps/frontend/src/honoClient.ts`.
-    - Use the `fetchRPC()` function from `apps/frontend/src/utils/fetchRPC.ts` for backend calls. Example: `await fetchRPC(client.users.$get);`
-- **Templates:** Find page templates in `apps/frontend/turbo/generators/templates/page-template`.
+  - Use `honoClient` from `src/honoClient.ts`.
+  - Use `fetchRPC()` from `src/utils/fetchRPC.ts`. Example usage: 
+    ```ts
+    await fetchRPC(client.users.$get);
+    ```
+- **Templates:**
+  - Available at: `turbo/generators/templates/page-template`.
 
-# General Development Rules
+## General Development Rules
 - **TypeScript:**
-    - Avoid using the `any` type. Use specific types or `unknown`.
-    - Use the null-coalescing operator (`??`) instead of logical OR (`||`) for default values.
-- **Documentation:** Add clear documentation (JSDoc style) for functions, potentially ambiguous code blocks, variables, and types.
-- **UI/UX:** Ensure UI components and user experience are optimal. Use components from `packages/ui` (Shadcn) where appropriate.
-- **Security:** Review all code changes for potential security vulnerabilities.
+  - No `any` type allowed. Prefer specific types or `unknown`.
+  - Use null-coalescing operator (`??`) instead of logical OR (`||`) for defaults.
+- **Documentation:**
+  - Add JSDoc comments for functions, complex code blocks, variables, and types.
+- **UI/UX:**
+  - Prioritize good UI/UX practices.
+  - Reuse components from `packages/ui` when applicable.
+- **Security:**
+  - Review all changes carefully for vulnerabilities.
 - **Operations:**
-    - Do not run database migrations automatically.
-    - Do not run commands to start development servers automatically.
+  - Do not auto-run database migrations.
+  - Do not auto-start development servers.
+
+---
+
+**Reminder:**
+Always consult any relevant `README.md` files, including those inside folders and subfolders, when editing or extending any module.
