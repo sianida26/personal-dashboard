@@ -23,7 +23,7 @@ const authRoutes = new Hono<HonoEnv>()
 	.use(
 		rateLimiter({
 			windowMs: 60 * 1000, // 1 minute
-			limit: 15, // 5 requests per window per IP
+			limit: 100, // 100 requests per window per IP
 			keyGenerator: (c) =>
 				c.req.header("x-forwarded-for") ||
 				c.req.header("cf-connecting-ip") ||
