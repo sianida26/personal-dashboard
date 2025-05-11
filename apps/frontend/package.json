@@ -10,14 +10,14 @@
 		"check": "bunx tsc --noEmit && bun lint && bun format"
 	},
 	"dependencies": {
-		"@mantine/form": "^7.17.5",
-		"@mantine/hooks": "^7.17.5",
+		"@mantine/form": "^8.0.0",
+		"@mantine/hooks": "^8.0.0",
 		"@repo/data": "workspace:*",
 		"@repo/hooks": "workspace:*",
 		"@repo/ui": "workspace:*",
 		"@repo/validation": "workspace:*",
-		"@tanstack/react-query": "^5.74.4",
-		"@tanstack/react-router": "^1.117.1",
+		"@tanstack/react-query": "^5.75.7",
+		"@tanstack/react-router": "^1.120.3",
 		"@tanstack/react-table": "^8.21.3",
 		"@types/uuid": "^10.0.0",
 		"backend": "workspace:*",
@@ -26,10 +26,10 @@
 		"uuid": "^11.1.0"
 	},
 	"devDependencies": {
-		"@tailwindcss/vite": "^4.1.4",
-		"@tanstack/router-devtools": "^1.117.1",
-		"@tanstack/router-vite-plugin": "^1.117.2",
+		"@tailwindcss/vite": "^4.1.6",
+		"@tanstack/router-devtools": "^1.120.3",
+		"@tanstack/router-vite-plugin": "^1.120.3",
 		"@vitejs/plugin-react-swc": "^3.9.0",
-		"vite": "^6.3.3"
+		"vite": "^6.3.5"
 	}
 }
