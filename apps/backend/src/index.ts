@@ -27,7 +27,7 @@ const app = new Hono<HonoEnv>();
  * Allows up to 1000 requests per minute per IP.
  * Uses in-memory store (not suitable for multi-instance production).
  */
-const routes = app
+export const appRoutes = app
 	.use(requestLogger)
 	.use(
 		cors({
@@ -96,4 +96,4 @@ export default {
 	hostname: appEnv.APP_HOST,
 };
 
-export type AppType = typeof routes;
+export type AppType = typeof appRoutes;
