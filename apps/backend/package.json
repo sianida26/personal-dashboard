@@ -3,7 +3,7 @@
 	"scripts": {
 		"dev": "bun --watch src/index.ts",
 		"db:generate": "drizzle-kit generate",
-		"db:seed": "bun src/drizzle/seed.ts",
+		"db:seed": "bun src/drizzle/seedRunner.ts",
 		"db:migrate": "bun src/drizzle/migration.ts",
 		"db:studio": "drizzle-kit studio",
 		"db:up": "drizzle-kit up",
