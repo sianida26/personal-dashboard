@@ -1,28 +1,15 @@
-import { notFound, unauthorized } from "../../errors/DashboardError";
-import authInfo from "../../middlewares/authInfo";
+import { notFound } from "../../errors/DashboardError";
 import microsoftRouter from "./microsoft/route";
 import { getAppSettingValue } from "../../services/appSettings/appSettingServices";
 import checkPermission from "../../middlewares/checkPermission";
 import googleOAuthRoutes from "./google/route";
 import { createHonoRoute } from "../../utils/createHonoRoute";
 import loginRoute from "./login";
+import myProfileRoute from "./my-profile";
 
 const authRoutes = createHonoRoute()
 	.route("/", loginRoute) // POST /login
-	.get(
-		"/my-profile",
-		authInfo,
-		checkPermission("authenticated-only"),
-		async (c) => {
-			const currentUser = c.var.currentUser;
-
-			if (!currentUser || !c.var.uid) {
-				throw unauthorized();
-			}
-
-			return c.json({ ...currentUser, id: c.var.uid });
-		},
-	)
+	.route("/", myProfileRoute) // GET /my-profile
 	.get("/logout", (c) => {
 		const uid = c.var.uid;
 
