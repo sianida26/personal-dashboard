@@ -2,10 +2,8 @@ import { beforeAll, describe, test, expect, mock, afterAll } from "bun:test";
 import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
 import { hashPassword } from "../../utils/passwordUtils";
-import app from "../../index"; // Corrected import for the app's fetch method
 import { eq } from "drizzle-orm";
-import appEnv from "../../appEnv";
-import client from "../../utils/honoTestClient"; // Added import
+import client from "../../utils/honoTestClient";
 
 // Mock getAppSettingValue
 mock.module("../../services/appSettings/appSettingServices", () => ({
@@ -52,9 +50,7 @@ describe("Auth Routes", () => {
 
 	test("Should able to login successfully on correct credentials", async () => {
 		const res = await client.auth.login.$post({
-			// Changed to use testClient
 			json: {
-				// Body is now under 'json' property
 				username: testUser.username,
 				password: testPassword,
 			},
@@ -71,7 +67,6 @@ describe("Auth Routes", () => {
 
 	test("Should able to login successfully on correct credentials with different case for username", async () => {
 		const res = await client.auth.login.$post({
-			// Changed to use testClient
 			json: {
 				username: testUser.username.toUpperCase(), // Use uppercase username
 				password: testPassword,
@@ -92,7 +87,6 @@ describe("Auth Routes", () => {
 			);
 		}
 		const res = await client.auth.login.$post({
-			// Changed to use testClient
 			json: {
 				username: testUser.email.toUpperCase(), // Use uppercase email as username
 				password: testPassword,
@@ -107,7 +101,6 @@ describe("Auth Routes", () => {
 
 	test("Should not able to login on incorrect credentials", async () => {
 		const res = await client.auth.login.$post({
-			// Changed to use testClient
 			json: {
 				username: testUser.username,
 				password: "wrongpassword",
@@ -115,13 +108,78 @@ describe("Auth Routes", () => {
 		});
 
 		expect(res.status).toBe(400);
-		const body = await res.json();
-		// expect(body.errorCode).toBe("INVALID_CREDENTIALS");
+		expect(res.ok).toBe(false);
+
+		const body = (await res.json()) as unknown as {
+			errorCode?: string;
+		};
+
+		expect(body.errorCode).toBe("INVALID_CREDENTIALS");
 	});
 
-	test.todo(
-		"Should not able to login if username and password login is disabled",
-	);
+	test("Should not able to login if username and password login is disabled", async () => {
+		// Mock getAppSettingValue to return false for username and password login
+		mock.module("../../services/appSettings/appSettingServices", () => ({
+			getAppSettingValue: mock(async (key: string) => {
+				if (key === "login.usernameAndPassword.enabled") {
+					return false;
+				}
+				return undefined;
+			}),
+		}));
 
-	test.todo("Should not able to login if rate limit is exceeded");
+		const res = await client.auth.login.$post({
+			json: {
+				username: testUser.username,
+				password: testPassword,
+			},
+		});
+
+		expect(res.status).toBe(400);
+		const body = (await res.json()) as unknown as {
+			errorCode: string;
+			message: string;
+		};
+		expect(body.errorCode).toBe("INVALID_CREDENTIALS");
+		expect(body.message).toBe("Username and password login is disabled");
+
+		// Reset the mock for other tests
+		mock.module("../../services/appSettings/appSettingServices", () => ({
+			getAppSettingValue: mock(async (key: string) => {
+				if (key === "login.usernameAndPassword.enabled") {
+					return true;
+				}
+				return undefined;
+			}),
+		}));
+	});
+
+	test("Should not able to login if rate limit is exceeded", async () => {
+		// Make multiple requests to exceed the rate limit
+		const requests = Array(16)
+			.fill(null)
+			.map(() =>
+				client.auth.login.$post({
+					json: {
+						username: testUser.username,
+						password: testPassword,
+					},
+				}),
+			);
+
+		// Wait for all requests to complete
+		const responses = await Promise.all(requests);
+
+		if (responses.length === 0) {
+			throw new Error("No responses received from rate limit test");
+		}
+		const lastResponse = responses[responses.length - 1];
+		if (!lastResponse) {
+			throw new Error(
+				"lastResponse is undefined, but responses.length > 0",
+			);
+		}
+		expect(lastResponse.status).toBe(429);
+		expect(lastResponse.headers.get("retry-after")).toBeDefined();
+	});
 });
