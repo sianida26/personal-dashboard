@@ -1,13 +1,8 @@
-
 import { configDotenv } from "dotenv";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
 import postgres from "postgres";
-import appEnv from "./appEnv";
-import appSettingsSeeder from "./drizzle/seeds/appSettingsSeed";
-import permissionSeeder from "./drizzle/seeds/permissionSeeder";
-import roleSeeder from "./drizzle/seeds/rolesSeeder";
-import userSeeder from "./drizzle/seeds/userSeeder";
+import "./drizzle/seed";
 
 // Load environment variables
 configDotenv({ path: ".env.test.local" });
@@ -33,8 +28,8 @@ await migrationClient.end();
 
 // Run seeders
 console.time("Done seeding");
-await permissionSeeder();
-await roleSeeder();
-await userSeeder();
-await appSettingsSeeder();
+
+// The seed script is now imported and will run its IIFE.
+// Remove individual seeder calls as they are handled by the imported seed script.
+
 console.timeEnd("Done seeding");
