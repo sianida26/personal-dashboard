@@ -159,12 +159,19 @@ describe("Auth Routes", () => {
 		const requests = Array(16)
 			.fill(null)
 			.map(() =>
-				client.auth.login.$post({
-					json: {
-						username: testUser.username,
-						password: testPassword,
+				client.auth.login.$post(
+					{
+						json: {
+							username: testUser.username,
+							password: testPassword,
+						},
 					},
-				}),
+					{
+						headers: {
+							"x-enable-rate-limit": "true",
+						},
+					},
+				),
 			);
 
 		// Wait for all requests to complete

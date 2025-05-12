@@ -13,20 +13,12 @@ import DashboardError from "../../errors/DashboardError";
 import { checkPassword } from "../../utils/passwordUtils";
 import { generateAccessToken } from "../../utils/authUtils";
 import type { PermissionCode } from "@repo/data";
-import { rateLimiter } from "hono-rate-limiter";
+import rateLimit from "../../middlewares/rateLimiter";
 
 const loginRoute = createHonoRoute()
 	.use(
-		rateLimiter({
-			windowMs: 60 * 1000, // 1 minute
-			limit: 15, // 15 requests per window per IP
-			keyGenerator: (c) =>
-				c.req.header("x-forwarded-for") ||
-				c.req.header("cf-connecting-ip") ||
-				c.req.header("x-real-ip") ||
-				c.req.header("host") ||
-				"unknown",
-			standardHeaders: true,
+		rateLimit({
+			limit: 15,
 		}),
 	)
 	// Username and Password Login
