@@ -12,6 +12,14 @@ import * as microsoftAdmin from "./schema/microsoftAdmin";
 import * as oauthGoogleSchema from "./schema/oauthGoogle";
 import * as oauthMicrosoftSchema from "./schema/oauthMicrosoft";
 import * as kvStore from "./schema/kvStore";
+// Observability schemas
+import * as projectsSchema from "./schema/projects";
+import * as projectMembersSchema from "./schema/project-members";
+import * as tracesSchema from "./schema/traces";
+import * as metricsSchema from "./schema/metrics";
+import * as logsSchema from "./schema/logs";
+import * as errorsSchema from "./schema/errors";
+import * as dashboardsSchema from "./schema/dashboards";
 import SqlLogger from "./utils/SqlLogger";
 
 configDotenv();
@@ -30,6 +38,14 @@ const db = drizzle({
 		...oauthGoogleSchema,
 		...oauthMicrosoftSchema,
 		...kvStore,
+		// Observability schemas
+		...projectsSchema,
+		...projectMembersSchema,
+		...tracesSchema,
+		...metricsSchema,
+		...logsSchema,
+		...errorsSchema,
+		...dashboardsSchema,
 	},
 	logger: new SqlLogger(),
 });

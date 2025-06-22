@@ -13,6 +13,27 @@ export const permissions = [
 	"app-settings.read",
 	"app-settings.edit",
 	"ms-graph.read",
+	// Observability permissions
+	"projects.read",
+	"projects.create",
+	"projects.update",
+	"projects.delete",
+	"projects.members.read",
+	"projects.members.manage",
+	"traces.read",
+	"traces.write",
+	"metrics.read",
+	"metrics.write",
+	"logs.read",
+	"logs.write",
+	"errors.read",
+	"errors.write",
+	"errors.resolve",
+	"dashboards.read",
+	"dashboards.create",
+	"dashboards.update",
+	"dashboards.delete",
+	"analytics.read",
 ] as const;
 
 export const generalPermissions = ["authenticated-only", "guest-only"] as const;

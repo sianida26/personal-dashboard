@@ -43,6 +43,13 @@
       "when": 1743189474898,
       "tag": "0005_harsh_vindicator",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1750601968260,
+      "tag": "0006_clammy_eternity",
+      "breakpoints": true
     }
   ]
 }
