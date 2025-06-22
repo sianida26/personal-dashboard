@@ -21,7 +21,6 @@ export const users = pgTable("users", {
 	email: varchar("email"),
 	password: text("password"),
 	isEnabled: boolean("is_enable").default(true),
-	lastLogin: timestamp("last_login", { mode: "date" }),
 	createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
 	updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
 	deletedAt: timestamp("deleted_at", { mode: "date" }),
