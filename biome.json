@@ -9,9 +9,9 @@
 		"ignoreUnknown": false,
 		"includes": [
 			"**",
-			"!routeTree.gen.ts",
-			"!drizzle/migrations/*",
-			"!dist/**",
+			"!**/routeTree.gen.ts",
+			"!**/drizzle/migrations/*",
+			"!**/dist/**",
 			"!**/vite.config.ts.timestamp-*.mjs"
 		]
 	},
