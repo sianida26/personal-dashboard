@@ -11,7 +11,8 @@ This document provides comprehensive guidance for LLM agents working with this *
 ### Tech Stack
 - **Framework**: HonoJS (TypeScript-first web framework)
 - **Database**: PostgreSQL with Drizzle ORM
-- **Runtime**: Bun (development) / Node.js compatible
+- **Runtime**: Bun (development)
+- **Package Manager**: Bun (all dependency management and script execution)
 - **Authentication**: JWT tokens with role-based access control (RBAC)
 - **Validation**: Zod schemas (shared via `@repo/validation`)
 - **Logging**: Custom logger with file-based logging
@@ -118,7 +119,7 @@ apps/backend/
    - Schema variables: `[modelName]Schema` (e.g., `rolesSchema`)
    - Relations: `[modelName]Relations` (e.g., `rolesRelations`)
    - Files: `kebab-case` (e.g., `user-profile.ts`, `oauth-google.ts`)
-3. **IDs**: All primary keys use CUID2 with 25-character varchar
+3. **IDs**: All primary keys use CUID2 with 25-character varchar (`varchar(25)`) - this is the default for all ID fields
 4. **Relations**: Always explicitly define relations using `relations()` helper
 5. **Migrations**: Auto-generated, DO NOT edit migration files manually
 
@@ -431,7 +432,7 @@ import { pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 export const myTableSchema = pgTable("my_table", {
   id: text("id")
     .primaryKey()
-    .$defaultFn(() => createId()),
+    .$defaultFn(() => createId()), // Creates 25-character CUID2 string
   name: varchar("name", { length: 255 }).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -600,6 +601,13 @@ describe("POST /auth/login", () => {
 });
 ```
 
+### Testing Guidelines:
+- **Use real Drizzle instance**: Do NOT mock the database - use actual Drizzle ORM with test database
+- **Run tests with**: `bun run test` (not `bun test`)
+- **Database setup**: Use real database connections for integration testing
+- **Test data**: Create and cleanup test data in `beforeAll`/`afterAll` hooks
+- **Assertions**: Test actual API responses and database state changes
+
 ### Test Client:
 ```typescript
 // src/utils/hono-test-client.ts (kebab-case)
@@ -758,7 +766,7 @@ POST /app-settings
 ```bash
 # Development
 bun dev                 # Start development server
-bun test               # Run tests
+bun run test           # Run tests (use 'run' prefix for test command)
 bun lint               # Run linter
 bun format             # Format code
 
