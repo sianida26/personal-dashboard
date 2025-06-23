@@ -12,6 +12,8 @@ import * as microsoftAdmin from "./schema/microsoftAdmin";
 import * as oauthGoogleSchema from "./schema/oauthGoogle";
 import * as oauthMicrosoftSchema from "./schema/oauthMicrosoft";
 import * as kvStore from "./schema/kvStore";
+import * as observabilityEventsSchema from "./schema/observability-events";
+import * as requestDetailsSchema from "./schema/request-details";
 import SqlLogger from "./utils/SqlLogger";
 
 configDotenv();
@@ -30,6 +32,8 @@ const db = drizzle({
 		...oauthGoogleSchema,
 		...oauthMicrosoftSchema,
 		...kvStore,
+		...observabilityEventsSchema,
+		...requestDetailsSchema,
 	},
 	logger: new SqlLogger(),
 });
