@@ -79,6 +79,15 @@ export const appSettings = [
 		defaultValue: "",
 		secret: true,
 	},
+
+	// Observability Settings
+	{
+		key: "observability.enabled",
+		name: "Observability Enabled",
+		description: "Enable observability and error tracking",
+		defaultValue: "true",
+		secret: false,
+	},
 ] as const satisfies readonly AppSetting[];
 
 export const appSettingKeys = appSettings.map(

@@ -6,6 +6,7 @@ import { routeTree } from "./routeTree.gen";
 import { AuthProvider } from "./contexts/Auth/AuthProvider";
 import { NotificationProvider } from "./contexts/Notification/NotificationProvider";
 import { AppProvider } from "./contexts/App/AppContext";
+import { usePerformanceMonitor } from "./hooks/usePerformanceMonitor";
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -31,12 +32,21 @@ declare module "@tanstack/react-router" {
 	}
 }
 
+/**
+ * Performance monitoring component that initializes performance tracking
+ */
+function PerformanceMonitor() {
+	usePerformanceMonitor();
+	return null;
+}
+
 function App() {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<AppProvider>
 				<AuthProvider>
 					<NotificationProvider>
+						<PerformanceMonitor />
 						<RouterProvider router={router} />
 					</NotificationProvider>
 				</AuthProvider>
