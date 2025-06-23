@@ -66,4 +66,14 @@ export const forbidden = (options?: Partial<DashboardErrorParameter>) => {
 	});
 };
 
+export const badRequest = (options?: Partial<DashboardErrorParameter>) => {
+	throw new DashboardError({
+		errorCode: options?.errorCode ?? "BAD_REQUEST",
+		message: options?.message ?? "Bad Request",
+		formErrors: options?.formErrors,
+		severity: options?.severity ?? "LOW",
+		statusCode: options?.statusCode ?? 400,
+	});
+};
+
 export default DashboardError;

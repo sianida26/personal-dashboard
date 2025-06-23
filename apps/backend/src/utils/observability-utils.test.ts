@@ -8,8 +8,7 @@ import {
 	getClientIp,
 } from "./observability-utils";
 
-// We'll modify the actual appEnv import temporarily for testing
-// This is a better approach than mocking for integration tests
+// Mock the appEnv module
 import appEnv from "../appEnv";
 
 describe("Observability Utils", () => {
@@ -24,29 +23,50 @@ describe("Observability Utils", () => {
 
 	beforeEach(() => {
 		// Set default test values
-		// @ts-ignore - We need to override these for testing
-		appEnv.OBSERVABILITY_ENABLED = true;
-		// @ts-ignore
-		appEnv.OBSERVABILITY_RECORD_SELF = false;
-		// @ts-ignore
-		appEnv.OBSERVABILITY_MASK_SENSITIVE_DATA = true;
-		// @ts-ignore
-		appEnv.OBSERVABILITY_MAX_BODY_SIZE = 1024;
+		Object.defineProperty(appEnv, "OBSERVABILITY_ENABLED", {
+			value: true,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "OBSERVABILITY_RECORD_SELF", {
+			value: false,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "OBSERVABILITY_MASK_SENSITIVE_DATA", {
+			value: true,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "OBSERVABILITY_MAX_BODY_SIZE", {
+			value: 1024,
+			writable: true,
+			configurable: true,
+		});
 	});
 
 	afterEach(() => {
 		// Restore original values
-		// @ts-ignore
-		appEnv.OBSERVABILITY_ENABLED = originalValues.OBSERVABILITY_ENABLED;
-		// @ts-ignore
-		appEnv.OBSERVABILITY_RECORD_SELF =
-			originalValues.OBSERVABILITY_RECORD_SELF;
-		// @ts-ignore
-		appEnv.OBSERVABILITY_MASK_SENSITIVE_DATA =
-			originalValues.OBSERVABILITY_MASK_SENSITIVE_DATA;
-		// @ts-ignore
-		appEnv.OBSERVABILITY_MAX_BODY_SIZE =
-			originalValues.OBSERVABILITY_MAX_BODY_SIZE;
+		Object.defineProperty(appEnv, "OBSERVABILITY_ENABLED", {
+			value: originalValues.OBSERVABILITY_ENABLED,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "OBSERVABILITY_RECORD_SELF", {
+			value: originalValues.OBSERVABILITY_RECORD_SELF,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "OBSERVABILITY_MASK_SENSITIVE_DATA", {
+			value: originalValues.OBSERVABILITY_MASK_SENSITIVE_DATA,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "OBSERVABILITY_MAX_BODY_SIZE", {
+			value: originalValues.OBSERVABILITY_MAX_BODY_SIZE,
+			writable: true,
+			configurable: true,
+		});
 	});
 
 	describe("sanitizeObject", () => {
@@ -203,23 +223,32 @@ describe("Observability Utils", () => {
 
 	describe("shouldRecordRequest", () => {
 		test("should return false when observability is disabled", () => {
-			// @ts-ignore
-			appEnv.OBSERVABILITY_ENABLED = false;
+			Object.defineProperty(appEnv, "OBSERVABILITY_ENABLED", {
+				value: false,
+				writable: true,
+				configurable: true,
+			});
 
 			expect(shouldRecordRequest("/api/users")).toBe(false);
 		});
 
 		test("should return false for observability routes when RECORD_SELF is false", () => {
-			// @ts-ignore
-			appEnv.OBSERVABILITY_RECORD_SELF = false;
+			Object.defineProperty(appEnv, "OBSERVABILITY_RECORD_SELF", {
+				value: false,
+				writable: true,
+				configurable: true,
+			});
 
 			expect(shouldRecordRequest("/observability/events")).toBe(false);
 			expect(shouldRecordRequest("/observability/dashboard")).toBe(false);
 		});
 
 		test("should return true for observability routes when RECORD_SELF is true", () => {
-			// @ts-ignore
-			appEnv.OBSERVABILITY_RECORD_SELF = true;
+			Object.defineProperty(appEnv, "OBSERVABILITY_RECORD_SELF", {
+				value: true,
+				writable: true,
+				configurable: true,
+			});
 
 			expect(shouldRecordRequest("/observability/events")).toBe(true);
 			expect(shouldRecordRequest("/observability/dashboard")).toBe(true);

@@ -1,86 +1,104 @@
-import { describe, test, expect, beforeEach, mock } from "bun:test";
+import {
+	describe,
+	test,
+	expect,
+	beforeEach,
+	afterEach,
+	mock,
+	spyOn,
+} from "bun:test";
 import { Hono } from "hono";
 import enhancedRequestLogger from "./enhanced-request-logger";
 import type HonoEnv from "../types/HonoEnv";
 
-// Mock modules
-const mockCreateId = mock(() => "test-request-id");
-mock.module("@paralleldrive/cuid2", () => ({
-	createId: mockCreateId,
-}));
-
-const mockAppEnv = {
-	LOG_REQUEST: true,
-	OBSERVABILITY_ENABLED: true,
-	OBSERVABILITY_STORE_REQUEST_BODIES: true,
-	OBSERVABILITY_STORE_RESPONSE_BODIES: true,
-};
-
-mock.module("../appEnv", () => ({ default: mockAppEnv }));
-
-const mockAppLogger = {
-	request: mock((_context: unknown, _responseTime: number) => {}),
-};
-
-mock.module("../utils/logger", () => ({ default: mockAppLogger }));
-
-const mockShouldRecordRequest = mock(() => true);
-const mockExtractHeaders = mock(() => ({}));
-const mockGetClientIp = mock(() => "192.168.1.1");
-
-mock.module("../utils/observability-utils", () => ({
-	shouldRecordRequest: mockShouldRecordRequest,
-	extractHeaders: mockExtractHeaders,
-	getClientIp: mockGetClientIp,
-}));
-
-const mockStoreObservabilityEvent = mock(() => Promise.resolve());
-const mockStoreRequestDetails = mock(() => Promise.resolve());
-const mockExtractRequestBody = mock(() => Promise.resolve(null as unknown));
-const mockExtractResponseBody = mock(() => Promise.resolve(null as unknown));
-
-mock.module("../services/observability-service", () => ({
-	storeObservabilityEvent: mockStoreObservabilityEvent,
-	storeRequestDetails: mockStoreRequestDetails,
-	extractRequestBody: mockExtractRequestBody,
-	extractResponseBody: mockExtractResponseBody,
-}));
+// Import the actual modules so we can spy on them
+import * as cuid2 from "@paralleldrive/cuid2";
+import appEnv from "../appEnv";
+import appLogger from "../utils/logger";
+import * as observabilityUtils from "../utils/observability-utils";
+import * as observabilityService from "../services/observability-service";
 
 describe("Enhanced Request Logger Middleware", () => {
 	let app: Hono<HonoEnv>;
 
+	// Store original implementations
+	const originalAppEnv = { ...appEnv };
+
 	beforeEach(() => {
-		// Reset all mocks
-		mockCreateId.mockClear();
-		mockAppLogger.request.mockClear();
-		mockShouldRecordRequest.mockClear();
-		mockExtractHeaders.mockClear();
-		mockGetClientIp.mockClear();
-		mockStoreObservabilityEvent.mockClear();
-		mockStoreRequestDetails.mockClear();
-		mockExtractRequestBody.mockClear();
-		mockExtractResponseBody.mockClear();
+		// Use spyOn instead of mock.module
+		spyOn(cuid2, "createId").mockReturnValue("test-request-id");
 
-		// Reset mock implementations
-		mockCreateId.mockReturnValue("test-request-id");
-		mockShouldRecordRequest.mockReturnValue(true);
-		mockExtractHeaders.mockReturnValue({});
-		mockGetClientIp.mockReturnValue("192.168.1.1");
-		mockExtractRequestBody.mockReturnValue(Promise.resolve(null));
-		mockExtractResponseBody.mockReturnValue(Promise.resolve(null));
-		mockStoreObservabilityEvent.mockReturnValue(Promise.resolve());
-		mockStoreRequestDetails.mockReturnValue(Promise.resolve());
+		// Mock appEnv properties
+		Object.defineProperty(appEnv, "LOG_REQUEST", {
+			value: true,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "OBSERVABILITY_ENABLED", {
+			value: true,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "OBSERVABILITY_STORE_REQUEST_BODIES", {
+			value: true,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "OBSERVABILITY_STORE_RESPONSE_BODIES", {
+			value: true,
+			writable: true,
+			configurable: true,
+		});
 
-		// Reset environment
-		mockAppEnv.LOG_REQUEST = true;
-		mockAppEnv.OBSERVABILITY_ENABLED = true;
-		mockAppEnv.OBSERVABILITY_STORE_REQUEST_BODIES = true;
-		mockAppEnv.OBSERVABILITY_STORE_RESPONSE_BODIES = true;
+		spyOn(appLogger, "request").mockImplementation(() => {});
+
+		spyOn(observabilityUtils, "shouldRecordRequest").mockReturnValue(true);
+		spyOn(observabilityUtils, "extractHeaders").mockReturnValue({});
+		spyOn(observabilityUtils, "getClientIp").mockReturnValue("192.168.1.1");
+
+		spyOn(
+			observabilityService,
+			"storeObservabilityEvent",
+		).mockResolvedValue();
+		spyOn(observabilityService, "storeRequestDetails").mockResolvedValue();
+		spyOn(observabilityService, "extractRequestBody").mockResolvedValue(
+			null,
+		);
+		spyOn(observabilityService, "extractResponseBody").mockResolvedValue(
+			null,
+		);
 
 		// Create fresh app instance
 		app = new Hono<HonoEnv>();
 		app.use(enhancedRequestLogger);
 		app.get("/test", (c) => c.json({ message: "test" }));
+	});
+
+	afterEach(() => {
+		// Restore all spies
+		mock.restore();
+
+		// Restore original appEnv values
+		Object.defineProperty(appEnv, "LOG_REQUEST", {
+			value: originalAppEnv.LOG_REQUEST,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "OBSERVABILITY_ENABLED", {
+			value: originalAppEnv.OBSERVABILITY_ENABLED,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "OBSERVABILITY_STORE_REQUEST_BODIES", {
+			value: originalAppEnv.OBSERVABILITY_STORE_REQUEST_BODIES,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "OBSERVABILITY_STORE_RESPONSE_BODIES", {
+			value: originalAppEnv.OBSERVABILITY_STORE_RESPONSE_BODIES,
+			writable: true,
+			configurable: true,
+		});
 	});
 
 	test("should set request ID in context", async () => {
@@ -95,28 +113,33 @@ describe("Enhanced Request Logger Middleware", () => {
 
 		expect(response.status).toBe(200);
 		expect(capturedRequestId).toBe("test-request-id");
-		expect(mockCreateId).toHaveBeenCalled();
+		expect(cuid2.createId).toHaveBeenCalled();
 	});
 
 	test("should log request when LOG_REQUEST is enabled", async () => {
 		const response = await app.request("/test");
 
 		expect(response.status).toBe(200);
-		expect(mockAppLogger.request).toHaveBeenCalled();
+		expect(appLogger.request).toHaveBeenCalled();
 
-		const loggerCall = mockAppLogger.request.mock.calls[0];
+		// biome-ignore lint/suspicious/noExplicitAny: Mock type casting needed for testing
+		const loggerCall = (appLogger.request as any).mock.calls[0];
 		if (loggerCall && loggerCall.length > 1) {
 			expect(loggerCall[1]).toBeTypeOf("number"); // response time
 		}
 	});
 
 	test("should not log request when LOG_REQUEST is disabled", async () => {
-		mockAppEnv.LOG_REQUEST = false;
+		Object.defineProperty(appEnv, "LOG_REQUEST", {
+			value: false,
+			writable: true,
+			configurable: true,
+		});
 
 		const response = await app.request("/test");
 
 		expect(response.status).toBe(200);
-		expect(mockAppLogger.request).not.toHaveBeenCalled();
+		expect(appLogger.request).not.toHaveBeenCalled();
 	});
 
 	test("should store observability data when enabled and should record", async () => {
@@ -126,54 +149,82 @@ describe("Enhanced Request Logger Middleware", () => {
 		// Give some time for async operations to complete
 		await new Promise((resolve) => setTimeout(resolve, 10));
 
-		expect(mockShouldRecordRequest).toHaveBeenCalledWith("/test");
-		expect(mockStoreObservabilityEvent).toHaveBeenCalled();
-		expect(mockStoreRequestDetails).toHaveBeenCalled();
+		expect(observabilityUtils.shouldRecordRequest).toHaveBeenCalledWith(
+			"/test",
+		);
+		expect(observabilityService.storeObservabilityEvent).toHaveBeenCalled();
+		expect(observabilityService.storeRequestDetails).toHaveBeenCalled();
 	});
 
 	test("should not store observability data when should not record", async () => {
-		mockShouldRecordRequest.mockReturnValue(false);
+		// biome-ignore lint/suspicious/noExplicitAny: Mock type casting needed for testing
+		(observabilityUtils.shouldRecordRequest as any).mockReturnValue(false);
 
 		await app.request("/test");
 
 		// Give some time for any potential async operations
 		await new Promise((resolve) => setTimeout(resolve, 10));
 
-		expect(mockShouldRecordRequest).toHaveBeenCalledWith("/test");
-		expect(mockStoreObservabilityEvent).not.toHaveBeenCalled();
-		expect(mockStoreRequestDetails).not.toHaveBeenCalled();
+		expect(observabilityUtils.shouldRecordRequest).toHaveBeenCalledWith(
+			"/test",
+		);
+		expect(
+			observabilityService.storeObservabilityEvent,
+		).not.toHaveBeenCalled();
+		expect(observabilityService.storeRequestDetails).not.toHaveBeenCalled();
 	});
 
 	test("should not store observability data when observability is disabled", async () => {
-		mockAppEnv.OBSERVABILITY_ENABLED = false;
+		Object.defineProperty(appEnv, "OBSERVABILITY_ENABLED", {
+			value: false,
+			writable: true,
+			configurable: true,
+		});
 
 		await app.request("/test");
 
 		// Give some time for any potential async operations
 		await new Promise((resolve) => setTimeout(resolve, 10));
 
-		expect(mockStoreObservabilityEvent).not.toHaveBeenCalled();
-		expect(mockStoreRequestDetails).not.toHaveBeenCalled();
+		expect(
+			observabilityService.storeObservabilityEvent,
+		).not.toHaveBeenCalled();
+		expect(observabilityService.storeRequestDetails).not.toHaveBeenCalled();
 	});
 
 	test("should pass through when neither logging nor observability is enabled", async () => {
-		mockAppEnv.LOG_REQUEST = false;
-		mockAppEnv.OBSERVABILITY_ENABLED = false;
-		mockShouldRecordRequest.mockReturnValue(false);
+		Object.defineProperty(appEnv, "LOG_REQUEST", {
+			value: false,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "OBSERVABILITY_ENABLED", {
+			value: false,
+			writable: true,
+			configurable: true,
+		});
+		// biome-ignore lint/suspicious/noExplicitAny: Mock type casting needed for testing
+		(observabilityUtils.shouldRecordRequest as any).mockReturnValue(false);
 
 		const response = await app.request("/test");
 
 		expect(response.status).toBe(200);
-		expect(mockAppLogger.request).not.toHaveBeenCalled();
-		expect(mockStoreObservabilityEvent).not.toHaveBeenCalled();
-		expect(mockStoreRequestDetails).not.toHaveBeenCalled();
+		expect(appLogger.request).not.toHaveBeenCalled();
+		expect(
+			observabilityService.storeObservabilityEvent,
+		).not.toHaveBeenCalled();
+		expect(observabilityService.storeRequestDetails).not.toHaveBeenCalled();
 	});
 
 	test("should handle observability storage errors gracefully", async () => {
-		mockStoreObservabilityEvent.mockRejectedValue(
+		// biome-ignore lint/suspicious/noExplicitAny: Mock type casting needed for testing
+		(observabilityService.storeObservabilityEvent as any).mockRejectedValue(
 			new Error("Storage error"),
 		);
-		mockStoreRequestDetails.mockRejectedValue(new Error("Storage error"));
+		// biome-ignore lint/suspicious/noExplicitAny: Mock type casting needed for testing
+		(observabilityService.storeRequestDetails as any).mockRejectedValue(
+			new Error("Storage error"),
+		);
 
 		const response = await app.request("/test");
 
@@ -183,7 +234,8 @@ describe("Enhanced Request Logger Middleware", () => {
 
 	test("should extract request body when configured", async () => {
 		const testBody = { data: "test" };
-		mockExtractRequestBody.mockReturnValue(
+		// biome-ignore lint/suspicious/noExplicitAny: Mock type casting needed for testing
+		(observabilityService.extractRequestBody as any).mockReturnValue(
 			Promise.resolve(testBody as unknown),
 		);
 
@@ -196,12 +248,20 @@ describe("Enhanced Request Logger Middleware", () => {
 		});
 
 		expect(response.status).toBe(200);
-		expect(mockExtractRequestBody).toHaveBeenCalled();
+		expect(observabilityService.extractRequestBody).toHaveBeenCalled();
 	});
 
 	test("should not extract request body when body storage is disabled", async () => {
-		mockAppEnv.OBSERVABILITY_STORE_REQUEST_BODIES = false;
-		mockAppEnv.LOG_REQUEST = false;
+		Object.defineProperty(appEnv, "OBSERVABILITY_STORE_REQUEST_BODIES", {
+			value: false,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "LOG_REQUEST", {
+			value: false,
+			writable: true,
+			configurable: true,
+		});
 
 		app.post("/post-test", (c) => c.json({ received: true }));
 
@@ -212,7 +272,7 @@ describe("Enhanced Request Logger Middleware", () => {
 		});
 
 		expect(response.status).toBe(200);
-		expect(mockExtractRequestBody).not.toHaveBeenCalled();
+		expect(observabilityService.extractRequestBody).not.toHaveBeenCalled();
 	});
 
 	test("should measure response time correctly", async () => {
@@ -226,13 +286,12 @@ describe("Enhanced Request Logger Middleware", () => {
 
 		expect(response.status).toBe(200);
 
-		if (mockAppLogger.request.mock.calls.length > 0) {
-			const loggerCall = mockAppLogger.request.mock.calls[0];
-			if (loggerCall && loggerCall.length > 1) {
-				const responseTime = loggerCall[1];
-				expect(responseTime).toBeTypeOf("number");
-				expect(responseTime).toBeGreaterThan(0);
-			}
+		// biome-ignore lint/suspicious/noExplicitAny: Mock type casting needed for testing
+		const loggerCall = (appLogger.request as any).mock.calls[0];
+		if (loggerCall && loggerCall.length > 1) {
+			const responseTime = loggerCall[1];
+			expect(responseTime).toBeTypeOf("number");
+			expect(responseTime).toBeGreaterThan(0);
 		}
 	});
 
@@ -255,12 +314,19 @@ describe("Enhanced Request Logger Middleware", () => {
 		}
 
 		// Each request should have been processed
-		expect(mockShouldRecordRequest).toHaveBeenCalledTimes(methods.length);
+		expect(observabilityUtils.shouldRecordRequest).toHaveBeenCalledTimes(
+			methods.length,
+		);
 	});
 
 	test("should preserve request cloning for logging", async () => {
-		mockAppEnv.LOG_REQUEST = true;
-		mockShouldRecordRequest.mockReturnValue(true);
+		Object.defineProperty(appEnv, "LOG_REQUEST", {
+			value: true,
+			writable: true,
+			configurable: true,
+		});
+		// biome-ignore lint/suspicious/noExplicitAny: Mock type casting needed for testing
+		(observabilityUtils.shouldRecordRequest as any).mockReturnValue(true);
 
 		app.post("/clone-test", async (c) => {
 			// Try to read the body - this should still work due to cloning
@@ -280,14 +346,14 @@ describe("Enhanced Request Logger Middleware", () => {
 		expect(result).toEqual({ received: testBody });
 
 		// Logger should have been called
-		expect(mockAppLogger.request).toHaveBeenCalled();
+		expect(appLogger.request).toHaveBeenCalled();
 	});
 
 	test("should handle requests with query parameters", async () => {
 		const response = await app.request("/test?param1=value1&param2=value2");
 
 		expect(response.status).toBe(200);
-		expect(mockShouldRecordRequest).toHaveBeenCalledWith("/test");
+		expect(observabilityUtils.shouldRecordRequest).toHaveBeenCalledWith("/test");
 	});
 
 	test("should handle requests with special headers", async () => {
@@ -300,7 +366,7 @@ describe("Enhanced Request Logger Middleware", () => {
 		});
 
 		expect(response.status).toBe(200);
-		expect(mockGetClientIp).toHaveBeenCalled();
-		expect(mockExtractHeaders).toHaveBeenCalled();
+		expect(observabilityUtils.getClientIp).toHaveBeenCalled();
+		expect(observabilityUtils.extractHeaders).toHaveBeenCalled();
 	});
 });

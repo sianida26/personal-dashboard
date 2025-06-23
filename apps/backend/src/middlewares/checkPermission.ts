@@ -1,6 +1,6 @@
 import type { ExtendedPermissionCodeWithAll } from "@repo/data";
 import { createMiddleware } from "hono/factory";
-import { unauthorized } from "../errors/DashboardError";
+import { unauthorized, forbidden } from "../errors/DashboardError";
 import type HonoEnv from "../types/HonoEnv";
 
 /**
@@ -29,8 +29,12 @@ const checkPermission = (...permissions: ExtendedPermissionCodeWithAll[]) =>
 			);
 			if (hasPermission || permissions.includes("authenticated-only")) {
 				await next();
-			} else {
+			} else if (permissions.includes("guest-only")) {
+				// Guest-only routes should return 401 for authenticated users (original behavior)
 				unauthorized();
+			} else {
+				// User exists but doesn't have the required permissions
+				forbidden();
 			}
 		} else if (permissions.includes("guest-only")) {
 			await next();

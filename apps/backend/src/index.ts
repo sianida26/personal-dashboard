@@ -18,6 +18,14 @@ import authRouter from "./routes/auth/route";
 import microsoftAdminRouter from "./routes/auth/microsoft/admin";
 import { rateLimiter } from "hono-rate-limiter";
 
+// Observability routes
+import getObservabilityEventsEndpoint from "./routes/observability/get-observability-events";
+import getRequestByIdEndpoint from "./routes/observability/get-request-by-id";
+import getRequestsEndpoint from "./routes/observability/get-requests";
+import getMetricsEndpoint from "./routes/observability/get-metrics";
+import postFrontendEventEndpoint from "./routes/observability/post-frontend-event";
+import deleteCleanupEndpoint from "./routes/observability/delete-cleanup";
+
 configDotenv();
 
 const app = new Hono<HonoEnv>();
@@ -56,6 +64,13 @@ export const appRoutes = app
 	.route("/roles", rolesRoute)
 	.route("/dev", devRoutes)
 	.route("/app-settings", appSettingsRoutes)
+	// Observability routes
+	.route("/", getObservabilityEventsEndpoint)
+	.route("/", getRequestByIdEndpoint)
+	.route("/", getRequestsEndpoint)
+	.route("/", getMetricsEndpoint)
+	.route("/", postFrontendEventEndpoint)
+	.route("/", deleteCleanupEndpoint)
 	.get("/test", (c) => {
 		return c.json({
 			message: "Server is up",

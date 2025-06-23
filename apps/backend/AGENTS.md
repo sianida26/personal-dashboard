@@ -608,6 +608,160 @@ describe("POST /auth/login", () => {
 - **Test data**: Create and cleanup test data in `beforeAll`/`afterAll` hooks
 - **Assertions**: Test actual API responses and database state changes
 
+### ⚠️ CRITICAL: Avoiding Test Interference in Bun
+
+#### Bun's Global Mock Problem:
+Bun's `mock.module()` creates **GLOBAL mocks** that persist across test files, causing widespread test interference. This can lead to:
+- Previously passing tests suddenly failing
+- Mocks from one test file affecting completely unrelated tests
+- Unpredictable test behavior when running full test suite vs individual files
+
+#### ❌ NEVER Use `mock.module()`:
+```typescript
+// ❌ DON'T DO THIS - Causes global interference
+import { mock } from "bun:test";
+
+// This will affect ALL test files globally
+mock.module("../../utils/observability-utils", () => ({
+  getClientIp: mock(() => "127.0.0.1")
+}));
+```
+
+#### ✅ ALWAYS Use `spyOn()` Instead:
+```typescript
+// ✅ CORRECT - Use spyOn for isolated mocking
+import { describe, test, expect, spyOn, afterEach } from "bun:test";
+import * as observabilityUtils from "../../utils/observability-utils";
+
+describe("My Test Suite", () => {
+  afterEach(() => {
+    // Clean up all spies after each test
+    jest.restoreAllMocks?.() || vi?.restoreAllMocks?.();
+  });
+
+  test("should handle mocked function", () => {
+    // Create isolated spy that only affects this test
+    const getClientIpSpy = spyOn(observabilityUtils, "getClientIp")
+      .mockReturnValue("192.168.1.1");
+    
+    // Test logic here...
+    
+    // Verify spy was called
+    expect(getClientIpSpy).toHaveBeenCalledTimes(1);
+  });
+});
+```
+
+#### Environment Variable Testing:
+For environment variable overrides, use `Object.defineProperty` instead of direct assignment:
+
+```typescript
+// ✅ CORRECT - Proper environment isolation
+import appEnv from "../../appEnv";
+
+describe("Environment Tests", () => {
+  const originalValue = appEnv.SOME_SETTING;
+  
+  afterEach(() => {
+    // Restore original value
+    Object.defineProperty(appEnv, "SOME_SETTING", {
+      value: originalValue,
+      writable: true,
+      configurable: true
+    });
+  });
+
+  test("should work with modified environment", () => {
+    // Override environment variable properly
+    Object.defineProperty(appEnv, "SOME_SETTING", {
+      value: "test-value",
+      writable: true,
+      configurable: true
+    });
+    
+    // Test logic here...
+  });
+});
+```
+
+#### Service/Function Mocking Pattern:
+```typescript
+// ✅ CORRECT - Service mocking with spyOn
+import { describe, test, expect, spyOn, afterEach } from "bun:test";
+import * as observabilityService from "../../services/observability-service";
+
+describe("Service Tests", () => {
+  afterEach(() => {
+    // Always restore mocks after each test
+    jest.restoreAllMocks?.();
+  });
+
+  test("should handle service errors gracefully", async () => {
+    // Mock service methods with spyOn
+    const storeEventSpy = spyOn(observabilityService, "storeObservabilityEvent")
+      .mockRejectedValue(new Error("Storage error"));
+    
+    const storeDetailsSpy = spyOn(observabilityService, "storeRequestDetails")
+      .mockRejectedValue(new Error("Storage error"));
+    
+    // Test logic that should handle the errors gracefully...
+    
+    // Verify mocks were called
+    expect(storeEventSpy).toHaveBeenCalled();
+    expect(storeDetailsSpy).toHaveBeenCalled();
+  });
+});
+```
+
+#### Mock Cleanup Best Practices:
+1. **Always restore mocks**: Use `afterEach()` to clean up spies
+2. **Isolate test files**: Each test file should be independent
+3. **Avoid global state**: Don't let one test affect another
+4. **Use proper spy methods**: `.mockReturnValue()`, `.mockResolvedValue()`, `.mockRejectedValue()`
+5. **Type casting when needed**: Use `// @ts-ignore` or proper type casting for complex mocks
+
+#### Example of Proper Mock Restoration:
+```typescript
+import { describe, test, afterEach, spyOn } from "bun:test";
+
+describe("Test Suite", () => {
+  afterEach(() => {
+    // Restore all mocks after each test
+    if (typeof jest !== "undefined" && jest.restoreAllMocks) {
+      jest.restoreAllMocks();
+    }
+    if (typeof vi !== "undefined" && vi.restoreAllMocks) {
+      vi.restoreAllMocks();
+    }
+  });
+
+  test("test with mocks", () => {
+    const spy = spyOn(someModule, "someFunction").mockReturnValue("mocked");
+    // Test logic...
+    // Spy will be automatically restored in afterEach
+  });
+});
+```
+
+#### When You Must Mock Modules:
+If you absolutely must mock entire modules (rare cases), use dynamic imports and local scope:
+
+```typescript
+test("should handle module mocking", async () => {
+  // Create local mock within test scope
+  const mockModule = {
+    someFunction: () => "mocked result"
+  };
+  
+  // Use dynamic import with local override
+  const originalModule = await import("../../some-module");
+  const moduleWithMock = { ...originalModule, ...mockModule };
+  
+  // Test with local mock...
+  // Mock doesn't persist beyond this test
+});
+```
+
 ### Test Client:
 ```typescript
 // src/utils/hono-test-client.ts (kebab-case)
@@ -735,6 +889,9 @@ POST /app-settings
 - **Have multiple return statements in endpoints**
 - **Return early for error cases (must throw instead)**
 - Use `return` for error responses
+- **❌ CRITICAL: NEVER use `mock.module()` in Bun tests - causes global interference**
+- **❌ Use direct property assignment for environment variables in tests**
+- **❌ Forget to restore mocks after tests - causes test interference**
 
 ### ✅ Do:
 - Always use `authInfo` middleware before permission checks
@@ -750,6 +907,9 @@ POST /app-settings
 - **Have exactly ONE return statement per endpoint**
 - **Throw errors for all validation and error cases**
 - **Use throw instead of return for error responses**
+- **✅ CRITICAL: Always use `spyOn()` instead of `mock.module()` in Bun tests**
+- **✅ Use `Object.defineProperty()` for environment variable testing**
+- **✅ Always restore mocks in `afterEach()` hooks to prevent test interference**
 
 ### Performance Tips:
 - Use database indexes on frequently queried columns
@@ -854,6 +1014,67 @@ const deleteProductEndpoint = createHonoRoute()
    - Never edit migration files directly
    - Use `bun db:generate` to create new migrations
    - Check schema definitions for errors
+
+5. **🚨 Test Interference Issues (Bun-specific)**
+   - **Symptom**: Previously passing tests suddenly fail when running full test suite
+   - **Symptom**: Tests pass individually but fail when run together
+   - **Symptom**: Mocks from one test file affecting other test files
+   - **Root Cause**: Using `mock.module()` creates global mocks in Bun
+   - **Solution**: Replace all `mock.module()` usage with `spyOn()`
+   - **Prevention**: Always restore mocks in `afterEach()` hooks
+
+6. **Environment Variable Issues in Tests**
+   - **Symptom**: Environment overrides not working in tests
+   - **Symptom**: Tests affecting each other's environment state
+   - **Root Cause**: Direct property assignment doesn't work reliably
+   - **Solution**: Use `Object.defineProperty()` for environment overrides
+   - **Prevention**: Restore original values in `afterEach()` or `afterAll()`
+
+### Test Debugging Checklist:
+When tests are failing unexpectedly:
+
+1. **Check for global mocks**:
+   ```bash
+   # Search for problematic mock.module usage
+   grep -r "mock.module" src/
+   ```
+
+2. **Run tests individually vs together**:
+   ```bash
+   # Run single test file
+   bun test src/specific-test.test.ts
+   
+   # Run full suite
+   bun test
+   
+   # If individual passes but full suite fails = test interference
+   ```
+
+3. **Look for missing mock cleanup**:
+   ```typescript
+   // Every test file should have this pattern
+   afterEach(() => {
+     jest.restoreAllMocks?.();
+   });
+   ```
+
+4. **Check environment variable handling**:
+   ```typescript
+   // ❌ Wrong - doesn't work reliably
+   appEnv.SOME_VAR = "test-value";
+   
+   // ✅ Correct - proper override
+   Object.defineProperty(appEnv, "SOME_VAR", {
+     value: "test-value",
+     writable: true,
+     configurable: true
+   });
+   ```
+
+5. **Verify test isolation**:
+   - Each test should be able to run independently
+   - Tests should not depend on execution order
+   - Database state should be properly cleaned up
 
 ---
 
