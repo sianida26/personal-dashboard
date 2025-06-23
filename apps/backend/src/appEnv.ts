@@ -43,6 +43,18 @@ const envSchema = z.object({
 	LOG_DEBUG: logSchema("false"),
 	LOG_REQUEST: logSchema("true"),
 	LOG_SQL: logSchema("true"),
+
+	//Observability Controls
+	OBSERVABILITY_ENABLED: logSchema("true"),
+	OBSERVABILITY_RECORD_SELF: logSchema("false"), // Record observability route calls
+	OBSERVABILITY_RETENTION_DAYS: z.coerce.number().int().default(30),
+	OBSERVABILITY_MAX_BODY_SIZE: z.coerce.number().int().default(10240), // Max request/response body size to store (bytes)
+
+	//Data Privacy Controls
+	OBSERVABILITY_MASK_SENSITIVE_DATA: logSchema("true"), // Mask passwords, tokens, etc.
+	OBSERVABILITY_ANONYMIZE_USERS: logSchema("false"), // Store user IDs vs anonymous tracking
+	OBSERVABILITY_STORE_REQUEST_BODIES: logSchema("true"), // Toggle request body storage
+	OBSERVABILITY_STORE_RESPONSE_BODIES: logSchema("true"), // Toggle response body storage
 });
 
 const parsedEnv = envSchema.safeParse(process.env);

@@ -5,7 +5,7 @@ import { HTTPException } from "hono/http-exception";
 import appEnv from "./appEnv";
 import DashboardError from "./errors/DashboardError";
 import authTokenMiddleware from "./middlewares/authTokenMiddleware";
-import requestLogger from "./middlewares/requestLogger";
+import enhancedRequestLogger from "./middlewares/enhanced-request-logger";
 import appSettingsRoutes from "./routes/appSettingsRoute";
 import dashboardRoutes from "./routes/dashboard/routes";
 import devRoutes from "./routes/dev/route";
@@ -28,7 +28,7 @@ const app = new Hono<HonoEnv>();
  * Uses in-memory store (not suitable for multi-instance production).
  */
 export const appRoutes = app
-	.use(requestLogger)
+	.use(enhancedRequestLogger)
 	.use(
 		cors({
 			origin: "*",
