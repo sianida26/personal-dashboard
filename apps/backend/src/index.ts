@@ -25,6 +25,8 @@ import getRequestsEndpoint from "./routes/observability/get-requests";
 import getMetricsEndpoint from "./routes/observability/get-metrics";
 import postFrontendEventEndpoint from "./routes/observability/post-frontend-event";
 import deleteCleanupEndpoint from "./routes/observability/delete-cleanup";
+import getEndpointOverviewEndpoint from "./routes/observability/get-endpoint-overview";
+import getErrorEventsEndpoint from "./routes/observability/get-error-events";
 
 configDotenv();
 
@@ -71,6 +73,8 @@ export const appRoutes = app
 	.route("/", getMetricsEndpoint)
 	.route("/", postFrontendEventEndpoint)
 	.route("/", deleteCleanupEndpoint)
+	.route("/", getEndpointOverviewEndpoint)
+	.route("/", getErrorEventsEndpoint)
 	.get("/test", (c) => {
 		return c.json({
 			message: "Server is up",

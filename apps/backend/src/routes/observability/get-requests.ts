@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, gte, ilike, lte, or } from "drizzle-orm";
+import { and, asc, desc, eq, gte, ilike, lte, or, sql } from "drizzle-orm";
 import { createHonoRoute } from "../../utils/createHonoRoute";
 import authInfo from "../../middlewares/authInfo";
 import checkPermission from "../../middlewares/checkPermission";
@@ -6,6 +6,8 @@ import requestValidator from "../../utils/requestValidator";
 import { requestDetailsQuerySchema } from "@repo/validation";
 import db from "../../drizzle";
 import { requestDetails } from "../../drizzle/schema/request-details";
+import { users } from "../../drizzle/schema/users";
+import { observabilityEvents } from "../../drizzle/schema/observability-events";
 import { badRequest } from "../../errors/DashboardError";
 
 /**
@@ -108,21 +110,50 @@ const getRequestsEndpoint = createHonoRoute()
 						id: requestDetails.id,
 						requestId: requestDetails.requestId,
 						userId: requestDetails.userId,
+						userName: users.name,
 						method: requestDetails.method,
 						endpoint: requestDetails.endpoint,
+						fullEndpoint: sql<string>`
+							CASE 
+								WHEN ${requestDetails.queryParams} IS NOT NULL AND ${requestDetails.queryParams} != '{}' 
+								THEN ${requestDetails.endpoint} || '?' || (
+									SELECT string_agg(key || '=' || value, '&') 
+									FROM jsonb_each_text(${requestDetails.queryParams})
+								)
+								ELSE ${requestDetails.endpoint}
+							END
+						`.as("fullEndpoint"),
 						ipAddress: requestDetails.ipAddress,
 						userAgent: requestDetails.userAgent,
+						statusCode: observabilityEvents.statusCode,
+						responseTimeMs: observabilityEvents.responseTimeMs,
 						createdAt: requestDetails.createdAt,
 					})
 					.from(requestDetails)
-					.where(whereConditions.length > 0 ? and(...whereConditions) : undefined)
+					.leftJoin(users, eq(requestDetails.userId, users.id))
+					.leftJoin(
+						observabilityEvents,
+						eq(
+							requestDetails.requestId,
+							observabilityEvents.requestId,
+						),
+					)
+					.where(
+						whereConditions.length > 0
+							? and(...whereConditions)
+							: undefined,
+					)
 					.orderBy(orderBy)
 					.limit(limit)
 					.offset(offset),
 				db
 					.select({ count: requestDetails.id })
 					.from(requestDetails)
-					.where(whereConditions.length > 0 ? and(...whereConditions) : undefined)
+					.where(
+						whereConditions.length > 0
+							? and(...whereConditions)
+							: undefined,
+					)
 					.then((result) => result.length),
 			]);
 

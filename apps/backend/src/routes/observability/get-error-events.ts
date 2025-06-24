@@ -10,20 +10,19 @@ import { users } from "../../drizzle/schema/users";
 import { badRequest } from "../../errors/DashboardError";
 
 /**
- * GET /observability/events
- * List observability events with filtering and pagination
+ * GET /observability/error-events
+ * List only error events (frontend_error + api_request with status >= 400)
  */
-const getObservabilityEventsEndpoint = createHonoRoute()
+const getErrorEventsEndpoint = createHonoRoute()
 	.use(authInfo)
 	.get(
-		"/observability/events",
+		"/observability/error-events",
 		checkPermission("observability.read"),
 		requestValidator("query", observabilityEventsQuerySchema),
 		async (c) => {
 			const {
 				page,
 				limit,
-				eventType,
 				userId,
 				endpoint,
 				method,
@@ -34,12 +33,18 @@ const getObservabilityEventsEndpoint = createHonoRoute()
 				sort,
 			} = c.req.valid("query");
 
-			// Build where conditions
-			const whereConditions = [];
-
-			if (eventType) {
-				whereConditions.push(eq(observabilityEvents.eventType, eventType));
-			}
+			// Build where conditions for error events only
+			const whereConditions = [
+				or(
+					// Frontend errors
+					eq(observabilityEvents.eventType, "frontend_error"),
+					// API requests with error status codes
+					and(
+						eq(observabilityEvents.eventType, "api_request"),
+						gte(observabilityEvents.statusCode, 400)
+					)
+				)
+			];
 
 			if (userId) {
 				whereConditions.push(eq(observabilityEvents.userId, userId));
@@ -173,4 +178,4 @@ const getObservabilityEventsEndpoint = createHonoRoute()
 		},
 	);
 
-export default getObservabilityEventsEndpoint;
+export default getErrorEventsEndpoint;

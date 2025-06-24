@@ -7,6 +7,7 @@ import { AuthProvider } from "./contexts/Auth/AuthProvider";
 import { NotificationProvider } from "./contexts/Notification/NotificationProvider";
 import { AppProvider } from "./contexts/App/AppContext";
 import { usePerformanceMonitor } from "./hooks/usePerformanceMonitor";
+import { useConsoleLogger } from "./hooks/useConsoleLogger";
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -40,6 +41,14 @@ function PerformanceMonitor() {
 	return null;
 }
 
+/**
+ * Console logger component that captures frontend logs
+ */
+function ConsoleLogger() {
+	useConsoleLogger();
+	return null;
+}
+
 function App() {
 	return (
 		<QueryClientProvider client={queryClient}>
@@ -47,6 +56,7 @@ function App() {
 				<AuthProvider>
 					<NotificationProvider>
 						<PerformanceMonitor />
+						<ConsoleLogger />
 						<RouterProvider router={router} />
 					</NotificationProvider>
 				</AuthProvider>

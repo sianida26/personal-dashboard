@@ -107,9 +107,17 @@ OBSERVABILITY_STORE_RESPONSE_BODIES=true # Toggle response body storage
 - `GET /observability/dashboard` - Dashboard data aggregation
 - `GET /observability/events` - List events with filtering
 - `GET /observability/requests/{id}` - Detailed request information
+- `GET /observability/endpoint-overview` - Aggregated endpoint statistics with parameterized routes
 - `GET /observability/metrics` - Aggregated metrics
 - `POST /observability/frontend` - Frontend event submission
 - `DELETE /observability/cleanup` - Manual cleanup trigger
+
+**Endpoint Normalization**: The `/observability/endpoint-overview` endpoint normalizes specific endpoint paths to parameterized routes for better aggregation based on actual Hono route patterns:
+- `/users/abc123` → `/users/:id` (matches actual `/users/:id` route)
+- `/users/abc123/restore` → `/users/:id/restore` (matches actual restore route)
+- `/observability/requests/def456` → `/observability/requests/:id`
+- Static routes remain unchanged (e.g., `/auth/login`, `/dashboard/get-sidebar-items`)
+- Unknown patterns with IDs are left as-is to avoid incorrect grouping
 
 **Access Control**: All observability routes require `observability.read` permission
 
@@ -316,17 +324,34 @@ const usePerformanceMonitor = () => {
 
 #### 3. Dashboard Components
 
+**API Endpoint Overview**:
+- Aggregated statistics grouped by parameterized routes (e.g., `/users/:userId`)
+- Total requests, average response times, error rates per endpoint pattern
+- Success rates and P95 response times
+- Helps identify performance patterns across similar endpoints
+
+**Request Details Table**:
+- Individual request records with actual URLs (e.g., `/users/abc123`)
+- Real-time request monitoring with specific user IDs and parameters
+- User names, status codes, response times, IP addresses
+- Useful for debugging specific requests and user issues
+
 **Metrics Overview**:
 - API endpoint success rates
 - Average response times
 - Error distribution
 - Top slowest endpoints
 
-**Request Explorer**:
-- Searchable/filterable request list
-- Detailed request/response viewer
-- User context display
-- Error highlighting
+**Frontend Logs Panel**:
+- Console logs captured from frontend applications
+- Log levels (debug, info, warn, error) with proper formatting
+- User context and route information for each log entry
+
+**Error Events Panel**:
+- Both frontend and backend errors with complete stack traces
+- Error source identification (frontend vs. backend API)
+- User context and error message details
+- Click-to-view stack traces for debugging
 
 ### Security Considerations
 
@@ -383,7 +408,7 @@ const usePerformanceMonitor = () => {
 - [x] Implement observability toggle logic
 
 ### Phase 3: Dashboard UI (Week 2-3)
-- [ ] Create observability route and layout
+- [x] Create observability route and layout
 - [ ] Implement metrics overview components
 - [ ] Build request explorer interface
 - [ ] Add error visualization components
