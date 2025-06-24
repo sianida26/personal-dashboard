@@ -47,6 +47,45 @@ const formatUTCTime = (timestamp: string | Date) => {
 	return dayjs(timestamp).utc().format("HH:mm:ss [UTC]");
 };
 
+// Utility functions for consistent color coding
+const getStatusCodeVariant = (statusCode: number) => {
+	if (statusCode >= 200 && statusCode < 300) return "success"; // Green (success)
+	if (statusCode >= 300 && statusCode < 400) return "redirect"; // Gray (redirect)
+	if (statusCode >= 400 && statusCode < 500) return "clientError"; // Orange (client error)
+	if (statusCode >= 500) return "serverError"; // Red (server error)
+	return "outline";
+};
+
+const getResponseTimeColor = (responseTime: number) => {
+	if (responseTime < 300) return "text-green-600"; // Green (fast)
+	if (responseTime <= 1000) return "text-orange-500"; // Orange (moderate)
+	return "text-red-600"; // Red (slow)
+};
+
+const getMethodVariant = (method: string) => {
+	switch (method) {
+		case "GET":
+			return "methodGet"; // Blue
+		case "POST":
+			return "methodPost"; // Green
+		case "PUT":
+			return "methodPut"; // Orange
+		case "DELETE":
+			return "methodDelete"; // Red
+		case "PATCH":
+			return "methodPatch"; // Purple
+		default:
+			return "outline";
+	}
+};
+
+const getSuccessRateVariant = (successRate: number) => {
+	if (successRate >= 90) return "success"; // Green
+	if (successRate >= 75) return "clientError"; // Orange
+	if (successRate >= 50) return "redirect"; // Gray
+	return "serverError"; // Red
+};
+
 // Enhanced Error Visualization Components
 interface StackTraceButtonProps {
 	stackTrace: string;
@@ -876,24 +915,9 @@ function MetricsOverview() {
 										>
 											<div className="flex items-center space-x-2">
 												<Badge
-													variant={
-														(status.statusCode ||
-															0) >= 200 &&
-														(status.statusCode ||
-															0) < 300
-															? "default"
-															: (status.statusCode ||
-																		0) >=
-																		400 &&
-																	(status.statusCode ||
-																		0) < 500
-																? "destructive"
-																: (status.statusCode ||
-																			0) >=
-																		500
-																	? "destructive"
-																	: "secondary"
-													}
+													variant={getStatusCodeVariant(
+														status.statusCode || 0,
+													)}
 												>
 													{status.statusCode || 0}
 												</Badge>
@@ -1036,7 +1060,7 @@ function EndpointOverviewTable() {
 			"endpoint",
 			"totalRequests",
 			"avgResponseTime",
-			"errorRate",
+			"successRate",
 		],
 		filterableColumns: [
 			{
@@ -1094,17 +1118,7 @@ function EndpointOverviewTable() {
 				header: "Method",
 				cell: (props) => {
 					const method = props.getValue() as string;
-					const variant =
-						method === "GET"
-							? "default"
-							: method === "POST"
-								? "default"
-								: method === "PUT"
-									? "secondary"
-									: method === "DELETE"
-										? "destructive"
-										: "outline";
-					return <Badge variant={variant}>{method}</Badge>;
+					return <Badge variant={getMethodVariant(method)}>{method}</Badge>;
 				},
 			}),
 			helper.accessor("totalRequests", {
@@ -1120,7 +1134,9 @@ function EndpointOverviewTable() {
 				cell: (props) => {
 					const avgTime = props.getValue() as number;
 					return (
-						<span className="text-sm font-mono">
+						<span
+							className={`text-sm font-semibold ${getResponseTimeColor(avgTime)}`}
+						>
 							{avgTime.toFixed(1)}ms
 						</span>
 					);
@@ -1131,7 +1147,9 @@ function EndpointOverviewTable() {
 				cell: (props) => {
 					const p95Time = props.getValue() as number;
 					return (
-						<span className="text-sm font-mono">
+						<span
+							className={`text-sm font-semibold ${getResponseTimeColor(p95Time)}`}
+						>
 							{p95Time.toFixed(1)}ms
 						</span>
 					);
@@ -1141,27 +1159,10 @@ function EndpointOverviewTable() {
 				header: "Success Rate",
 				cell: (props) => {
 					const successRate = props.getValue() as number;
-					const variant =
-						successRate >= 95
-							? "default"
-							: successRate >= 90
-								? "secondary"
-								: "destructive";
-					return <Badge variant={variant}>{successRate.toFixed(1)}%</Badge>;
-				},
-			}),
-			helper.accessor("errorRate", {
-				header: "Error Rate",
-				cell: (props) => {
-					const errorRate = props.getValue() as number;
-					const variant =
-						errorRate < 5
-							? "default"
-							: errorRate < 10
-								? "secondary"
-								: "destructive";
 					return (
-						<Badge variant={variant}>{errorRate.toFixed(1)}%</Badge>
+						<Badge variant={getSuccessRateVariant(successRate)}>
+							{successRate.toFixed(1)}%
+						</Badge>
 					);
 				},
 			}),
@@ -1395,17 +1396,7 @@ function RequestsTable() {
 				header: "Method",
 				cell: (props) => {
 					const method = props.getValue() as string;
-					const variant =
-						method === "GET"
-							? "default"
-							: method === "POST"
-								? "default"
-								: method === "PUT"
-									? "secondary"
-									: method === "DELETE"
-										? "destructive"
-										: "outline";
-					return <Badge variant={variant}>{method}</Badge>;
+					return <Badge variant={getMethodVariant(method)}>{method}</Badge>;
 				},
 			}),
 			helper.accessor("endpoint", {
@@ -1453,15 +1444,7 @@ function RequestsTable() {
 								-
 							</span>
 						);
-					const variant =
-						statusCode < 300
-							? "default"
-							: statusCode < 400
-								? "secondary"
-								: statusCode < 500
-									? "default"
-									: "destructive";
-					return <Badge variant={variant}>{statusCode}</Badge>;
+					return <Badge variant={getStatusCodeVariant(statusCode)}>{statusCode}</Badge>;
 				},
 			}),
 			helper.accessor("responseTimeMs", {
@@ -1475,7 +1458,9 @@ function RequestsTable() {
 							</span>
 						);
 					return (
-						<span className="text-sm font-mono">
+						<span
+							className={`text-sm font-semibold ${getResponseTimeColor(responseTime)}`}
+						>
 							{responseTime}ms
 						</span>
 					);
@@ -1676,26 +1661,10 @@ function RequestDetailDialog({
 											</div>
 											<div className="flex items-center gap-2 mt-1">
 												<Badge
-													variant={
+													variant={getMethodVariant(
 														requestDetail.data
-															.method === "GET"
-															? "default"
-															: requestDetail.data
-																		.method ===
-																	"POST"
-																? "default"
-																: requestDetail
-																			.data
-																			.method ===
-																		"PUT"
-																	? "secondary"
-																	: requestDetail
-																				.data
-																				.method ===
-																			"DELETE"
-																		? "destructive"
-																		: "outline"
-													}
+															.method,
+													)}
 												>
 													{requestDetail.data.method}
 												</Badge>
@@ -1871,18 +1840,9 @@ function RequestDetailDialog({
 																	</Badge>
 																	{event.statusCode && (
 																		<Badge
-																			variant={
-																				event.statusCode <
-																				300
-																					? "default"
-																					: event.statusCode <
-																							400
-																						? "secondary"
-																						: event.statusCode <
-																								500
-																							? "default"
-																							: "destructive"
-																			}
+																			variant={getStatusCodeVariant(
+																				event.statusCode,
+																			)}
 																		>
 																			{
 																				event.statusCode
@@ -1899,7 +1859,9 @@ function RequestDetailDialog({
 																	)}
 																</div>
 																<span className="text-xs text-muted-foreground">
-																	{formatUTCTime(event.timestamp)}
+																	{formatUTCTime(
+																		event.timestamp,
+																	)}
 																</span>
 															</div>
 
@@ -2100,9 +2062,7 @@ function ErrorsTable() {
 				cell: (props) => {
 					const statusCode = props.getValue() as number;
 					if (!statusCode) return "-";
-					const variant =
-						statusCode >= 500 ? "destructive" : "default";
-					return <Badge variant={variant}>{statusCode}</Badge>;
+					return <Badge variant={getStatusCodeVariant(statusCode)}>{statusCode}</Badge>;
 				},
 			}),
 			helper.accessor("errorMessage", {

@@ -15,6 +15,26 @@ const badgeVariants = cva(
 				destructive:
 					"border-transparent bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/80",
 				outline: "text-foreground",
+				// Status code variants
+				success:
+					"border-transparent bg-green-600 text-white shadow-sm hover:bg-green-700",
+				redirect:
+					"border-transparent bg-gray-500 text-white shadow-sm hover:bg-gray-600",
+				clientError:
+					"border-transparent bg-orange-500 text-white shadow-sm hover:bg-orange-600",
+				serverError:
+					"border-transparent bg-red-600 text-white shadow-sm hover:bg-red-700",
+				// Method variants
+				methodGet:
+					"border-transparent bg-blue-600 text-white shadow-sm hover:bg-blue-700",
+				methodPost:
+					"border-transparent bg-green-600 text-white shadow-sm hover:bg-green-700",
+				methodPut:
+					"border-transparent bg-orange-500 text-white shadow-sm hover:bg-orange-600",
+				methodDelete:
+					"border-transparent bg-red-600 text-white shadow-sm hover:bg-red-700",
+				methodPatch:
+					"border-transparent bg-purple-600 text-white shadow-sm hover:bg-purple-700",
 			},
 		},
 		defaultVariants: {
