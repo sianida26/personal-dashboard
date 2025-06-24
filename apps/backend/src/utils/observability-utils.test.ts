@@ -229,7 +229,7 @@ describe("Observability Utils", () => {
 				configurable: true,
 			});
 
-			expect(shouldRecordRequest("/api/users")).toBe(false);
+			expect(shouldRecordRequest("/api/users", "GET")).toBe(false);
 		});
 
 		test("should return false for observability routes when RECORD_SELF is false", () => {
@@ -239,8 +239,12 @@ describe("Observability Utils", () => {
 				configurable: true,
 			});
 
-			expect(shouldRecordRequest("/observability/events")).toBe(false);
-			expect(shouldRecordRequest("/observability/dashboard")).toBe(false);
+			expect(shouldRecordRequest("/observability/events", "GET")).toBe(
+				false,
+			);
+			expect(shouldRecordRequest("/observability/dashboard", "GET")).toBe(
+				false,
+			);
 		});
 
 		test("should return true for observability routes when RECORD_SELF is true", () => {
@@ -250,19 +254,52 @@ describe("Observability Utils", () => {
 				configurable: true,
 			});
 
-			expect(shouldRecordRequest("/observability/events")).toBe(true);
-			expect(shouldRecordRequest("/observability/dashboard")).toBe(true);
+			expect(shouldRecordRequest("/observability/events", "GET")).toBe(
+				true,
+			);
+			expect(shouldRecordRequest("/observability/dashboard", "GET")).toBe(
+				true,
+			);
+		});
+
+		test("should return false for OPTIONS requests when RECORD_OPTIONS is false", () => {
+			Object.defineProperty(appEnv, "OBSERVABILITY_RECORD_OPTIONS", {
+				value: false,
+				writable: true,
+				configurable: true,
+			});
+
+			expect(shouldRecordRequest("/api/users", "OPTIONS")).toBe(false);
+			expect(shouldRecordRequest("/auth/login", "OPTIONS")).toBe(false);
+		});
+
+		test("should return true for OPTIONS requests when RECORD_OPTIONS is true", () => {
+			Object.defineProperty(appEnv, "OBSERVABILITY_RECORD_OPTIONS", {
+				value: true,
+				writable: true,
+				configurable: true,
+			});
+
+			expect(shouldRecordRequest("/api/users", "OPTIONS")).toBe(true);
+			expect(shouldRecordRequest("/auth/login", "OPTIONS")).toBe(true);
 		});
 
 		test("should return false for health check and test endpoints", () => {
-			expect(shouldRecordRequest("/test")).toBe(false);
-			expect(shouldRecordRequest("/health")).toBe(false);
+			expect(shouldRecordRequest("/test", "GET")).toBe(false);
+			expect(shouldRecordRequest("/health", "GET")).toBe(false);
 		});
 
 		test("should return true for regular API endpoints", () => {
+			expect(shouldRecordRequest("/api/users", "GET")).toBe(true);
+			expect(shouldRecordRequest("/auth/login", "POST")).toBe(true);
+			expect(shouldRecordRequest("/dashboard/sidebar-items", "GET")).toBe(
+				true,
+			);
+		});
+
+		test("should work without method parameter (backward compatibility)", () => {
 			expect(shouldRecordRequest("/api/users")).toBe(true);
-			expect(shouldRecordRequest("/auth/login")).toBe(true);
-			expect(shouldRecordRequest("/dashboard/sidebar-items")).toBe(true);
+			expect(shouldRecordRequest("/health")).toBe(false);
 		});
 	});
 

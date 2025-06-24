@@ -59,9 +59,10 @@ export const sanitizeRequestData = (data: unknown): unknown => {
 /**
  * Determines if a request should be recorded based on configuration and path
  * @param path - The request path
+ * @param method - The HTTP method
  * @returns Boolean indicating if the request should be recorded
  */
-export const shouldRecordRequest = (path: string): boolean => {
+export const shouldRecordRequest = (path: string, method?: string): boolean => {
 	if (!appEnv.OBSERVABILITY_ENABLED) return false;
 
 	// Skip observability routes if OBSERVABILITY_RECORD_SELF is false
@@ -69,6 +70,12 @@ export const shouldRecordRequest = (path: string): boolean => {
 		path.startsWith("/observability") &&
 		!appEnv.OBSERVABILITY_RECORD_SELF
 	) {
+		return false;
+	}
+
+	// Skip OPTIONS requests if OBSERVABILITY_RECORD_OPTIONS is false
+
+	if (method === "OPTIONS" && !appEnv.OBSERVABILITY_RECORD_OPTIONS) {
 		return false;
 	}
 

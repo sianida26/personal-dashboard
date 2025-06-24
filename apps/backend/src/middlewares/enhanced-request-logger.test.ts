@@ -151,6 +151,7 @@ describe("Enhanced Request Logger Middleware", () => {
 
 		expect(observabilityUtils.shouldRecordRequest).toHaveBeenCalledWith(
 			"/test",
+			"GET",
 		);
 		expect(observabilityService.storeObservabilityEvent).toHaveBeenCalled();
 		expect(observabilityService.storeRequestDetails).toHaveBeenCalled();
@@ -167,6 +168,7 @@ describe("Enhanced Request Logger Middleware", () => {
 
 		expect(observabilityUtils.shouldRecordRequest).toHaveBeenCalledWith(
 			"/test",
+			"GET",
 		);
 		expect(
 			observabilityService.storeObservabilityEvent,
@@ -353,7 +355,10 @@ describe("Enhanced Request Logger Middleware", () => {
 		const response = await app.request("/test?param1=value1&param2=value2");
 
 		expect(response.status).toBe(200);
-		expect(observabilityUtils.shouldRecordRequest).toHaveBeenCalledWith("/test");
+		expect(observabilityUtils.shouldRecordRequest).toHaveBeenCalledWith(
+			"/test",
+			"GET",
+		);
 	});
 
 	test("should handle requests with special headers", async () => {

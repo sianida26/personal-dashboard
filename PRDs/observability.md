@@ -6,7 +6,15 @@ This PRD outlines the implementation of a minimal observability system for the d
 
 ## Objectives
 
-1. **API Monitoring**: Track endpoint performance, response codes, and request patterns
+1. **API Monitoring**: Track endpoint performance, 4. **Storage Con3. **Async Processing**:
+   - Non-blocking observability data storage
+   - Background cleanup processes
+   - Batch insertions for high-traffic scenarios
+   - Filtering of high-frequency, low-value requests (e.g., CORS preflight OPTIONS requests)s**:
+   - Configurable retention periods (default 30 days)
+   - Automatic truncation of large payloads
+   - Rate limiting for frontend event submission
+   - OPTIONS method filtering to reduce noise from CORS preflight requestsonse codes, and request patterns
 2. **Frontend Observability**: Monitor frontend errors, performance metrics, and user interactions
 3. **Request Tracing**: Store detailed request/response data for debugging
 4. **Control Mechanisms**: Implement toggles for observability recording
@@ -91,6 +99,7 @@ This PRD outlines the implementation of a minimal observability system for the d
 # Observability Controls
 OBSERVABILITY_ENABLED=true
 OBSERVABILITY_RECORD_SELF=false  # Record observability route calls
+OBSERVABILITY_RECORD_OPTIONS=false  # Record OPTIONS method requests (CORS preflight)
 OBSERVABILITY_RETENTION_DAYS=30
 OBSERVABILITY_MAX_BODY_SIZE=10240  # Max request/response body size to store (bytes)
 
@@ -170,7 +179,7 @@ const observabilityMiddleware = createMiddleware<HonoEnv>(async (c, next) => {
     return;
   }
 
-  const shouldRecord = shouldRecordRequest(c.req.path);
+  const shouldRecord = shouldRecordRequest(c.req.path, c.req.method);
   if (!shouldRecord) {
     await next();
     return;
@@ -210,9 +219,10 @@ const observabilityMiddleware = createMiddleware<HonoEnv>(async (c, next) => {
 
 **Recording Logic**:
 ```typescript
-const shouldRecordRequest = (path: string): boolean => {
+const shouldRecordRequest = (path: string, method: string): boolean => {
   if (!appEnv.OBSERVABILITY_ENABLED) return false;
   if (path.startsWith('/observability') && !appEnv.OBSERVABILITY_RECORD_SELF) return false;
+  if (method === 'OPTIONS' && !appEnv.OBSERVABILITY_RECORD_OPTIONS) return false;
   
   // Additional filtering logic
   return true;

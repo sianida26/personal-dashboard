@@ -47,6 +47,7 @@ const envSchema = z.object({
 	//Observability Controls
 	OBSERVABILITY_ENABLED: logSchema("true"),
 	OBSERVABILITY_RECORD_SELF: logSchema("false"), // Record observability route calls
+	OBSERVABILITY_RECORD_OPTIONS: logSchema("true"), // Record OPTIONS method requests (CORS preflight)
 	OBSERVABILITY_RETENTION_DAYS: z.coerce.number().int().default(30),
 	OBSERVABILITY_MAX_BODY_SIZE: z.coerce.number().int().default(10240), // Max request/response body size to store (bytes)
 

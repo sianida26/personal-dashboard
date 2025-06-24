@@ -39,7 +39,7 @@ const enhancedRequestLogger = createMiddleware<HonoEnv>(async (c, next) => {
 	const requestId = createId();
 	c.set("requestId", requestId);
 
-	const shouldRecord = shouldRecordRequest(c.req.path);
+	const shouldRecord = shouldRecordRequest(c.req.path, c.req.method);
 	const shouldLog = appEnv.LOG_REQUEST;
 
 	// If neither logging nor observability is enabled, just pass through
