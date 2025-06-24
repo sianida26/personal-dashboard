@@ -33,6 +33,19 @@ import {
 	ScrollArea,
 } from "@repo/ui";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+// Configure dayjs to use UTC
+dayjs.extend(utc);
+
+// Utility function for consistent UTC timestamp formatting
+const formatUTCTimestamp = (timestamp: string | Date) => {
+	return dayjs(timestamp).utc().format("DD/MM/YYYY HH:mm:ss [UTC]");
+};
+
+const formatUTCTime = (timestamp: string | Date) => {
+	return dayjs(timestamp).utc().format("HH:mm:ss [UTC]");
+};
 
 // Enhanced Error Visualization Components
 interface StackTraceButtonProps {
@@ -111,9 +124,7 @@ function StackTraceButton({
 										Timestamp
 									</span>
 									<p className="text-sm font-mono mt-1">
-										{dayjs(timestamp).format(
-											"YYYY-MM-DD HH:mm:ss",
-										)}
+										{formatUTCTimestamp(timestamp)}
 									</p>
 								</div>
 								<div className="col-span-2">
@@ -242,7 +253,7 @@ interface ErrorStatsProps {
 
 function ErrorStats({ timeRange }: ErrorStatsProps) {
 	const { startDate, endDate } = useMemo(() => {
-		const now = dayjs();
+		const now = dayjs().utc();
 		switch (timeRange) {
 			case "24h":
 				return {
@@ -558,7 +569,7 @@ function MetricsOverview() {
 
 	// Calculate date range based on selection
 	const { startDate, endDate, groupBy } = useMemo(() => {
-		const now = dayjs();
+		const now = dayjs().utc();
 		switch (timeRange) {
 			case "24h":
 				return {
@@ -1157,11 +1168,10 @@ function EndpointOverviewTable() {
 			helper.accessor("lastRequest", {
 				header: "Last Request",
 				cell: (props) => {
-					const date = new Date(props.getValue() as string);
+					const timestamp = props.getValue() as string;
 					return (
 						<span className="text-sm">
-							{date.toLocaleDateString()}{" "}
-							{date.toLocaleTimeString()}
+							{formatUTCTimestamp(timestamp)}
 						</span>
 					);
 				},
@@ -1218,12 +1228,11 @@ function FrontendLogsTable() {
 			helper.accessor("timestamp", {
 				header: "Timestamp",
 				cell: (props) => {
-					const date = new Date(props.getValue() as string);
+					const timestamp = props.getValue() as string;
 					return (
 						<div className="flex flex-col">
 							<span className="text-sm font-medium">
-								{date.toLocaleDateString()}{" "}
-								{date.toLocaleTimeString()}
+								{formatUTCTimestamp(timestamp)}
 							</span>
 						</div>
 					);
@@ -1372,12 +1381,11 @@ function RequestsTable() {
 			helper.accessor("createdAt", {
 				header: "Timestamp",
 				cell: (props) => {
-					const date = new Date(props.getValue() as string);
+					const timestamp = props.getValue() as string;
 					return (
 						<div className="flex flex-col">
 							<span className="text-sm font-medium">
-								{date.toLocaleDateString()}{" "}
-								{date.toLocaleTimeString()}
+								{formatUTCTimestamp(timestamp)}
 							</span>
 						</div>
 					);
@@ -1891,9 +1899,7 @@ function RequestDetailDialog({
 																	)}
 																</div>
 																<span className="text-xs text-muted-foreground">
-																	{new Date(
-																		event.timestamp,
-																	).toLocaleTimeString()}
+																	{formatUTCTime(event.timestamp)}
 																</span>
 															</div>
 
@@ -2031,12 +2037,11 @@ function ErrorsTable() {
 			helper.accessor("timestamp", {
 				header: "Timestamp",
 				cell: (props) => {
-					const date = new Date(props.getValue() as string);
+					const timestamp = props.getValue() as string;
 					return (
 						<div className="flex flex-col">
 							<span className="text-sm font-medium">
-								{date.toLocaleDateString()}{" "}
-								{date.toLocaleTimeString()}
+								{formatUTCTimestamp(timestamp)}
 							</span>
 						</div>
 					);

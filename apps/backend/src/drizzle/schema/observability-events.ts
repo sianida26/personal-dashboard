@@ -18,7 +18,7 @@ export const observabilityEvents = pgTable(
 			.primaryKey()
 			.$defaultFn(() => createId()),
 		eventType: varchar("event_type", { length: 50 }).notNull(), // 'api_request', 'frontend_error', 'frontend_metric'
-		timestamp: timestamp("timestamp", { mode: "date" })
+		timestamp: timestamp("timestamp", { mode: "date", withTimezone: true })
 			.notNull()
 			.defaultNow(),
 		userId: text("user_id"), // nullable for anonymous requests
@@ -30,7 +30,7 @@ export const observabilityEvents = pgTable(
 		errorMessage: text("error_message"), // error message if applicable
 		stackTrace: text("stack_trace"), // full stack trace for errors
 		metadata: jsonb("metadata"), // flexible storage for additional context
-		createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
+		createdAt: timestamp("created_at", { mode: "date", withTimezone: true }).defaultNow(),
 	},
 	(table) => ({
 		// Indexes for performance
