@@ -34,6 +34,473 @@ import {
 } from "@repo/ui";
 import dayjs from "dayjs";
 
+// Enhanced Error Visualization Components
+interface StackTraceButtonProps {
+	stackTrace: string;
+	errorMessage: string;
+	eventType: string;
+	endpoint: string;
+	timestamp: string;
+}
+
+function StackTraceButton({
+	stackTrace,
+	errorMessage,
+	eventType,
+	endpoint,
+	timestamp,
+}: StackTraceButtonProps) {
+	const [isOpen, setIsOpen] = useState(false);
+	const [copied, setCopied] = useState(false);
+
+	const copyToClipboard = async () => {
+		try {
+			await navigator.clipboard.writeText(stackTrace);
+			setCopied(true);
+			setTimeout(() => setCopied(false), 2000);
+		} catch (err) {
+			console.error("Failed to copy stack trace:", err);
+		}
+	};
+
+	return (
+		<>
+			<Button
+				variant="ghost"
+				size="sm"
+				className="text-blue-600 hover:text-blue-800 h-auto p-1"
+				onClick={() => setIsOpen(true)}
+			>
+				<TbCode className="h-4 w-4 mr-1" />
+				View Stack Trace
+			</Button>
+
+			<Dialog open={isOpen} onOpenChange={setIsOpen}>
+				<DialogContent className="max-w-4xl max-h-[90vh] p-0 flex flex-col">
+					<DialogHeader className="flex-shrink-0 px-6 pt-6 pb-4">
+						<DialogTitle className="flex items-center gap-2">
+							<TbAlertTriangle className="h-5 w-5 text-red-500" />
+							Error Details
+						</DialogTitle>
+					</DialogHeader>
+
+					<div className="flex-1 overflow-auto px-6 pb-6">
+						<div className="space-y-6">
+							{/* Error Summary */}
+							<div className="grid grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg border">
+								<div>
+									<span className="text-sm font-medium text-muted-foreground">
+										Error Source
+									</span>
+									<div className="flex items-center gap-2 mt-1">
+										<Badge
+											variant={
+												eventType === "frontend_error"
+													? "destructive"
+													: "secondary"
+											}
+										>
+											{eventType === "frontend_error"
+												? "Frontend"
+												: "Backend API"}
+										</Badge>
+									</div>
+								</div>
+								<div>
+									<span className="text-sm font-medium text-muted-foreground">
+										Timestamp
+									</span>
+									<p className="text-sm font-mono mt-1">
+										{dayjs(timestamp).format(
+											"YYYY-MM-DD HH:mm:ss",
+										)}
+									</p>
+								</div>
+								<div className="col-span-2">
+									<span className="text-sm font-medium text-muted-foreground">
+										Endpoint/Route
+									</span>
+									<p className="text-sm font-mono bg-background px-2 py-1 rounded border mt-1">
+										{endpoint}
+									</p>
+								</div>
+								<div className="col-span-2">
+									<span className="text-sm font-medium text-muted-foreground">
+										Error Message
+									</span>
+									<p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded border mt-1 break-words">
+										{errorMessage}
+									</p>
+								</div>
+							</div>
+
+							{/* Divider */}
+							<div className="border-t border-border"></div>
+
+							{/* Stack Trace */}
+							<div className="space-y-4">
+								<div className="flex items-center justify-between">
+									<span className="text-sm font-medium text-muted-foreground">
+										Raw Stack Trace
+									</span>
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={copyToClipboard}
+										className="h-8 text-xs"
+									>
+										{copied ? (
+											<>
+												<TbCheck className="h-3 w-3 mr-1" />
+												Copied
+											</>
+										) : (
+											<>
+												<TbCopy className="h-3 w-3 mr-1" />
+												Copy
+											</>
+										)}
+									</Button>
+								</div>
+								<ScrollArea className="h-64 w-full border rounded-md bg-background">
+									<pre className="text-xs p-4 font-mono whitespace-pre-wrap">
+										{stackTrace}
+									</pre>
+								</ScrollArea>
+							</div>
+
+							{/* Parsed Stack Trace for better readability */}
+							<div className="space-y-4">
+								<span className="text-sm font-medium text-muted-foreground">
+									Parsed Stack Trace
+								</span>
+								<div className="max-h-64 overflow-y-auto border rounded-md bg-background">
+									<div className="p-3 space-y-2">
+										{stackTrace
+											.split("\n")
+											.filter((line) => line.trim())
+											.map((line) => {
+												const lineId = `${line.substring(0, 20)}-${Math.random().toString(36).substr(2, 9)}`;
+												const isMainError =
+													line.includes("Error:") ||
+													line.includes(
+														"TypeError:",
+													) ||
+													line.includes(
+														"ReferenceError:",
+													);
+												const isFileReference =
+													line.includes("(") &&
+													line.includes(":");
+
+												return (
+													<div
+														key={lineId}
+														className={`text-sm ${
+															isMainError
+																? "font-semibold text-red-600 bg-red-50 p-2 rounded"
+																: isFileReference
+																	? "font-mono text-blue-600 hover:bg-blue-50 p-1 rounded cursor-pointer"
+																	: "text-muted-foreground pl-4"
+														}`}
+													>
+														{line.trim()}
+													</div>
+												);
+											})}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</DialogContent>
+			</Dialog>
+		</>
+	);
+}
+
+interface ErrorEvent {
+	id: string;
+	eventType: string;
+	timestamp: string;
+	userId?: string;
+	userName?: string;
+	requestId?: string;
+	endpoint: string;
+	method?: string;
+	statusCode?: number;
+	responseTimeMs?: number;
+	errorMessage?: string;
+	stackTrace?: string;
+	metadata?: Record<string, unknown>;
+	createdAt: string;
+}
+
+interface ErrorStatsProps {
+	timeRange: "24h" | "7d" | "30d";
+}
+
+function ErrorStats({ timeRange }: ErrorStatsProps) {
+	const { startDate, endDate } = useMemo(() => {
+		const now = dayjs();
+		switch (timeRange) {
+			case "24h":
+				return {
+					startDate: now.subtract(24, "hour").toISOString(),
+					endDate: now.toISOString(),
+				};
+			case "7d":
+				return {
+					startDate: now.subtract(7, "day").toISOString(),
+					endDate: now.toISOString(),
+				};
+			case "30d":
+				return {
+					startDate: now.subtract(30, "day").toISOString(),
+					endDate: now.toISOString(),
+				};
+		}
+	}, [timeRange]);
+
+	const { data: errorStats, isLoading } = useQuery({
+		queryKey: ["observability", "error-stats", timeRange],
+		queryFn: async () => {
+			const response = await client.observability["error-events"].$get({
+				query: {
+					page: "1",
+					limit: "1000", // Get all errors for stats
+					startDate,
+					endDate,
+				},
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to fetch error statistics");
+			}
+
+			const result = await response.json();
+			const errors = result.data as ErrorEvent[];
+
+			// Calculate statistics
+			const totalErrors = errors.length;
+			const frontendErrors = errors.filter(
+				(e) => e.eventType === "frontend_error",
+			).length;
+			const backendErrors = errors.filter(
+				(e) => e.eventType === "api_request",
+			).length;
+
+			// Group by endpoint
+			const errorsByEndpoint = errors.reduce(
+				(acc: Record<string, number>, error) => {
+					const endpoint = error.endpoint || "Unknown";
+					acc[endpoint] = (acc[endpoint] || 0) + 1;
+					return acc;
+				},
+				{},
+			);
+
+			// Get top error endpoints
+			const topErrorEndpoints = Object.entries(errorsByEndpoint)
+				.sort(([, a], [, b]) => (b as number) - (a as number))
+				.slice(0, 5)
+				.map(([endpoint, count]) => ({ endpoint, count }));
+
+			// Group by error message for common errors
+			const errorsByMessage = errors.reduce(
+				(acc: Record<string, number>, error) => {
+					const message = error.errorMessage || "Unknown Error";
+					// Truncate long messages for grouping
+					const shortMessage =
+						message.length > 100
+							? message.substring(0, 100) + "..."
+							: message;
+					acc[shortMessage] = (acc[shortMessage] || 0) + 1;
+					return acc;
+				},
+				{},
+			);
+
+			const commonErrors = Object.entries(errorsByMessage)
+				.sort(([, a], [, b]) => (b as number) - (a as number))
+				.slice(0, 5)
+				.map(([message, count]) => ({ message, count }));
+
+			return {
+				totalErrors,
+				frontendErrors,
+				backendErrors,
+				topErrorEndpoints,
+				commonErrors,
+			};
+		},
+	});
+
+	if (isLoading) {
+		return (
+			<div className="text-center py-8">Loading error statistics...</div>
+		);
+	}
+
+	return (
+		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+			{/* Error Count Cards */}
+			<Card>
+				<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+					<CardTitle className="text-sm font-medium">
+						Total Errors
+					</CardTitle>
+					<TbAlertTriangle className="h-4 w-4 text-red-500" />
+				</CardHeader>
+				<CardContent>
+					<div className="text-2xl font-bold text-red-600">
+						{errorStats?.totalErrors || 0}
+					</div>
+					<p className="text-xs text-muted-foreground">
+						In the last {timeRange}
+					</p>
+				</CardContent>
+			</Card>
+
+			<Card>
+				<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+					<CardTitle className="text-sm font-medium">
+						Frontend Errors
+					</CardTitle>
+					<TbCode className="h-4 w-4 text-orange-500" />
+				</CardHeader>
+				<CardContent>
+					<div className="text-2xl font-bold text-orange-600">
+						{errorStats?.frontendErrors || 0}
+					</div>
+					<p className="text-xs text-muted-foreground">
+						Client-side errors
+					</p>
+				</CardContent>
+			</Card>
+
+			<Card>
+				<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+					<CardTitle className="text-sm font-medium">
+						Backend Errors
+					</CardTitle>
+					<TbActivity className="h-4 w-4 text-red-500" />
+				</CardHeader>
+				<CardContent>
+					<div className="text-2xl font-bold text-red-600">
+						{errorStats?.backendErrors || 0}
+					</div>
+					<p className="text-xs text-muted-foreground">
+						API errors (4xx/5xx)
+					</p>
+				</CardContent>
+			</Card>
+
+			{/* Top Error Endpoints */}
+			<Card className="col-span-full lg:col-span-2">
+				<CardHeader>
+					<CardTitle className="text-sm font-medium">
+						Top Error Endpoints
+					</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<div className="space-y-3">
+						{errorStats?.topErrorEndpoints.length ? (
+							errorStats.topErrorEndpoints.map((item) => (
+								<div
+									key={item.endpoint}
+									className="flex items-center justify-between"
+								>
+									<span className="text-sm font-mono truncate flex-1 mr-2">
+										{item.endpoint}
+									</span>
+									<Badge
+										variant="outline"
+										className="text-red-600"
+									>
+										{item.count} errors
+									</Badge>
+								</div>
+							))
+						) : (
+							<p className="text-sm text-muted-foreground">
+								No errors found
+							</p>
+						)}
+					</div>
+				</CardContent>
+			</Card>
+
+			{/* Common Error Messages */}
+			<Card className="col-span-full lg:col-span-1">
+				<CardHeader>
+					<CardTitle className="text-sm font-medium">
+						Common Error Messages
+					</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<div className="space-y-3">
+						{errorStats?.commonErrors.length ? (
+							errorStats.commonErrors.map((item) => (
+								<div key={item.message} className="space-y-1">
+									<div className="flex items-center justify-between">
+										<Badge
+											variant="outline"
+											className="text-red-600"
+										>
+											{item.count}x
+										</Badge>
+									</div>
+									<p className="text-xs text-muted-foreground truncate">
+										{item.message}
+									</p>
+								</div>
+							))
+						) : (
+							<p className="text-sm text-muted-foreground">
+								No errors found
+							</p>
+						)}
+					</div>
+				</CardContent>
+			</Card>
+		</div>
+	);
+}
+
+function ErrorStatsSection() {
+	const [timeRange, setTimeRange] = useState<"24h" | "7d" | "30d">("24h");
+
+	return (
+		<div className="space-y-6">
+			<div className="flex items-center justify-between">
+				<div>
+					<h2 className="text-xl font-semibold">Error Overview</h2>
+					<p className="text-sm text-muted-foreground">
+						Monitor error patterns and common issues
+					</p>
+				</div>
+				<NativeSelect
+					value={timeRange}
+					onValueChange={(value) =>
+						setTimeRange(value as "24h" | "7d" | "30d")
+					}
+				>
+					<SelectTrigger className="w-32">
+						<SelectValue />
+					</SelectTrigger>
+					<SelectContent>
+						<SelectItem value="24h">Last 24h</SelectItem>
+						<SelectItem value="7d">Last 7 days</SelectItem>
+						<SelectItem value="30d">Last 30 days</SelectItem>
+					</SelectContent>
+				</NativeSelect>
+			</div>
+			<ErrorStats timeRange={timeRange} />
+		</div>
+	);
+}
+
 export const Route = createLazyFileRoute("/_dashboardLayout/observability")({
 	component: ObservabilityPage,
 });
@@ -78,6 +545,7 @@ function ObservabilityPage() {
 				</TabPanel>
 
 				<TabPanel value="errors" className="space-y-6">
+					<ErrorStatsSection />
 					<ErrorsTable />
 				</TabPanel>
 			</Tabs>
@@ -1651,17 +2119,16 @@ function ErrorsTable() {
 				header: "Stack Trace",
 				cell: (props) => {
 					const stackTrace = props.getValue() as string;
+					const row = props.row.original as Record<string, unknown>;
 					if (!stackTrace) return "-";
 					return (
-						<button
-							type="button"
-							className="text-sm text-blue-600 hover:text-blue-800 underline"
-							onClick={() => {
-								alert(stackTrace);
-							}}
-						>
-							View Stack Trace
-						</button>
+						<StackTraceButton
+							stackTrace={stackTrace}
+							errorMessage={row.errorMessage as string}
+							eventType={row.eventType as string}
+							endpoint={row.endpoint as string}
+							timestamp={row.timestamp as string}
+						/>
 					);
 				},
 			}),
