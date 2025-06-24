@@ -142,7 +142,7 @@ const getObservabilityEventsEndpoint = createHonoRoute()
 					totalItems: totalCount,
 					totalPages,
 					currentPage: page,
-					itemsPerPage: limit,
+					perPage: limit,
 				},
 			});
 		},

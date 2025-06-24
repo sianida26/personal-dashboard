@@ -98,7 +98,17 @@ function ErrorFallback({ error, resetError }: ErrorFallbackProps) {
  */
 function useErrorReporting() {
 	const isObservabilityEnabled = useObservabilityToggle();
-	const { user } = useAuth();
+	
+	// Safely try to get auth info, but don't throw if AuthProvider is not available
+	let user = null;
+	try {
+		const authContext = useAuth();
+		user = authContext.user;
+	} catch {
+		// useAuth hook throws when used outside AuthProvider context
+		// This is expected when ErrorBoundary is rendered above AuthProvider
+		// Continue without user info
+	}
 
 	const reportError = async (error: Error, errorInfo?: { componentStack?: string }) => {
 		if (!isObservabilityEnabled) return;

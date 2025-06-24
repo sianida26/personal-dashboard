@@ -134,7 +134,7 @@ const getRequestsEndpoint = createHonoRoute()
 					totalItems: totalCount,
 					totalPages,
 					currentPage: page,
-					itemsPerPage: limit,
+					perPage: limit,
 				},
 			});
 		},

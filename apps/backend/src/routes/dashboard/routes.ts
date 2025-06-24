@@ -3,6 +3,6 @@ import { createHonoRoute } from "../../utils/createHonoRoute";
 
 const router = createHonoRoute();
 
-const dashboardRoutes = router.route("/dashboard", getSidebarItems);
+const dashboardRoutes = router.route("/", getSidebarItems);
 
 export default dashboardRoutes;

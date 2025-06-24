@@ -6,7 +6,7 @@ import { permissionsToUsers } from "../drizzle/schema/permissionsToUsers";
 import { rolesSchema } from "../drizzle/schema/roles";
 import { rolesToUsers } from "../drizzle/schema/rolesToUsers";
 import { users } from "../drizzle/schema/users";
-import { forbidden } from "../errors/DashboardError";
+import { forbidden, unauthorized } from "../errors/DashboardError";
 import type HonoEnv from "../types/HonoEnv";
 import type { MiddlewareHandler } from "hono";
 import type { ExtendedPermissionCodeWithAll } from "@repo/data";
@@ -24,7 +24,7 @@ export const protect = (
 
 		// If uid is not present, the user is not authenticated
 		if (!uid) {
-			throw forbidden({ message: "Authentication required" });
+			throw unauthorized({ message: "Authentication required" });
 		}
 
 		// If requiredPermissions includes "*", allow all authenticated users

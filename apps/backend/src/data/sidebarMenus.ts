@@ -46,6 +46,13 @@ const sidebarMenus: SidebarMenu[] = [
 				link: "/graph-admin",
 				color: "purple",
 			},
+			{
+				label: "Observability",
+				icon: { tb: "TbEye" },
+				allowedPermissions: ["observability.read"],
+				link: "/observability",
+				color: "orange",
+			},
 		],
 	},
 ];
