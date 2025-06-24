@@ -157,410 +157,594 @@ OBSERVABILITY_STORE_RESPONSE_BODIES=true # Toggle response body storage
 - **PerformanceCharts**: Response time trends, frontend performance metrics
 - **RequestDetail**: Detailed view of individual requests
 
-## Implementation Details
+### Full-Page Modals with Shareable URLs
 
-### Backend Implementation
-
-#### 1. Database Migrations
-
-Create new tables following the existing schema patterns:
-- Use CUID2 for primary keys
-- Include proper indexes for performance
-- Add foreign key relationships
-- Implement soft deletion if needed
-
-#### 2. Middleware Updates
-
-**Enhanced Request Logger**:
+#### Modal Route Structure
 ```typescript
-const observabilityMiddleware = createMiddleware<HonoEnv>(async (c, next) => {
-  if (!appEnv.OBSERVABILITY_ENABLED) {
-    await next();
-    return;
-  }
+// Add these routes to your router configuration
+const routes = [
+  // Existing observability routes
+  '/observability',
+  '/observability/settings',
+  
+  // New full-page modal routes
+  '/observability/request/:requestId',
+  '/observability/error/:errorId',
+  '/observability/stack-trace/:traceId',
+  '/observability/request/:requestId/response',
+  '/observability/request/:requestId/headers',
+];
+```
 
-  const shouldRecord = shouldRecordRequest(c.req.path, c.req.method);
-  if (!shouldRecord) {
-    await next();
-    return;
-  }
+#### Request Detail Full-Page Modal
+```typescript
+// src/routes/_dashboardLayout/observability/request/$requestId.lazy.tsx
+import { createLazyFileRoute } from '@tanstack/react-router';
+import { useQuery } from '@tanstack/react-query';
+import { ArrowLeft, ExternalLink, Copy } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-  const startTime = performance.now();
-  const requestData = captureRequestData(c);
+export const Route = createLazyFileRoute('/_dashboardLayout/observability/request/$requestId')({
+  component: RequestDetailPage,
+});
+
+function RequestDetailPage() {
+  const { requestId } = Route.useParams();
+  const navigate = Route.useNavigate();
   
-  await next();
-  
-  const endTime = performance.now();
-  const responseTime = Math.floor(endTime - startTime);
-  
-  await storeObservabilityEvent({
-    eventType: 'api_request',
-    requestId: c.var.requestId,
-    userId: appEnv.OBSERVABILITY_ANONYMIZE_USERS ? null : c.var.uid,
-    endpoint: c.req.path,
-    method: c.req.method,
-    statusCode: c.res.status,
-    responseTimeMs: responseTime,
-    metadata: appEnv.OBSERVABILITY_MASK_SENSITIVE_DATA ? 
-      sanitizeRequestData(requestData) : requestData
+  const { data: requestDetail, isLoading } = useQuery({
+    queryKey: ['observability', 'request', requestId],
+    queryFn: () => honoClient.observability.requests[':id'].$get({ param: { id: requestId } }),
   });
+
+  const shareUrl = `${window.location.origin}/observability/request/${requestId}`;
+
+  const copyShareUrl = async () => {
+    await navigator.clipboard.writeText(shareUrl);
+    // Show toast notification
+  };
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center h-64">Loading...</div>;
+  }
+
+  if (!requestDetail) {
+    return <div className="text-center h-64">Request not found</div>;
+  }
+
+  return (
+    <div className="container mx-auto p-6 max-w-6xl">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => navigate({ to: '/observability' })}
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Observability
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold">Request Details</h1>
+            <p className="text-muted-foreground">
+              {requestDetail.method} {requestDetail.endpoint}
+            </p>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={copyShareUrl}>
+            <Copy className="h-4 w-4 mr-2" />
+            Copy URL
+          </Button>
+          <Button variant="outline" size="sm" asChild>
+            <a href={shareUrl} target="_blank">
+              <ExternalLink className="h-4 w-4 mr-2" />
+              Open in New Tab
+            </a>
+          </Button>
+        </div>
+      </div>
+
+      {/* Request Overview */}
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Request Overview</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div>
+              <label className="text-sm font-medium text-muted-foreground">Method</label>
+              <Badge variant={getMethodVariant(requestDetail.method)}>
+                {requestDetail.method}
+              </Badge>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-muted-foreground">Status</label>
+              <Badge variant={getStatusVariant(requestDetail.statusCode)}>
+                {requestDetail.statusCode}
+              </Badge>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-muted-foreground">Response Time</label>
+              <p className="font-mono">{requestDetail.responseTimeMs}ms</p>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-muted-foreground">Timestamp</label>
+              <p className="font-mono">{new Date(requestDetail.timestamp).toLocaleString()}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Detailed Information Tabs */}
+      <Tabs defaultValue="request" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="request">Request</TabsTrigger>
+          <TabsTrigger value="response">Response</TabsTrigger>
+          <TabsTrigger value="headers">Headers</TabsTrigger>
+          <TabsTrigger value="user">User Context</TabsTrigger>
+          {requestDetail.errorMessage && (
+            <TabsTrigger value="error">Error Details</TabsTrigger>
+          )}
+        </TabsList>
+
+        <TabsContent value="request">
+          <Card>
+            <CardHeader>
+              <CardTitle>Request Details</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium">Endpoint</label>
+                  <p className="font-mono bg-muted p-2 rounded">{requestDetail.endpoint}</p>
+                </div>
+                
+                {requestDetail.queryParams && (
+                  <div>
+                    <label className="text-sm font-medium">Query Parameters</label>
+                    <pre className="text-xs bg-muted p-3 rounded overflow-x-auto">
+                      {JSON.stringify(requestDetail.queryParams, null, 2)}
+                    </pre>
+                  </div>
+                )}
+                
+                {requestDetail.requestBody && (
+                  <div>
+                    <label className="text-sm font-medium">Request Body</label>
+                    <pre className="text-xs bg-muted p-3 rounded overflow-x-auto">
+                      {JSON.stringify(requestDetail.requestBody, null, 2)}
+                    </pre>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="response">
+          <Card>
+            <CardHeader>
+              <CardTitle>Response Details</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {requestDetail.responseBody ? (
+                <pre className="text-xs bg-muted p-3 rounded overflow-x-auto">
+                  {JSON.stringify(requestDetail.responseBody, null, 2)}
+                </pre>
+              ) : (
+                <p className="text-muted-foreground">No response body available</p>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="user">
+          <Card>
+            <CardHeader>
+              <CardTitle>User Context</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium">User ID</label>
+                  <p className="font-mono">{requestDetail.userId || 'Anonymous'}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium">IP Address</label>
+                  <p className="font-mono">{requestDetail.ipAddress}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium">User Agent</label>
+                  <p className="text-sm break-all">{requestDetail.userAgent}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {requestDetail.errorMessage && (
+          <TabsContent value="error">
+            <Card>
+              <CardHeader>
+                <CardTitle>Error Information</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium">Error Message</label>
+                    <p className="text-red-600 bg-red-50 p-3 rounded border">
+                      {requestDetail.errorMessage}
+                    </p>
+                  </div>
+                  
+                  {requestDetail.stackTrace && (
+                    <div>
+                      <label className="text-sm font-medium">Stack Trace</label>
+                      <pre className="text-xs bg-muted p-4 rounded overflow-x-auto">
+                        {requestDetail.stackTrace}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
+      </Tabs>
+    </div>
+  );
+}
+
+function getMethodVariant(method: string): "default" | "secondary" | "destructive" | "outline" {
+  switch (method) {
+    case 'GET': return 'default';
+    case 'POST': return 'secondary';
+    case 'PUT': return 'outline';
+    case 'DELETE': return 'destructive';
+    default: return 'outline';
+  }
+}
+
+function getStatusVariant(status: number): "default" | "secondary" | "destructive" | "outline" {
+  if (status >= 200 && status < 300) return 'default';
+  if (status >= 300 && status < 400) return 'secondary';
+  if (status >= 400) return 'destructive';
+  return 'outline';
+}
+```
+
+#### Stack Trace Full-Page Modal
+```typescript
+// src/routes/_dashboardLayout/observability/stack-trace/$traceId.lazy.tsx
+import { createLazyFileRoute } from '@tanstack/react-router';
+import { useQuery } from '@tanstack/react-query';
+import { ArrowLeft, Copy, Download, ExternalLink } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+
+export const Route = createLazyFileRoute('/_dashboardLayout/observability/stack-trace/$traceId')({
+  component: StackTracePage,
+});
+
+function StackTracePage() {
+  const { traceId } = Route.useParams();
+  const navigate = Route.useNavigate();
+  
+  const { data: errorDetail, isLoading } = useQuery({
+    queryKey: ['observability', 'error', traceId],
+    queryFn: () => honoClient.observability.errors[':id'].$get({ param: { id: traceId } }),
+  });
+
+  const shareUrl = `${window.location.origin}/observability/stack-trace/${traceId}`;
+
+  const copyShareUrl = async () => {
+    await navigator.clipboard.writeText(shareUrl);
+  };
+
+  const copyStackTrace = async () => {
+    if (errorDetail?.stackTrace) {
+      await navigator.clipboard.writeText(errorDetail.stackTrace);
+    }
+  };
+
+  const downloadStackTrace = () => {
+    if (errorDetail?.stackTrace) {
+      const blob = new Blob([errorDetail.stackTrace], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `stack-trace-${traceId}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  };
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center h-64">Loading...</div>;
+  }
+
+  if (!errorDetail) {
+    return <div className="text-center h-64">Stack trace not found</div>;
+  }
+
+  return (
+    <div className="container mx-auto p-6 max-w-6xl">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => navigate({ to: '/observability' })}
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Observability
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold">Stack Trace Details</h1>
+            <p className="text-muted-foreground">{errorDetail.errorMessage}</p>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={copyShareUrl}>
+            <Copy className="h-4 w-4 mr-2" />
+            Copy URL
+          </Button>
+          <Button variant="outline" size="sm" onClick={copyStackTrace}>
+            <Copy className="h-4 w-4 mr-2" />
+            Copy Stack Trace
+          </Button>
+          <Button variant="outline" size="sm" onClick={downloadStackTrace}>
+            <Download className="h-4 w-4 mr-2" />
+            Download
+          </Button>
+          <Button variant="outline" size="sm" asChild>
+            <a href={shareUrl} target="_blank">
+              <ExternalLink className="h-4 w-4 mr-2" />
+              Open in New Tab
+            </a>
+          </Button>
+        </div>
+      </div>
+
+      {/* Error Overview */}
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Error Overview</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div>
+              <label className="text-sm font-medium text-muted-foreground">Error Type</label>
+              <Badge variant="destructive">{errorDetail.eventType}</Badge>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-muted-foreground">Endpoint</label>
+              <p className="font-mono text-sm">{errorDetail.endpoint}</p>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-muted-foreground">User ID</label>
+              <p className="font-mono text-sm">{errorDetail.userId || 'Anonymous'}</p>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-muted-foreground">Timestamp</label>
+              <p className="font-mono text-sm">{new Date(errorDetail.timestamp).toLocaleString()}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Error Message */}
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Error Message</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <p className="text-red-800 font-medium">{errorDetail.errorMessage}</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Stack Trace */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Stack Trace</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="relative">
+            <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg text-xs overflow-x-auto whitespace-pre-wrap">
+              {errorDetail.stackTrace}
+            </pre>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+```
+
+### Real-time Dashboard Integration
+
+#### Enhanced Dashboard with WebSocket
+```typescript
+// Update existing observability dashboard to use WebSocket
+export function ObservabilityDashboard() {
+  const [realtimeEnabled, setRealtimeEnabled] = useState(true);
+  const [filters, setFilters] = useState({
+    method: '',
+    status: '',
+    endpoint: '',
+  });
+
+  // WebSocket connection for real-time updates
+  const { isConnected, events: realtimeEvents, connectionStatus } = useObservabilityWebSocket({
+    eventTypes: ['api_request', 'frontend_error'],
+    autoReconnect: true,
+  });
+
+  // Merge real-time events with existing data
+  const [allEvents, setAllEvents] = useState<any[]>([]);
+  
+  useEffect(() => {
+    if (realtimeEnabled && realtimeEvents.length > 0) {
+      setAllEvents(prev => {
+        const combined = [...realtimeEvents, ...prev];
+        // Remove duplicates and limit to 500 items
+        const unique = combined.filter((event, index, self) => 
+          index === self.findIndex(e => e.id === event.id)
+        );
+        return unique.slice(0, 500);
+      });
+    }
+  }, [realtimeEvents, realtimeEnabled]);
+
+  return (
+    <div className="container mx-auto p-6">
+      {/* Header with Real-time Status */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-3xl font-bold">Observability Dashboard</h1>
+          <div className="flex items-center gap-4 mt-2">
+            <div className="flex items-center gap-2">
+              <div className={`w-2 h-2 rounded-full ${
+                isConnected ? 'bg-green-500' : 'bg-red-500'
+              }`} />
+              <span className="text-sm text-muted-foreground">
+                {isConnected ? 'Live' : 'Disconnected'}
+              </span>
+            </div>
+            <Switch
+              checked={realtimeEnabled}
+              onCheckedChange={setRealtimeEnabled}
+            />
+            <Label htmlFor="realtime">Real-time Updates</Label>
+          </div>
+        </div>
+        
+        <Button asChild>
+          <Link to="/observability/settings">
+            Settings
+          </Link>
+        </Button>
+      </div>
+
+      {/* Dashboard Content */}
+      <div className="space-y-6">
+        <MetricsOverview events={allEvents} />
+        
+        <RequestsTable 
+          events={allEvents}
+          onRequestClick={(requestId) => {
+            // Navigate to full-page modal
+            navigate({ to: '/observability/request/$requestId', params: { requestId } });
+          }}
+        />
+        
+        <ErrorsSection 
+          events={allEvents.filter(e => e.eventType === 'frontend_error')}
+          onStackTraceClick={(traceId) => {
+            // Navigate to full-page stack trace modal
+            navigate({ to: '/observability/stack-trace/$traceId', params: { traceId } });
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+```
+
+#### WebSocket Environment Configuration
+```env
+# Add to backend .env files
+WEBSOCKET_PORT=8081
+WEBSOCKET_ENABLED=true
+WEBSOCKET_PING_INTERVAL=30000
+WEBSOCKET_MAX_CLIENTS=100
+```
+
+### URL Structure for Shareable Links
+
+#### Deep Linking Patterns
+```typescript
+// Full-page modal URLs with shareable state
+/observability/request/abc123                    // Basic request detail
+/observability/request/abc123?tab=response       // Direct to response tab
+/observability/request/abc123?tab=headers        // Direct to headers tab
+/observability/stack-trace/def456               // Stack trace detail
+/observability/error/ghi789                     // Error detail page
+
+// URL parameters for context preservation
+/observability/request/abc123?
+  tab=request&
+  highlight=line:45&
+  from=/observability&
+  filter=method:POST
+
+// Shareable URLs maintain state
+const shareableUrl = buildShareableUrl({
+  requestId: 'abc123',
+  tab: 'response',
+  filters: { method: 'POST', status: '500' },
+  source: 'dashboard'
 });
 ```
 
-#### 3. Data Retention
-
-**Cleanup Service**:
-- Automated cleanup of old records
-- Configurable retention period
-- Efficient batch deletion
-- Optional compression for archived data
-
-#### 4. Route Controls
-
-**Recording Logic**:
+#### URL State Management
 ```typescript
-const shouldRecordRequest = (path: string, method: string): boolean => {
-  if (!appEnv.OBSERVABILITY_ENABLED) return false;
-  if (path.startsWith('/observability') && !appEnv.OBSERVABILITY_RECORD_SELF) return false;
-  if (method === 'OPTIONS' && !appEnv.OBSERVABILITY_RECORD_OPTIONS) return false;
+// Hook for managing shareable URL state
+export function useShareableUrl() {
+  const [searchParams, setSearchParams] = useSearchParams();
   
-  // Additional filtering logic
-  return true;
-};
-```
-
-#### 5. Data Masking Implementation
-
-**Sensitive Data Detection**:
-```typescript
-const SENSITIVE_FIELD_PATTERNS = [
-  /password/i,
-  /token/i,
-  /secret/i,
-  /key/i,
-  /auth/i,
-  /credential/i,
-  /bearer/i
-];
-
-const sanitizeRequestData = (data: any): any => {
-  if (!appEnv.OBSERVABILITY_MASK_SENSITIVE_DATA) return data;
-  
-  return sanitizeObject(data, SENSITIVE_FIELD_PATTERNS);
-};
-
-const sanitizeObject = (obj: any, patterns: RegExp[]): any => {
-  if (typeof obj !== 'object' || obj === null) return obj;
-  
-  const sanitized = { ...obj };
-  
-  for (const [key, value] of Object.entries(sanitized)) {
-    if (patterns.some(pattern => pattern.test(key))) {
-      sanitized[key] = '[MASKED]';
-    } else if (typeof value === 'object') {
-      sanitized[key] = sanitizeObject(value, patterns);
-    }
-  }
-  
-  return sanitized;
-};
-```
-
-**Masking Controls**:
-- `OBSERVABILITY_MASK_SENSITIVE_DATA`: Global toggle for data masking
-- `OBSERVABILITY_STORE_REQUEST_BODIES`: Control request body storage
-- `OBSERVABILITY_STORE_RESPONSE_BODIES`: Control response body storage
-- `OBSERVABILITY_ANONYMIZE_USERS`: Store user IDs vs anonymous tracking
-```
-
-### Frontend Implementation
-
-#### 1. Error Monitoring
-
-**Error Boundary Integration**:
-```typescript
-const reportError = async (error: Error, errorInfo: ErrorInfo) => {
-  if (!isObservabilityEnabled()) return;
-  
-  await fetch('/observability/frontend', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      eventType: 'frontend_error',
-      errorMessage: error.message,
-      stackTrace: error.stack,
-      componentStack: errorInfo.componentStack,
-      route: window.location.pathname,
-      metadata: {
-        userAgent: navigator.userAgent,
-        timestamp: Date.now()
-      }
-    })
-  });
-};
-```
-
-#### 2. Performance Tracking
-
-**Performance Hook**:
-```typescript
-const usePerformanceMonitor = () => {
-  useEffect(() => {
-    // Track basic SPA metrics
-    const observer = new PerformanceObserver((list) => {
-      for (const entry of list.getEntries()) {
-        if (entry.entryType === 'navigation') {
-          reportPerformanceMetric({
-            type: 'page_load',
-            duration: entry.duration,
-            route: window.location.pathname
-          });
-        }
-        if (entry.entryType === 'measure') {
-          reportPerformanceMetric({
-            type: 'route_transition',
-            duration: entry.duration,
-            name: entry.name
-          });
-        }
-      }
-    });
+  const buildShareableUrl = (params: {
+    requestId?: string;
+    traceId?: string;
+    tab?: string;
+    filters?: Record<string, string>;
+    source?: string;
+  }) => {
+    const url = new URL(window.location.origin);
     
-    observer.observe({ entryTypes: ['navigation', 'measure'] });
-    return () => observer.disconnect();
-  }, []);
-};
+    if (params.requestId) {
+      url.pathname = `/observability/request/${params.requestId}`;
+    } else if (params.traceId) {
+      url.pathname = `/observability/stack-trace/${params.traceId}`;
+    }
+    
+    if (params.tab) url.searchParams.set('tab', params.tab);
+    if (params.source) url.searchParams.set('from', params.source);
+    if (params.filters) {
+      Object.entries(params.filters).forEach(([key, value]) => {
+        url.searchParams.set(`filter_${key}`, value);
+      });
+    }
+    
+    return url.toString();
+  };
+  
+  const parseUrlState = () => {
+    const params = Object.fromEntries(searchParams.entries());
+    return {
+      tab: params.tab,
+      source: params.from,
+      filters: Object.fromEntries(
+        Object.entries(params)
+          .filter(([key]) => key.startsWith('filter_'))
+          .map(([key, value]) => [key.replace('filter_', ''), value])
+      ),
+    };
+  };
+  
+  return { buildShareableUrl, parseUrlState };
+}
 ```
-
-#### 3. Dashboard Components
-
-**API Endpoint Overview**:
-- Aggregated statistics grouped by parameterized routes (e.g., `/users/:userId`)
-- Total requests, average response times, error rates per endpoint pattern
-- Success rates and P95 response times
-- Helps identify performance patterns across similar endpoints
-
-**Request Details Table**:
-- Individual request records with actual URLs (e.g., `/users/abc123`)
-- Real-time request monitoring with specific user IDs and parameters
-- User names, status codes, response times, IP addresses
-- Useful for debugging specific requests and user issues
-
-**Metrics Overview**:
-- API endpoint success rates
-- Average response times
-- Error distribution
-- Top slowest endpoints
-
-**Frontend Logs Panel**:
-- Console logs captured from frontend applications
-- Log levels (debug, info, warn, error) with proper formatting
-- User context and route information for each log entry
-
-**Error Events Panel**:
-- Both frontend and backend errors with complete stack traces
-- Error source identification (frontend vs. backend API)
-- User context and error message details
-- Click-to-view stack traces for debugging
-
-### Security Considerations
-
-1. **Data Masking & Privacy Controls**:
-   - Configurable masking of sensitive data (passwords, tokens, API keys)
-   - Toggle between full data capture and masked data for internal team use
-   - Clear user identification vs. anonymous tracking options
-   - Configurable request/response body storage
-
-2. **Access Control**:
-   - Require 'observability.read' permission for dashboard access
-   - Implement user-specific data filtering when not anonymized
-   - Audit observability system access
-
-3. **Storage Controls**:
-   - Configurable retention periods (default 30 days)
-   - Automatic truncation of large payloads
-   - Rate limiting for frontend event submission
-
-4. **Data Sanitization**:
-   - Smart detection of sensitive fields (password, token, key, secret, etc.)
-   - Configurable field masking patterns
-   - Option to completely exclude sensitive endpoints from recording
-
-### Performance Considerations
-
-1. **Async Processing**:
-   - Non-blocking observability data storage
-   - Background cleanup processes
-   - Batch insertions for high-traffic scenarios
-
-2. **Database Optimization**:
-   - Proper indexing on timestamp and user_id columns
-   - Partitioning for large datasets
-   - Read replicas for dashboard queries
-
-3. **Frontend Impact**:
-   - Minimal overhead for error reporting
-   - Basic SPA performance metric collection (page loads, route transitions)
-   - Graceful degradation when observability service is unavailable
-
-## Implementation Phases
-
-### Phase 1: Backend Foundation (Week 1)
-- [x] Create database schemas and migrations
-- [x] Implement enhanced request logger middleware
-- [x] Add observability environment configuration
-- [x] Create basic API endpoints for data retrieval
-
-### Phase 2: Frontend Integration (Week 2)
-- [x] Implement error boundary enhancements
-- [x] Create performance monitoring hooks
-- [x] Add frontend event submission capability
-- [x] Implement observability toggle logic
-
-### Phase 3: Dashboard UI (Week 2-3)
-- [x] Create observability route and layout
-- [x] Implement metrics overview components
-- [x] Build request explorer interface
-- [x] Add error visualization components
-
-### Phase 4: Controls & Optimization (Week 3-4)
-- [ ] Implement data retention and cleanup
-- [ ] Add advanced filtering and search
-- [ ] Optimize database queries and indexes
-- [ ] Add comprehensive testing
-
-## Testing Strategy
-
-1. **Unit Tests**:
-   - Middleware functionality
-   - Data sanitization logic
-   - Performance metric calculations
-
-2. **Integration Tests**:
-   - End-to-end request flow
-   - Frontend error reporting
-   - Dashboard data accuracy
-
-3. **Performance Tests**:
-   - Impact on API response times
-   - Database query performance
-   - Frontend bundle size impact
-
-4. **Security Tests**:
-   - Data sanitization effectiveness
-   - Access control validation
-   - Rate limiting verification
-
-## Monitoring & Maintenance
-
-1. **System Health**:
-   - Monitor observability system performance impact
-   - Track storage growth and cleanup effectiveness
-   - Alert on excessive error rates
-
-2. **Data Quality**:
-   - Validate data accuracy and completeness
-   - Monitor for missing or corrupted events
-   - Regular data consistency checks
-
-3. **User Adoption**:
-   - Track dashboard usage patterns
-   - Gather feedback on usefulness
-   - Identify additional metrics needs
-
-## Success Metrics
-
-1. **Functionality**:
-   - 99%+ request capture rate
-   - <50ms average observability overhead
-   - Complete error stack trace capture for all errors
-
-2. **Usability**:
-   - <5 second dashboard load time
-   - Effective error debugging capability with full stack traces
-   - Clear performance trend visibility for SPA metrics
-
-3. **Performance**:
-   - <5% impact on API response times
-   - Efficient data retention management (30-day default)
-   - Scalable architecture with configurable data masking
-
-## Risk Mitigation
-
-1. **Performance Impact**:
-   - Implement circuit breaker for observability failures
-   - Async processing to prevent blocking
-   - Configurable sampling rates for high-traffic scenarios
-
-2. **Storage Growth**:
-   - Automated cleanup with configurable retention (30-day default)
-   - Storage size monitoring and alerts
-   - Configurable data masking to reduce storage overhead
-
-3. **Privacy Concerns**:
-   - Clear data retention policies (30-day default)
-   - Configurable user anonymization
-   - Flexible data masking controls for internal team use
-
-## Future Enhancements
-
-1. **Advanced Analytics**:
-   - Custom dashboard widgets
-   - Metric correlations and insights
-   - Performance regression detection
-
-2. **Integration Options**:
-   - Export to external monitoring tools
-   - Webhook notifications for critical events
-   - API for custom integrations
-
-3. **Enhanced Debugging**:
-   - Request replay capability
-   - User session tracking
-   - Advanced filtering and search
-
----
-
-## Implementation Guidelines
-
-### For Human Developers
-
-1. **Follow Existing Patterns**:
-   - Use established database schema conventions
-   - Follow existing middleware patterns
-   - Maintain consistent code style
-
-2. **Security First**:
-   - Review all data storage for sensitive information
-   - Implement proper access controls
-   - Test data sanitization thoroughly
-
-3. **Performance Awareness**:
-   - Profile observability impact
-   - Optimize database queries
-   - Monitor resource usage
-
-### For LLM Agents
-
-1. **Database Changes**:
-   - Follow the established Drizzle ORM patterns
-   - Use CUID2 for primary keys
-   - Create proper relations and indexes
-   - Do not edit migration files directly
-
-2. **Middleware Integration**:
-   - Extend existing request logger middleware
-   - Respect environment configuration
-   - Implement proper error handling
-
-3. **Frontend Development**:
-   - Use existing component patterns
-   - Follow React best practices
-   - Integrate with existing auth and routing systems
-
-4. **Testing Requirements**:
-   - Write comprehensive unit tests
-   - Include integration test scenarios
-   - Test edge cases and error conditions
-
-This PRD provides a comprehensive blueprint for implementing minimal observability while maintaining the project's existing architecture and conventions. The implementation should be iterative, starting with basic functionality and gradually adding advanced features.
