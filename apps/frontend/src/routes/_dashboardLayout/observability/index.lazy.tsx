@@ -1,9 +1,9 @@
-import { createLazyFileRoute } from '@tanstack/react-router'
+import { createLazyFileRoute } from "@tanstack/react-router";
 
-export const Route = createLazyFileRoute('/_dashboardLayout/observability/')({
-  component: RouteComponent,
-})
+export const Route = createLazyFileRoute("/_dashboardLayout/observability/")({
+	component: RouteComponent,
+});
 
 function RouteComponent() {
-  return <div>Hello "/_dashboardLayout/observability/"!</div>
+	return <div>Hello "/_dashboardLayout/observability/"!</div>;
 }

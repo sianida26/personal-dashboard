@@ -4,7 +4,7 @@ import { SidebarTrigger } from "@repo/ui";
 export default function AppHeader() {
 	const matches = useMatches();
 
-	const pageTitle = matches.at(-1)?.staticData.title ?? "";
+	const pageTitle = matches[matches.length - 1]?.staticData.title ?? "";
 
 	return (
 		<div className="w-full h-16 border-b flex items-center justify-between px-4 fixed bg-background">

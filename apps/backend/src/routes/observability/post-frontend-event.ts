@@ -39,12 +39,15 @@ const postFrontendEventEndpoint = createHonoRoute()
 				throw new Error("Failed to create observability event");
 			}
 
-			return c.json({ 
-				data: { 
-					id: newEvent.id, 
-					message: "Frontend event recorded successfully" 
-				} 
-			}, 201);
+			return c.json(
+				{
+					data: {
+						id: newEvent.id,
+						message: "Frontend event recorded successfully",
+					},
+				},
+				201,
+			);
 		},
 	);
 

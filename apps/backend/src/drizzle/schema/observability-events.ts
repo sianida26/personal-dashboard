@@ -30,7 +30,10 @@ export const observabilityEvents = pgTable(
 		errorMessage: text("error_message"), // error message if applicable
 		stackTrace: text("stack_trace"), // full stack trace for errors
 		metadata: jsonb("metadata"), // flexible storage for additional context
-		createdAt: timestamp("created_at", { mode: "date", withTimezone: true }).defaultNow(),
+		createdAt: timestamp("created_at", {
+			mode: "date",
+			withTimezone: true,
+		}).defaultNow(),
 	},
 	(table) => ({
 		// Indexes for performance

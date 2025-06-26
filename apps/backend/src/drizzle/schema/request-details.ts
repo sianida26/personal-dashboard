@@ -28,7 +28,10 @@ export const requestDetails = pgTable(
 		responseHeaders: jsonb("response_headers"), // selected response headers only
 		ipAddress: varchar("ip_address", { length: 45 }),
 		userAgent: text("user_agent"),
-		createdAt: timestamp("created_at", { mode: "date", withTimezone: true }).defaultNow(),
+		createdAt: timestamp("created_at", {
+			mode: "date",
+			withTimezone: true,
+		}).defaultNow(),
 	},
 	(table) => ({
 		// Indexes for performance

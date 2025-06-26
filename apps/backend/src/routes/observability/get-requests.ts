@@ -41,7 +41,9 @@ const getRequestsEndpoint = createHonoRoute()
 			}
 
 			if (endpoint) {
-				whereConditions.push(ilike(requestDetails.endpoint, `%${endpoint}%`));
+				whereConditions.push(
+					ilike(requestDetails.endpoint, `%${endpoint}%`),
+				);
 			}
 
 			if (method) {
@@ -53,7 +55,9 @@ const getRequestsEndpoint = createHonoRoute()
 				if (Number.isNaN(startDateTime.getTime())) {
 					throw badRequest({ message: "Invalid startDate format" });
 				}
-				whereConditions.push(gte(requestDetails.createdAt, startDateTime));
+				whereConditions.push(
+					gte(requestDetails.createdAt, startDateTime),
+				);
 			}
 
 			if (endDate) {
@@ -61,7 +65,9 @@ const getRequestsEndpoint = createHonoRoute()
 				if (Number.isNaN(endDateTime.getTime())) {
 					throw badRequest({ message: "Invalid endDate format" });
 				}
-				whereConditions.push(lte(requestDetails.createdAt, endDateTime));
+				whereConditions.push(
+					lte(requestDetails.createdAt, endDateTime),
+				);
 			}
 
 			// Text search across endpoint and user agent

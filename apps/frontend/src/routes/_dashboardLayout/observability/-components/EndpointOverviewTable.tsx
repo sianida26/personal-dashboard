@@ -76,7 +76,11 @@ export function EndpointOverviewTable() {
 				header: "Method",
 				cell: (props) => {
 					const method = props.getValue() as string;
-					return <Badge variant={getMethodVariant(method)}>{method}</Badge>;
+					return (
+						<Badge variant={getMethodVariant(method)}>
+							{method}
+						</Badge>
+					);
 				},
 			}),
 			helper.accessor("totalRequests", {
@@ -92,7 +96,9 @@ export function EndpointOverviewTable() {
 				cell: (props) => {
 					const avgTime = props.getValue() as number;
 					return (
-						<span className={`text-sm font-semibold ${getResponseTimeColor(avgTime)}`}>
+						<span
+							className={`text-sm font-semibold ${getResponseTimeColor(avgTime)}`}
+						>
 							{avgTime.toFixed(1)}ms
 						</span>
 					);
@@ -103,7 +109,9 @@ export function EndpointOverviewTable() {
 				cell: (props) => {
 					const p95Time = props.getValue() as number;
 					return (
-						<span className={`text-sm font-semibold ${getResponseTimeColor(p95Time)}`}>
+						<span
+							className={`text-sm font-semibold ${getResponseTimeColor(p95Time)}`}
+						>
 							{p95Time.toFixed(1)}ms
 						</span>
 					);
@@ -113,7 +121,11 @@ export function EndpointOverviewTable() {
 				header: "Success Rate",
 				cell: (props) => {
 					const successRate = props.getValue() as number;
-					return <Badge variant={getSuccessRateVariant(successRate)}>{successRate.toFixed(1)}%</Badge>;
+					return (
+						<Badge variant={getSuccessRateVariant(successRate)}>
+							{successRate.toFixed(1)}%
+						</Badge>
+					);
 				},
 			}),
 			helper.accessor("lastRequest", {

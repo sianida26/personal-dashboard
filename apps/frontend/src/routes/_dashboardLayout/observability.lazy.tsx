@@ -15,7 +15,10 @@ import {
 	TbCopy,
 	TbCheck,
 } from "react-icons/tb";
-import { createPageTemplate, type QueryParams } from "@/components/PageTemplate";
+import {
+	createPageTemplate,
+	type QueryParams,
+} from "@/components/PageTemplate";
 import client from "@/honoClient";
 import { useQuery } from "@tanstack/react-query";
 import { useState, useMemo } from "react";
@@ -1118,7 +1121,11 @@ function EndpointOverviewTable() {
 				header: "Method",
 				cell: (props) => {
 					const method = props.getValue() as string;
-					return <Badge variant={getMethodVariant(method)}>{method}</Badge>;
+					return (
+						<Badge variant={getMethodVariant(method)}>
+							{method}
+						</Badge>
+					);
 				},
 			}),
 			helper.accessor("totalRequests", {
@@ -1330,7 +1337,9 @@ function FrontendLogsTable() {
 }
 
 function RequestsTable() {
-	const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
+	const [selectedRequestId, setSelectedRequestId] = useState<string | null>(
+		null,
+	);
 
 	const tableComponent = createPageTemplate({
 		title: "Request Details",
@@ -1396,7 +1405,11 @@ function RequestsTable() {
 				header: "Method",
 				cell: (props) => {
 					const method = props.getValue() as string;
-					return <Badge variant={getMethodVariant(method)}>{method}</Badge>;
+					return (
+						<Badge variant={getMethodVariant(method)}>
+							{method}
+						</Badge>
+					);
 				},
 			}),
 			helper.accessor("endpoint", {
@@ -1444,7 +1457,11 @@ function RequestsTable() {
 								-
 							</span>
 						);
-					return <Badge variant={getStatusCodeVariant(statusCode)}>{statusCode}</Badge>;
+					return (
+						<Badge variant={getStatusCodeVariant(statusCode)}>
+							{statusCode}
+						</Badge>
+					);
 				},
 			}),
 			helper.accessor("responseTimeMs", {
@@ -2015,17 +2032,26 @@ function ErrorsTable() {
 					const eventType = props.getValue() as string;
 					const row = props.row.original as Record<string, unknown>;
 					const statusCode = row.statusCode as number;
-					
+
 					// Determine if this is actually an error
-					const isError = eventType === "frontend_error" || 
-								   (eventType === "api_request" && statusCode && statusCode >= 400);
-					
+					const isError =
+						eventType === "frontend_error" ||
+						(eventType === "api_request" &&
+							statusCode &&
+							statusCode >= 400);
+
 					if (!isError) {
 						return <Badge variant="outline">Not Error</Badge>;
 					}
-					
-					const variant = eventType === "frontend_error" ? "destructive" : "secondary";
-					const label = eventType === "frontend_error" ? "Frontend" : "Backend API";
+
+					const variant =
+						eventType === "frontend_error"
+							? "destructive"
+							: "secondary";
+					const label =
+						eventType === "frontend_error"
+							? "Frontend"
+							: "Backend API";
 					return <Badge variant={variant}>{label}</Badge>;
 				},
 			}),
@@ -2062,7 +2088,11 @@ function ErrorsTable() {
 				cell: (props) => {
 					const statusCode = props.getValue() as number;
 					if (!statusCode) return "-";
-					return <Badge variant={getStatusCodeVariant(statusCode)}>{statusCode}</Badge>;
+					return (
+						<Badge variant={getStatusCodeVariant(statusCode)}>
+							{statusCode}
+						</Badge>
+					);
 				},
 			}),
 			helper.accessor("errorMessage", {

@@ -36,8 +36,13 @@ describe("OPTIONS Method Recording Integration", () => {
 		app.get("/api/users", (c) => c.json({ users: [] }));
 
 		// Mock observability service functions (reset before each test)
-		spyOn(observabilityService, "storeObservabilityEvent").mockResolvedValue(undefined);
-		spyOn(observabilityService, "storeRequestDetails").mockResolvedValue(undefined);
+		spyOn(
+			observabilityService,
+			"storeObservabilityEvent",
+		).mockResolvedValue(undefined);
+		spyOn(observabilityService, "storeRequestDetails").mockResolvedValue(
+			undefined,
+		);
 	});
 
 	afterEach(() => {
@@ -77,7 +82,9 @@ describe("OPTIONS Method Recording Integration", () => {
 		await new Promise((resolve) => setTimeout(resolve, 10));
 
 		// Verify observability data was NOT stored
-		expect(observabilityService.storeObservabilityEvent).not.toHaveBeenCalled();
+		expect(
+			observabilityService.storeObservabilityEvent,
+		).not.toHaveBeenCalled();
 		expect(observabilityService.storeRequestDetails).not.toHaveBeenCalled();
 	});
 
@@ -137,11 +144,17 @@ describe("OPTIONS Method Recording Integration", () => {
 		});
 
 		// Test POST request
-		await app.request("/api/users", { method: "POST", body: JSON.stringify({}) });
+		await app.request("/api/users", {
+			method: "POST",
+			body: JSON.stringify({}),
+		});
 		await new Promise((resolve) => setTimeout(resolve, 5));
 
 		// Test PUT request
-		await app.request("/api/users/1", { method: "PUT", body: JSON.stringify({}) });
+		await app.request("/api/users/1", {
+			method: "PUT",
+			body: JSON.stringify({}),
+		});
 		await new Promise((resolve) => setTimeout(resolve, 5));
 
 		// Test DELETE request
@@ -149,7 +162,11 @@ describe("OPTIONS Method Recording Integration", () => {
 		await new Promise((resolve) => setTimeout(resolve, 5));
 
 		// Verify all requests were recorded (3 pairs of calls)
-		expect(observabilityService.storeObservabilityEvent).toHaveBeenCalledTimes(3);
-		expect(observabilityService.storeRequestDetails).toHaveBeenCalledTimes(3);
+		expect(
+			observabilityService.storeObservabilityEvent,
+		).toHaveBeenCalledTimes(3);
+		expect(observabilityService.storeRequestDetails).toHaveBeenCalledTimes(
+			3,
+		);
 	});
 });

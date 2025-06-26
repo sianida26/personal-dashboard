@@ -12,7 +12,8 @@
 			"!**/routeTree.gen.ts",
 			"!**/drizzle/migrations/*",
 			"!**/dist/**",
-			"!**/vite.config.ts.timestamp-*.mjs"
+			"!**/vite.config.ts.timestamp-*.mjs",
+			"!**/*.css"
 		]
 	},
 	"formatter": {

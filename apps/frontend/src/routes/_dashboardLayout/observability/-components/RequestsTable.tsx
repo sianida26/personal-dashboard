@@ -12,7 +12,9 @@ import {
 import { RequestDetailDialog } from "./RequestDetailDialog";
 
 export function RequestsTable() {
-	const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
+	const [selectedRequestId, setSelectedRequestId] = useState<string | null>(
+		null,
+	);
 
 	const tableComponent = createPageTemplate({
 		title: "Request Details",
@@ -78,7 +80,11 @@ export function RequestsTable() {
 				header: "Method",
 				cell: (props) => {
 					const method = props.getValue() as string;
-					return <Badge variant={getMethodVariant(method)}>{method}</Badge>;
+					return (
+						<Badge variant={getMethodVariant(method)}>
+							{method}
+						</Badge>
+					);
 				},
 			}),
 			helper.accessor("endpoint", {
@@ -126,7 +132,11 @@ export function RequestsTable() {
 								-
 							</span>
 						);
-					return <Badge variant={getStatusCodeVariant(statusCode)}>{statusCode}</Badge>;
+					return (
+						<Badge variant={getStatusCodeVariant(statusCode)}>
+							{statusCode}
+						</Badge>
+					);
 				},
 			}),
 			helper.accessor("responseTimeMs", {
@@ -140,7 +150,9 @@ export function RequestsTable() {
 							</span>
 						);
 					return (
-						<span className={`text-sm font-semibold ${getResponseTimeColor(responseTime)}`}>
+						<span
+							className={`text-sm font-semibold ${getResponseTimeColor(responseTime)}`}
+						>
 							{responseTime}ms
 						</span>
 					);

@@ -55,7 +55,8 @@ export async function seedObservabilityData() {
 			statusCode: 500,
 			responseTimeMs: 250,
 			errorMessage: "Internal server error",
-			stackTrace: "Error: Database connection failed\n    at /app/routes/roles.ts:45:12",
+			stackTrace:
+				"Error: Database connection failed\n    at /app/routes/roles.ts:45:12",
 			metadata: { userAgent: "Mozilla/5.0 Test Browser" },
 			createdAt: new Date(Date.now() - 43200000),
 		},
@@ -71,11 +72,13 @@ export async function seedObservabilityData() {
 			statusCode: null,
 			responseTimeMs: null,
 			errorMessage: "Cannot read property 'map' of undefined",
-			stackTrace: "TypeError: Cannot read property 'map' of undefined\n    at Dashboard.tsx:45:23\n    at renderComponent",
-			metadata: { 
-				userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+			stackTrace:
+				"TypeError: Cannot read property 'map' of undefined\n    at Dashboard.tsx:45:23\n    at renderComponent",
+			metadata: {
+				userAgent:
+					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
 				route: "/dashboard",
-				componentStack: "in Dashboard\n    in DashboardLayout"
+				componentStack: "in Dashboard\n    in DashboardLayout",
 			},
 			createdAt: new Date(Date.now() - 21600000),
 		},
@@ -90,11 +93,13 @@ export async function seedObservabilityData() {
 			statusCode: null,
 			responseTimeMs: null,
 			errorMessage: "Network request failed",
-			stackTrace: "Error: Network request failed\n    at fetch.js:23:15\n    at useQuery hook",
-			metadata: { 
-				userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+			stackTrace:
+				"Error: Network request failed\n    at fetch.js:23:15\n    at useQuery hook",
+			metadata: {
+				userAgent:
+					"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
 				route: "/users",
-				error: "Failed to fetch user data"
+				error: "Failed to fetch user data",
 			},
 			createdAt: new Date(Date.now() - 7200000),
 		},
@@ -141,14 +146,18 @@ export async function seedObservabilityData() {
 			endpoint: "/dashboard/getSidebarItems",
 			queryParams: {},
 			requestBody: {},
-			responseBody: { 
+			responseBody: {
 				data: [
-					{ label: "Dashboard", link: "/dashboard", icon: "TbDashboard" }
-				]
+					{
+						label: "Dashboard",
+						link: "/dashboard",
+						icon: "TbDashboard",
+					},
+				],
 			},
 			headers: {
 				"user-agent": "Mozilla/5.0 Test Browser",
-				"accept": "application/json",
+				accept: "application/json",
 			},
 			ipAddress: "127.0.0.1",
 			userAgent: "Mozilla/5.0 Test Browser",
@@ -162,13 +171,13 @@ export async function seedObservabilityData() {
 			endpoint: "/users",
 			queryParams: { page: "1", limit: "10" },
 			requestBody: {},
-			responseBody: { 
+			responseBody: {
 				data: [],
-				_metadata: { total: 0, page: 1, perPage: 10 }
+				_metadata: { total: 0, page: 1, perPage: 10 },
 			},
 			headers: {
 				"user-agent": "Mozilla/5.0 Test Browser",
-				"accept": "application/json",
+				accept: "application/json",
 			},
 			ipAddress: "192.168.1.100",
 			userAgent: "Mozilla/5.0 Test Browser",
@@ -182,14 +191,14 @@ export async function seedObservabilityData() {
 			endpoint: "/observability/events",
 			queryParams: { page: "1", limit: "10" },
 			requestBody: {},
-			responseBody: { 
+			responseBody: {
 				data: [],
-				_metadata: { total: 0, page: 1, perPage: 10 }
+				_metadata: { total: 0, page: 1, perPage: 10 },
 			},
 			headers: {
 				"user-agent": "Mozilla/5.0 Test Browser",
-				"accept": "application/json",
-				"authorization": "Bearer [MASKED]",
+				accept: "application/json",
+				authorization: "Bearer [MASKED]",
 			},
 			ipAddress: "10.0.0.50",
 			userAgent: "Mozilla/5.0 Test Browser",
@@ -203,7 +212,6 @@ export async function seedObservabilityData() {
 
 		// Insert request details
 		await db.insert(requestDetails).values(sampleRequests);
-
 	} catch (error) {
 		throw error;
 	}

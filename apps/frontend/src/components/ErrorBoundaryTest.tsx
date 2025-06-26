@@ -13,7 +13,9 @@ export function ErrorBoundaryTest() {
 
 	return (
 		<div className="p-4 bg-yellow-50 border border-yellow-200 rounded-md">
-			<h3 className="text-lg font-medium text-yellow-800">Error Boundary Test</h3>
+			<h3 className="text-lg font-medium text-yellow-800">
+				Error Boundary Test
+			</h3>
 			<p className="mt-2 text-sm text-yellow-700">
 				Click the button below to test the error boundary functionality.
 			</p>

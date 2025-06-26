@@ -178,7 +178,10 @@ export function RequestDetailDialog({
 											</div>
 											<div className="flex items-center gap-2 mt-1">
 												<Badge
-													variant={getMethodVariant(requestDetail.data.method)}
+													variant={getMethodVariant(
+														requestDetail.data
+															.method,
+													)}
 												>
 													{requestDetail.data.method}
 												</Badge>
@@ -354,7 +357,9 @@ export function RequestDetailDialog({
 																	</Badge>
 																	{event.statusCode && (
 																		<Badge
-																			variant={getStatusCodeVariant(event.statusCode)}
+																			variant={getStatusCodeVariant(
+																				event.statusCode,
+																			)}
 																		>
 																			{
 																				event.statusCode
@@ -371,7 +376,9 @@ export function RequestDetailDialog({
 																	)}
 																</div>
 																<span className="text-xs text-muted-foreground">
-																	{formatUTCTime(event.timestamp)}
+																	{formatUTCTime(
+																		event.timestamp,
+																	)}
 																</span>
 															</div>
 

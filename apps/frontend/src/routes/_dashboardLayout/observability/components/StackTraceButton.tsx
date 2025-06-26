@@ -8,12 +8,7 @@ import {
 	ScrollArea,
 	Badge,
 } from "@repo/ui";
-import {
-	TbCode,
-	TbAlertTriangle,
-	TbCopy,
-	TbCheck,
-} from "react-icons/tb";
+import { TbCode, TbAlertTriangle, TbCopy, TbCheck } from "react-icons/tb";
 import { formatUTCTimestamp } from "../utils";
 
 interface StackTraceButtonProps {

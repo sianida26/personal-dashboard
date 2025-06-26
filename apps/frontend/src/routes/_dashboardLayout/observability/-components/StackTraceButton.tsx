@@ -61,7 +61,9 @@ export function StackTraceButton({
 									</span>
 									<div className="flex items-center gap-2 mt-1">
 										<span className="text-sm font-semibold">
-											{eventType.replace("_", " ").toUpperCase()}
+											{eventType
+												.replace("_", " ")
+												.toUpperCase()}
 										</span>
 									</div>
 								</div>
@@ -70,7 +72,9 @@ export function StackTraceButton({
 										Endpoint
 									</span>
 									<div className="flex items-center gap-2 mt-1">
-										<span className="text-sm font-mono">{endpoint}</span>
+										<span className="text-sm font-mono">
+											{endpoint}
+										</span>
 									</div>
 								</div>
 								<div>
@@ -94,7 +98,9 @@ export function StackTraceButton({
 							{/* Stack Trace */}
 							<div className="space-y-3">
 								<div className="flex items-center justify-between">
-									<h3 className="text-lg font-semibold">Stack Trace</h3>
+									<h3 className="text-lg font-semibold">
+										Stack Trace
+									</h3>
 									<Button
 										size="sm"
 										variant="outline"
@@ -112,30 +118,37 @@ export function StackTraceButton({
 
 								<div className="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-auto max-h-96">
 									<ScrollArea className="h-full">
-										{stackTrace.split("\n").map((line, index) => {
-											const lineId = `${index}-${line.substring(0, 20)}`;
-											const isMainError =
-												line.includes("Error:") ||
-												line.includes("TypeError:") ||
-												line.includes("ReferenceError:");
-											const isFileReference =
-												line.includes("(") && line.includes(":");
+										{stackTrace
+											.split("\n")
+											.map((line, index) => {
+												const lineId = `${index}-${line.substring(0, 20)}`;
+												const isMainError =
+													line.includes("Error:") ||
+													line.includes(
+														"TypeError:",
+													) ||
+													line.includes(
+														"ReferenceError:",
+													);
+												const isFileReference =
+													line.includes("(") &&
+													line.includes(":");
 
-											return (
-												<div
-													key={lineId}
-													className={`text-sm ${
-														isMainError
-															? "font-semibold text-red-400 bg-red-900/20 p-2 rounded"
-															: isFileReference
-																? "font-mono text-blue-400 hover:bg-blue-900/20 p-1 rounded cursor-pointer"
-																: "text-slate-300 pl-4"
-													}`}
-												>
-													{line.trim()}
-												</div>
-											);
-										})}
+												return (
+													<div
+														key={lineId}
+														className={`text-sm ${
+															isMainError
+																? "font-semibold text-red-400 bg-red-900/20 p-2 rounded"
+																: isFileReference
+																	? "font-mono text-blue-400 hover:bg-blue-900/20 p-1 rounded cursor-pointer"
+																	: "text-slate-300 pl-4"
+														}`}
+													>
+														{line.trim()}
+													</div>
+												);
+											})}
 									</ScrollArea>
 								</div>
 							</div>

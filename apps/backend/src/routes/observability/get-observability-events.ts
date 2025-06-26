@@ -38,7 +38,9 @@ const getObservabilityEventsEndpoint = createHonoRoute()
 			const whereConditions = [];
 
 			if (eventType) {
-				whereConditions.push(eq(observabilityEvents.eventType, eventType));
+				whereConditions.push(
+					eq(observabilityEvents.eventType, eventType),
+				);
 			}
 
 			if (userId) {
@@ -56,7 +58,9 @@ const getObservabilityEventsEndpoint = createHonoRoute()
 			}
 
 			if (statusCode) {
-				whereConditions.push(eq(observabilityEvents.statusCode, statusCode));
+				whereConditions.push(
+					eq(observabilityEvents.statusCode, statusCode),
+				);
 			}
 
 			if (startDate) {
@@ -64,7 +68,9 @@ const getObservabilityEventsEndpoint = createHonoRoute()
 				if (Number.isNaN(startDateTime.getTime())) {
 					throw badRequest({ message: "Invalid startDate format" });
 				}
-				whereConditions.push(gte(observabilityEvents.createdAt, startDateTime));
+				whereConditions.push(
+					gte(observabilityEvents.createdAt, startDateTime),
+				);
 			}
 
 			if (endDate) {
@@ -72,7 +78,9 @@ const getObservabilityEventsEndpoint = createHonoRoute()
 				if (Number.isNaN(endDateTime.getTime())) {
 					throw badRequest({ message: "Invalid endDate format" });
 				}
-				whereConditions.push(lte(observabilityEvents.createdAt, endDateTime));
+				whereConditions.push(
+					lte(observabilityEvents.createdAt, endDateTime),
+				);
 			}
 
 			// Text search across endpoint and error message

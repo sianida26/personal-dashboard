@@ -18,8 +18,8 @@ describe("Observability API Endpoints", () => {
 
 	beforeAll(async () => {
 		// Read private key from file
-		privateKey = readFileSync(appEnv.PRIVATE_KEY_PATH, 'utf8');
-		
+		privateKey = readFileSync(appEnv.PRIVATE_KEY_PATH, "utf8");
+
 		// Get super admin user by username
 		const superAdmin = await db.query.users.findFirst({
 			where: eq(users.username, "superadmin"),
@@ -37,11 +37,14 @@ describe("Observability API Endpoints", () => {
 		);
 
 		// Create a test user with limited permissions for permission testing
-		const [limitedUser] = await db.insert(users).values({
-			username: "test-limited-user",
-			name: "Test Limited User",
-			isEnabled: true,
-		}).returning();
+		const [limitedUser] = await db
+			.insert(users)
+			.values({
+				username: "test-limited-user",
+				name: "Test Limited User",
+				isEnabled: true,
+			})
+			.returning();
 
 		if (!limitedUser) {
 			throw new Error("Failed to create limited user");
@@ -59,7 +62,7 @@ describe("Observability API Endpoints", () => {
 		// Cleanup test data
 		await db.delete(observabilityEvents);
 		await db.delete(requestDetails);
-		
+
 		// Cleanup test users
 		await db.delete(users).where(eq(users.username, "test-limited-user"));
 	});
@@ -67,7 +70,7 @@ describe("Observability API Endpoints", () => {
 	test("GET /observability/events should return 200", async () => {
 		const response = await client.observability.events.$get(
 			{
-				query: {}
+				query: {},
 			},
 			{
 				headers: {
@@ -85,7 +88,7 @@ describe("Observability API Endpoints", () => {
 	test("GET /observability/requests should return 200", async () => {
 		const response = await client.observability.requests.$get(
 			{
-				query: {}
+				query: {},
 			},
 			{
 				headers: {
@@ -103,7 +106,7 @@ describe("Observability API Endpoints", () => {
 	test("GET /observability/metrics should return 200", async () => {
 		const response = await client.observability.metrics.$get(
 			{
-				query: {}
+				query: {},
 			},
 			{
 				headers: {
@@ -201,7 +204,7 @@ describe("Observability API Endpoints", () => {
 
 	test("Should require authentication", async () => {
 		const response = await client.observability.events.$get({
-			query: {}
+			query: {},
 		});
 
 		expect(response.status).toBe(401);
@@ -211,7 +214,7 @@ describe("Observability API Endpoints", () => {
 		// Use the limited user token (user without observability permissions)
 		const response = await client.observability.events.$get(
 			{
-				query: {}
+				query: {},
 			},
 			{
 				headers: {

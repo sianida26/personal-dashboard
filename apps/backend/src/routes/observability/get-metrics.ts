@@ -29,7 +29,9 @@ const getMetricsEndpoint = createHonoRoute()
 				if (Number.isNaN(startDateTime.getTime())) {
 					throw badRequest({ message: "Invalid startDate format" });
 				}
-				whereConditions.push(gte(observabilityEvents.createdAt, startDateTime));
+				whereConditions.push(
+					gte(observabilityEvents.createdAt, startDateTime),
+				);
 			}
 
 			if (endDate) {
@@ -37,11 +39,15 @@ const getMetricsEndpoint = createHonoRoute()
 				if (Number.isNaN(endDateTime.getTime())) {
 					throw badRequest({ message: "Invalid endDate format" });
 				}
-				whereConditions.push(lte(observabilityEvents.createdAt, endDateTime));
+				whereConditions.push(
+					lte(observabilityEvents.createdAt, endDateTime),
+				);
 			}
 
 			// Only get API request events for performance metrics
-			whereConditions.push(eq(observabilityEvents.eventType, "api_request"));
+			whereConditions.push(
+				eq(observabilityEvents.eventType, "api_request"),
+			);
 
 			// Get overall metrics
 			const [overallMetrics] = await db
@@ -62,7 +68,11 @@ const getMetricsEndpoint = createHonoRoute()
 					`,
 				})
 				.from(observabilityEvents)
-				.where(whereConditions.length > 0 ? and(...whereConditions) : undefined);
+				.where(
+					whereConditions.length > 0
+						? and(...whereConditions)
+						: undefined,
+				);
 
 			// Get status code distribution
 			const statusCodeStats = await db
@@ -71,7 +81,11 @@ const getMetricsEndpoint = createHonoRoute()
 					count: count(),
 				})
 				.from(observabilityEvents)
-				.where(whereConditions.length > 0 ? and(...whereConditions) : undefined)
+				.where(
+					whereConditions.length > 0
+						? and(...whereConditions)
+						: undefined,
+				)
 				.groupBy(observabilityEvents.statusCode)
 				.orderBy(desc(count()));
 
@@ -86,7 +100,11 @@ const getMetricsEndpoint = createHonoRoute()
 					`,
 				})
 				.from(observabilityEvents)
-				.where(whereConditions.length > 0 ? and(...whereConditions) : undefined)
+				.where(
+					whereConditions.length > 0
+						? and(...whereConditions)
+						: undefined,
+				)
 				.groupBy(observabilityEvents.endpoint)
 				.orderBy(desc(count()))
 				.limit(10);
@@ -98,51 +116,81 @@ const getMetricsEndpoint = createHonoRoute()
 				avgResponseTime: string | null;
 				errorCount: number;
 			};
-			
+
 			let timeSeriesData: TimeSeriesItem[] = [];
-			
+
 			if (groupBy === "hour") {
 				timeSeriesData = await db
 					.select({
 						period: sql<string>`date_trunc('hour', ${observabilityEvents.createdAt})`,
 						count: count(),
-						avgResponseTime: avg(observabilityEvents.responseTimeMs),
+						avgResponseTime: avg(
+							observabilityEvents.responseTimeMs,
+						),
 						errorCount: sql<number>`
 							COUNT(CASE WHEN ${observabilityEvents.statusCode} >= 400 THEN 1 END)
 						`,
 					})
 					.from(observabilityEvents)
-					.where(whereConditions.length > 0 ? and(...whereConditions) : undefined)
-					.groupBy(sql`date_trunc('hour', ${observabilityEvents.createdAt})`)
-					.orderBy(sql`date_trunc('hour', ${observabilityEvents.createdAt})`);
+					.where(
+						whereConditions.length > 0
+							? and(...whereConditions)
+							: undefined,
+					)
+					.groupBy(
+						sql`date_trunc('hour', ${observabilityEvents.createdAt})`,
+					)
+					.orderBy(
+						sql`date_trunc('hour', ${observabilityEvents.createdAt})`,
+					);
 			} else if (groupBy === "day") {
 				timeSeriesData = await db
 					.select({
 						period: sql<string>`date_trunc('day', ${observabilityEvents.createdAt})`,
 						count: count(),
-						avgResponseTime: avg(observabilityEvents.responseTimeMs),
+						avgResponseTime: avg(
+							observabilityEvents.responseTimeMs,
+						),
 						errorCount: sql<number>`
 							COUNT(CASE WHEN ${observabilityEvents.statusCode} >= 400 THEN 1 END)
 						`,
 					})
 					.from(observabilityEvents)
-					.where(whereConditions.length > 0 ? and(...whereConditions) : undefined)
-					.groupBy(sql`date_trunc('day', ${observabilityEvents.createdAt})`)
-					.orderBy(sql`date_trunc('day', ${observabilityEvents.createdAt})`);
+					.where(
+						whereConditions.length > 0
+							? and(...whereConditions)
+							: undefined,
+					)
+					.groupBy(
+						sql`date_trunc('day', ${observabilityEvents.createdAt})`,
+					)
+					.orderBy(
+						sql`date_trunc('day', ${observabilityEvents.createdAt})`,
+					);
 			} else if (groupBy === "week") {
 				timeSeriesData = await db
 					.select({
 						period: sql<string>`date_trunc('week', ${observabilityEvents.createdAt})`,
 						count: count(),
-						avgResponseTime: avg(observabilityEvents.responseTimeMs),
+						avgResponseTime: avg(
+							observabilityEvents.responseTimeMs,
+						),
 						errorCount: sql<number>`
 							COUNT(CASE WHEN ${observabilityEvents.statusCode} >= 400 THEN 1 END)
 						`,
 					})
 					.from(observabilityEvents)
-					.where(whereConditions.length > 0 ? and(...whereConditions) : undefined)
-					.groupBy(sql`date_trunc('week', ${observabilityEvents.createdAt})`)
-					.orderBy(sql`date_trunc('week', ${observabilityEvents.createdAt})`);
+					.where(
+						whereConditions.length > 0
+							? and(...whereConditions)
+							: undefined,
+					)
+					.groupBy(
+						sql`date_trunc('week', ${observabilityEvents.createdAt})`,
+					)
+					.orderBy(
+						sql`date_trunc('week', ${observabilityEvents.createdAt})`,
+					);
 			}
 
 			// Get error distribution by event type
@@ -164,10 +212,20 @@ const getMetricsEndpoint = createHonoRoute()
 			return c.json({
 				data: {
 					overview: {
-						totalRequests: Number(overallMetrics?.totalRequests) || 0,
-						avgResponseTime: Math.round(Number(overallMetrics?.avgResponseTime) || 0),
-						successRate: Math.round((Number(overallMetrics?.successRate) || 0) * 100) / 100,
-						errorRate: Math.round((Number(overallMetrics?.errorRate) || 0) * 100) / 100,
+						totalRequests:
+							Number(overallMetrics?.totalRequests) || 0,
+						avgResponseTime: Math.round(
+							Number(overallMetrics?.avgResponseTime) || 0,
+						),
+						successRate:
+							Math.round(
+								(Number(overallMetrics?.successRate) || 0) *
+									100,
+							) / 100,
+						errorRate:
+							Math.round(
+								(Number(overallMetrics?.errorRate) || 0) * 100,
+							) / 100,
 					},
 					statusCodeDistribution: statusCodeStats.map((stat) => ({
 						statusCode: stat.statusCode,
@@ -176,20 +234,34 @@ const getMetricsEndpoint = createHonoRoute()
 					topEndpoints: endpointStats.map((stat) => ({
 						endpoint: stat.endpoint,
 						count: Number(stat.count),
-						avgResponseTime: Math.round(Number(stat.avgResponseTime) || 0),
+						avgResponseTime: Math.round(
+							Number(stat.avgResponseTime) || 0,
+						),
 						errorCount: Number(stat.errorCount),
-						errorRate: stat.count > 0 
-							? Math.round((Number(stat.errorCount) / Number(stat.count)) * 10000) / 100
-							: 0,
+						errorRate:
+							stat.count > 0
+								? Math.round(
+										(Number(stat.errorCount) /
+											Number(stat.count)) *
+											10000,
+									) / 100
+								: 0,
 					})),
 					timeSeries: timeSeriesData.map((item) => ({
 						period: item.period,
 						count: Number(item.count),
-						avgResponseTime: Math.round(Number(item.avgResponseTime) || 0),
+						avgResponseTime: Math.round(
+							Number(item.avgResponseTime) || 0,
+						),
 						errorCount: Number(item.errorCount),
-						errorRate: item.count > 0 
-							? Math.round((Number(item.errorCount) / Number(item.count)) * 10000) / 100
-							: 0,
+						errorRate:
+							item.count > 0
+								? Math.round(
+										(Number(item.errorCount) /
+											Number(item.count)) *
+											10000,
+									) / 100
+								: 0,
 					})),
 					errorsByType: errorStats.map((stat) => ({
 						eventType: stat.eventType,

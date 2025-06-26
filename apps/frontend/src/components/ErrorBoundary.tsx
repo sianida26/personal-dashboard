@@ -45,9 +45,10 @@ function ErrorFallback({ error, resetError }: ErrorFallbackProps) {
 							Something went wrong
 						</h2>
 						<p className="mt-2 text-center text-sm text-gray-600">
-							We've encountered an unexpected error. Our team has been notified and is working to fix it.
+							We've encountered an unexpected error. Our team has
+							been notified and is working to fix it.
 						</p>
-						
+
 						{/* Show error details in development */}
 						{process.env.NODE_ENV === "development" && error && (
 							<div className="mt-4 p-4 bg-gray-100 rounded-md text-left">
@@ -98,7 +99,7 @@ function ErrorFallback({ error, resetError }: ErrorFallbackProps) {
  */
 function useErrorReporting() {
 	const isObservabilityEnabled = useObservabilityToggle();
-	
+
 	// Safely try to get auth info, but don't throw if AuthProvider is not available
 	let user = null;
 	try {
@@ -110,7 +111,10 @@ function useErrorReporting() {
 		// Continue without user info
 	}
 
-	const reportError = async (error: Error, errorInfo?: { componentStack?: string }) => {
+	const reportError = async (
+		error: Error,
+		errorInfo?: { componentStack?: string },
+	) => {
 		if (!isObservabilityEnabled) return;
 
 		try {
@@ -144,11 +148,17 @@ function useErrorReporting() {
 			});
 
 			if (!response.ok) {
-				console.warn("Failed to report error to observability system:", response.status);
+				console.warn(
+					"Failed to report error to observability system:",
+					response.status,
+				);
 			}
 		} catch (reportError) {
 			// Don't throw errors when reporting fails - this could cause infinite loops
-			console.warn("Failed to report error to observability system:", reportError);
+			console.warn(
+				"Failed to report error to observability system:",
+				reportError,
+			);
 		}
 	};
 
@@ -176,7 +186,9 @@ export default function ErrorBoundary({ children }: ErrorBoundaryProps) {
 		};
 
 		const handlePromiseRejection = (event: PromiseRejectionEvent) => {
-			const newError = new Error(event.reason?.message || "Unhandled promise rejection");
+			const newError = new Error(
+				event.reason?.message || "Unhandled promise rejection",
+			);
 			setError(newError);
 			reportError(newError);
 		};
@@ -186,12 +198,17 @@ export default function ErrorBoundary({ children }: ErrorBoundaryProps) {
 
 		return () => {
 			window.removeEventListener("error", handleError);
-			window.removeEventListener("unhandledrejection", handlePromiseRejection);
+			window.removeEventListener(
+				"unhandledrejection",
+				handlePromiseRejection,
+			);
 		};
 	}, [reportError]);
 
 	if (error) {
-		return <ErrorFallback error={error} resetError={() => setError(null)} />;
+		return (
+			<ErrorFallback error={error} resetError={() => setError(null)} />
+		);
 	}
 
 	return <>{children}</>;

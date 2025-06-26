@@ -20,7 +20,7 @@ const deleteCleanupEndpoint = createHonoRoute()
 		requestValidator("query", cleanupQuerySchema),
 		async (c) => {
 			const { retentionDays, dryRun } = c.req.valid("query");
-			
+
 			// Calculate cutoff date
 			const cutoffDate = new Date();
 			cutoffDate.setDate(cutoffDate.getDate() - retentionDays);
@@ -48,7 +48,8 @@ const deleteCleanupEndpoint = createHonoRoute()
 						retentionDays,
 						eventsToDelete: totalEventsToDelete,
 						requestsToDelete: totalRequestsToDelete,
-						totalToDelete: totalEventsToDelete + totalRequestsToDelete,
+						totalToDelete:
+							totalEventsToDelete + totalRequestsToDelete,
 					},
 				});
 			}
@@ -63,7 +64,7 @@ const deleteCleanupEndpoint = createHonoRoute()
 					.select({ count: count() })
 					.from(observabilityEvents)
 					.where(lte(observabilityEvents.createdAt, cutoffDate));
-				
+
 				const requestsToDeleteCount = await db
 					.select({ count: count() })
 					.from(requestDetails)
@@ -82,7 +83,9 @@ const deleteCleanupEndpoint = createHonoRoute()
 						.where(lte(requestDetails.createdAt, cutoffDate)),
 				]);
 			} catch (error) {
-				throw new Error(`Cleanup failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+				throw new Error(
+					`Cleanup failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+				);
 			}
 
 			return c.json({

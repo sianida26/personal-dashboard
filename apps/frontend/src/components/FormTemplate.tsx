@@ -19,9 +19,9 @@ export type FormTemplateProps<TForm> = {
 	onSuccess?: Function;
 	onSettled?: Function;
 	onCancel?: Function;
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// biome-ignore lint/suspicious/noExplicitAny: temporary fix
 	invalidateQueries?: any[];
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// biome-ignore lint/suspicious/noExplicitAny: temporary fix
 	mutationKey?: any[];
 	successToastMessage?: string;
 	buttons?: Partial<{

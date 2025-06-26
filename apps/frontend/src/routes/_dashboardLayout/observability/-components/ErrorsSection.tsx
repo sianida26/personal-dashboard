@@ -1,13 +1,24 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, Badge } from "@repo/ui";
-import { NativeSelect, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@repo/ui";
+import {
+	NativeSelect,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@repo/ui";
 import { TbAlertTriangle, TbCode, TbActivity } from "react-icons/tb";
 import client from "@/honoClient";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { createPageTemplate } from "@/components/PageTemplate";
-import { formatUTCTimestamp, getStatusCodeVariant, type ErrorEvent, type ErrorStatsProps } from "./utils";
+import {
+	formatUTCTimestamp,
+	getStatusCodeVariant,
+	type ErrorEvent,
+	type ErrorStatsProps,
+} from "./utils";
 import { StackTraceButton } from "./StackTraceButton";
 
 // Configure dayjs to use UTC
@@ -289,17 +300,26 @@ function ErrorsTable() {
 					const eventType = props.getValue() as string;
 					const row = props.row.original as Record<string, unknown>;
 					const statusCode = row.statusCode as number;
-					
+
 					// Determine if this is actually an error
-					const isError = eventType === "frontend_error" || 
-								   (eventType === "api_request" && statusCode && statusCode >= 400);
-					
+					const isError =
+						eventType === "frontend_error" ||
+						(eventType === "api_request" &&
+							statusCode &&
+							statusCode >= 400);
+
 					if (!isError) {
 						return <Badge variant="outline">Not Error</Badge>;
 					}
-					
-					const variant = eventType === "frontend_error" ? "destructive" : "secondary";
-					const label = eventType === "frontend_error" ? "Frontend" : "Backend API";
+
+					const variant =
+						eventType === "frontend_error"
+							? "destructive"
+							: "secondary";
+					const label =
+						eventType === "frontend_error"
+							? "Frontend"
+							: "Backend API";
 					return <Badge variant={variant}>{label}</Badge>;
 				},
 			}),
@@ -336,7 +356,11 @@ function ErrorsTable() {
 				cell: (props) => {
 					const statusCode = props.getValue() as number;
 					if (!statusCode) return "-";
-					return <Badge variant={getStatusCodeVariant(statusCode)}>{statusCode}</Badge>;
+					return (
+						<Badge variant={getStatusCodeVariant(statusCode)}>
+							{statusCode}
+						</Badge>
+					);
 				},
 			}),
 			helper.accessor("errorMessage", {

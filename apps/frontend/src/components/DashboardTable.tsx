@@ -58,7 +58,8 @@ export default function DashboardTable<T>({
 											</div>
 										)}
 										{header.column.getCanResize() && (
-											<div
+											<button
+												type="button"
 												onMouseDown={header.getResizeHandler()}
 												onTouchStart={header.getResizeHandler()}
 												className={cn(
@@ -67,6 +68,7 @@ export default function DashboardTable<T>({
 													header.column.getIsResizing() &&
 														"opacity-100 bg-primary/10",
 												)}
+												aria-label="Resize column"
 											/>
 										)}
 									</TableHead>

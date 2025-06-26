@@ -1,7 +1,13 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, Badge } from "@repo/ui";
-import { NativeSelect, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@repo/ui";
+import {
+	NativeSelect,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@repo/ui";
 import {
 	TbActivity,
 	TbAlertTriangle,
@@ -331,7 +337,9 @@ export function MetricsOverview() {
 										>
 											<div className="flex items-center space-x-2">
 												<Badge
-													variant={getStatusCodeVariant(status.statusCode || 0)}
+													variant={getStatusCodeVariant(
+														status.statusCode || 0,
+													)}
 												>
 													{status.statusCode || 0}
 												</Badge>

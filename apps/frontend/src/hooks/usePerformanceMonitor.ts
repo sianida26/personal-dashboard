@@ -5,7 +5,7 @@ import client from "@/honoClient";
 /**
  * Hook to monitor basic frontend performance metrics and report them
  * to the observability system.
- * 
+ *
  * Tracks:
  * - Page load times (navigation entries)
  * - Route transitions (when available)
@@ -19,7 +19,9 @@ export function usePerformanceMonitor() {
 
 		// Check if Performance Observer is supported
 		if (!window.PerformanceObserver) {
-			console.warn("PerformanceObserver not supported, skipping performance monitoring");
+			console.warn(
+				"PerformanceObserver not supported, skipping performance monitoring",
+			);
 			return;
 		}
 
@@ -64,7 +66,9 @@ export function usePerformanceMonitor() {
 					if (navEntry.domContentLoadedEventEnd > 0) {
 						reportPerformanceMetric({
 							type: "dom_content_loaded",
-							duration: navEntry.domContentLoadedEventEnd - navEntry.fetchStart,
+							duration:
+								navEntry.domContentLoadedEventEnd -
+								navEntry.fetchStart,
 							route: window.location.pathname,
 						});
 					}
@@ -83,12 +87,17 @@ export function usePerformanceMonitor() {
 				// Track resource loading times for critical resources
 				if (entry.entryType === "resource") {
 					const resourceEntry = entry as PerformanceResourceTiming;
-					
+
 					// Only track JavaScript and CSS files to avoid noise
-					if (resourceEntry.name.includes(".js") || resourceEntry.name.includes(".css")) {
+					if (
+						resourceEntry.name.includes(".js") ||
+						resourceEntry.name.includes(".css")
+					) {
 						reportPerformanceMetric({
 							type: "resource_load",
-							duration: resourceEntry.responseEnd - resourceEntry.fetchStart,
+							duration:
+								resourceEntry.responseEnd -
+								resourceEntry.fetchStart,
 							name: resourceEntry.name,
 							route: window.location.pathname,
 						});
@@ -99,7 +108,9 @@ export function usePerformanceMonitor() {
 
 		// Observe different types of performance entries
 		try {
-			observer.observe({ entryTypes: ["navigation", "measure", "resource"] });
+			observer.observe({
+				entryTypes: ["navigation", "measure", "resource"],
+			});
 		} catch (error) {
 			console.warn("Failed to start performance observer:", error);
 		}
@@ -120,7 +131,9 @@ export function usePerformanceMonitor() {
 			});
 
 			try {
-				webVitalsObserver.observe({ entryTypes: ["largest-contentful-paint"] });
+				webVitalsObserver.observe({
+					entryTypes: ["largest-contentful-paint"],
+				});
 			} catch {
 				// Ignore if not supported
 			}
@@ -140,7 +153,10 @@ export function usePerformanceMonitor() {
 export function useErrorReporter() {
 	const isObservabilityEnabled = useObservabilityToggle();
 
-	const reportError = async (error: Error, context?: Record<string, unknown>) => {
+	const reportError = async (
+		error: Error,
+		context?: Record<string, unknown>,
+	) => {
 		if (!isObservabilityEnabled) return;
 
 		try {

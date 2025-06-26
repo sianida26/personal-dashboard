@@ -1,5 +1,8 @@
 import { Badge } from "@repo/ui";
-import { createPageTemplate, type QueryParams } from "@/components/PageTemplate";
+import {
+	createPageTemplate,
+	type QueryParams,
+} from "@/components/PageTemplate";
 import client from "@/honoClient";
 import { formatUTCTimestamp } from "./utils";
 
