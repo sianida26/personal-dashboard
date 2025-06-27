@@ -8,49 +8,8 @@ import db from "../../drizzle";
 import { observabilityEvents } from "../../drizzle/schema/observability-events";
 
 /**
- * Normalize endpoint paths to parameterized routes for grouping
- * Based on actual route patterns defined in the application
- */
-function normalizeEndpointPath(path: string): string {
-	// Define actual route patterns used in the application
-	const routePatterns = [
-		// Users routes
-		{ pattern: /^\/users\/[a-zA-Z0-9_-]+$/, template: "/users/:id" },
-		{
-			pattern: /^\/users\/[a-zA-Z0-9_-]+\/restore$/,
-			template: "/users/:id/restore",
-		},
-
-		// Roles routes (if any with IDs)
-		{ pattern: /^\/roles\/[a-zA-Z0-9_-]+$/, template: "/roles/:id" },
-
-		// Auth routes (these are typically static)
-		// Dashboard routes (these are typically static)
-		// Dev routes (these are typically static)
-		// Permissions routes (these are typically static)
-		// App settings routes (these are typically static)
-
-		// Observability routes (these are typically static except for specific ID routes)
-		{
-			pattern: /^\/observability\/requests\/[a-zA-Z0-9_-]+$/,
-			template: "/observability/requests/:id",
-		},
-	];
-
-	// Try to match against known route patterns
-	for (const { pattern, template } of routePatterns) {
-		if (pattern.test(path)) {
-			return template;
-		}
-	}
-
-	// If no pattern matches, return the original path (it's likely a static route)
-	return path;
-}
-
-/**
  * GET /endpoint-overview
- * Get aggregated statistics for each API endpoint
+ * Get aggregated statistics for each API endpoint grouped by route path
  */
 const getEndpointOverviewEndpoint = createHonoRoute()
 	.use(authInfo)
@@ -78,10 +37,11 @@ const getEndpointOverviewEndpoint = createHonoRoute()
 				);
 			}
 
-			// Get all endpoint data (we'll group in JavaScript since we need to normalize paths)
+			// Get all endpoint data grouped by route path
 			const rawData = await db
 				.select({
 					endpoint: observabilityEvents.endpoint,
+					routePath: observabilityEvents.routePath,
 					method: observabilityEvents.method,
 					statusCode: observabilityEvents.statusCode,
 					responseTimeMs: observabilityEvents.responseTimeMs,
@@ -91,25 +51,24 @@ const getEndpointOverviewEndpoint = createHonoRoute()
 				.where(and(...whereConditions))
 				.orderBy(desc(observabilityEvents.timestamp));
 
-			// Group by normalized endpoint and method
+			// Group by route path and method
 			const groupedStats = new Map<
 				string,
 				{
-					endpoint: string;
+					routePath: string;
 					method: string;
 					requests: typeof rawData;
 				}
 			>();
 
 			for (const record of rawData) {
-				const normalizedEndpoint = normalizeEndpointPath(
-					record.endpoint || "",
-				);
-				const key = `${normalizedEndpoint}|${record.method}`;
+				// Use routePath if available, fallback to endpoint if routePath is null
+				const routeKey = record.routePath || record.endpoint || "";
+				const key = `${routeKey}|${record.method}`;
 
 				if (!groupedStats.has(key)) {
 					groupedStats.set(key, {
-						endpoint: normalizedEndpoint,
+						routePath: routeKey,
 						method: record.method || "GET",
 						requests: [],
 					});
@@ -164,7 +123,7 @@ const getEndpointOverviewEndpoint = createHonoRoute()
 						}).timestamp || new Date();
 
 					return {
-						endpoint: group.endpoint,
+						endpoint: group.routePath,
 						method: group.method,
 						totalRequests,
 						avgResponseTime:

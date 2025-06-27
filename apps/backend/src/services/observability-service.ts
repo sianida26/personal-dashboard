@@ -13,34 +13,36 @@ import type HonoEnv from "../types/HonoEnv";
  * Interface for observability event data
  */
 export interface ObservabilityEventData {
-	eventType: "api_request" | "frontend_error" | "frontend_metric";
-	requestId: string;
-	userId?: string | null;
-	endpoint: string;
-	method?: string;
-	statusCode?: number;
-	responseTimeMs?: number;
-	errorMessage?: string;
-	stackTrace?: string;
-	metadata?: Record<string, unknown>;
-}
+		eventType: "api_request" | "frontend_error" | "frontend_metric";
+		requestId: string;
+		userId?: string | null;
+		endpoint: string;
+		routePath?: string | null;
+		method?: string;
+		statusCode?: number;
+		responseTimeMs?: number;
+		errorMessage?: string;
+		stackTrace?: string;
+		metadata?: Record<string, unknown>;
+	}
 
 /**
  * Interface for request details data
  */
 export interface RequestDetailsData {
-	requestId: string;
-	userId?: string | null;
-	method: string;
-	endpoint: string;
-	queryParams?: Record<string, unknown>;
-	requestBody?: unknown;
-	responseBody?: unknown;
-	requestHeaders?: Record<string, string>;
-	responseHeaders?: Record<string, string>;
-	ipAddress?: string | null;
-	userAgent?: string | null;
-}
+		requestId: string;
+		userId?: string | null;
+		method: string;
+		endpoint: string;
+		routePath?: string | null;
+		queryParams?: Record<string, unknown>;
+		requestBody?: unknown;
+		responseBody?: unknown;
+		requestHeaders?: Record<string, string>;
+		responseHeaders?: Record<string, string>;
+		ipAddress?: string | null;
+		userAgent?: string | null;
+	}
 
 /**
  * Stores an observability event in the database
@@ -60,6 +62,7 @@ export const storeObservabilityEvent = async (
 				? null
 				: eventData.userId,
 			endpoint: eventData.endpoint,
+			routePath: eventData.routePath,
 			method: eventData.method,
 			statusCode: eventData.statusCode,
 			responseTimeMs: eventData.responseTimeMs,
@@ -92,6 +95,7 @@ export const storeRequestDetails = async (
 				: detailsData.userId,
 			method: detailsData.method,
 			endpoint: detailsData.endpoint,
+			routePath: detailsData.routePath,
 			queryParams: detailsData.queryParams
 				? sanitizeRequestData(detailsData.queryParams)
 				: null,

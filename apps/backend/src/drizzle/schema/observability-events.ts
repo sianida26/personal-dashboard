@@ -24,6 +24,7 @@ export const observabilityEvents = pgTable(
 		userId: text("user_id"), // nullable for anonymous requests
 		requestId: varchar("request_id", { length: 25 }), // correlation with existing request logs
 		endpoint: varchar("endpoint", { length: 255 }), // API endpoint or frontend route
+		routePath: varchar("route_path", { length: 255 }), // Route pattern (e.g., /api/users/:id)
 		method: varchar("method", { length: 10 }), // HTTP method for API requests
 		statusCode: integer("status_code"), // HTTP status code
 		responseTimeMs: integer("response_time_ms"), // response time in milliseconds

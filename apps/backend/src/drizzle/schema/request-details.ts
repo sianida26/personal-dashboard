@@ -21,6 +21,7 @@ export const requestDetails = pgTable(
 		userId: text("user_id"), // nullable
 		method: varchar("method", { length: 10 }).notNull(),
 		endpoint: varchar("endpoint", { length: 255 }).notNull(),
+		routePath: varchar("route_path", { length: 255 }), // Route pattern (e.g., /api/users/:id)
 		queryParams: jsonb("query_params"),
 		requestBody: jsonb("request_body"),
 		responseBody: jsonb("response_body"),

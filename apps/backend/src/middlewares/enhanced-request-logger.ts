@@ -17,6 +17,7 @@ import {
 	type ObservabilityEventData,
 	type RequestDetailsData,
 } from "../services/observability-service";
+import { routePath } from "hono/route";
 
 /**
  * Enhanced middleware for logging requests and storing observability data.
@@ -115,6 +116,7 @@ async function storeObservabilityEventAsync(
 			requestId,
 			userId: c.var.uid || null,
 			endpoint: c.req.path,
+			routePath: routePath(c),
 			method: c.req.method,
 			statusCode: c.res.status,
 			responseTimeMs: responseTime,
@@ -157,6 +159,7 @@ async function storeRequestDetailsAsync(
 			userId: c.var.uid || null,
 			method: c.req.method,
 			endpoint: c.req.path,
+			routePath: routePath(c),
 			queryParams: Object.fromEntries(
 				new URL(c.req.url).searchParams.entries(),
 			),
