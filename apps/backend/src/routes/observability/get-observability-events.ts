@@ -10,13 +10,13 @@ import { users } from "../../drizzle/schema/users";
 import { badRequest } from "../../errors/DashboardError";
 
 /**
- * GET /observability/events
+ * GET /events
  * List observability events with filtering and pagination
  */
 const getObservabilityEventsEndpoint = createHonoRoute()
 	.use(authInfo)
 	.get(
-		"/observability/events",
+		"/events",
 		checkPermission("observability.read"),
 		requestValidator("query", observabilityEventsQuerySchema),
 		async (c) => {

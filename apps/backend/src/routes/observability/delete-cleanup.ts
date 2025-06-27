@@ -9,13 +9,13 @@ import { observabilityEvents } from "../../drizzle/schema/observability-events";
 import { requestDetails } from "../../drizzle/schema/request-details";
 
 /**
- * DELETE /observability/cleanup
+ * DELETE /cleanup
  * Cleanup old observability data based on retention period
  */
 const deleteCleanupEndpoint = createHonoRoute()
 	.use(authInfo)
 	.delete(
-		"/observability/cleanup",
+		"/cleanup",
 		checkPermission("observability.delete"),
 		requestValidator("query", cleanupQuerySchema),
 		async (c) => {

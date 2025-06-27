@@ -8,49 +8,45 @@ import { observabilityEvents } from "../../drizzle/schema/observability-events";
 import { notFound } from "../../errors/DashboardError";
 
 /**
- * GET /observability/requests/:id
+ * GET /requests/:id
  * Get detailed request information by request ID
  */
 const getRequestByIdEndpoint = createHonoRoute()
 	.use(authInfo)
-	.get(
-		"/observability/requests/:id",
-		checkPermission("observability.read"),
-		async (c) => {
-			const requestId = c.req.param("id");
+	.get("/requests/:id", checkPermission("observability.read"), async (c) => {
+		const requestId = c.req.param("id");
 
-			// Get request details
-			const requestDetail = await db.query.requestDetails.findFirst({
-				where: eq(requestDetails.requestId, requestId),
-				with: {
-					user: {
-						columns: {
-							id: true,
-							name: true,
-							email: true,
-						},
+		// Get request details
+		const requestDetail = await db.query.requestDetails.findFirst({
+			where: eq(requestDetails.requestId, requestId),
+			with: {
+				user: {
+					columns: {
+						id: true,
+						name: true,
+						email: true,
 					},
 				},
-			});
+			},
+		});
 
-			if (!requestDetail) {
-				throw notFound({ message: "Request not found" });
-			}
+		if (!requestDetail) {
+			throw notFound({ message: "Request not found" });
+		}
 
-			// Get related observability events
-			const relatedEvents = await db
-				.select()
-				.from(observabilityEvents)
-				.where(eq(observabilityEvents.requestId, requestId))
-				.orderBy(observabilityEvents.timestamp);
+		// Get related observability events
+		const relatedEvents = await db
+			.select()
+			.from(observabilityEvents)
+			.where(eq(observabilityEvents.requestId, requestId))
+			.orderBy(observabilityEvents.timestamp);
 
-			return c.json({
-				data: {
-					...requestDetail,
-					relatedEvents,
-				},
-			});
-		},
-	);
+		return c.json({
+			data: {
+				...requestDetail,
+				relatedEvents,
+			},
+		});
+	});
 
 export default getRequestByIdEndpoint;

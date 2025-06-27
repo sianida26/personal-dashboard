@@ -9,13 +9,13 @@ import { observabilityEvents } from "../../drizzle/schema/observability-events";
 import { badRequest } from "../../errors/DashboardError";
 
 /**
- * GET /observability/metrics
+ * GET /metrics
  * Get aggregated metrics for observability data
  */
 const getMetricsEndpoint = createHonoRoute()
 	.use(authInfo)
 	.get(
-		"/observability/metrics",
+		"/metrics",
 		checkPermission("observability.read"),
 		requestValidator("query", metricsQuerySchema),
 		async (c) => {

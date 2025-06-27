@@ -6,13 +6,13 @@ import db from "../../drizzle";
 import { observabilityEvents } from "../../drizzle/schema/observability-events";
 
 /**
- * POST /observability/frontend
+ * POST /frontend
  * Submit frontend events (errors, metrics, etc.)
  */
 const postFrontendEventEndpoint = createHonoRoute()
 	.use(authInfo)
 	.post(
-		"/observability/frontend",
+		"/frontend",
 		requestValidator("json", frontendEventSchema),
 		async (c) => {
 			const eventData = c.req.valid("json");

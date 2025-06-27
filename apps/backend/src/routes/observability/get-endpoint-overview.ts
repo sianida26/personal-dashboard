@@ -49,13 +49,13 @@ function normalizeEndpointPath(path: string): string {
 }
 
 /**
- * GET /observability/endpoint-overview
+ * GET /endpoint-overview
  * Get aggregated statistics for each API endpoint
  */
 const getEndpointOverviewEndpoint = createHonoRoute()
 	.use(authInfo)
 	.get(
-		"/observability/endpoint-overview",
+		"/endpoint-overview",
 		checkPermission("observability.read"),
 		requestValidator("query", endpointOverviewQuerySchema),
 		async (c) => {

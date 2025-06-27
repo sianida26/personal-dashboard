@@ -16,17 +16,8 @@ import type HonoEnv from "./types/HonoEnv";
 import appLogger from "./utils/logger";
 import authRouter from "./routes/auth/route";
 import microsoftAdminRouter from "./routes/auth/microsoft/admin";
+import observabilityRoutes from "./routes/observability/routes";
 import { rateLimiter } from "hono-rate-limiter";
-
-// Observability routes
-import getObservabilityEventsEndpoint from "./routes/observability/get-observability-events";
-import getRequestByIdEndpoint from "./routes/observability/get-request-by-id";
-import getRequestsEndpoint from "./routes/observability/get-requests";
-import getMetricsEndpoint from "./routes/observability/get-metrics";
-import postFrontendEventEndpoint from "./routes/observability/post-frontend-event";
-import deleteCleanupEndpoint from "./routes/observability/delete-cleanup";
-import getEndpointOverviewEndpoint from "./routes/observability/get-endpoint-overview";
-import getErrorEventsEndpoint from "./routes/observability/get-error-events";
 
 configDotenv();
 
@@ -66,15 +57,7 @@ export const appRoutes = app
 	.route("/roles", rolesRoute)
 	.route("/dev", devRoutes)
 	.route("/app-settings", appSettingsRoutes)
-	// Observability routes
-	.route("/", getObservabilityEventsEndpoint)
-	.route("/", getRequestByIdEndpoint)
-	.route("/", getRequestsEndpoint)
-	.route("/", getMetricsEndpoint)
-	.route("/", postFrontendEventEndpoint)
-	.route("/", deleteCleanupEndpoint)
-	.route("/", getEndpointOverviewEndpoint)
-	.route("/", getErrorEventsEndpoint)
+	.route("/observability", observabilityRoutes)
 	.get("/test", (c) => {
 		return c.json({
 			message: "Server is up",

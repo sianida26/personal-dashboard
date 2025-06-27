@@ -10,13 +10,13 @@ import { users } from "../../drizzle/schema/users";
 import { badRequest } from "../../errors/DashboardError";
 
 /**
- * GET /observability/error-events
+ * GET /error-events
  * List only error events (frontend_error + api_request with status >= 400)
  */
 const getErrorEventsEndpoint = createHonoRoute()
 	.use(authInfo)
 	.get(
-		"/observability/error-events",
+		"/error-events",
 		checkPermission("observability.read"),
 		requestValidator("query", observabilityEventsQuerySchema),
 		async (c) => {
