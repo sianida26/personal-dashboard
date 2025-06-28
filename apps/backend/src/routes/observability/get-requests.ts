@@ -53,7 +53,7 @@ const getRequestsEndpoint = createHonoRoute()
 
 			if (method) {
 				whereConditions.push(eq(requestDetails.method, method));
-		}
+			}
 
 			if (startDate) {
 				const startDateTime = new Date(startDate);

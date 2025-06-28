@@ -162,8 +162,10 @@ const getEndpointOverviewEndpoint = createHonoRoute()
 			);
 
 			// Sort by total requests descending and calculate pagination
-			const sortedStats = endpointStats.sort((a, b) => b.totalRequests - a.totalRequests);
-			
+			const sortedStats = endpointStats.sort(
+				(a, b) => b.totalRequests - a.totalRequests,
+			);
+
 			// Calculate pagination
 			const totalItems = sortedStats.length;
 			const totalPages = Math.ceil(totalItems / limit);

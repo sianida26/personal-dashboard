@@ -4,7 +4,10 @@ import { createId } from "@paralleldrive/cuid2";
 import { routePath } from "hono/route";
 import appEnv from "../appEnv";
 import DashboardError from "../errors/DashboardError";
-import { storeObservabilityEvent, type ObservabilityEventData } from "./observability-service";
+import {
+	storeObservabilityEvent,
+	type ObservabilityEventData,
+} from "./observability-service";
 
 /**
  * Records backend errors as observability events for monitoring and debugging
@@ -83,7 +86,9 @@ export async function recordBackendError(
  * @param statusCode - HTTP status code
  * @returns The severity level
  */
-export function getErrorSeverity(statusCode: number): "CRITICAL" | "HIGH" | "MEDIUM" | "LOW" {
+export function getErrorSeverity(
+	statusCode: number,
+): "CRITICAL" | "HIGH" | "MEDIUM" | "LOW" {
 	if (statusCode >= 500) {
 		return "CRITICAL"; // Server errors are critical
 	}

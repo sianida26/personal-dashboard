@@ -50,9 +50,15 @@ const envSchema = z.object({
 	OBSERVABILITY_RECORD_OPTIONS: logSchema("true"), // Record OPTIONS method requests (CORS preflight)
 	OBSERVABILITY_RETENTION_DAYS: z.coerce.number().int().default(30),
 	OBSERVABILITY_MAX_BODY_SIZE: z.coerce.number().int().default(10240), // Max request/response body size to store (bytes)
-	OBSERVABILITY_ERROR_STATUS_CODES: z.string().default("500,422").transform((val) => 
-		val.split(',').map(code => Number.parseInt(code.trim(), 10)).filter(code => !Number.isNaN(code))
-	), // Status codes that should be recorded as backend errors
+	OBSERVABILITY_ERROR_STATUS_CODES: z
+		.string()
+		.default("500,422")
+		.transform((val) =>
+			val
+				.split(",")
+				.map((code) => Number.parseInt(code.trim(), 10))
+				.filter((code) => !Number.isNaN(code)),
+		), // Status codes that should be recorded as backend errors
 
 	//Data Privacy Controls
 	OBSERVABILITY_MASK_SENSITIVE_DATA: logSchema("true"), // Mask passwords, tokens, etc.
