@@ -1,0 +1,1 @@
+You must follow coding guidelines and best practices from apps/backend/AGENTS.md and apps/frontend/AGENTS.md.
