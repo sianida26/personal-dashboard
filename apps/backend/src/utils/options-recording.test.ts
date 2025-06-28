@@ -21,7 +21,7 @@ describe("OPTIONS Method Recording Integration", () => {
 			OBSERVABILITY_ENABLED: appEnv.OBSERVABILITY_ENABLED,
 			OBSERVABILITY_RECORD_OPTIONS: appEnv.OBSERVABILITY_RECORD_OPTIONS,
 		};
-		
+
 		if (storeObservabilityEventSpy) {
 			storeObservabilityEventSpy.mockRestore();
 		}
