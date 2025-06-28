@@ -16,12 +16,12 @@
 	"dependencies": {
 		"@azure/msal-node": "^3.6.1",
 		"@hono/node-server": "^1.14.4",
-		"@hono/oauth-providers": "^0.8.1",
+		"@hono/oauth-providers": "^0.8.2",
 		"@hono/zod-validator": "^0.7.0",
 		"@microsoft/microsoft-graph-client": "^3.0.7",
 		"@repo/data": "workspace:*",
 		"@repo/validation": "workspace:*",
-		"dotenv": "^16.5.0",
+		"dotenv": "^17.0.0",
 		"drizzle-orm": "^0.44.2",
 		"jsonwebtoken": "^9.0.2",
 		"moment": "^2.30.1",
@@ -30,8 +30,8 @@
 	},
 	"devDependencies": {
 		"@types/jsonwebtoken": "^9.0.10",
-		"drizzle-kit": "^0.31.1",
-		"pg": "^8.16.2",
+		"drizzle-kit": "^0.31.4",
+		"pg": "^8.16.3",
 		"tsx": "^4.20.3"
 	},
 	"exports": {
