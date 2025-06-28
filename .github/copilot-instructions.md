@@ -1,1 +1,2 @@
-You must follow coding guidelines and best practices from apps/backend/AGENTS.md and apps/frontend/AGENTS.md.
+- You must follow the coding guidelines and best practices outlined in `apps/backend/AGENTS.md` and `apps/frontend/AGENTS.md`.
+- For backend code, you must also provide test cases for any changes you make.
