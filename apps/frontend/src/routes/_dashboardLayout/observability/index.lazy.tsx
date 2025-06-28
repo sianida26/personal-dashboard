@@ -96,6 +96,7 @@ interface StackTraceButtonProps {
 	eventType: string;
 	endpoint: string;
 	timestamp: string;
+	metadata?: Record<string, unknown>;
 }
 
 function StackTraceButton({
@@ -104,6 +105,7 @@ function StackTraceButton({
 	eventType,
 	endpoint,
 	timestamp,
+	metadata,
 }: StackTraceButtonProps) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [copied, setCopied] = useState(false);
@@ -169,6 +171,35 @@ function StackTraceButton({
 										{formatUTCTimestamp(timestamp)}
 									</p>
 								</div>
+								{/* Show severity and error code for backend errors */}
+								{eventType !== "frontend_error" && metadata && (
+									<>
+										<div>
+											<span className="text-sm font-medium text-muted-foreground">
+												Severity
+											</span>
+											<div className="mt-1">
+												<Badge 
+													variant={
+														metadata.severity === "CRITICAL" ? "destructive" :
+														metadata.severity === "HIGH" ? "clientError" :
+														metadata.severity === "MEDIUM" ? "redirect" : "outline"
+													}
+												>
+													{(metadata.severity as string) || "UNKNOWN"}
+												</Badge>
+											</div>
+										</div>
+										<div>
+											<span className="text-sm font-medium text-muted-foreground">
+												Error Code
+											</span>
+											<p className="text-sm font-mono mt-1 bg-background px-2 py-1 rounded border">
+												{(metadata.errorCode as string) || "UNKNOWN"}
+											</p>
+										</div>
+									</>
+								)}
 								<div className="col-span-2">
 									<span className="text-sm font-medium text-muted-foreground">
 										Endpoint/Route
@@ -2059,6 +2090,7 @@ function ErrorsTable() {
 					const eventType = props.getValue() as string;
 					const row = props.row.original as Record<string, unknown>;
 					const statusCode = row.statusCode as number;
+					const metadata = row.metadata as Record<string, unknown> | null;
 
 					// Determine if this is actually an error
 					const isError =
@@ -2071,15 +2103,28 @@ function ErrorsTable() {
 						return <Badge variant="outline">Not Error</Badge>;
 					}
 
-					const variant =
-						eventType === "frontend_error"
-							? "destructive"
-							: "secondary"
-					const label =
-						eventType === "frontend_error"
-							? "Frontend"
-							: "Backend API"
-					return <Badge variant={variant}>{label}</Badge>;
+					const isFrontendError = eventType === "frontend_error";
+					const variant = isFrontendError ? "destructive" : "secondary";
+					const label = isFrontendError ? "Frontend" : "Backend API";
+					
+					return (
+						<div className="flex flex-col gap-1">
+							<Badge variant={variant}>{label}</Badge>
+							{/* Show severity for backend errors */}
+							{!isFrontendError && metadata?.severity && typeof metadata.severity === "string" ? (
+								<Badge 
+									variant={
+										metadata.severity === "CRITICAL" ? "destructive" :
+										metadata.severity === "HIGH" ? "clientError" :
+										metadata.severity === "MEDIUM" ? "redirect" : "outline"
+									}
+									className="text-xs"
+								>
+									{metadata.severity as string}
+								</Badge>
+							) : null}
+						</div>
+					);
 				},
 			}),
 			helper.accessor("endpoint", {
@@ -2150,6 +2195,7 @@ function ErrorsTable() {
 							eventType={row.eventType as string}
 							endpoint={row.endpoint as string}
 							timestamp={row.timestamp as string}
+							metadata={row.metadata as Record<string, unknown>}
 						/>
 					)
 				},

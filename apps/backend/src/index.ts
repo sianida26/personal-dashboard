@@ -18,6 +18,7 @@ import authRouter from "./routes/auth/route";
 import microsoftAdminRouter from "./routes/auth/microsoft/admin";
 import observabilityRoutes from "./routes/observability/routes";
 import { rateLimiter } from "hono-rate-limiter";
+import { recordBackendError } from "./services/error-tracking-service";
 
 configDotenv();
 
@@ -63,7 +64,12 @@ export const appRoutes = app
 			message: "Server is up",
 		} as const);
 	})
-	.onError((err, c) => {
+	.onError(async (err, c) => {
+		// Record backend error for observability
+		recordBackendError(err, c).catch((recordingError) => {
+			console.error("Failed to record backend error:", recordingError);
+		});
+
 		appLogger.error(err, c);
 		if (err instanceof DashboardError) {
 			return c.json(
