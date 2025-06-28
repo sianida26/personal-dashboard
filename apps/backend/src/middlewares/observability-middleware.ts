@@ -20,9 +20,9 @@ import {
 import { routePath } from "hono/route";
 
 /**
- * Enhanced middleware for logging requests and storing observability data.
+ * Middleware for logging requests and storing observability data.
  *
- * This middleware extends the original request logger to include:
+ * This middleware provides:
  * - Observability event tracking
  * - Request/response detail storage
  * - Performance metrics collection
@@ -35,7 +35,7 @@ import { routePath } from "hono/route";
  * @param next - The next middleware function in the stack to be called
  * @returns A promise that resolves when the middleware processing is complete
  */
-const enhancedRequestLogger = createMiddleware<HonoEnv>(async (c, next) => {
+const observabilityMiddleware = createMiddleware<HonoEnv>(async (c, next) => {
 	// Generate unique request ID for correlation
 	const requestId = createId();
 	c.set("requestId", requestId);
@@ -177,4 +177,4 @@ async function storeRequestDetailsAsync(
 	}
 }
 
-export default enhancedRequestLogger;
+export default observabilityMiddleware;

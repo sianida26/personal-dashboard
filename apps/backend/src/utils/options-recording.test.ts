@@ -2,7 +2,7 @@ import { describe, test, expect, beforeEach, afterEach } from "bun:test";
 import { Hono } from "hono";
 import type HonoEnv from "../types/HonoEnv";
 import appEnv from "../appEnv";
-import enhancedRequestLogger from "../middlewares/enhanced-request-logger";
+import observabilityMiddleware from "../middlewares/observability-middleware";
 import * as observabilityService from "../services/observability-service";
 import { spyOn } from "bun:test";
 
@@ -48,7 +48,7 @@ describe("OPTIONS Method Recording Integration", () => {
 
 		// Create new app instance
 		app = new Hono<HonoEnv>();
-		app.use("*", enhancedRequestLogger);
+		app.use("*", observabilityMiddleware);
 
 		// Add test routes
 		app.options("/api/users", (c) => c.json({ message: "CORS preflight" }));

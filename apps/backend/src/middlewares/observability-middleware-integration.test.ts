@@ -3,11 +3,11 @@ import { Hono } from "hono";
 import db from "../drizzle";
 import { observabilityEvents } from "../drizzle/schema/observability-events";
 import { requestDetails as requestDetailsTable } from "../drizzle/schema/request-details";
-import enhancedRequestLogger from "./enhanced-request-logger";
+import observabilityMiddleware from "./observability-middleware";
 import type HonoEnv from "../types/HonoEnv";
 import { eq } from "drizzle-orm";
 
-describe("Enhanced Request Logger Integration", () => {
+describe("Observability Middleware Integration", () => {
 	let app: Hono<HonoEnv>;
 
 	beforeEach(async () => {
@@ -25,7 +25,7 @@ describe("Enhanced Request Logger Integration", () => {
 
 		// Create fresh app instance
 		app = new Hono<HonoEnv>();
-		app.use(enhancedRequestLogger);
+		app.use(observabilityMiddleware);
 		app.get("/integration-test", (c) => {
 			// Set a predictable request ID for testing
 			c.set("requestId", "test-request-integration");

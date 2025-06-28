@@ -8,7 +8,7 @@ import {
 	spyOn,
 } from "bun:test";
 import { Hono } from "hono";
-import enhancedRequestLogger from "./enhanced-request-logger";
+import observabilityMiddleware from "./observability-middleware";
 import type HonoEnv from "../types/HonoEnv";
 
 // Import the actual modules so we can spy on them
@@ -97,7 +97,7 @@ describe("Enhanced Request Logger Middleware", () => {
 
 		// Create fresh app instance
 		app = new Hono<HonoEnv>();
-		app.use(enhancedRequestLogger);
+		app.use(observabilityMiddleware);
 		app.get("/test", (c) => c.json({ message: "test" }));
 	});
 
