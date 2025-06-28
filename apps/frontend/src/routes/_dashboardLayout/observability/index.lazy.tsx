@@ -1,4 +1,4 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle, Badge } from "@repo/ui";
 import { Tabs, TabList, TabTrigger, TabPanel } from "@repo/ui";
 import {
@@ -1054,6 +1054,8 @@ function MetricsOverview() {
 }
 
 function EndpointOverviewTable() {
+	const navigate = useNavigate();
+
 	return createPageTemplate({
 		title: "API Endpoint Overview",
 		endpoint: client.observability["endpoint-overview"].$get,
@@ -1088,6 +1090,31 @@ function EndpointOverviewTable() {
 					props.row.index +
 					1,
 			}),
+			helper.display({
+				header: "Actions",
+				cell: (props) => {
+					const row = props.row.original as Record<string, unknown>;
+					const endpoint = row.endpoint as string;
+					const method = row.method as string;
+
+					return (
+						<Button
+							size="sm"
+							variant="ghost"
+							onClick={() =>
+								navigate({
+									to: "/observability/endpoint-requests",
+									search: { endpoint, method },
+								})
+							}
+							className="h-8 px-2"
+						>
+							<TbList className="h-4 w-4 mr-1" />
+							View Requests
+						</Button>
+					);
+				},
+			}),
 			helper.accessor("endpoint", {
 				header: "Endpoint",
 				cell: (props) => {
@@ -1096,14 +1123,14 @@ function EndpointOverviewTable() {
 					const queryParams = row.queryParams as Record<
 						string,
 						unknown
-					> | null
+					> | null;
 
 					// Build full endpoint with query params if they exist
 					let fullEndpoint = endpoint;
 					if (queryParams && Object.keys(queryParams).length > 0) {
 						const queryString = Object.entries(queryParams)
 							.map(([key, value]) => `${key}=${value}`)
-							.join("&")
+							.join("&");
 						fullEndpoint = `${endpoint}?${queryString}`;
 					}
 
@@ -1114,7 +1141,7 @@ function EndpointOverviewTable() {
 						>
 							{fullEndpoint}
 						</span>
-					)
+					);
 				},
 			}),
 			helper.accessor("method", {
@@ -1125,7 +1152,7 @@ function EndpointOverviewTable() {
 						<Badge variant={getMethodVariant(method)}>
 							{method}
 						</Badge>
-					)
+					);
 				},
 			}),
 			helper.accessor("totalRequests", {
@@ -1146,7 +1173,7 @@ function EndpointOverviewTable() {
 						>
 							{avgTime.toFixed(1)}ms
 						</span>
-					)
+					);
 				},
 			}),
 			helper.accessor("p95ResponseTime", {
@@ -1159,7 +1186,7 @@ function EndpointOverviewTable() {
 						>
 							{p95Time.toFixed(1)}ms
 						</span>
-					)
+					);
 				},
 			}),
 			helper.accessor("successRate", {
@@ -1170,7 +1197,7 @@ function EndpointOverviewTable() {
 						<Badge variant={getSuccessRateVariant(successRate)}>
 							{successRate.toFixed(1)}%
 						</Badge>
-					)
+					);
 				},
 			}),
 			helper.accessor("lastRequest", {
@@ -1181,11 +1208,11 @@ function EndpointOverviewTable() {
 						<span className="text-sm">
 							{formatUTCTimestamp(timestamp)}
 						</span>
-					)
+					);
 				},
 			}),
 		],
-	})
+	});
 }
 
 function FrontendLogsTable() {
@@ -1833,7 +1860,7 @@ function RequestDetailDialog({
 										<CardContent>
 											<div className="space-y-3">
 												{requestDetail.data.relatedEvents.map(
-													(event) => (
+													(event, index) => (
 														<div
 															key={event.id}
 															className="border rounded-lg p-3 space-y-2"
@@ -1910,13 +1937,13 @@ function RequestDetailDialog({
 																				copyToClipboard(
 																					event.stackTrace ||
 																						"",
-																					"stackTrace-${index}",
+																					`stackTrace-${index}`,
 																				)
 																			}
 																			className="h-6 px-2"
 																		>
 																			{copiedField ===
-																			"stackTrace-${index}" ? (
+																			`stackTrace-${index}` ? (
 																				<TbCheck className="h-3 w-3" />
 																			) : (
 																				<TbCopy className="h-3 w-3" />
@@ -1947,13 +1974,13 @@ function RequestDetailDialog({
 																					formatJson(
 																						event.metadata,
 																					),
-																					"metadata-${index}",
+																					`metadata-${index}`,
 																				)
 																			}
 																			className="h-6 px-2"
 																		>
 																			{copiedField ===
-																			"metadata-${index}" ? (
+																			`metadata-${index}` ? (
 																				<TbCheck className="h-3 w-3" />
 																			) : (
 																				<TbCopy className="h-3 w-3" />
@@ -1981,7 +2008,7 @@ function RequestDetailDialog({
 				)}
 			</DialogContent>
 		</Dialog>
-	)
+	);
 }
 
 function ErrorsTable() {

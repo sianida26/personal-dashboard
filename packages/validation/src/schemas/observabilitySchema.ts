@@ -42,6 +42,7 @@ export const requestDetailsQuerySchema = z.object({
 	limit: z.coerce.number().int().min(1).max(1000).default(20),
 	userId: z.string().optional(),
 	endpoint: z.string().optional(),
+	routePath: z.string().optional(),
 	method: z.string().optional(),
 	startDate: z.string().datetime().optional(),
 	endDate: z.string().datetime().optional(),

@@ -26,6 +26,7 @@ const getRequestsEndpoint = createHonoRoute()
 				limit,
 				userId,
 				endpoint,
+				routePath,
 				method,
 				startDate,
 				endDate,
@@ -46,9 +47,13 @@ const getRequestsEndpoint = createHonoRoute()
 				);
 			}
 
+			if (routePath) {
+				whereConditions.push(eq(requestDetails.routePath, routePath));
+			}
+
 			if (method) {
 				whereConditions.push(eq(requestDetails.method, method));
-			}
+		}
 
 			if (startDate) {
 				const startDateTime = new Date(startDate);
