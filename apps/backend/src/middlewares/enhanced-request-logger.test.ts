@@ -21,12 +21,17 @@ import * as observabilityService from "../services/observability-service";
 describe("Enhanced Request Logger Middleware", () => {
 	let app: Hono<HonoEnv>;
 
-	// Store original implementations
+	// Store original implementations and spies
 	const originalAppEnv = { ...appEnv };
+	let spies: ReturnType<typeof spyOn>[] = [];
 
 	beforeEach(() => {
+		// Clear previous spies
+		spies.forEach((spy) => spy.mockRestore());
+		spies = [];
+
 		// Use spyOn instead of mock.module
-		spyOn(cuid2, "createId").mockReturnValue("test-request-id");
+		spies.push(spyOn(cuid2, "createId").mockReturnValue("test-request-id"));
 
 		// Mock appEnv properties
 		Object.defineProperty(appEnv, "LOG_REQUEST", {
@@ -50,22 +55,44 @@ describe("Enhanced Request Logger Middleware", () => {
 			configurable: true,
 		});
 
-		spyOn(appLogger, "request").mockImplementation(() => {});
+		spies.push(spyOn(appLogger, "request").mockImplementation(() => {}));
 
-		spyOn(observabilityUtils, "shouldRecordRequest").mockReturnValue(true);
-		spyOn(observabilityUtils, "extractHeaders").mockReturnValue({});
-		spyOn(observabilityUtils, "getClientIp").mockReturnValue("192.168.1.1");
-
-		spyOn(
-			observabilityService,
-			"storeObservabilityEvent",
-		).mockResolvedValue();
-		spyOn(observabilityService, "storeRequestDetails").mockResolvedValue();
-		spyOn(observabilityService, "extractRequestBody").mockResolvedValue(
-			null,
+		spies.push(
+			spyOn(observabilityUtils, "shouldRecordRequest").mockReturnValue(
+				true,
+			),
 		);
-		spyOn(observabilityService, "extractResponseBody").mockResolvedValue(
-			null,
+		spies.push(
+			spyOn(observabilityUtils, "extractHeaders").mockReturnValue({}),
+		);
+		spies.push(
+			spyOn(observabilityUtils, "getClientIp").mockReturnValue(
+				"192.168.1.1",
+			),
+		);
+
+		spies.push(
+			spyOn(
+				observabilityService,
+				"storeObservabilityEvent",
+			).mockResolvedValue(),
+		);
+		spies.push(
+			spyOn(
+				observabilityService,
+				"storeRequestDetails",
+			).mockResolvedValue(),
+		);
+		spies.push(
+			spyOn(observabilityService, "extractRequestBody").mockResolvedValue(
+				null,
+			),
+		);
+		spies.push(
+			spyOn(
+				observabilityService,
+				"extractResponseBody",
+			).mockResolvedValue(null),
 		);
 
 		// Create fresh app instance
@@ -75,7 +102,11 @@ describe("Enhanced Request Logger Middleware", () => {
 	});
 
 	afterEach(() => {
-		// Restore all spies
+		// Restore all spies individually
+		spies.forEach((spy) => spy.mockRestore());
+		spies = [];
+
+		// Also use mock.restore() as backup
 		mock.restore();
 
 		// Restore original appEnv values

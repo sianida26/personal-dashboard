@@ -12,8 +12,13 @@ describe("OPTIONS Method Recording Integration", () => {
 		OBSERVABILITY_ENABLED: boolean;
 		OBSERVABILITY_RECORD_OPTIONS: boolean;
 	};
+	let spies: ReturnType<typeof spyOn>[] = [];
 
 	beforeEach(() => {
+		// Clear previous spies
+		spies.forEach((spy) => spy.mockRestore());
+		spies = [];
+
 		// Store original values
 		originalValues = {
 			OBSERVABILITY_ENABLED: appEnv.OBSERVABILITY_ENABLED,
@@ -36,16 +41,25 @@ describe("OPTIONS Method Recording Integration", () => {
 		app.get("/api/users", (c) => c.json({ users: [] }));
 
 		// Mock observability service functions (reset before each test)
-		spyOn(
-			observabilityService,
-			"storeObservabilityEvent",
-		).mockResolvedValue(undefined);
-		spyOn(observabilityService, "storeRequestDetails").mockResolvedValue(
-			undefined,
+		spies.push(
+			spyOn(
+				observabilityService,
+				"storeObservabilityEvent",
+			).mockResolvedValue(undefined),
+		);
+		spies.push(
+			spyOn(
+				observabilityService,
+				"storeRequestDetails",
+			).mockResolvedValue(undefined),
 		);
 	});
 
 	afterEach(() => {
+		// Restore all spies individually
+		spies.forEach((spy) => spy.mockRestore());
+		spies = [];
+
 		// Restore original values
 		Object.defineProperty(appEnv, "OBSERVABILITY_ENABLED", {
 			value: originalValues.OBSERVABILITY_ENABLED,
@@ -57,12 +71,6 @@ describe("OPTIONS Method Recording Integration", () => {
 			writable: true,
 			configurable: true,
 		});
-
-		// Clear mocks
-		// biome-ignore lint/suspicious/noExplicitAny: Mock type casting needed for testing
-		(observabilityService.storeObservabilityEvent as any).mockClear();
-		// biome-ignore lint/suspicious/noExplicitAny: Mock type casting needed for testing
-		(observabilityService.storeRequestDetails as any).mockClear();
 	});
 
 	test("should not record OPTIONS requests when OBSERVABILITY_RECORD_OPTIONS is false", async () => {
@@ -82,10 +90,8 @@ describe("OPTIONS Method Recording Integration", () => {
 		await new Promise((resolve) => setTimeout(resolve, 10));
 
 		// Verify observability data was NOT stored
-		expect(
-			observabilityService.storeObservabilityEvent,
-		).not.toHaveBeenCalled();
-		expect(observabilityService.storeRequestDetails).not.toHaveBeenCalled();
+		expect(spies[0]).not.toHaveBeenCalled(); // storeObservabilityEvent
+		expect(spies[1]).not.toHaveBeenCalled(); // storeRequestDetails
 	});
 
 	test("should record OPTIONS requests when OBSERVABILITY_RECORD_OPTIONS is true", async () => {
@@ -105,8 +111,8 @@ describe("OPTIONS Method Recording Integration", () => {
 		await new Promise((resolve) => setTimeout(resolve, 10));
 
 		// Verify observability data WAS stored
-		expect(observabilityService.storeObservabilityEvent).toHaveBeenCalled();
-		expect(observabilityService.storeRequestDetails).toHaveBeenCalled();
+		expect(spies[0]).toHaveBeenCalled(); // storeObservabilityEvent
+		expect(spies[1]).toHaveBeenCalled(); // storeRequestDetails
 	});
 
 	test("should record GET requests regardless of OBSERVABILITY_RECORD_OPTIONS setting", async () => {
@@ -126,8 +132,8 @@ describe("OPTIONS Method Recording Integration", () => {
 		await new Promise((resolve) => setTimeout(resolve, 10));
 
 		// Verify observability data WAS stored (GET requests should always be recorded)
-		expect(observabilityService.storeObservabilityEvent).toHaveBeenCalled();
-		expect(observabilityService.storeRequestDetails).toHaveBeenCalled();
+		expect(spies[0]).toHaveBeenCalled(); // storeObservabilityEvent
+		expect(spies[1]).toHaveBeenCalled(); // storeRequestDetails
 	});
 
 	test("should record POST, PUT, DELETE requests regardless of OBSERVABILITY_RECORD_OPTIONS setting", async () => {
@@ -162,11 +168,7 @@ describe("OPTIONS Method Recording Integration", () => {
 		await new Promise((resolve) => setTimeout(resolve, 5));
 
 		// Verify all requests were recorded (3 pairs of calls)
-		expect(
-			observabilityService.storeObservabilityEvent,
-		).toHaveBeenCalledTimes(3);
-		expect(observabilityService.storeRequestDetails).toHaveBeenCalledTimes(
-			3,
-		);
+		expect(spies[0]).toHaveBeenCalledTimes(3); // storeObservabilityEvent
+		expect(spies[1]).toHaveBeenCalledTimes(3); // storeRequestDetails
 	});
 });
