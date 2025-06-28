@@ -18,7 +18,7 @@ const getEndpointOverviewEndpoint = createHonoRoute()
 		checkPermission("observability.read"),
 		requestValidator("query", endpointOverviewQuerySchema),
 		async (c) => {
-			const { startDate, endDate, limit = 50 } = c.req.valid("query");
+			const { page, limit, startDate, endDate } = c.req.valid("query");
 
 			// Build where conditions for date filtering
 			const whereConditions = [
@@ -161,18 +161,23 @@ const getEndpointOverviewEndpoint = createHonoRoute()
 				},
 			);
 
-			// Sort by total requests descending and limit
-			const sortedStats = endpointStats
-				.sort((a, b) => b.totalRequests - a.totalRequests)
-				.slice(0, limit);
+			// Sort by total requests descending and calculate pagination
+			const sortedStats = endpointStats.sort((a, b) => b.totalRequests - a.totalRequests);
+			
+			// Calculate pagination
+			const totalItems = sortedStats.length;
+			const totalPages = Math.ceil(totalItems / limit);
+			const startIndex = (page - 1) * limit;
+			const endIndex = startIndex + limit;
+			const paginatedStats = sortedStats.slice(startIndex, endIndex);
 
 			return c.json({
-				data: sortedStats,
+				data: paginatedStats,
 				_metadata: {
-					currentPage: 1,
+					currentPage: page,
 					perPage: limit,
-					totalPages: 1,
-					totalItems: sortedStats.length,
+					totalPages,
+					totalItems,
 				},
 			});
 		},

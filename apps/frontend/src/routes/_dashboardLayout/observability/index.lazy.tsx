@@ -116,7 +116,7 @@ function StackTraceButton({
 		} catch (err) {
 			console.error("Failed to copy stack trace:", err);
 		}
-	};
+	}
 
 	return (
 		<>
@@ -241,10 +241,10 @@ function StackTraceButton({
 													) ||
 													line.includes(
 														"ReferenceError:",
-													);
+													)
 												const isFileReference =
 													line.includes("(") &&
-													line.includes(":");
+													line.includes(":")
 
 												return (
 													<div
@@ -259,7 +259,7 @@ function StackTraceButton({
 													>
 														{line.trim()}
 													</div>
-												);
+												)
 											})}
 									</div>
 								</div>
@@ -269,7 +269,7 @@ function StackTraceButton({
 				</DialogContent>
 			</Dialog>
 		</>
-	);
+	)
 }
 
 interface ErrorEvent {
@@ -301,17 +301,17 @@ function ErrorStats({ timeRange }: ErrorStatsProps) {
 				return {
 					startDate: now.subtract(24, "hour").toISOString(),
 					endDate: now.toISOString(),
-				};
+				}
 			case "7d":
 				return {
 					startDate: now.subtract(7, "day").toISOString(),
 					endDate: now.toISOString(),
-				};
+				}
 			case "30d":
 				return {
 					startDate: now.subtract(30, "day").toISOString(),
 					endDate: now.toISOString(),
-				};
+				}
 		}
 	}, [timeRange]);
 
@@ -325,7 +325,7 @@ function ErrorStats({ timeRange }: ErrorStatsProps) {
 					startDate,
 					endDate,
 				},
-			});
+			})
 
 			if (!response.ok) {
 				throw new Error("Failed to fetch error statistics");
@@ -338,20 +338,20 @@ function ErrorStats({ timeRange }: ErrorStatsProps) {
 			const totalErrors = errors.length;
 			const frontendErrors = errors.filter(
 				(e) => e.eventType === "frontend_error",
-			).length;
+			).length
 			const backendErrors = errors.filter(
 				(e) => e.eventType === "api_request",
-			).length;
+			).length
 
 			// Group by endpoint
 			const errorsByEndpoint = errors.reduce(
 				(acc: Record<string, number>, error) => {
 					const endpoint = error.endpoint || "Unknown";
 					acc[endpoint] = (acc[endpoint] || 0) + 1;
-					return acc;
+					return acc
 				},
 				{},
-			);
+			)
 
 			// Get top error endpoints
 			const topErrorEndpoints = Object.entries(errorsByEndpoint)
@@ -367,12 +367,12 @@ function ErrorStats({ timeRange }: ErrorStatsProps) {
 					const shortMessage =
 						message.length > 100
 							? message.substring(0, 100) + "..."
-							: message;
+							: message
 					acc[shortMessage] = (acc[shortMessage] || 0) + 1;
-					return acc;
+					return acc
 				},
 				{},
-			);
+			)
 
 			const commonErrors = Object.entries(errorsByMessage)
 				.sort(([, a], [, b]) => (b as number) - (a as number))
@@ -385,14 +385,14 @@ function ErrorStats({ timeRange }: ErrorStatsProps) {
 				backendErrors,
 				topErrorEndpoints,
 				commonErrors,
-			};
+			}
 		},
-	});
+	})
 
 	if (isLoading) {
 		return (
 			<div className="text-center py-8">Loading error statistics...</div>
-		);
+		)
 	}
 
 	return (
@@ -518,7 +518,7 @@ function ErrorStats({ timeRange }: ErrorStatsProps) {
 				</CardContent>
 			</Card>
 		</div>
-	);
+	)
 }
 
 function ErrorStatsSection() {
@@ -551,10 +551,10 @@ function ErrorStatsSection() {
 			</div>
 			<ErrorStats timeRange={timeRange} />
 		</div>
-	);
+	)
 }
 
-export const Route = createLazyFileRoute("/_dashboardLayout/observability")({
+export const Route = createLazyFileRoute("/_dashboardLayout/observability/")({
 	component: ObservabilityPage,
 });
 
@@ -603,7 +603,7 @@ function ObservabilityPage() {
 				</TabPanel>
 			</Tabs>
 		</div>
-	);
+	)
 }
 
 function MetricsOverview() {
@@ -618,25 +618,25 @@ function MetricsOverview() {
 					startDate: now.subtract(24, "hour").toISOString(),
 					endDate: now.toISOString(),
 					groupBy: "hour" as const,
-				};
+				}
 			case "7d":
 				return {
 					startDate: now.subtract(7, "day").toISOString(),
 					endDate: now.toISOString(),
 					groupBy: "day" as const,
-				};
+				}
 			case "30d":
 				return {
 					startDate: now.subtract(30, "day").toISOString(),
 					endDate: now.toISOString(),
 					groupBy: "day" as const,
-				};
+				}
 			default:
 				return {
 					startDate: now.subtract(24, "hour").toISOString(),
 					endDate: now.toISOString(),
 					groupBy: "hour" as const,
-				};
+				}
 		}
 	}, [timeRange]);
 
@@ -660,7 +660,7 @@ function MetricsOverview() {
 					endDate,
 					groupBy,
 				},
-			});
+			})
 			if (!response.ok) {
 				throw new Error("Failed to fetch metrics");
 			}
@@ -668,7 +668,7 @@ function MetricsOverview() {
 		},
 		staleTime: 5 * 60 * 1000, // 5 minutes
 		gcTime: 10 * 60 * 1000, // 10 minutes
-	});
+	})
 
 	// Helper function to get trend indicator
 	const getTrendIndicator = (current: number, previous: number) => {
@@ -677,14 +677,14 @@ function MetricsOverview() {
 		if (current > previous)
 			return <TbTrendingUp className="h-3 w-3 text-green-500" />;
 		return <TbTrendingDown className="h-3 w-3 text-red-500" />;
-	};
+	}
 
 	// Helper function to calculate trend percentage
 	const getTrendPercentage = (current: number, previous: number) => {
 		if (previous === 0) return current > 0 ? "+100%" : "0%";
 		const percentage = ((current - previous) / previous) * 100;
 		return `${percentage >= 0 ? "+" : ""}${percentage.toFixed(1)}%`;
-	};
+	}
 
 	// Calculate trend data from time series
 	const calculateTrends = () => {
@@ -696,7 +696,7 @@ function MetricsOverview() {
 				requestsTrend: 0,
 				responseTrend: 0,
 				errorTrend: 0,
-			};
+			}
 		}
 
 		const series = metricsData.data.timeSeries;
@@ -713,8 +713,8 @@ function MetricsOverview() {
 				latest.errorRate,
 				previous.errorRate,
 			),
-		};
-	};
+		}
+	}
 
 	const trends = calculateTrends();
 
@@ -736,7 +736,7 @@ function MetricsOverview() {
 					</div>
 				</CardContent>
 			</Card>
-		);
+		)
 	}
 
 	return (
@@ -1050,7 +1050,7 @@ function MetricsOverview() {
 				</CardContent>
 			</Card>
 		</div>
-	);
+	)
 }
 
 function EndpointOverviewTable() {
@@ -1096,14 +1096,14 @@ function EndpointOverviewTable() {
 					const queryParams = row.queryParams as Record<
 						string,
 						unknown
-					> | null;
+					> | null
 
 					// Build full endpoint with query params if they exist
 					let fullEndpoint = endpoint;
 					if (queryParams && Object.keys(queryParams).length > 0) {
 						const queryString = Object.entries(queryParams)
 							.map(([key, value]) => `${key}=${value}`)
-							.join("&");
+							.join("&")
 						fullEndpoint = `${endpoint}?${queryString}`;
 					}
 
@@ -1114,7 +1114,7 @@ function EndpointOverviewTable() {
 						>
 							{fullEndpoint}
 						</span>
-					);
+					)
 				},
 			}),
 			helper.accessor("method", {
@@ -1125,7 +1125,7 @@ function EndpointOverviewTable() {
 						<Badge variant={getMethodVariant(method)}>
 							{method}
 						</Badge>
-					);
+					)
 				},
 			}),
 			helper.accessor("totalRequests", {
@@ -1146,7 +1146,7 @@ function EndpointOverviewTable() {
 						>
 							{avgTime.toFixed(1)}ms
 						</span>
-					);
+					)
 				},
 			}),
 			helper.accessor("p95ResponseTime", {
@@ -1159,7 +1159,7 @@ function EndpointOverviewTable() {
 						>
 							{p95Time.toFixed(1)}ms
 						</span>
-					);
+					)
 				},
 			}),
 			helper.accessor("successRate", {
@@ -1170,7 +1170,7 @@ function EndpointOverviewTable() {
 						<Badge variant={getSuccessRateVariant(successRate)}>
 							{successRate.toFixed(1)}%
 						</Badge>
-					);
+					)
 				},
 			}),
 			helper.accessor("lastRequest", {
@@ -1181,11 +1181,11 @@ function EndpointOverviewTable() {
 						<span className="text-sm">
 							{formatUTCTimestamp(timestamp)}
 						</span>
-					);
+					)
 				},
 			}),
 		],
-	});
+	})
 }
 
 function FrontendLogsTable() {
@@ -1201,9 +1201,9 @@ function FrontendLogsTable() {
 				...args.query,
 				eventType: "frontend_log",
 			},
-		});
+		})
 		return response;
-	};
+	}
 
 	return createPageTemplate({
 		title: "Frontend Logs",
@@ -1243,7 +1243,7 @@ function FrontendLogsTable() {
 								{formatUTCTimestamp(timestamp)}
 							</span>
 						</div>
-					);
+					)
 				},
 			}),
 			helper.accessor("metadata", {
@@ -1252,7 +1252,7 @@ function FrontendLogsTable() {
 					const metadata = props.getValue() as Record<
 						string,
 						unknown
-					>;
+					>
 					const logLevel = (metadata?.logLevel as string) || "log";
 					const variant =
 						logLevel === "error"
@@ -1263,12 +1263,12 @@ function FrontendLogsTable() {
 									? "default"
 									: logLevel === "debug"
 										? "secondary"
-										: "outline";
+										: "outline"
 					return (
 						<Badge variant={variant}>
 							{logLevel.toUpperCase()}
 						</Badge>
-					);
+					)
 				},
 			}),
 			helper.accessor("endpoint", {
@@ -1285,13 +1285,13 @@ function FrontendLogsTable() {
 					const metadata = props.getValue() as Record<
 						string,
 						unknown
-					>;
+					>
 					const logMessage = metadata?.logMessage as string;
 					if (!logMessage || logMessage === "-") {
 						// If no logMessage in metadata, try errorMessage for errors
 						const errorMessage = (
 							props.row.original as { errorMessage?: string }
-						).errorMessage;
+						).errorMessage
 						const message = errorMessage || "No message";
 						return (
 							<span
@@ -1300,7 +1300,7 @@ function FrontendLogsTable() {
 							>
 								{message}
 							</span>
-						);
+						)
 					}
 					return (
 						<span
@@ -1309,7 +1309,7 @@ function FrontendLogsTable() {
 						>
 							{logMessage}
 						</span>
-					);
+					)
 				},
 			}),
 			helper.accessor("userName", {
@@ -1329,17 +1329,17 @@ function FrontendLogsTable() {
 						<span className="text-sm text-muted-foreground">
 							Anonymous
 						</span>
-					);
+					)
 				},
 			}),
 		],
-	});
+	})
 }
 
 function RequestsTable() {
 	const [selectedRequestId, setSelectedRequestId] = useState<string | null>(
 		null,
-	);
+	)
 
 	const tableComponent = createPageTemplate({
 		title: "Request Details",
@@ -1385,7 +1385,7 @@ function RequestsTable() {
 							<TbEye className="h-4 w-4 mr-1" />
 							Explore
 						</Button>
-					);
+					)
 				},
 			}),
 			helper.accessor("createdAt", {
@@ -1398,7 +1398,7 @@ function RequestsTable() {
 								{formatUTCTimestamp(timestamp)}
 							</span>
 						</div>
-					);
+					)
 				},
 			}),
 			helper.accessor("method", {
@@ -1409,7 +1409,7 @@ function RequestsTable() {
 						<Badge variant={getMethodVariant(method)}>
 							{method}
 						</Badge>
-					);
+					)
 				},
 			}),
 			helper.accessor("endpoint", {
@@ -1431,7 +1431,7 @@ function RequestsTable() {
 								? `${displayEndpoint.substring(0, 50)}...`
 								: displayEndpoint || endpoint}
 						</span>
-					);
+					)
 				},
 			}),
 			helper.accessor("userName", {
@@ -1444,7 +1444,7 @@ function RequestsTable() {
 						<span className="text-sm text-muted-foreground">
 							Anonymous
 						</span>
-					);
+					)
 				},
 			}),
 			helper.accessor("statusCode", {
@@ -1456,12 +1456,12 @@ function RequestsTable() {
 							<span className="text-sm text-muted-foreground">
 								-
 							</span>
-						);
+						)
 					return (
 						<Badge variant={getStatusCodeVariant(statusCode)}>
 							{statusCode}
 						</Badge>
-					);
+					)
 				},
 			}),
 			helper.accessor("responseTimeMs", {
@@ -1473,14 +1473,14 @@ function RequestsTable() {
 							<span className="text-sm text-muted-foreground">
 								-
 							</span>
-						);
+						)
 					return (
 						<span
 							className={`text-sm font-semibold ${getResponseTimeColor(responseTime)}`}
 						>
 							{responseTime}ms
 						</span>
-					);
+					)
 				},
 			}),
 			helper.accessor("ipAddress", {
@@ -1503,11 +1503,11 @@ function RequestsTable() {
 						>
 							{userAgent}
 						</span>
-					);
+					)
 				},
 			}),
 		],
-	});
+	})
 
 	return (
 		<>
@@ -1520,7 +1520,7 @@ function RequestsTable() {
 				/>
 			)}
 		</>
-	);
+	)
 }
 
 // Request Detail Dialog Component for request exploration
@@ -1546,7 +1546,7 @@ function RequestDetailDialog({
 		queryFn: async () => {
 			const response = await client.observability.requests[":id"].$get({
 				param: { id: requestId },
-			});
+			})
 			if (!response.ok) {
 				throw new Error("Failed to fetch request details");
 			}
@@ -1555,7 +1555,7 @@ function RequestDetailDialog({
 		enabled: isOpen && !!requestId,
 		staleTime: 30 * 1000, // 30 seconds
 		gcTime: 5 * 60 * 1000, // 5 minutes
-	});
+	})
 
 	const copyToClipboard = async (text: string, fieldName: string) => {
 		try {
@@ -1573,12 +1573,12 @@ function RequestDetailDialog({
 			setCopiedField(fieldName);
 			setTimeout(() => setCopiedField(null), 2000);
 		}
-	};
+	}
 
 	const formatJson = (data: unknown): string => {
 		if (!data) return "null";
 		return JSON.stringify(data, null, 2);
-	};
+	}
 
 	const renderJsonContent = (
 		content: unknown,
@@ -1620,8 +1620,8 @@ function RequestDetailDialog({
 					</ScrollArea>
 				</div>
 			</div>
-		);
-	};
+		)
+	}
 
 	if (!isOpen) return null;
 
@@ -1833,7 +1833,7 @@ function RequestDetailDialog({
 										<CardContent>
 											<div className="space-y-3">
 												{requestDetail.data.relatedEvents.map(
-													(event, index) => (
+													(event) => (
 														<div
 															key={event.id}
 															className="border rounded-lg p-3 space-y-2"
@@ -1910,13 +1910,13 @@ function RequestDetailDialog({
 																				copyToClipboard(
 																					event.stackTrace ||
 																						"",
-																					`stackTrace-${index}`,
+																					"stackTrace-${index}",
 																				)
 																			}
 																			className="h-6 px-2"
 																		>
 																			{copiedField ===
-																			`stackTrace-${index}` ? (
+																			"stackTrace-${index}" ? (
 																				<TbCheck className="h-3 w-3" />
 																			) : (
 																				<TbCopy className="h-3 w-3" />
@@ -1947,13 +1947,13 @@ function RequestDetailDialog({
 																					formatJson(
 																						event.metadata,
 																					),
-																					`metadata-${index}`,
+																					"metadata-${index}",
 																				)
 																			}
 																			className="h-6 px-2"
 																		>
 																			{copiedField ===
-																			`metadata-${index}` ? (
+																			"metadata-${index}" ? (
 																				<TbCheck className="h-3 w-3" />
 																			) : (
 																				<TbCopy className="h-3 w-3" />
@@ -1981,7 +1981,7 @@ function RequestDetailDialog({
 				)}
 			</DialogContent>
 		</Dialog>
-	);
+	)
 }
 
 function ErrorsTable() {
@@ -2023,7 +2023,7 @@ function ErrorsTable() {
 								{formatUTCTimestamp(timestamp)}
 							</span>
 						</div>
-					);
+					)
 				},
 			}),
 			helper.accessor("eventType", {
@@ -2038,7 +2038,7 @@ function ErrorsTable() {
 						eventType === "frontend_error" ||
 						(eventType === "api_request" &&
 							statusCode &&
-							statusCode >= 400);
+							statusCode >= 400)
 
 					if (!isError) {
 						return <Badge variant="outline">Not Error</Badge>;
@@ -2047,11 +2047,11 @@ function ErrorsTable() {
 					const variant =
 						eventType === "frontend_error"
 							? "destructive"
-							: "secondary";
+							: "secondary"
 					const label =
 						eventType === "frontend_error"
 							? "Frontend"
-							: "Backend API";
+							: "Backend API"
 					return <Badge variant={variant}>{label}</Badge>;
 				},
 			}),
@@ -2080,7 +2080,7 @@ function ErrorsTable() {
 						<span className="text-sm text-muted-foreground">
 							Anonymous
 						</span>
-					);
+					)
 				},
 			}),
 			helper.accessor("statusCode", {
@@ -2092,7 +2092,7 @@ function ErrorsTable() {
 						<Badge variant={getStatusCodeVariant(statusCode)}>
 							{statusCode}
 						</Badge>
-					);
+					)
 				},
 			}),
 			helper.accessor("errorMessage", {
@@ -2107,7 +2107,7 @@ function ErrorsTable() {
 						>
 							{error}
 						</span>
-					);
+					)
 				},
 			}),
 			helper.accessor("stackTrace", {
@@ -2124,11 +2124,11 @@ function ErrorsTable() {
 							endpoint={row.endpoint as string}
 							timestamp={row.timestamp as string}
 						/>
-					);
+					)
 				},
 			}),
 		],
-	});
+	})
 }
 
 export default ObservabilityPage;
