@@ -117,7 +117,7 @@ export const truncateData = (
  */
 export const extractHeaders = (
 	headers: Headers | Record<string, string>,
-	isRequest: boolean = true,
+	isRequest = true,
 ): Record<string, string> => {
 	const headersToCapture = isRequest
 		? [

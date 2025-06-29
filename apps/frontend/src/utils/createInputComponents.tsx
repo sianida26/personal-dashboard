@@ -30,7 +30,7 @@ import {
 	Textarea,
 	type TextareaProps,
 } from "@repo/ui";
-import type { ReactNode } from "@tanstack/react-router";
+import type { ReactNode } from "react";
 import type React from "react";
 
 //TODO: Implement all these

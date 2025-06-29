@@ -1,4 +1,4 @@
-import { createLazyFileRoute, useSearch } from '@tanstack/react-router'
+import { createLazyFileRoute, useSearch } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle, Badge } from "@repo/ui";
 import { Button } from "@repo/ui";
 import {
@@ -26,7 +26,7 @@ import {
 } from "@repo/ui";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate } from "@tanstack/react-router";
 
 // Configure dayjs to use UTC
 dayjs.extend(utc);
@@ -91,7 +91,7 @@ function RequestDetailDialog({
 		queryFn: async () => {
 			const response = await client.observability.requests[":id"].$get({
 				param: { id: requestId },
-			})
+			});
 			if (!response.ok) {
 				throw new Error("Failed to fetch request details");
 			}
@@ -100,7 +100,7 @@ function RequestDetailDialog({
 		enabled: isOpen && !!requestId,
 		staleTime: 30 * 1000, // 30 seconds
 		gcTime: 5 * 60 * 1000, // 5 minutes
-	})
+	});
 
 	const copyToClipboard = async (text: string, fieldName: string) => {
 		try {
@@ -118,12 +118,12 @@ function RequestDetailDialog({
 			setCopiedField(fieldName);
 			setTimeout(() => setCopiedField(null), 2000);
 		}
-	}
+	};
 
 	const formatJson = (data: unknown): string => {
 		if (!data) return "null";
 		return JSON.stringify(data, null, 2);
-	}
+	};
 
 	const renderJsonContent = (
 		content: unknown,
@@ -165,8 +165,8 @@ function RequestDetailDialog({
 					</ScrollArea>
 				</div>
 			</div>
-		)
-	}
+		);
+	};
 
 	if (!isOpen) return null;
 
@@ -179,7 +179,7 @@ function RequestDetailDialog({
 
 				{isLoading && (
 					<div className="flex items-center justify-center py-8">
-						<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+						<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
 					</div>
 				)}
 
@@ -318,7 +318,8 @@ function RequestDetailDialog({
 
 										{requestDetail.data.requestHeaders &&
 											renderJsonContent(
-												requestDetail.data.requestHeaders,
+												requestDetail.data
+													.requestHeaders,
 												"Request Headers",
 												"requestHeaders",
 											)}
@@ -343,7 +344,8 @@ function RequestDetailDialog({
 									<CardContent className="space-y-4">
 										{requestDetail.data.responseHeaders &&
 											renderJsonContent(
-												requestDetail.data.responseHeaders,
+												requestDetail.data
+													.responseHeaders,
 												"Response Headers",
 												"responseHeaders",
 											)}
@@ -362,16 +364,22 @@ function RequestDetailDialog({
 				)}
 			</DialogContent>
 		</Dialog>
-	)
+	);
 }
 
 function EndpointRequestsTable() {
 	const navigate = useNavigate();
-	const { endpoint, method } = useSearch({ from: '/_dashboardLayout/observability/endpoint-requests' });
-	const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
+	const { endpoint, method } = useSearch({
+		from: "/_dashboardLayout/observability/endpoint-requests",
+	});
+	const [selectedRequestId, setSelectedRequestId] = useState<string | null>(
+		null,
+	);
 
 	// Create a wrapper endpoint that includes the filters
-	const filteredEndpoint = async (args: Record<string, unknown> & { query: QueryParams }) => {
+	const filteredEndpoint = async (
+		args: Record<string, unknown> & { query: QueryParams },
+	) => {
 		// Add routePath and method filters to the query
 		// Use routePath instead of endpoint since we're filtering by route pattern
 		const filteredQuery = {
@@ -379,7 +387,7 @@ function EndpointRequestsTable() {
 			routePath: endpoint, // endpoint from search params is actually the routePath
 			method,
 		};
-		
+
 		return client.observability.requests.$get({
 			query: filteredQuery,
 		});
@@ -418,7 +426,7 @@ function EndpointRequestsTable() {
 							<TbEye className="h-4 w-4 mr-1" />
 							Explore
 						</Button>
-					)
+					);
 				},
 			}),
 			helper.accessor("createdAt", {
@@ -431,7 +439,7 @@ function EndpointRequestsTable() {
 								{formatUTCTimestamp(timestamp)}
 							</span>
 						</div>
-					)
+					);
 				},
 			}),
 			helper.accessor("endpoint", {
@@ -453,7 +461,7 @@ function EndpointRequestsTable() {
 								? `${displayEndpoint.substring(0, 50)}...`
 								: displayEndpoint || endpoint}
 						</span>
-					)
+					);
 				},
 			}),
 			helper.accessor("userName", {
@@ -466,7 +474,7 @@ function EndpointRequestsTable() {
 						<span className="text-sm text-muted-foreground">
 							Anonymous
 						</span>
-					)
+					);
 				},
 			}),
 			helper.accessor("responseTimeMs", {
@@ -478,14 +486,14 @@ function EndpointRequestsTable() {
 							<span className="text-sm text-muted-foreground">
 								-
 							</span>
-						)
+						);
 					return (
 						<span
 							className={`text-sm font-semibold ${getResponseTimeColor(responseTime)}`}
 						>
 							{responseTime}ms
 						</span>
-					)
+					);
 				},
 			}),
 			helper.accessor("statusCode", {
@@ -497,16 +505,16 @@ function EndpointRequestsTable() {
 							<span className="text-sm text-muted-foreground">
 								-
 							</span>
-						)
+						);
 					return (
 						<Badge variant={getStatusCodeVariant(statusCode)}>
 							{statusCode}
 						</Badge>
-					)
+					);
 				},
 			}),
 		],
-	})
+	});
 
 	return (
 		<div className="space-y-6">
@@ -515,7 +523,7 @@ function EndpointRequestsTable() {
 				<Button
 					variant="ghost"
 					size="sm"
-					onClick={() => navigate({ to: '/observability' })}
+					onClick={() => navigate({ to: "/observability" })}
 					className="flex items-center gap-2"
 				>
 					<TbArrowLeft className="h-4 w-4" />
@@ -523,7 +531,9 @@ function EndpointRequestsTable() {
 				</Button>
 				<div className="flex items-center gap-2">
 					<Badge variant={getMethodVariant(method)}>{method}</Badge>
-					<span className="font-mono text-sm text-muted-foreground">{endpoint}</span>
+					<span className="font-mono text-sm text-muted-foreground">
+						{endpoint}
+					</span>
 				</div>
 			</div>
 
@@ -539,11 +549,11 @@ function EndpointRequestsTable() {
 				/>
 			)}
 		</div>
-	)
+	);
 }
 
 export const Route = createLazyFileRoute(
-  '/_dashboardLayout/observability/endpoint-requests',
+	"/_dashboardLayout/observability/endpoint-requests",
 )({
-  component: EndpointRequestsTable,
-})
+	component: EndpointRequestsTable,
+});

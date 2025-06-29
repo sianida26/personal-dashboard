@@ -1,4 +1,4 @@
-import type { ReactNode } from "@tanstack/react-router";
+import type { ReactNode } from "react";
 import { useState, useEffect } from "react";
 import AuthContext, { type AuthContextType } from "./AuthContext";
 import { authDB } from "@/indexedDB/authDB";
