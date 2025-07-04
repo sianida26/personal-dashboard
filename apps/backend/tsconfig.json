@@ -9,7 +9,11 @@
 		"jsx": "react-jsx",
 		"jsxImportSource": "hono/jsx",
 		"noEmit": true,
-		"skipLibCheck": true
+		"skipLibCheck": true,
+		"paths": {
+			"~/*": ["./src/*"]
+		},
+		"baseUrl": "."
 	},
 	"include": ["src/**/*", "../frontend/src/utils/getTablerIcon.ts"]
 }
