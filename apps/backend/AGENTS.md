@@ -97,7 +97,9 @@ apps/backend/
 │       ├── logger.ts               # Custom logging implementation
 │       ├── passwordUtils.ts        # Password hashing/validation
 │       ├── redis.ts                # Redis-like KV store using Drizzle
-│       └── requestValidator.ts     # Request validation helper
+│       ├── requestValidator.ts     # Request validation helper
+│       └── test-utils/             # Testing utilities
+│           └── create-user-for-testing.ts  # Test user creation/cleanup
 ├── package.json                    # Dependencies and scripts
 ├── drizzle.config.ts              # Drizzle Kit configuration
 ├── biome.json                     # Code formatting/linting config
@@ -601,12 +603,155 @@ describe("POST /auth/login", () => {
 });
 ```
 
+### Test User Utilities:
+The codebase provides utilities for creating and managing test users with specific roles and permissions:
+
+#### Creating Test Users:
+```typescript
+// src/utils/test-utils/create-user-for-testing.ts
+import { createUserForTesting, cleanupTestUser } from "../../utils/test-utils/create-user-for-testing";
+
+// Create a basic test user
+const { user, accessToken } = await createUserForTesting();
+
+// Create user with specific roles
+const adminUser = await createUserForTesting({
+  name: "Test Admin",
+  username: "test-admin",
+  roles: ["super-admin"]
+});
+
+// Create user with specific permissions
+const limitedUser = await createUserForTesting({
+  name: "Limited User",
+  username: "limited-user",
+  permissions: ["users.read", "roles.read"]
+});
+
+// Create user with custom details
+const customUser = await createUserForTesting({
+  name: "Custom User",
+  username: "custom-user",
+  email: "custom@example.com",
+  password: "customPassword123!",
+  isEnabled: true,
+  roles: ["editor"],
+  permissions: ["posts.create", "posts.update"]
+});
+```
+
+#### Test User Data Structure:
+```typescript
+interface TestUserData {
+  user: {
+    id: string;
+    name: string;
+    username: string;
+    email: string;
+    isEnabled: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+    // Additional computed properties
+    permissions: PermissionCode[];  // All permissions (from roles + direct)
+    roles: string[];               // Role names assigned to user
+  };
+  accessToken: string;  // JWT token for API authentication
+}
+```
+
+#### Cleanup Test Users:
+```typescript
+// Cleanup by user ID
+await cleanupTestUser(user.id);
+
+// Cleanup by username (convenience method)
+await cleanupTestUserByUsername("test-admin");
+```
+
+#### Complete Test Example:
+```typescript
+// src/routes/users/get-users.test.ts
+import { describe, test, expect, beforeAll, afterAll } from "bun:test";
+import { createUserForTesting, cleanupTestUser } from "../../utils/test-utils/create-user-for-testing";
+import client from "../../utils/hono-test-client";
+
+describe("GET /users", () => {
+  let adminUser: Awaited<ReturnType<typeof createUserForTesting>>;
+  let regularUser: Awaited<ReturnType<typeof createUserForTesting>>;
+
+  beforeAll(async () => {
+    // Create test users with different permission levels
+    adminUser = await createUserForTesting({
+      name: "Admin User",
+      username: "admin-test",
+      roles: ["super-admin"]
+    });
+
+    regularUser = await createUserForTesting({
+      name: "Regular User", 
+      username: "regular-test",
+      permissions: ["users.read"]
+    });
+  });
+
+  afterAll(async () => {
+    // Cleanup test users
+    await cleanupTestUser(adminUser.user.id);
+    await cleanupTestUser(regularUser.user.id);
+  });
+
+  test("should allow admin to get all users", async () => {
+    const response = await client.users.$get({
+      headers: {
+        Authorization: `Bearer ${adminUser.accessToken}`
+      }
+    });
+
+    expect(response.status).toBe(200);
+    const data = await response.json();
+    expect(data.users).toBeDefined();
+    expect(Array.isArray(data.users)).toBe(true);
+  });
+
+  test("should allow user with read permission to get users", async () => {
+    const response = await client.users.$get({
+      headers: {
+        Authorization: `Bearer ${regularUser.accessToken}`
+      }
+    });
+
+    expect(response.status).toBe(200);
+  });
+
+  test("should deny access without proper permissions", async () => {
+    // Create user without permissions
+    const limitedUser = await createUserForTesting({
+      name: "Limited User",
+      username: "limited-test",
+      permissions: [] // No permissions
+    });
+
+    const response = await client.users.$get({
+      headers: {
+        Authorization: `Bearer ${limitedUser.accessToken}`
+      }
+    });
+
+    expect(response.status).toBe(403);
+    
+    // Cleanup
+    await cleanupTestUser(limitedUser.user.id);
+  });
+});
+```
+
 ### Testing Guidelines:
 - **Use real Drizzle instance**: Do NOT mock the database - use actual Drizzle ORM with test database
 - **Run tests with**: `bun run test` (not `bun test`)
 - **Database setup**: Use real database connections for integration testing
-- **Test data**: Create and cleanup test data in `beforeAll`/`afterAll` hooks
+- **Test data**: Use `createUserForTesting()` and `cleanupTestUser()` for user management
 - **Assertions**: Test actual API responses and database state changes
+- **Permission testing**: Create users with specific roles/permissions to test authorization
 
 ### ⚠️ CRITICAL: Avoiding Test Interference in Bun
 

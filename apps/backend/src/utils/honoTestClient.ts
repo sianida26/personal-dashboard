@@ -1,6 +1,7 @@
-import { testClient } from "hono/testing";
-import { appRoutes } from "..";
+import honoTestClient from "./test-utils/hono-test-client";
 
-const client = testClient(appRoutes);
-
-export default client;
+/**
+ * @deprecated Use `honoTestClient` from `./test-utils/hono-test-client` instead.
+ * This import is deprecated and will be removed in future versions.
+ */
+export default honoTestClient;
