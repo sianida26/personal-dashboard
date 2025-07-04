@@ -43,31 +43,31 @@ export interface TestUserData {
  * Creates a test user with specified roles and permissions for testing purposes.
  * This utility handles all the database operations and returns the complete user data
  * along with a valid access token for authentication in tests.
- * 
+ *
  * @param options - Configuration options for creating the test user
  * @returns Promise resolving to user data with access token
- * 
+ *
  * @example
  * ```typescript
  * // Create a basic test user
  * const { user, accessToken } = await createUserForTesting();
- * 
+ *
  * // Create user with specific roles
  * const adminUser = await createUserForTesting({
  *   name: "Test Admin",
  *   username: "test-admin",
  *   roles: ["super-admin"]
  * });
- * 
+ *
  * // Create user with specific permissions
  * const limitedUser = await createUserForTesting({
- *   name: "Limited User", 
+ *   name: "Limited User",
  *   permissions: ["users.read", "roles.read"]
  * });
  * ```
  */
 export async function createUserForTesting(
-	options: CreateUserOptions = {}
+	options: CreateUserOptions = {},
 ): Promise<TestUserData> {
 	const {
 		name = "Test User",
@@ -127,7 +127,9 @@ export async function createUserForTesting(
 			});
 
 			if (!permission) {
-				throw new Error(`Permission with code "${permissionCode}" not found`);
+				throw new Error(
+					`Permission with code "${permissionCode}" not found`,
+				);
 			}
 
 			// Assign permission to user
@@ -178,13 +180,15 @@ export async function createUserForTesting(
 	// Add role-based permissions
 	for (const userRole of userWithPermissions.rolesToUsers) {
 		for (const rolePermission of userRole.role.permissionsToRoles) {
-			allPermissions.add(rolePermission.permission.code as PermissionCode);
+			allPermissions.add(
+				rolePermission.permission.code as PermissionCode,
+			);
 		}
 	}
 
 	// Get role names
 	const roleNames = userWithPermissions.rolesToUsers.map(
-		(userRole) => userRole.role.name
+		(userRole) => userRole.role.name,
 	);
 
 	// Generate access token
@@ -205,17 +209,19 @@ export async function createUserForTesting(
 /**
  * Cleans up a test user and all associated data from the database.
  * This function removes the user and all their role/permission assignments.
- * 
+ *
  * @param userId - The ID of the user to delete
  * @returns Promise that resolves when cleanup is complete
  */
 export async function cleanupTestUser(userId: string): Promise<void> {
 	// Delete role assignments (cascade should handle this, but explicit for clarity)
 	await db.delete(rolesToUsers).where(eq(rolesToUsers.userId, userId));
-	
-	// Delete permission assignments (cascade should handle this, but explicit for clarity)  
-	await db.delete(permissionsToUsers).where(eq(permissionsToUsers.userId, userId));
-	
+
+	// Delete permission assignments (cascade should handle this, but explicit for clarity)
+	await db
+		.delete(permissionsToUsers)
+		.where(eq(permissionsToUsers.userId, userId));
+
 	// Delete the user
 	await db.delete(users).where(eq(users.id, userId));
 }
@@ -223,11 +229,13 @@ export async function cleanupTestUser(userId: string): Promise<void> {
 /**
  * Cleans up a test user by username.
  * Convenience function for cleanup when you only have the username.
- * 
+ *
  * @param username - The username of the user to delete
  * @returns Promise that resolves when cleanup is complete
  */
-export async function cleanupTestUserByUsername(username: string): Promise<void> {
+export async function cleanupTestUserByUsername(
+	username: string,
+): Promise<void> {
 	const user = await db.query.users.findFirst({
 		where: eq(users.username, username),
 	});
