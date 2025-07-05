@@ -1,4 +1,4 @@
-- You must follow the coding guidelines and best practices outlined in `docs/README.md`.
+- You MUST follow the coding guidelines and best practices outlined in `docs/README.md` before making changes or tests.
 - Backend documentation is located in `docs/backend/README.md`.
 - Frontend documentation is located in `docs/frontend/README.md`.
 - Feature documentation is organized in `docs/features/` with each feature having its own folder.
