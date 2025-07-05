@@ -32,7 +32,7 @@ function RouteComponent() {
 			? originalPermissions
 			: ["authenticated-only"],
 		{
-			autoCheckInterval: 30000, // Check every 30 seconds
+			autoCheckInterval: 10000, // Check every 10 seconds
 			redirectOnRestore: true,
 			onPermissionRestored: () => {
 				// Clean up stored data
