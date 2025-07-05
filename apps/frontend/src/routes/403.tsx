@@ -1,8 +1,8 @@
-import illustration from "@/assets/illustrations/undraw_alert_w756.svg";
+import type { ExtendedPermissionCodeWithAll } from "@repo/data";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import illustration from "@/assets/illustrations/undraw_alert_w756.svg";
 import usePermissionChecker from "@/hooks/usePermissionChecker";
-import type { ExtendedPermissionCodeWithAll } from "@repo/data";
 
 export const Route = createFileRoute("/403")({
 	component: RouteComponent,
