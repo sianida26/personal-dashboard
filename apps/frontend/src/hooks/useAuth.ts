@@ -88,6 +88,17 @@ export const usePermissions = (
 	});
 
 	if (!hasPermission) {
+		// Store the current location for potential redirect back after permissions are restored
+		const currentLocation =
+			window.location.pathname + window.location.search;
+		sessionStorage.setItem("originalRoute", currentLocation);
+
+		// Store the required permissions so the 403 page can check against them
+		sessionStorage.setItem(
+			"originalPermissions",
+			JSON.stringify(permissionArray),
+		);
+
 		navigate({
 			to: "/403",
 		});
