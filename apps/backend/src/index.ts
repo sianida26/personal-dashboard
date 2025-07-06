@@ -2,23 +2,24 @@ import { configDotenv } from "dotenv";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
+import { rateLimiter } from "hono-rate-limiter";
 import appEnv from "./appEnv";
 import DashboardError from "./errors/DashboardError";
 import authTokenMiddleware from "./middlewares/authTokenMiddleware";
 import observabilityMiddleware from "./middlewares/observability-middleware";
 import appSettingsRoutes from "./routes/appSettingsRoute";
+import microsoftAdminRouter from "./routes/auth/microsoft/admin";
+import authRouter from "./routes/auth/route";
 import dashboardRoutes from "./routes/dashboard/routes";
 import devRoutes from "./routes/dev/route";
+import observabilityRoutes from "./routes/observability/routes";
 import permissionRoutes from "./routes/permissions/route";
 import rolesRoute from "./routes/roles/route";
 import usersRoute from "./routes/users/route";
+import { recordBackendError } from "./services/error-tracking-service";
+import { jobQueueManager } from "./services/jobs";
 import type HonoEnv from "./types/HonoEnv";
 import appLogger from "./utils/logger";
-import authRouter from "./routes/auth/route";
-import microsoftAdminRouter from "./routes/auth/microsoft/admin";
-import observabilityRoutes from "./routes/observability/routes";
-import { rateLimiter } from "hono-rate-limiter";
-import { recordBackendError } from "./services/error-tracking-service";
 
 configDotenv();
 
@@ -97,6 +98,22 @@ export const appRoutes = app
 			500,
 		);
 	});
+
+// Initialize job queue manager
+await jobQueueManager.initialize();
+
+// Handle graceful shutdown
+process.on("SIGTERM", async () => {
+	appLogger.info("Received SIGTERM, shutting down gracefully");
+	await jobQueueManager.shutdown();
+	process.exit(0);
+});
+
+process.on("SIGINT", async () => {
+	appLogger.info("Received SIGINT, shutting down gracefully");
+	await jobQueueManager.shutdown();
+	process.exit(0);
+});
 
 export default {
 	fetch: app.fetch,
