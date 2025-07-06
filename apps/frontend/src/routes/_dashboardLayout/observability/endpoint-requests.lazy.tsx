@@ -1,32 +1,47 @@
-import { createLazyFileRoute, useSearch } from "@tanstack/react-router";
-import { Card, CardContent, CardHeader, CardTitle, Badge } from "@repo/ui";
-import { Button } from "@repo/ui";
 import {
-	TbEye,
-	TbArrowLeft,
-	TbAlertTriangle,
-	TbCode,
-	TbList,
-	TbCopy,
-	TbCheck,
-} from "react-icons/tb";
-import {
-	createPageTemplate,
-	type QueryParams,
-} from "@/components/PageTemplate";
-import client from "@/honoClient";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import {
+	Badge,
+	Button,
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+	type ChartConfig,
+	ChartContainer,
+	ChartLegend,
+	ChartLegendContent,
+	ChartTooltip,
+	ChartTooltipContent,
 	Dialog,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
 	ScrollArea,
 } from "@repo/ui";
+import { useQuery } from "@tanstack/react-query";
+import {
+	createLazyFileRoute,
+	useNavigate,
+	useSearch,
+} from "@tanstack/react-router";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { useNavigate } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
+import {
+	TbAlertTriangle,
+	TbArrowLeft,
+	TbChartBar,
+	TbCheck,
+	TbCode,
+	TbCopy,
+	TbEye,
+	TbList,
+} from "react-icons/tb";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import {
+	createPageTemplate,
+	type QueryParams,
+} from "@/components/PageTemplate";
+import client from "@/honoClient";
 
 // Configure dayjs to use UTC
 dayjs.extend(utc);
@@ -367,6 +382,639 @@ function RequestDetailDialog({
 	);
 }
 
+// Analytics Charts Component
+interface AnalyticsChartsProps {
+	endpoint: string;
+	method: string;
+}
+
+function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
+	const [timeRange, setTimeRange] = useState<"7d" | "30d">("7d");
+
+	// Chart configuration for status codes
+	const chartConfig = {
+		"2xx": {
+			label: "2xx Success",
+			color: "hsl(142, 76%, 36%)", // Green
+		},
+		"3xx": {
+			label: "3xx Redirect",
+			color: "hsl(210, 20%, 58%)", // Gray
+		},
+		"4xx": {
+			label: "4xx Client Error",
+			color: "hsl(45, 93%, 47%)", // Yellow
+		},
+		"5xx": {
+			label: "5xx Server Error",
+			color: "hsl(0, 84%, 60%)", // Red
+		},
+	} satisfies ChartConfig;
+
+	// Calculate date range
+	const { startDate, endDate } = useMemo(() => {
+		const now = dayjs().utc();
+		const days = timeRange === "7d" ? 7 : 30;
+		return {
+			startDate: now.subtract(days, "day").toISOString(),
+			endDate: now.toISOString(),
+		};
+	}, [timeRange]);
+
+	// Fetch analytics data
+	const { data: analyticsData, isLoading } = useQuery({
+		queryKey: ["observability", "analytics", endpoint, method, timeRange],
+		queryFn: async () => {
+			const response = await client.observability.requests.$get({
+				query: {
+					routePath: endpoint,
+					method,
+					startDate,
+					endDate,
+					limit: "1000", // Get more data for analytics
+				},
+			});
+			if (!response.ok) {
+				throw new Error("Failed to fetch analytics data");
+			}
+			const result = await response.json();
+			return result.data;
+		},
+		staleTime: 5 * 60 * 1000, // 5 minutes
+	});
+
+	// Process data for charts
+	const { chartData, statistics } = useMemo(() => {
+		if (!analyticsData)
+			return {
+				chartData: { dailyData: [], histogramData: [] },
+				statistics: {
+					totalRequests: 0,
+					avgResponseTime: 0,
+					maxResponseTime: 0,
+					medianResponseTime: 0,
+					p95ResponseTime: 0,
+					successRate: 0,
+					statusCounts: { "2xx": 0, "3xx": 0, "4xx": 0, "5xx": 0 },
+				},
+			};
+
+		// Calculate maximum response time for adaptive bins
+		const maxTime = Math.max(
+			...analyticsData.map(
+				(item: AnalyticsItem) => item.responseTimeMs || 0,
+			),
+		);
+
+		// Group by status code category
+		const getStatusCategory = (statusCode: number): string => {
+			if (statusCode >= 200 && statusCode < 300) return "2xx";
+			if (statusCode >= 300 && statusCode < 400) return "3xx";
+			if (statusCode >= 400 && statusCode < 500) return "4xx";
+			if (statusCode >= 500) return "5xx";
+			return "other";
+		};
+		// Type for analytics data item
+		type AnalyticsItem = {
+			id: string;
+			requestId: string;
+			userId: string | null;
+			userName: string | null;
+			method: string;
+			endpoint: string;
+			fullEndpoint: string;
+			ipAddress: string | null;
+			userAgent: string | null;
+			statusCode: number | null;
+			responseTimeMs: number | null;
+			createdAt: string | null;
+		};
+		// Daily average response time data
+		const dailyGroups = analyticsData.reduce(
+			(
+				acc: Record<
+					string,
+					{
+						responses: number[];
+						total: number;
+						categories: Record<
+							string,
+							{ times: number[]; count: number }
+						>;
+					}
+				>,
+				item: AnalyticsItem,
+			) => {
+				if (!item.createdAt) return acc;
+
+				const day = dayjs(item.createdAt).format("MMM DD");
+				const statusCategory = getStatusCategory(item.statusCode || 0);
+				const responseTime = item.responseTimeMs || 0;
+
+				if (!acc[day]) {
+					acc[day] = {
+						responses: [],
+						total: 0,
+						categories: {
+							"2xx": { times: [], count: 0 },
+							"3xx": { times: [], count: 0 },
+							"4xx": { times: [], count: 0 },
+							"5xx": { times: [], count: 0 },
+						},
+					};
+				}
+
+				acc[day].responses.push(responseTime);
+				acc[day].total++;
+				acc[day].categories[statusCategory].times.push(responseTime);
+				acc[day].categories[statusCategory].count++;
+
+				return acc;
+			},
+			{},
+		);
+
+		// Generate all days in the range to avoid skipping dates
+		const days = timeRange === "7d" ? 7 : 30;
+		const allDays = Array.from({ length: days }, (_, i) => {
+			return dayjs()
+				.utc()
+				.subtract(days - 1 - i, "day")
+				.format("MMM DD");
+		});
+
+		const dailyData = allDays.map((day) => {
+			const data = dailyGroups[day];
+			const result: Record<string, number | string> = { day };
+
+			if (data) {
+				// Calculate average response time for each status category
+				Object.entries(data.categories).forEach(
+					([category, categoryData]) => {
+						if (categoryData.times.length > 0) {
+							result[category] = Math.round(
+								categoryData.times.reduce(
+									(sum, time) => sum + time,
+									0,
+								) / categoryData.times.length,
+							);
+						} else {
+							result[category] = 0;
+						}
+					},
+				);
+			} else {
+				// No data for this day, set all to 0
+				result["2xx"] = 0;
+				result["3xx"] = 0;
+				result["4xx"] = 0;
+				result["5xx"] = 0;
+			}
+
+			return result;
+		});
+
+		// Response time histogram data - 1ms granularity with adaptive max
+		const createAdaptiveBins = (maxTime: number) => {
+			const bins = [];
+
+			// Create 1ms bins up to the maximum response time
+			for (let i = 0; i <= maxTime; i++) {
+				bins.push({
+					range: `${i}ms`,
+					min: i,
+					max: i + 1,
+					order: i + 1,
+				});
+			}
+
+			return bins;
+		};
+
+		const histogramBins = createAdaptiveBins(maxTime);
+
+		const histogramData = histogramBins
+			.map((bin) => {
+				// Count requests in this bin by status category
+				const binData = {
+					"2xx": 0,
+					"3xx": 0,
+					"4xx": 0,
+					"5xx": 0,
+				};
+
+				analyticsData.forEach((item: AnalyticsItem) => {
+					const responseTime = Math.floor(item.responseTimeMs || 0); // Floor to match bin
+					const statusCategory = getStatusCategory(
+						item.statusCode || 0,
+					);
+
+					if (responseTime === bin.min) {
+						// Exact match for 1ms bins
+						binData[statusCategory as keyof typeof binData]++;
+					}
+				});
+
+				return {
+					range: bin.range,
+					order: bin.order,
+					...binData,
+				};
+			})
+			.sort((a, b) => a.order - b.order);
+
+		// Calculate statistical metrics
+		const responseTimes = analyticsData.map((item: AnalyticsItem) => item.responseTimeMs || 0).filter(time => time > 0);
+		const totalRequests = analyticsData.length;
+		
+		// Basic statistics
+		const avgResponseTime = responseTimes.length > 0 
+			? Math.round(responseTimes.reduce((sum, time) => sum + time, 0) / responseTimes.length)
+			: 0;
+		
+		const maxResponseTime = responseTimes.length > 0 ? Math.max(...responseTimes) : 0;
+		
+		// Calculate median (50th percentile)
+		const sortedTimes = [...responseTimes].sort((a, b) => a - b);
+		const medianResponseTime = sortedTimes.length > 0
+			? sortedTimes.length % 2 === 0
+				? Math.round((sortedTimes[sortedTimes.length / 2 - 1] + sortedTimes[sortedTimes.length / 2]) / 2)
+				: sortedTimes[Math.floor(sortedTimes.length / 2)]
+			: 0;
+		
+		// Calculate 95th percentile
+		const p95ResponseTime = sortedTimes.length > 0
+			? sortedTimes[Math.floor(sortedTimes.length * 0.95)] || 0
+			: 0;
+		
+		// Status code distribution
+		const statusCounts = {
+			"2xx": 0,
+			"3xx": 0,
+			"4xx": 0,
+			"5xx": 0,
+		};
+		
+		analyticsData.forEach((item: AnalyticsItem) => {
+			const statusCategory = getStatusCategory(item.statusCode || 0);
+			if (statusCategory !== "other") {
+				statusCounts[statusCategory as keyof typeof statusCounts]++;
+			}
+		});
+		
+		const successRate = totalRequests > 0 
+			? Math.round((statusCounts["2xx"] / totalRequests) * 100)
+			: 0;
+
+		return {
+			chartData: { dailyData, histogramData },
+			statistics: {
+				totalRequests,
+				avgResponseTime,
+				maxResponseTime,
+				medianResponseTime,
+				p95ResponseTime,
+				successRate,
+				statusCounts,
+			},
+		};
+	}, [analyticsData]);
+
+	if (isLoading) {
+		return (
+			<div className="space-y-6 mb-6">
+				{/* Loading Analytics Cards */}
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+					{["total", "success", "avg", "p95"].map((cardType) => (
+						<Card key={cardType}>
+							<CardHeader className="pb-3">
+								<div className="h-4 w-24 bg-muted animate-pulse rounded" />
+							</CardHeader>
+							<CardContent>
+								<div className="h-8 w-16 bg-muted animate-pulse rounded" />
+							</CardContent>
+						</Card>
+					))}
+				</div>
+				
+				{/* Loading Secondary Cards */}
+				<div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+					{["min", "median", "2xx", "3xx", "4xx", "5xx"].map((cardType) => (
+						<Card key={cardType}>
+							<CardHeader className="pb-3">
+								<div className="h-4 w-20 bg-muted animate-pulse rounded" />
+							</CardHeader>
+							<CardContent>
+								<div className="h-6 w-12 bg-muted animate-pulse rounded" />
+							</CardContent>
+						</Card>
+					))}
+				</div>
+				
+				{/* Loading Charts */}
+				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+					<Card>
+						<CardHeader>
+							<div className="h-6 w-48 bg-muted animate-pulse rounded" />
+						</CardHeader>
+						<CardContent>
+							<div className="h-80 bg-muted animate-pulse rounded" />
+						</CardContent>
+					</Card>
+					<Card>
+						<CardHeader>
+							<div className="h-6 w-48 bg-muted animate-pulse rounded" />
+						</CardHeader>
+						<CardContent>
+							<div className="h-80 bg-muted animate-pulse rounded" />
+						</CardContent>
+					</Card>
+				</div>
+			</div>
+		);
+	}
+
+	return (
+		<div className="space-y-6 mb-6">
+			{/* Time Range Selector */}
+			<div className="flex items-center justify-between">
+				<div>
+					<h3 className="text-lg font-medium flex items-center gap-2">
+						<TbChartBar className="h-5 w-5" />
+						Analytics
+					</h3>
+					<p className="text-sm text-muted-foreground">
+						Response time analysis for {method} {endpoint}
+					</p>
+				</div>
+				<div className="flex items-center gap-2">
+					<Button
+						variant={timeRange === "7d" ? "default" : "outline"}
+						size="sm"
+						onClick={() => setTimeRange("7d")}
+					>
+						Last 7 days
+					</Button>
+					<Button
+						variant={timeRange === "30d" ? "default" : "outline"}
+						size="sm"
+						onClick={() => setTimeRange("30d")}
+					>
+						Last 30 days
+					</Button>
+				</div>
+			</div>
+
+			{/* Statistics Cards */}
+			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+				<Card>
+					<CardHeader className="pb-3">
+						<CardTitle className="text-sm font-medium text-muted-foreground">
+							Total Requests
+						</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<div className="text-2xl font-bold">
+							{statistics.totalRequests.toLocaleString()}
+						</div>
+					</CardContent>
+				</Card>
+				
+				<Card>
+					<CardHeader className="pb-3">
+						<CardTitle className="text-sm font-medium text-muted-foreground">
+							Success Rate
+						</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<div className="text-2xl font-bold text-green-600">
+							{statistics.successRate}%
+						</div>
+						<p className="text-xs text-muted-foreground mt-1">
+							{statistics.statusCounts["2xx"]} successful requests
+						</p>
+					</CardContent>
+				</Card>
+				
+				<Card>
+					<CardHeader className="pb-3">
+						<CardTitle className="text-sm font-medium text-muted-foreground">
+							Average Response Time
+						</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<div className="text-2xl font-bold">
+							{statistics.avgResponseTime}ms
+						</div>
+					</CardContent>
+				</Card>
+				
+				<Card>
+					<CardHeader className="pb-3">
+						<CardTitle className="text-sm font-medium text-muted-foreground">
+							95th Percentile
+						</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<div className="text-2xl font-bold">
+							{statistics.p95ResponseTime}ms
+						</div>
+					</CardContent>
+				</Card>
+			</div>
+
+			{/* Response Time Statistics */}
+			<div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+				<Card>
+					<CardHeader className="pb-3">
+						<CardTitle className="text-sm font-medium text-muted-foreground">
+							Max Response Time
+						</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<div className="text-lg font-bold">
+							{statistics.maxResponseTime}ms
+						</div>
+					</CardContent>
+				</Card>
+				
+				<Card>
+					<CardHeader className="pb-3">
+						<CardTitle className="text-sm font-medium text-muted-foreground">
+							Median Response Time
+						</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<div className="text-lg font-bold">
+							{statistics.medianResponseTime}ms
+						</div>
+					</CardContent>
+				</Card>
+				
+				<Card>
+					<CardHeader className="pb-3">
+						<CardTitle className="text-sm font-medium text-muted-foreground">
+							2xx Success
+						</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<div className="text-lg font-bold text-green-600">
+							{statistics.statusCounts["2xx"]}
+						</div>
+					</CardContent>
+				</Card>
+				
+				<Card>
+					<CardHeader className="pb-3">
+						<CardTitle className="text-sm font-medium text-muted-foreground">
+							3xx Redirect
+						</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<div className="text-lg font-bold text-gray-600">
+							{statistics.statusCounts["3xx"]}
+						</div>
+					</CardContent>
+				</Card>
+				
+				<Card>
+					<CardHeader className="pb-3">
+						<CardTitle className="text-sm font-medium text-muted-foreground">
+							4xx Client Error
+						</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<div className="text-lg font-bold text-yellow-600">
+							{statistics.statusCounts["4xx"]}
+						</div>
+					</CardContent>
+				</Card>
+				
+				<Card>
+					<CardHeader className="pb-3">
+						<CardTitle className="text-sm font-medium text-muted-foreground">
+							5xx Server Error
+						</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<div className="text-lg font-bold text-red-600">
+							{statistics.statusCounts["5xx"]}
+						</div>
+					</CardContent>
+				</Card>
+			</div>
+
+			{/* Charts in horizontal layout */}
+			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+				{/* Daily Average Response Time Chart */}
+				<Card>
+					<CardHeader>
+						<CardTitle className="flex items-center gap-2">
+							<TbChartBar className="h-5 w-5" />
+							Average Response Time per Day
+						</CardTitle>
+						<p className="text-sm text-muted-foreground">
+							Daily average response times grouped by status code
+						</p>
+					</CardHeader>
+					<CardContent>
+						<ChartContainer config={chartConfig} className="h-80">
+							<BarChart data={chartData.dailyData}>
+								<CartesianGrid strokeDasharray="3 3" />
+								<XAxis dataKey="day" />
+								<YAxis
+									label={{
+										value: "Response Time (ms)",
+										angle: -90,
+										position: "insideLeft",
+									}}
+								/>
+								<ChartTooltip
+									content={<ChartTooltipContent />}
+								/>
+								<ChartLegend content={<ChartLegendContent />} />
+								<Bar
+									dataKey="2xx"
+									stackId="a"
+									fill="var(--color-2xx)"
+								/>
+								<Bar
+									dataKey="3xx"
+									stackId="a"
+									fill="var(--color-3xx)"
+								/>
+								<Bar
+									dataKey="4xx"
+									stackId="a"
+									fill="var(--color-4xx)"
+								/>
+								<Bar
+									dataKey="5xx"
+									stackId="a"
+									fill="var(--color-5xx)"
+								/>
+							</BarChart>
+						</ChartContainer>
+					</CardContent>
+				</Card>
+
+				{/* Response Time Histogram */}
+				<Card>
+					<CardHeader>
+						<CardTitle className="flex items-center gap-2">
+							<TbChartBar className="h-5 w-5" />
+							Response Time Distribution
+						</CardTitle>
+						<p className="text-sm text-muted-foreground">
+							1ms granularity distribution
+						</p>
+					</CardHeader>
+					<CardContent>
+						<ChartContainer config={chartConfig} className="h-80">
+							<BarChart data={chartData.histogramData}>
+								<CartesianGrid strokeDasharray="3 3" />
+								<XAxis dataKey="range" type="category" />
+								<YAxis
+									label={{
+										value: "Request Count",
+										angle: -90,
+										position: "insideLeft",
+									}}
+								/>
+								<ChartTooltip
+									content={<ChartTooltipContent />}
+									labelFormatter={(value) => `${value}`}
+								/>
+								<ChartLegend content={<ChartLegendContent />} />
+								<Bar
+									dataKey="2xx"
+									stackId="a"
+									fill="var(--color-2xx)"
+								/>
+								<Bar
+									dataKey="3xx"
+									stackId="a"
+									fill="var(--color-3xx)"
+								/>
+								<Bar
+									dataKey="4xx"
+									stackId="a"
+									fill="var(--color-4xx)"
+								/>
+								<Bar
+									dataKey="5xx"
+									stackId="a"
+									fill="var(--color-5xx)"
+								/>
+							</BarChart>
+						</ChartContainer>
+					</CardContent>
+				</Card>
+			</div>
+		</div>
+	);
+}
+
 function EndpointRequestsTable() {
 	const navigate = useNavigate();
 	const { endpoint, method } = useSearch({
@@ -517,7 +1165,7 @@ function EndpointRequestsTable() {
 	});
 
 	return (
-		<div className="space-y-6">
+		<div className="container mx-auto px-4 py-6 space-y-6">
 			{/* Header with back button */}
 			<div className="flex items-center gap-4">
 				<Button
@@ -536,6 +1184,9 @@ function EndpointRequestsTable() {
 					</span>
 				</div>
 			</div>
+
+			{/* Analytics Charts */}
+			<AnalyticsCharts endpoint={endpoint} method={method} />
 
 			{/* Table */}
 			{tableComponent}
