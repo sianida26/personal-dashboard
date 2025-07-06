@@ -20,7 +20,7 @@ const emailNotificationHandler: JobHandler<EmailNotificationPayload> = {
 	},
 
 	async execute(payload, context) {
-		const { userId, template, data } = payload;
+		const { userId, template } = payload;
 
 		context.logger.info(
 			`Sending email notification to user ${userId} with template ${template}`,
