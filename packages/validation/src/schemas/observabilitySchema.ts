@@ -74,6 +74,62 @@ export const endpointOverviewQuerySchema = z.object({
 	endDate: z.string().datetime().optional(),
 });
 
+// Analytics query schema for server-side histogram binning
+export const analyticsQuerySchema = z.object({
+	endpoint: z.string().optional(),
+	method: z.string().optional(),
+	startDate: z.string().datetime().optional(),
+	endDate: z.string().datetime().optional(),
+	limit: z.coerce.number().int().min(1).max(1000).default(1000),
+});
+
+// Analytics response schema
+export const analyticsResponseSchema = z.object({
+	data: z.array(z.object({
+		id: z.string(),
+		requestId: z.string(),
+		userId: z.string().nullable(),
+		userName: z.string().nullable(),
+		method: z.string(),
+		endpoint: z.string(),
+		fullEndpoint: z.string(),
+		ipAddress: z.string().nullable(),
+		userAgent: z.string().nullable(),
+		statusCode: z.number().nullable(),
+		responseTimeMs: z.number().nullable(),
+		createdAt: z.string().nullable(),
+	})),
+	statistics: z.object({
+		totalRequests: z.number(),
+		avgResponseTime: z.number(),
+		maxResponseTime: z.number(),
+		medianResponseTime: z.number(),
+		p95ResponseTime: z.number(),
+		successRate: z.number(),
+		statusCounts: z.object({
+			"2xx": z.number(),
+			"3xx": z.number(),
+			"4xx": z.number(),
+			"5xx": z.number(),
+		}),
+	}),
+	histogram: z.array(z.object({
+		range: z.string(),
+		binStart: z.number(),
+		binSize: z.number(),
+		order: z.number(),
+		"2xx": z.number(),
+		"3xx": z.number(),
+		"4xx": z.number(),
+		"5xx": z.number(),
+	})),
+	_metadata: z.object({
+		binSize: z.number(),
+		totalBins: z.number(),
+		granularity: z.string(),
+	}),
+});
+
 export type FrontendEvent = z.infer<typeof frontendEventSchema>;
 export type ObservabilityEventsQuery = z.infer<
 	typeof observabilityEventsQuerySchema
@@ -82,3 +138,5 @@ export type RequestDetailsQuery = z.infer<typeof requestDetailsQuerySchema>;
 export type MetricsQuery = z.infer<typeof metricsQuerySchema>;
 export type CleanupQuery = z.infer<typeof cleanupQuerySchema>;
 export type EndpointOverviewQuery = z.infer<typeof endpointOverviewQuerySchema>;
+export type AnalyticsQuery = z.infer<typeof analyticsQuerySchema>;
+export type AnalyticsResponse = z.infer<typeof analyticsResponseSchema>;

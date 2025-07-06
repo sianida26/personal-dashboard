@@ -6,6 +6,7 @@ import getObservabilityEventsEndpoint from "./get-observability-events";
 import getRequestByIdEndpoint from "./get-request-by-id";
 import getRequestsEndpoint from "./get-requests";
 import getMetricsEndpoint from "./get-metrics";
+import getAnalyticsEndpoint from "./get-analytics";
 import postFrontendEventEndpoint from "./post-frontend-event";
 import deleteCleanupEndpoint from "./delete-cleanup";
 import getEndpointOverviewEndpoint from "./get-endpoint-overview";
@@ -20,6 +21,7 @@ const observabilityRoutes = new Hono<HonoEnv>()
 	.route("/", getRequestByIdEndpoint) // GET /requests/:id
 	.route("/", getRequestsEndpoint) // GET /requests
 	.route("/", getMetricsEndpoint) // GET /metrics
+	.route("/", getAnalyticsEndpoint) // GET /analytics
 	.route("/", postFrontendEventEndpoint) // POST /frontend
 	.route("/", deleteCleanupEndpoint) // DELETE /cleanup
 	.route("/", getEndpointOverviewEndpoint) // GET /endpoint-overview

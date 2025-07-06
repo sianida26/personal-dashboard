@@ -422,12 +422,12 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 	}, [timeRange]);
 
 	// Fetch analytics data
-	const { data: analyticsData, isLoading } = useQuery({
+	const { data: analyticsResponse, isLoading } = useQuery({
 		queryKey: ["observability", "analytics", endpoint, method, timeRange],
 		queryFn: async () => {
-			const response = await client.observability.requests.$get({
+			const response = await client.observability.analytics.$get({
 				query: {
-					routePath: endpoint,
+					endpoint,
 					method,
 					startDate,
 					endDate,
@@ -437,15 +437,19 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 			if (!response.ok) {
 				throw new Error("Failed to fetch analytics data");
 			}
-			const result = await response.json();
-			return result.data;
+			return response.json();
 		},
 		staleTime: 5 * 60 * 1000, // 5 minutes
 	});
 
+	// Extract data from the new response structure
+	const analyticsData = analyticsResponse?.data;
+	const serverStatistics = analyticsResponse?.statistics;
+	const serverHistogram = analyticsResponse?.histogram;
+
 	// Process data for charts
-	const { chartData, statistics } = useMemo(() => {
-		if (!analyticsData)
+	const { chartData, statistics, histogramGranularity } = useMemo(() => {
+		if (!analyticsData || !serverStatistics || !serverHistogram)
 			return {
 				chartData: { dailyData: [], histogramData: [] },
 				statistics: {
@@ -457,14 +461,8 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 					successRate: 0,
 					statusCounts: { "2xx": 0, "3xx": 0, "4xx": 0, "5xx": 0 },
 				},
+				histogramGranularity: "1ms",
 			};
-
-		// Calculate maximum response time for adaptive bins
-		const maxTime = Math.max(
-			...analyticsData.map(
-				(item: AnalyticsItem) => item.responseTimeMs || 0,
-			),
-		);
 
 		// Group by status code category
 		const getStatusCategory = (statusCode: number): string => {
@@ -474,6 +472,7 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 			if (statusCode >= 500) return "5xx";
 			return "other";
 		};
+
 		// Type for analytics data item
 		type AnalyticsItem = {
 			id: string;
@@ -489,6 +488,7 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 			responseTimeMs: number | null;
 			createdAt: string | null;
 		};
+
 		// Daily average response time data
 		const dailyGroups = analyticsData.reduce(
 			(
@@ -550,11 +550,14 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 			if (data) {
 				// Calculate average response time for each status category
 				Object.entries(data.categories).forEach(
-					([category, categoryData]) => {
+					([category, categoryData]: [
+						string,
+						{ times: number[]; count: number },
+					]) => {
 						if (categoryData.times.length > 0) {
 							result[category] = Math.round(
 								categoryData.times.reduce(
-									(sum, time) => sum + time,
+									(sum: number, time: number) => sum + time,
 									0,
 								) / categoryData.times.length,
 							);
@@ -574,111 +577,26 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 			return result;
 		});
 
-		// Response time histogram data - 1ms granularity with adaptive max
-		const createAdaptiveBins = (maxTime: number) => {
-			const bins = [];
+		// Use server-side histogram data directly
+		const histogramData = serverHistogram;
 
-			// Create 1ms bins up to the maximum response time
-			for (let i = 0; i <= maxTime; i++) {
-				bins.push({
-					range: `${i}ms`,
-					min: i,
-					max: i + 1,
-					order: i + 1,
-				});
-			}
-
-			return bins;
-		};
-
-		const histogramBins = createAdaptiveBins(maxTime);
-
-		const histogramData = histogramBins
-			.map((bin) => {
-				// Count requests in this bin by status category
-				const binData = {
-					"2xx": 0,
-					"3xx": 0,
-					"4xx": 0,
-					"5xx": 0,
-				};
-
-				analyticsData.forEach((item: AnalyticsItem) => {
-					const responseTime = Math.floor(item.responseTimeMs || 0); // Floor to match bin
-					const statusCategory = getStatusCategory(
-						item.statusCode || 0,
-					);
-
-					if (responseTime === bin.min) {
-						// Exact match for 1ms bins
-						binData[statusCategory as keyof typeof binData]++;
-					}
-				});
-
-				return {
-					range: bin.range,
-					order: bin.order,
-					...binData,
-				};
-			})
-			.sort((a, b) => a.order - b.order);
-
-		// Calculate statistical metrics
-		const responseTimes = analyticsData.map((item: AnalyticsItem) => item.responseTimeMs || 0).filter(time => time > 0);
-		const totalRequests = analyticsData.length;
-		
-		// Basic statistics
-		const avgResponseTime = responseTimes.length > 0 
-			? Math.round(responseTimes.reduce((sum, time) => sum + time, 0) / responseTimes.length)
-			: 0;
-		
-		const maxResponseTime = responseTimes.length > 0 ? Math.max(...responseTimes) : 0;
-		
-		// Calculate median (50th percentile)
-		const sortedTimes = [...responseTimes].sort((a, b) => a - b);
-		const medianResponseTime = sortedTimes.length > 0
-			? sortedTimes.length % 2 === 0
-				? Math.round((sortedTimes[sortedTimes.length / 2 - 1] + sortedTimes[sortedTimes.length / 2]) / 2)
-				: sortedTimes[Math.floor(sortedTimes.length / 2)]
-			: 0;
-		
-		// Calculate 95th percentile
-		const p95ResponseTime = sortedTimes.length > 0
-			? sortedTimes[Math.floor(sortedTimes.length * 0.95)] || 0
-			: 0;
-		
-		// Status code distribution
-		const statusCounts = {
-			"2xx": 0,
-			"3xx": 0,
-			"4xx": 0,
-			"5xx": 0,
-		};
-		
-		analyticsData.forEach((item: AnalyticsItem) => {
-			const statusCategory = getStatusCategory(item.statusCode || 0);
-			if (statusCategory !== "other") {
-				statusCounts[statusCategory as keyof typeof statusCounts]++;
-			}
-		});
-		
-		const successRate = totalRequests > 0 
-			? Math.round((statusCounts["2xx"] / totalRequests) * 100)
-			: 0;
+		// Determine granularity from server metadata or infer from histogram
+		const granularity =
+			(analyticsResponse as { _metadata?: { granularity?: string } })
+				?._metadata?.granularity || "1ms";
 
 		return {
 			chartData: { dailyData, histogramData },
-			statistics: {
-				totalRequests,
-				avgResponseTime,
-				maxResponseTime,
-				medianResponseTime,
-				p95ResponseTime,
-				successRate,
-				statusCounts,
-			},
+			statistics: serverStatistics,
+			histogramGranularity: granularity,
 		};
-	}, [analyticsData]);
+	}, [
+		analyticsData,
+		serverStatistics,
+		serverHistogram,
+		analyticsResponse,
+		timeRange,
+	]);
 
 	if (isLoading) {
 		return (
@@ -696,21 +614,23 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 						</Card>
 					))}
 				</div>
-				
+
 				{/* Loading Secondary Cards */}
 				<div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-					{["min", "median", "2xx", "3xx", "4xx", "5xx"].map((cardType) => (
-						<Card key={cardType}>
-							<CardHeader className="pb-3">
-								<div className="h-4 w-20 bg-muted animate-pulse rounded" />
-							</CardHeader>
-							<CardContent>
-								<div className="h-6 w-12 bg-muted animate-pulse rounded" />
-							</CardContent>
-						</Card>
-					))}
+					{["min", "median", "2xx", "3xx", "4xx", "5xx"].map(
+						(cardType) => (
+							<Card key={cardType}>
+								<CardHeader className="pb-3">
+									<div className="h-4 w-20 bg-muted animate-pulse rounded" />
+								</CardHeader>
+								<CardContent>
+									<div className="h-6 w-12 bg-muted animate-pulse rounded" />
+								</CardContent>
+							</Card>
+						),
+					)}
 				</div>
-				
+
 				{/* Loading Charts */}
 				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 					<Card>
@@ -779,7 +699,7 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 						</div>
 					</CardContent>
 				</Card>
-				
+
 				<Card>
 					<CardHeader className="pb-3">
 						<CardTitle className="text-sm font-medium text-muted-foreground">
@@ -795,7 +715,7 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 						</p>
 					</CardContent>
 				</Card>
-				
+
 				<Card>
 					<CardHeader className="pb-3">
 						<CardTitle className="text-sm font-medium text-muted-foreground">
@@ -808,7 +728,7 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 						</div>
 					</CardContent>
 				</Card>
-				
+
 				<Card>
 					<CardHeader className="pb-3">
 						<CardTitle className="text-sm font-medium text-muted-foreground">
@@ -837,7 +757,7 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 						</div>
 					</CardContent>
 				</Card>
-				
+
 				<Card>
 					<CardHeader className="pb-3">
 						<CardTitle className="text-sm font-medium text-muted-foreground">
@@ -850,7 +770,7 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 						</div>
 					</CardContent>
 				</Card>
-				
+
 				<Card>
 					<CardHeader className="pb-3">
 						<CardTitle className="text-sm font-medium text-muted-foreground">
@@ -863,7 +783,7 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 						</div>
 					</CardContent>
 				</Card>
-				
+
 				<Card>
 					<CardHeader className="pb-3">
 						<CardTitle className="text-sm font-medium text-muted-foreground">
@@ -876,7 +796,7 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 						</div>
 					</CardContent>
 				</Card>
-				
+
 				<Card>
 					<CardHeader className="pb-3">
 						<CardTitle className="text-sm font-medium text-muted-foreground">
@@ -889,7 +809,7 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 						</div>
 					</CardContent>
 				</Card>
-				
+
 				<Card>
 					<CardHeader className="pb-3">
 						<CardTitle className="text-sm font-medium text-muted-foreground">
@@ -966,7 +886,7 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 							Response Time Distribution
 						</CardTitle>
 						<p className="text-sm text-muted-foreground">
-							1ms granularity distribution
+							{histogramGranularity} granularity distribution
 						</p>
 					</CardHeader>
 					<CardContent>
