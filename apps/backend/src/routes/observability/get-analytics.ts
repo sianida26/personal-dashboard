@@ -166,24 +166,94 @@ const getAnalyticsEndpoint = createHonoRoute()
 					? Math.round((statusCounts["2xx"] / totalRequests) * 100)
 					: 0;
 
-			// Determine adaptive bin size based on max response time
-			let binSize = 1; // Default 1ms bins
-			if (maxResponseTime > 10000) {
-				binSize = 10; // 10ms bins for very high response times (>10s)
-			} else if (maxResponseTime > 1000) {
-				binSize = 5; // 5ms bins for high response times (>1s)
-			}
+			// Helper function to get nice rounded max value
+			const getNiceMax = (value: number): number => {
+				if (value <= 100) {
+					return Math.ceil(value / 10) * 10; // Round to nearest 10
+				}
+				if (value <= 1000) {
+					return Math.ceil(value / 100) * 100; // Round to nearest 100
+				}
+				// For values > 1000, round to nearest power of 10 scale
+				const magnitude = 10 ** Math.floor(Math.log10(value));
+				const normalized = value / magnitude;
+				let multiplier = 1;
+				if (normalized <= 1.5) multiplier = 2;
+				else if (normalized <= 3) multiplier = 5;
+				else if (normalized <= 8.5)
+					multiplier = 10; // Changed to 8.5
+				else multiplier = 20;
+				return (
+					Math.ceil(normalized / multiplier) * multiplier * magnitude
+				);
+			};
 
-			// Create histogram bins with adaptive sizing
+			// Create histogram bins with improved adaptive sizing
 			const histogramMap = new Map<
 				number,
 				{ "2xx": number; "3xx": number; "4xx": number; "5xx": number }
 			>();
 
+			const niceMax = getNiceMax(maxResponseTime);
+			let bins: number[] = [];
+			let binType: "linear" | "logarithmic" = "linear";
+
+			if (niceMax <= 100) {
+				// Linear with 1ms step
+				for (let i = 0; i <= niceMax; i += 1) {
+					bins.push(i);
+				}
+				binType = "linear";
+			} else if (niceMax <= 1000) {
+				// Linear with 10ms step
+				for (let i = 0; i <= niceMax; i += 10) {
+					bins.push(i);
+				}
+				binType = "linear";
+			} else {
+				// Logarithmic with 100 total ticks
+				binType = "logarithmic";
+				const logMax = Math.log10(niceMax);
+				const logMin = Math.log10(1); // Start from 1ms
+				const step = (logMax - logMin) / 99; // 99 steps for 100 bins
+
+				const binSet = new Set<number>();
+				for (let i = 0; i < 100; i++) {
+					const logValue = logMin + i * step;
+					const value = 10 ** logValue;
+					binSet.add(Math.round(value));
+				}
+
+				// Convert set to sorted array and ensure we don't have too many duplicate low values
+				bins = Array.from(binSet).sort((a, b) => a - b);
+
+				// If we have too many bins at the low end, thin them out
+				if (bins.length > 100) {
+					const newBins = [1]; // Always start with 1
+					let lastAdded = 1;
+					for (let i = 1; i < bins.length; i++) {
+						const current = bins[i] || 0;
+						// Add if it's significantly different from the last added
+						if (
+							current >= lastAdded * 1.1 ||
+							i >= bins.length - 20
+						) {
+							newBins.push(current);
+							lastAdded = current;
+						}
+					}
+					bins = newBins.slice(0, 100); // Ensure we don't exceed 100 bins
+				}
+			}
+
 			// Initialize histogram bins
-			const maxBin = Math.ceil(maxResponseTime / binSize) * binSize;
-			for (let i = 0; i <= maxBin; i += binSize) {
-				histogramMap.set(i, { "2xx": 0, "3xx": 0, "4xx": 0, "5xx": 0 });
+			for (const bin of bins) {
+				histogramMap.set(bin, {
+					"2xx": 0,
+					"3xx": 0,
+					"4xx": 0,
+					"5xx": 0,
+				});
 			}
 
 			// Fill histogram data
@@ -191,8 +261,26 @@ const getAnalyticsEndpoint = createHonoRoute()
 				const responseTime = item.responseTimeMs || 0;
 				const statusCode = item.statusCode || 0;
 
-				// Determine which bin this response time belongs to
-				const binIndex = Math.floor(responseTime / binSize) * binSize;
+				// Find the appropriate bin for this response time
+				let binIndex = bins[0] || 0;
+				for (let i = 0; i < bins.length - 1; i++) {
+					const currentBin = bins[i];
+					const nextBin = bins[i + 1];
+					if (
+						currentBin !== undefined &&
+						nextBin !== undefined &&
+						responseTime >= currentBin &&
+						responseTime < nextBin
+					) {
+						binIndex = currentBin;
+						break;
+					}
+				}
+				// If response time is >= last bin, use the last bin
+				const lastBin = bins[bins.length - 1];
+				if (lastBin !== undefined && responseTime >= lastBin) {
+					binIndex = lastBin;
+				}
 
 				// Get status category
 				let statusCategory: "2xx" | "3xx" | "4xx" | "5xx" = "2xx";
@@ -211,13 +299,38 @@ const getAnalyticsEndpoint = createHonoRoute()
 
 			// Convert histogram map to array
 			const histogram = Array.from(histogramMap.entries())
-				.map(([binStart, counts]) => ({
-					range: `${binStart}${binSize > 1 ? `-${binStart + binSize - 1}` : ""}ms`,
-					binStart,
-					binSize,
-					order: binStart / binSize + 1,
-					...counts,
-				}))
+				.map(([binStart, counts], index) => {
+					let range: string;
+					if (binType === "linear") {
+						const binSize = niceMax <= 100 ? 1 : 10;
+						const binEnd = binStart + binSize - 1;
+						range =
+							binSize === 1
+								? `${binStart}ms`
+								: `${binStart}-${binEnd}ms`;
+					} else {
+						// Logarithmic bins
+						const nextBin = bins[index + 1];
+						if (nextBin) {
+							range = `${binStart}-${nextBin - 1}ms`;
+						} else {
+							range = `${binStart}+ms`;
+						}
+					}
+
+					return {
+						range,
+						binStart,
+						binSize:
+							binType === "linear"
+								? niceMax <= 100
+									? 1
+									: 10
+								: 0,
+						order: index + 1,
+						...counts,
+					};
+				})
 				.sort((a, b) => a.order - b.order);
 
 			return c.json({
@@ -233,9 +346,15 @@ const getAnalyticsEndpoint = createHonoRoute()
 				},
 				histogram,
 				_metadata: {
-					binSize,
+					binType,
 					totalBins: histogram.length,
-					granularity: `${binSize}ms`,
+					maxValue: niceMax,
+					granularity:
+						binType === "linear"
+							? niceMax <= 100
+								? "1ms"
+								: "10ms"
+							: "logarithmic",
 				},
 			});
 		},

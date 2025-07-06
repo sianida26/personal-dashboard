@@ -145,15 +145,17 @@ describe("GET /observability/analytics", () => {
 		const metadata = (
 			data as {
 				_metadata: {
-					binSize: number;
-					granularity: string;
+					binType: "linear" | "logarithmic";
 					totalBins: number;
+					maxValue: number;
+					granularity: string;
 				};
 			}
 		)._metadata;
-		expect(metadata).toHaveProperty("binSize");
-		expect(metadata).toHaveProperty("granularity");
+		expect(metadata).toHaveProperty("binType");
 		expect(metadata).toHaveProperty("totalBins");
+		expect(metadata).toHaveProperty("maxValue");
+		expect(metadata).toHaveProperty("granularity");
 	});
 
 	it("should use adaptive binning based on max response time", async () => {
@@ -180,20 +182,21 @@ describe("GET /observability/analytics", () => {
 		const metadata = (
 			data as {
 				_metadata: {
-					binSize: number;
-					granularity: string;
+					binType: "linear" | "logarithmic";
 					totalBins: number;
+					maxValue: number;
+					granularity: string;
 				};
 			}
 		)._metadata;
-		expect(metadata).toHaveProperty("binSize");
+		expect(metadata).toHaveProperty("binType");
 		expect(metadata).toHaveProperty("granularity");
-		expect(typeof metadata.binSize).toBe("number");
+		expect(typeof metadata.binType).toBe("string");
 		expect(typeof metadata.granularity).toBe("string");
 
-		// For response time > 1000ms, should use 5ms bins
-		expect(metadata.binSize).toBe(5);
-		expect(metadata.granularity).toBe("5ms");
+		// For response time > 1000ms, should use logarithmic binning
+		expect(metadata.binType).toBe("logarithmic");
+		expect(metadata.granularity).toBe("logarithmic");
 	});
 
 	it("should filter by endpoint and method", async () => {

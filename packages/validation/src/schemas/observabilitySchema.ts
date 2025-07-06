@@ -124,8 +124,9 @@ export const analyticsResponseSchema = z.object({
 		"5xx": z.number(),
 	})),
 	_metadata: z.object({
-		binSize: z.number(),
+		binType: z.enum(["linear", "logarithmic"]),
 		totalBins: z.number(),
+		maxValue: z.number(),
 		granularity: z.string(),
 	}),
 });
