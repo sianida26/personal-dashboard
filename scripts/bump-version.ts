@@ -24,7 +24,7 @@ function incrementVersion(version: string): string {
     throw new Error(`Invalid patch version: ${patch}`);
   }
   
-  const newPatch = parseInt(patch, 10) + 1;
+  const newPatch = Number.parseInt(patch, 10) + 1;
   
   return `${major}.${minor}.${newPatch}`;
 }
