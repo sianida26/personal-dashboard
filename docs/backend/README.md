@@ -12,6 +12,9 @@ This directory contains comprehensive documentation for the backend codebase, br
 - **[Database Layer](database.md)** - Drizzle ORM, schemas, migrations, and database patterns
 - **[Validation & Type Safety](validation.md)** - Zod schemas, request validation, and type safety patterns
 
+### Background Processing
+- **[Job Queue System](jobs.md)** - Asynchronous job processing, worker management, and background tasks
+
 ### API Development
 - **[Route Development](routes.md)** - Endpoint creation, naming conventions, and patterns
 - **[Authentication & Authorization](auth.md)** - JWT, RBAC, permissions, and middleware
@@ -37,7 +40,8 @@ If you're new to this codebase, start with:
 2. **[Project Structure](project-structure.md)** - Learn the file organization
 3. **[Route Development](routes.md)** - Learn how to create endpoints
 4. **[Database Layer](database.md)** - Understand the data layer
-5. **[Testing](testing.md)** - Learn how to test your code
+5. **[Job Queue System](jobs.md)** - Learn background task processing
+6. **[Testing](testing.md)** - Learn how to test your code
 
 ## 📋 Quick Navigation
 
@@ -45,11 +49,13 @@ If you're new to this codebase, start with:
 - Need to create a new endpoint? → [Common Development Tasks](development-tasks.md#1-adding-a-new-endpoint)
 - Need to add a database table? → [Common Development Tasks](development-tasks.md#2-adding-a-new-database-table)
 - Need to add middleware? → [Common Development Tasks](development-tasks.md#3-adding-new-middleware)
+- Need to process background tasks? → [Job Queue System](jobs.md#getting-started)
 
 ### For Troubleshooting
 - Tests failing? → [Troubleshooting](troubleshooting.md#test-debugging-checklist)
 - Database issues? → [Troubleshooting](troubleshooting.md#database-connection-issues)
 - Permission errors? → [Troubleshooting](troubleshooting.md#permission-errors)
+- Job queue issues? → [Job Queue System](jobs.md#troubleshooting)
 
 ### For Reference
 - Commands and scripts? → [Quick Reference](quick-reference.md#essential-commands)

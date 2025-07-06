@@ -1,5 +1,8 @@
 import { describe, test, expect, beforeAll, afterAll } from "bun:test";
-import { createUserForTesting, cleanupTestUser } from "../../utils/test-utils/create-user-for-testing";
+import {
+	createUserForTesting,
+	cleanupTestUser,
+} from "../../utils/test-utils/create-user-for-testing";
 import client from "../../utils/test-utils/hono-test-client";
 import type { TestUserData } from "../../utils/test-utils/create-user-for-testing";
 import db from "../../drizzle";
@@ -46,12 +49,12 @@ describe("POST /roles", () => {
 
 		expect(response.status).toBe(200);
 		const data = await response.json();
-		
+
 		expect(data).toHaveProperty("id");
 		expect(data).toHaveProperty("name", roleData.name);
 		expect(data).toHaveProperty("code", roleData.code);
 		expect(data).toHaveProperty("description", roleData.description);
-		
+
 		createdRoleIds.push(data.id);
 	});
 
@@ -77,10 +80,10 @@ describe("POST /roles", () => {
 
 		expect(response.status).toBe(200);
 		const data = await response.json();
-		
+
 		expect(data).toHaveProperty("id");
 		expect(data).toHaveProperty("name", roleData.name);
-		
+
 		createdRoleIds.push(data.id);
 	});
 
@@ -103,9 +106,9 @@ describe("POST /roles", () => {
 
 		expect(response.status).toBe(200);
 		const data = await response.json();
-		
+
 		expect(data).toHaveProperty("code", roleData.name);
-		
+
 		createdRoleIds.push(data.id);
 	});
 
@@ -138,7 +141,10 @@ describe("POST /roles", () => {
 		const response = await client.roles.$post(
 			{
 				// @ts-expect-error - Testing invalid data structure
-				json: { code: "test-role-missing-name", description: "A test role missing name" },
+				json: {
+					code: "test-role-missing-name",
+					description: "A test role missing name",
+				},
 			},
 			{
 				headers: {
@@ -174,7 +180,7 @@ describe("POST /roles", () => {
 		);
 
 		expect(response.status).toBe(403);
-		
+
 		await cleanupTestUser(unauthorizedUser.user.id);
 	});
 

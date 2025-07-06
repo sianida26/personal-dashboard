@@ -1,5 +1,8 @@
 import { describe, test, expect, beforeAll, afterAll } from "bun:test";
-import { createUserForTesting, cleanupTestUser } from "../../utils/test-utils/create-user-for-testing";
+import {
+	createUserForTesting,
+	cleanupTestUser,
+} from "../../utils/test-utils/create-user-for-testing";
 import client from "../../utils/test-utils/hono-test-client";
 import type { TestUserData } from "../../utils/test-utils/create-user-for-testing";
 import db from "../../drizzle";
@@ -150,7 +153,7 @@ describe("DELETE /roles/:id", () => {
 		);
 
 		expect(response.status).toBe(403);
-		
+
 		await cleanupTestUser(unauthorizedUser.user.id);
 	});
 

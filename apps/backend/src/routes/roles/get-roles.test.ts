@@ -1,5 +1,8 @@
 import { describe, test, expect, beforeAll, afterAll } from "bun:test";
-import { createUserForTesting, cleanupTestUser } from "../../utils/test-utils/create-user-for-testing";
+import {
+	createUserForTesting,
+	cleanupTestUser,
+} from "../../utils/test-utils/create-user-for-testing";
 import client from "../../utils/test-utils/hono-test-client";
 import type { TestUserData } from "../../utils/test-utils/create-user-for-testing";
 
@@ -35,13 +38,13 @@ describe("GET /roles", () => {
 
 		expect(response.status).toBe(200);
 		const data = await response.json();
-		
+
 		expect(data).toHaveProperty("data");
 		expect(data).toHaveProperty("_metadata");
 		expect(data._metadata).toHaveProperty("currentPage", 1);
 		expect(data._metadata).toHaveProperty("perPage", 10);
 		expect(Array.isArray(data.data)).toBe(true);
-		
+
 		// Each role should have permissions array
 		if (data.data.length > 0) {
 			expect(data.data[0]).toHaveProperty("permissions");
@@ -88,9 +91,11 @@ describe("GET /roles", () => {
 
 		expect(response.status).toBe(200);
 		const data = await response.json();
-		
+
 		// Check that no role has the name "Super Admin"
-		const superAdminRole = data.data.find((role: { name: string }) => role.name === "Super Admin");
+		const superAdminRole = data.data.find(
+			(role: { name: string }) => role.name === "Super Admin",
+		);
 		expect(superAdminRole).toBeUndefined();
 	});
 
@@ -116,7 +121,7 @@ describe("GET /roles", () => {
 		);
 
 		expect(response.status).toBe(403);
-		
+
 		await cleanupTestUser(unauthorizedUser.user.id);
 	});
 

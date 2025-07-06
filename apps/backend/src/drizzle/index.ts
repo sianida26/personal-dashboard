@@ -14,6 +14,7 @@ import * as oauthMicrosoftSchema from "./schema/oauthMicrosoft";
 import * as kvStore from "./schema/kvStore";
 import * as observabilityEventsSchema from "./schema/observability-events";
 import * as requestDetailsSchema from "./schema/request-details";
+import * as jobQueueSchema from "./schema/job-queue";
 import SqlLogger from "./utils/SqlLogger";
 
 configDotenv();
@@ -34,6 +35,7 @@ const db = drizzle({
 		...kvStore,
 		...observabilityEventsSchema,
 		...requestDetailsSchema,
+		...jobQueueSchema,
 	},
 	logger: new SqlLogger(),
 });
