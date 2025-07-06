@@ -5,3 +5,5 @@
 - Always keep documentation up-to-date with code changes.
 - Always create test cases/files for new features or changes in the backend.
 - do not attempt to run frontend or backend application, as it is already running.
+- this project uses bun
+- for running tests for backend, cd to backend and use "bun run test" command
