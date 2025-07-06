@@ -3,3 +3,5 @@
 - Frontend documentation is located in `docs/frontend/README.md`.
 - Feature documentation is organized in `docs/features/` with each feature having its own folder.
 - Always keep documentation up-to-date with code changes.
+- Always create test cases/files for new features or changes in the backend.
+- do not attempt to run frontend or backend application, as it is already running.
