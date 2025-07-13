@@ -1,13 +1,20 @@
-import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
+import tailwindcss from "@tailwindcss/vite";
+import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react-swc";
 import { defineConfig, loadEnv } from "vite";
-import tailwindcss from "@tailwindcss/vite";
 
 process.env = { ...process.env, ...loadEnv("", process.cwd()) };
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [TanStackRouterVite(), react(), tailwindcss()],
+	plugins: [
+		tanstackRouter({
+			target: "react",
+			autoCodeSplitting: true,
+		}),
+		react(),
+		tailwindcss(),
+	],
 	resolve: {
 		alias: {
 			"@": "/src",
