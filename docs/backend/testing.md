@@ -21,12 +21,14 @@ describe("POST /auth/login", () => {
   });
 
   test("should login successfully", async () => {
-    const response = await client.auth.login.$post({
-      json: {
-        username: "test",
-        password: "password"
+    const response = await client.auth.login.$post(
+      {
+        json: {
+          username: "test",
+          password: "password"
+        }
       }
-    });
+    );
 
     expect(response.status).toBe(200);
     const data = await response.json();
@@ -92,6 +94,10 @@ interface TestUserData {
   };
   accessToken: string;  // JWT token for API authentication
 }
+
+// Type alias for easier type inference in test files
+type UserForTesting = Awaited<ReturnType<typeof createUserForTesting>>;
+```
 ```
 
 ### Cleanup Test Users
@@ -109,12 +115,12 @@ await cleanupTestUserByUsername("test-admin");
 ```typescript
 // src/routes/users/get-users.test.ts
 import { describe, test, expect, beforeAll, afterAll } from "bun:test";
-import { createUserForTesting, cleanupTestUser } from "../../utils/test-utils/create-user-for-testing";
+import { createUserForTesting, cleanupTestUser, type UserForTesting } from "../../utils/test-utils/create-user-for-testing";
 import client from "../../utils/hono-test-client";
 
 describe("GET /users", () => {
-  let adminUser: Awaited<ReturnType<typeof createUserForTesting>>;
-  let regularUser: Awaited<ReturnType<typeof createUserForTesting>>;
+  let adminUser: UserForTesting;
+  let regularUser: UserForTesting;
 
   beforeAll(async () => {
     // Create test users with different permission levels
@@ -138,11 +144,16 @@ describe("GET /users", () => {
   });
 
   test("should allow admin to get all users", async () => {
-    const response = await client.users.$get({
-      headers: {
-        Authorization: `Bearer ${adminUser.accessToken}`
+    const response = await client.users.$get(
+      {
+        // this is the data (query, json, etc)
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${adminUser.accessToken}`
+        }
       }
-    });
+    );
 
     expect(response.status).toBe(200);
     const data = await response.json();
@@ -151,11 +162,16 @@ describe("GET /users", () => {
   });
 
   test("should allow user with read permission to get users", async () => {
-    const response = await client.users.$get({
-      headers: {
-        Authorization: `Bearer ${regularUser.accessToken}`
+    const response = await client.users.$get(
+      {
+        // this is the data (query, json, etc)
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${regularUser.accessToken}`
+        }
       }
-    });
+    );
 
     expect(response.status).toBe(200);
   });
@@ -168,11 +184,16 @@ describe("GET /users", () => {
       permissions: [] // No permissions
     });
 
-    const response = await client.users.$get({
-      headers: {
-        Authorization: `Bearer ${limitedUser.accessToken}`
+    const response = await client.users.$get(
+      {
+        // this is the data (query, json, etc)
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${limitedUser.accessToken}`
+        }
       }
-    });
+    );
 
     expect(response.status).toBe(403);
     
@@ -379,13 +400,15 @@ When tests are failing unexpectedly:
 ```typescript
 describe("User CRUD Operations", () => {
   test("should create user", async () => {
-    const response = await client.users.$post({
-      json: {
-        name: "Test User",
-        email: "test@example.com",
-        password: "password123"
+    const response = await client.users.$post(
+      {
+        json: {
+          name: "Test User",
+          email: "test@example.com",
+          password: "password123"
+        }
       }
-    });
+    );
     
     expect(response.status).toBe(201);
   });
@@ -393,9 +416,11 @@ describe("User CRUD Operations", () => {
   test("should get user by ID", async () => {
     const user = await createUserForTesting();
     
-    const response = await client.users[":id"].$get({
-      param: { id: user.user.id }
-    });
+    const response = await client.users[":id"].$get(
+      {
+        param: { id: user.user.id }
+      }
+    );
     
     expect(response.status).toBe(200);
   });
@@ -415,11 +440,16 @@ describe("Authorization Tests", () => {
       permissions: [] // No permissions
     });
     
-    const response = await client.users.$get({
-      headers: {
-        Authorization: `Bearer ${user.accessToken}`
+    const response = await client.users.$get(
+      {
+        // this is the data (query, json, etc)
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${user.accessToken}`
+        }
       }
-    });
+    );
     
     expect(response.status).toBe(403);
   });

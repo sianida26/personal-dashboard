@@ -1,14 +1,14 @@
 import { createId } from "@paralleldrive/cuid2";
-import { eq } from "drizzle-orm";
 import type { PermissionCode } from "@repo/data";
+import { eq } from "drizzle-orm";
 import db from "../../drizzle";
-import { users } from "../../drizzle/schema/users";
-import { rolesSchema } from "../../drizzle/schema/roles";
 import { permissionsSchema } from "../../drizzle/schema/permissions";
-import { rolesToUsers } from "../../drizzle/schema/rolesToUsers";
 import { permissionsToUsers } from "../../drizzle/schema/permissionsToUsers";
-import { hashPassword } from "../passwordUtils";
+import { rolesSchema } from "../../drizzle/schema/roles";
+import { rolesToUsers } from "../../drizzle/schema/rolesToUsers";
+import { users } from "../../drizzle/schema/users";
 import { generateAccessToken } from "../authUtils";
+import { hashPassword } from "../passwordUtils";
 
 export interface CreateUserOptions {
 	/** User's display name */
@@ -38,6 +38,9 @@ export interface TestUserData {
 	/** JWT access token for authentication */
 	accessToken: string;
 }
+
+/** Type alias for the return type of createUserForTesting function - useful for type inference in test files */
+export type UserForTesting = Awaited<ReturnType<typeof createUserForTesting>>;
 
 /**
  * Creates a test user with specified roles and permissions for testing purposes.
