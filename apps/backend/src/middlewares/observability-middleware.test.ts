@@ -1,22 +1,21 @@
 import {
-	describe,
-	test,
-	expect,
-	beforeEach,
 	afterEach,
+	beforeEach,
+	describe,
+	expect,
 	mock,
 	spyOn,
+	test,
 } from "bun:test";
-import { Hono } from "hono";
-import observabilityMiddleware from "./observability-middleware";
-import type HonoEnv from "../types/HonoEnv";
-
 // Import the actual modules so we can spy on them
 import * as cuid2 from "@paralleldrive/cuid2";
+import { Hono } from "hono";
 import appEnv from "../appEnv";
+import * as observabilityService from "../services/observability-service";
+import type HonoEnv from "../types/HonoEnv";
 import appLogger from "../utils/logger";
 import * as observabilityUtils from "../utils/observability-utils";
-import * as observabilityService from "../services/observability-service";
+import observabilityMiddleware from "./observability-middleware";
 
 describe("Enhanced Request Logger Middleware", () => {
 	let app: Hono<HonoEnv>;
@@ -27,7 +26,9 @@ describe("Enhanced Request Logger Middleware", () => {
 
 	beforeEach(() => {
 		// Clear previous spies
-		spies.forEach((spy) => spy.mockRestore());
+		spies.forEach((spy) => {
+			spy.mockRestore();
+		});
 		spies = [];
 
 		// Use spyOn instead of mock.module
@@ -103,7 +104,9 @@ describe("Enhanced Request Logger Middleware", () => {
 
 	afterEach(() => {
 		// Restore all spies individually
-		spies.forEach((spy) => spy.mockRestore());
+		spies.forEach((spy) => {
+			spy.mockRestore();
+		});
 		spies = [];
 
 		// Also use mock.restore() as backup

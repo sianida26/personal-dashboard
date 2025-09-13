@@ -1,14 +1,13 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { handleMicrosoftCallback } from "../../utils/microsoftAuth";
-import { useNavigate } from "@tanstack/react-router";
-import { authDB } from "../../indexedDB/authDB";
 import useAuth from "../../hooks/useAuth";
+import { authDB } from "../../indexedDB/authDB";
+import { handleMicrosoftCallback } from "../../utils/microsoftAuth";
 
 /**
  * Microsoft callback route for handling authentication callback from Microsoft OAuth
  */
-export const Route = createLazyFileRoute("/oauth/microsoft-callback")({
+export const Route = createFileRoute()({
 	component: MicrosoftCallback,
 });
 

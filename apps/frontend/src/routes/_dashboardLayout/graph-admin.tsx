@@ -1,8 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { usePermissions } from "../../hooks/useAuth";
-import { useState, useEffect } from "react";
-import { Button } from "@repo/ui";
 import {
+	Alert,
+	AlertDescription,
+	AlertTitle,
+	Button,
 	Card,
 	CardContent,
 	CardDescription,
@@ -10,11 +10,13 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@repo/ui";
-import { Alert, AlertDescription, AlertTitle } from "@repo/ui";
-import { UserCircle, RefreshCcw, CheckCircle, LogOut } from "lucide-react";
+import { createFileRoute } from "@tanstack/react-router";
+import { CheckCircle, LogOut, RefreshCcw, UserCircle } from "lucide-react";
+import { useEffect, useState } from "react";
 import ResponseError from "@/errors/ResponseError";
-import fetchRPC from "@/utils/fetchRPC";
 import client from "@/honoClient";
+import fetchRPC from "@/utils/fetchRPC";
+import { usePermissions } from "../../hooks/useAuth";
 
 interface AdminAuthStatus {
 	authenticated: boolean;
@@ -28,7 +30,7 @@ interface AdminAuthStatus {
 	};
 }
 
-export const Route = createFileRoute("/_dashboardLayout/graph-admin")({
+export const Route = createFileRoute()({
 	component: GraphAdmin,
 	staticData: {
 		title: "Microsoft Graph Admin",

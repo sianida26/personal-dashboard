@@ -1,11 +1,11 @@
-import { createPageTemplate } from "@/components/PageTemplate";
 import { Badge, Button } from "@repo/ui";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { TbEye, TbPencil, TbTrash } from "react-icons/tb";
+import { createPageTemplate } from "@/components/PageTemplate";
 import client from "@/honoClient";
 import createActionButtons from "@/utils/createActionButton";
-import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
-import { TbEye, TbPencil, TbTrash } from "react-icons/tb";
 
-export const Route = createLazyFileRoute("/_dashboardLayout/users")({
+export const Route = createFileRoute()({
 	component: UsersPage,
 });
 

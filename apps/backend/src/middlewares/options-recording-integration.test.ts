@@ -1,10 +1,9 @@
-import { describe, test, expect, beforeEach, afterEach } from "bun:test";
+import { afterEach, beforeEach, describe, expect, spyOn, test } from "bun:test";
 import { Hono } from "hono";
-import type HonoEnv from "../types/HonoEnv";
 import appEnv from "../appEnv";
 import observabilityMiddleware from "../middlewares/observability-middleware";
 import * as observabilityService from "../services/observability-service";
-import { spyOn } from "bun:test";
+import type HonoEnv from "../types/HonoEnv";
 
 describe("OPTIONS Method Recording Integration", () => {
 	let app: Hono<HonoEnv>;
@@ -16,7 +15,9 @@ describe("OPTIONS Method Recording Integration", () => {
 
 	beforeEach(() => {
 		// Clear previous spies
-		spies.forEach((spy) => spy.mockRestore());
+		spies.forEach((spy) => {
+			spy.mockRestore();
+		});
 		spies = [];
 
 		// Store original values
@@ -57,7 +58,9 @@ describe("OPTIONS Method Recording Integration", () => {
 
 	afterEach(() => {
 		// Restore all spies individually
-		spies.forEach((spy) => spy.mockRestore());
+		spies.forEach((spy) => {
+			spy.mockRestore();
+		});
 		spies = [];
 
 		// Restore original values

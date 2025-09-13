@@ -1,11 +1,10 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { handleGoogleCallback } from "../../utils/googleAuth";
-import { useNavigate } from "@tanstack/react-router";
-import { authDB } from "../../indexedDB/authDB";
 import useAuth from "../../hooks/useAuth";
+import { authDB } from "../../indexedDB/authDB";
+import { handleGoogleCallback } from "../../utils/googleAuth";
 
-export const Route = createLazyFileRoute("/oauth/google-callback")({
+export const Route = createFileRoute()({
 	component: GoogleCallback,
 });
 

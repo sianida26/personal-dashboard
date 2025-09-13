@@ -1,9 +1,9 @@
-import { usePermissions } from "@/hooks/useAuth";
 import { DatePickerInput, type DateRange } from "@repo/ui";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { usePermissions } from "@/hooks/useAuth";
 
-export const Route = createFileRoute("/_dashboardLayout/dev")({
+export const Route = createFileRoute()({
 	component: RouteComponent,
 });
 

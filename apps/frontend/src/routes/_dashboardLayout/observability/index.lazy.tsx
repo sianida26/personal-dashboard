@@ -1,42 +1,49 @@
-import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
-import { Card, CardContent, CardHeader, CardTitle, Badge } from "@repo/ui";
-import { Tabs, TabList, TabTrigger, TabPanel } from "@repo/ui";
+import {
+	Badge,
+	Button,
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	NativeSelect,
+	ScrollArea,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+	TabList,
+	TabPanel,
+	Tabs,
+	TabTrigger,
+} from "@repo/ui";
+import { useQuery } from "@tanstack/react-query";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import { useMemo, useState } from "react";
 import {
 	TbActivity,
 	TbAlertTriangle,
-	TbClock,
-	TbEye,
-	TbTrendingUp,
-	TbTrendingDown,
-	TbMinus,
-	TbCode,
-	TbList,
-	TbExternalLink,
-	TbCopy,
 	TbCheck,
+	TbClock,
+	TbCode,
+	TbCopy,
+	TbExternalLink,
+	TbEye,
+	TbList,
+	TbMinus,
+	TbTrendingDown,
+	TbTrendingUp,
 } from "react-icons/tb";
 import {
 	createPageTemplate,
 	type QueryParams,
 } from "@/components/PageTemplate";
 import client from "@/honoClient";
-import { useQuery } from "@tanstack/react-query";
-import { useState, useMemo } from "react";
-import {
-	NativeSelect,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-	Button,
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-	ScrollArea,
-} from "@repo/ui";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
 
 // Configure dayjs to use UTC
 dayjs.extend(utc);
@@ -594,7 +601,7 @@ function ErrorStatsSection() {
 	);
 }
 
-export const Route = createLazyFileRoute("/_dashboardLayout/observability/")({
+export const Route = createFileRoute()({
 	component: ObservabilityPage,
 });
 

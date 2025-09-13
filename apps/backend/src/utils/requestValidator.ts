@@ -7,19 +7,13 @@ import type {
 	TypedResponse,
 	ValidationTargets,
 } from "hono";
-import type { ZodError, z } from "zod";
+import type { input as ZodInput, output as ZodOutput, ZodTypeAny } from "zod";
 import DashboardError from "../errors/DashboardError";
+// Local hook type retained for external callers, but not enforced against zValidator to avoid version skew
 export type Hook<T, E extends Env, P extends string, O = {}> = (
 	result:
-		| {
-				success: true;
-				data: T;
-		  }
-		| {
-				success: false;
-				error: ZodError;
-				data: T;
-		  },
+		| { success: true; data: T }
+		| { success: false; error: unknown; data: T },
 	c: Context<E, P>,
 ) =>
 	| Response
@@ -39,13 +33,12 @@ type HasUndefined<T> = undefined extends T ? true : false;
  * @returns A middleware function that validates the request against the provided schema.
  */
 function requestValidator<
-	// biome-ignore lint/suspicious/noExplicitAny: This is a generic type, so it's okay to use `any` here
-	T extends z.ZodType<any, z.ZodTypeDef, any>,
-	Target extends keyof ValidationTargets,
-	E extends Env,
-	P extends string,
-	In = z.input<T>,
-	Out = z.output<T>,
+	T extends ZodTypeAny = ZodTypeAny,
+	Target extends keyof ValidationTargets = keyof ValidationTargets,
+	E extends Env = Env,
+	P extends string = string,
+	In = ZodInput<T>,
+	Out = ZodOutput<T>,
 	I extends Input = {
 		in: HasUndefined<In> extends true
 			? {
@@ -61,59 +54,53 @@ function requestValidator<
 												| undefined;
 										}
 									: {
-											[K2_1 in keyof In]: ValidationTargets[K][K2_1];
+											[K2 in keyof In]: ValidationTargets[K][K2];
 										})
 						| undefined;
 				}
 			: {
-					[K_1 in Target]: K_1 extends "json"
+					[K in Target]: K extends "json"
 						? In
-						: HasUndefined<
-									keyof ValidationTargets[K_1]
-								> extends true
+						: HasUndefined<keyof ValidationTargets[K]> extends true
 							? {
-									[K2_2 in keyof In]?:
-										| ValidationTargets[K_1][K2_2]
+									[K2 in keyof In]?:
+										| ValidationTargets[K][K2]
 										| undefined;
 								}
-							: {
-									[K2_3 in keyof In]: ValidationTargets[K_1][K2_3];
-								};
+							: { [K2 in keyof In]: ValidationTargets[K][K2] };
 				};
-		out: { [K_2 in Target]: Out };
+		out: { [K in Target]: Out };
 	},
 	V extends I = I,
 >(
 	target: Target,
 	schema: T,
-	hook?: Hook<z.TypeOf<T>, E, P, {}> | undefined,
+	hook?: Hook<Out, E, P, {}> | undefined,
 ): MiddlewareHandler<E, P, V> {
-	//@ts-ignore
+	const defaultHook: Hook<Out, E, P, {}> = (result) => {
+		if (!("success" in result) || result.success) return undefined;
+		type Flatten = { fieldErrors: Record<string, string[]> };
+		const flattenFn = (result.error as { flatten?: () => Flatten }).flatten;
+		const fieldErrors = flattenFn ? flattenFn().fieldErrors : {};
+		const firstErrors: Record<string, string> = {};
+		for (const field in fieldErrors) {
+			firstErrors[field] = fieldErrors[field]?.[0] || "";
+		}
+		throw new DashboardError({
+			errorCode: "INVALID_FORM_DATA",
+			message:
+				"Validation failed. Please check your input and try again.",
+			formErrors: firstErrors,
+			severity: "LOW",
+			statusCode: 422,
+		});
+	};
+
 	return zValidator(
 		target,
 		schema,
-		hook ??
-			((result) => {
-				if (!result.success) {
-					const errors = result.error.flatten().fieldErrors as Record<
-						string,
-						string[]
-					>;
-					const firstErrors: Record<string, string> = {};
-					for (const field in errors) {
-						firstErrors[field] = errors[field]?.[0] || ""; // Grabbing the first error message for each field
-					}
-					throw new DashboardError({
-						errorCode: "INVALID_FORM_DATA",
-						message:
-							"Validation failed. Please check your input and try again.",
-						formErrors: firstErrors,
-						severity: "LOW",
-						statusCode: 422,
-					});
-				}
-			}),
-	);
+		hook ?? defaultHook,
+	) as unknown as MiddlewareHandler<E, P, V>;
 }
 
 export default requestValidator;

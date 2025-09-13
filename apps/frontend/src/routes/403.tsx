@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import illustration from "@/assets/illustrations/undraw_alert_w756.svg";
 import usePermissionChecker from "@/hooks/usePermissionChecker";
 
-export const Route = createFileRoute("/403")({
+export const Route = createFileRoute()({
 	component: RouteComponent,
 });
 

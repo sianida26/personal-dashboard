@@ -5,17 +5,11 @@
 		"module": "ESNext",
 		"moduleResolution": "Bundler",
 		"strict": true,
-		"types": [
-			"node",
-			"bun"
-		],
+		"types": ["node", "bun"],
 		"jsx": "react-jsx",
 		"jsxImportSource": "hono/jsx",
 		"noEmit": true,
 		"skipLibCheck": true
 	},
-	"include": [
-		"src/**/*",
-		"../frontend/src/utils/getTablerIcon.ts"
-	]
+	"include": ["src/**/*", "../frontend/src/utils/getTablerIcon.ts"]
 }

@@ -20,7 +20,7 @@ import client from "@/honoClient";
 import createInputComponents from "@/utils/createInputComponents";
 import fetchRPC from "@/utils/fetchRPC";
 
-export const Route = createFileRoute("/_dashboardLayout/roles/create")({
+export const Route = createFileRoute()({
 	component: RouteComponent,
 	staticData: {
 		title: "Create Role",

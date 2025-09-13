@@ -1,21 +1,18 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
-import client from "@/honoClient";
 import { useForm } from "@mantine/form";
-import { zodResolver } from "mantine-form-zod-resolver";
-import { appSettingUpdateSchema } from "@repo/validation";
 import { Button, Input } from "@repo/ui";
 import { useToast } from "@repo/ui/hooks";
-import { useNavigate } from "@tanstack/react-router";
-import { Loader2, ArrowLeft } from "lucide-react";
-import type { z } from "zod";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import fetchRPC from "@/utils/fetchRPC";
+import { appSettingUpdateSchema } from "@repo/validation";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { ArrowLeft, Loader2 } from "lucide-react";
+import { zodResolver } from "mantine-form-zod-resolver";
 import { useEffect } from "react";
+import type { z } from "zod";
+import client from "@/honoClient";
 import { usePermissions } from "@/hooks/useAuth";
+import fetchRPC from "@/utils/fetchRPC";
 
-export const Route = createLazyFileRoute(
-	"/_dashboardLayout/app-settings/edit/$id",
-)({
+export const Route = createFileRoute()({
 	component: RouteComponent,
 });
 

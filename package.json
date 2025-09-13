@@ -15,16 +15,16 @@
 		"apps/*"
 	],
 	"devDependencies": {
-		"@biomejs/biome": "^2.1.1",
+		"@biomejs/biome": "^2.2.4",
 		"@repo/typescript-config": "workspace:*",
-		"@turbo/gen": "^2.5.4",
-		"@types/bun": "^1.2.18",
-		"@types/node": "^24.0.13",
-		"@types/react": "^19.1.8",
-		"@types/react-dom": "^19.1.6",
-		"tailwindcss": "^4.1.11",
-		"turbo": "^2.5.4",
-		"typescript": "^5.8.3"
+		"@turbo/gen": "^2.5.6",
+		"@types/bun": "^1.2.21",
+		"@types/node": "^24.3.3",
+		"@types/react": "^19.1.13",
+		"@types/react-dom": "^19.1.9",
+		"tailwindcss": "^4.1.13",
+		"turbo": "^2.5.6",
+		"typescript": "^5.9.2"
 	},
 	"packageManager": "bun@1.2.2",
 	"engines": {
@@ -32,14 +32,14 @@
 	},
 	"dependencies": {
 		"@paralleldrive/cuid2": "^2.2.2",
-		"dayjs": "^1.11.13",
-		"dexie": "^4.0.11",
-		"hono": "^4.8.4",
+		"dayjs": "^1.11.18",
+		"dexie": "^4.2.0",
+		"hono": "^4.9.7",
 		"hono-rate-limiter": "^0.4.2",
 		"lucide-react": "latest",
-		"react": "^19.1.0",
-		"react-dom": "^19.1.0",
+		"react": "^19.1.1",
+		"react-dom": "^19.1.1",
 		"react-icons": "^5.5.0",
-		"zod": "^3.25.76"
+		"zod": "^4.1.8"
 	}
 }

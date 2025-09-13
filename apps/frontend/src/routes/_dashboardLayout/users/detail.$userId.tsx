@@ -1,14 +1,14 @@
-import ModalFormTemplate from "@/components/ModalFormTemplate";
-import client from "@/honoClient";
-import createInputComponents from "@/utils/createInputComponents";
-import fetchRPC from "@/utils/fetchRPC";
 import { useForm } from "@mantine/form";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { InferResponseType } from "hono";
 import { useEffect } from "react";
+import ModalFormTemplate from "@/components/ModalFormTemplate";
+import client from "@/honoClient";
+import createInputComponents from "@/utils/createInputComponents";
+import fetchRPC from "@/utils/fetchRPC";
 
-export const Route = createFileRoute("/_dashboardLayout/users/detail/$userId")({
+export const Route = createFileRoute()({
 	component: RouteComponent,
 });
 

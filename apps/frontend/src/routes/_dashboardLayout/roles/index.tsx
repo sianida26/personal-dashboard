@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_dashboardLayout/roles/")({
+export const Route = createFileRoute()({
 	staticData: {
 		title: "Roles",
 	},

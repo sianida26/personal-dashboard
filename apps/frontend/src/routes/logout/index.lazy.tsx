@@ -1,9 +1,9 @@
-import useAuth from "@/hooks/useAuth";
 import { useQueryClient } from "@tanstack/react-query";
-import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
+import useAuth from "@/hooks/useAuth";
 
-export const Route = createLazyFileRoute("/logout/")({
+export const Route = createFileRoute()({
 	component: LogoutPage,
 });
 
@@ -21,12 +21,7 @@ export default function LogoutPage() {
 			});
 		}
 
-		navigate({
-			to: "/login",
-			replace: true,
-		});
-
-		window.location.href = "/login";
+		navigate({ to: "/login", replace: true });
 	});
 
 	return <div>Logging out...</div>;

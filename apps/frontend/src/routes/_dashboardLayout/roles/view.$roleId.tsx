@@ -32,7 +32,7 @@ import {
 import client from "@/honoClient";
 import fetchRPC from "@/utils/fetchRPC";
 
-export const Route = createFileRoute("/_dashboardLayout/roles/view/$roleId")({
+export const Route = createFileRoute()({
 	component: RouteComponent,
 	staticData: {
 		title: "View Role",

@@ -1,11 +1,11 @@
 import { Badge, Button } from "@repo/ui";
-import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { TbCopy, TbEye, TbPencil, TbUsers } from "react-icons/tb";
 import { createPageTemplate } from "@/components/PageTemplate";
 import client from "@/honoClient";
 import createActionButtons from "@/utils/createActionButton";
 
-export const Route = createLazyFileRoute("/_dashboardLayout/roles/")({
+export const Route = createFileRoute()({
 	component: RolesPage,
 });
 

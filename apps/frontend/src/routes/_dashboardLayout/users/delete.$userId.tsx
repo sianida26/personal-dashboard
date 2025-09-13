@@ -7,13 +7,13 @@ import {
 	AlertDialogTitle,
 	Button,
 } from "@repo/ui";
-import client from "@/honoClient";
 import { useToast } from "@repo/ui/hooks";
-import fetchRPC from "@/utils/fetchRPC";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import client from "@/honoClient";
+import fetchRPC from "@/utils/fetchRPC";
 
-export const Route = createFileRoute("/_dashboardLayout/users/delete/$userId")({
+export const Route = createFileRoute()({
 	component: UserDeleteModal,
 });
 

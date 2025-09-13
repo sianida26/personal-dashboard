@@ -19,7 +19,7 @@ import {
 } from "@repo/ui";
 import { useQuery } from "@tanstack/react-query";
 import {
-	createLazyFileRoute,
+	createFileRoute,
 	useNavigate,
 	useSearch,
 } from "@tanstack/react-router";
@@ -1123,8 +1123,6 @@ function EndpointRequestsTable() {
 	);
 }
 
-export const Route = createLazyFileRoute(
-	"/_dashboardLayout/observability/endpoint-requests",
-)({
+export const Route = createFileRoute()({
 	component: EndpointRequestsTable,
 });

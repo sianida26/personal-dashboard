@@ -1,13 +1,10 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { RouterProvider, createRouter } from "@tanstack/react-router";
-
-import { routeTree } from "./routeTree.gen";
-
+import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { AppProvider } from "./contexts/App/AppContext";
 import { AuthProvider } from "./contexts/Auth/AuthProvider";
 import { NotificationProvider } from "./contexts/Notification/NotificationProvider";
-import { AppProvider } from "./contexts/App/AppContext";
-import { usePerformanceMonitor } from "./hooks/usePerformanceMonitor";
 import { useConsoleLogger } from "./hooks/useConsoleLogger";
+import { usePerformanceMonitor } from "./hooks/usePerformanceMonitor";
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -18,7 +15,6 @@ const queryClient = new QueryClient({
 });
 
 const router = createRouter({
-	routeTree,
 	context: { queryClient, pageTitle: "" },
 	defaultPreloadStaleTime: 0,
 });

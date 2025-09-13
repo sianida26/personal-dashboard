@@ -1,11 +1,10 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { handleMicrosoftAdminCallback } from "../../utils/microsoftAuth";
-import { useNavigate } from "@tanstack/react-router";
-import { authDB } from "../../indexedDB/authDB";
 import useAuth from "../../hooks/useAuth";
+import { authDB } from "../../indexedDB/authDB";
+import { handleMicrosoftAdminCallback } from "../../utils/microsoftAuth";
 
-export const Route = createLazyFileRoute("/oauth/microsoft-admin-callback")({
+export const Route = createFileRoute()({
 	component: MicrosoftAdminCallback,
 });
 
