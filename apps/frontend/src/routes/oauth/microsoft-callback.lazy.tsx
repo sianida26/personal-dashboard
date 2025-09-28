@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useNavigate, createLazyFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import { authDB } from "../../indexedDB/authDB";
@@ -7,7 +7,7 @@ import { handleMicrosoftCallback } from "../../utils/microsoftAuth";
 /**
  * Microsoft callback route for handling authentication callback from Microsoft OAuth
  */
-export const Route = createFileRoute()({
+export const Route = createLazyFileRoute("/oauth/microsoft-callback")({
 	component: MicrosoftCallback,
 });
 
@@ -32,7 +32,7 @@ function MicrosoftCallback() {
 
 				if (!sessionId) {
 					setError("No session ID found in the URL");
-					return;
+					return
 				}
 
 				// Fetch auth data using the session ID
@@ -40,7 +40,7 @@ function MicrosoftCallback() {
 
 				if (!authData || !authData.accessToken) {
 					setError("Invalid authentication data received");
-					return;
+					return
 				}
 
 				// Store auth data in IndexedDB
@@ -51,7 +51,7 @@ function MicrosoftCallback() {
 					permissions: authData.user.permissions,
 					roles: authData.user.roles,
 					accessToken: authData.accessToken,
-				});
+				})
 
 				// Update auth context
 				saveAuthData(authData.user, authData.accessToken);
@@ -62,9 +62,9 @@ function MicrosoftCallback() {
 				console.error("Error in Microsoft callback:", err);
 				setError(
 					"Failed to complete authentication. Please try again.",
-				);
+				)
 			}
-		};
+		}
 
 		processCallback();
 	}, [navigate, saveAuthData]);
@@ -87,7 +87,7 @@ function MicrosoftCallback() {
 					Return to Login
 				</button>
 			</div>
-		);
+		)
 	}
 
 	return (
@@ -100,5 +100,5 @@ function MicrosoftCallback() {
 				</p>
 			</div>
 		</div>
-	);
+	)
 }

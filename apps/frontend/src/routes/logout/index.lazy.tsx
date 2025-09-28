@@ -1,9 +1,9 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useNavigate, createLazyFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import useAuth from "@/hooks/useAuth";
 
-export const Route = createFileRoute()({
+export const Route = createLazyFileRoute("/logout/")({
 	component: LogoutPage,
 });
 
@@ -18,11 +18,11 @@ export default function LogoutPage() {
 
 			queryClient.invalidateQueries({
 				queryKey: ["my-profile"],
-			});
+			})
 		}
 
 		navigate({ to: "/login", replace: true });
-	});
+	})
 
 	return <div>Logging out...</div>;
 }

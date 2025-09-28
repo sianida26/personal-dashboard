@@ -19,9 +19,9 @@ import {
 } from "@repo/ui";
 import { useQuery } from "@tanstack/react-query";
 import {
-	createFileRoute,
 	useNavigate,
 	useSearch,
+	createLazyFileRoute,
 } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -106,7 +106,7 @@ function RequestDetailDialog({
 		queryFn: async () => {
 			const response = await client.observability.requests[":id"].$get({
 				param: { id: requestId },
-			});
+			})
 			if (!response.ok) {
 				throw new Error("Failed to fetch request details");
 			}
@@ -115,7 +115,7 @@ function RequestDetailDialog({
 		enabled: isOpen && !!requestId,
 		staleTime: 30 * 1000, // 30 seconds
 		gcTime: 5 * 60 * 1000, // 5 minutes
-	});
+	})
 
 	const copyToClipboard = async (text: string, fieldName: string) => {
 		try {
@@ -133,12 +133,12 @@ function RequestDetailDialog({
 			setCopiedField(fieldName);
 			setTimeout(() => setCopiedField(null), 2000);
 		}
-	};
+	}
 
 	const formatJson = (data: unknown): string => {
 		if (!data) return "null";
 		return JSON.stringify(data, null, 2);
-	};
+	}
 
 	const renderJsonContent = (
 		content: unknown,
@@ -180,8 +180,8 @@ function RequestDetailDialog({
 					</ScrollArea>
 				</div>
 			</div>
-		);
-	};
+		)
+	}
 
 	if (!isOpen) return null;
 
@@ -379,7 +379,7 @@ function RequestDetailDialog({
 				)}
 			</DialogContent>
 		</Dialog>
-	);
+	)
 }
 
 // Analytics Charts Component
@@ -418,7 +418,7 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 		return {
 			startDate: now.subtract(days, "day").toISOString(),
 			endDate: now.toISOString(),
-		};
+		}
 	}, [timeRange]);
 
 	// Fetch analytics data
@@ -433,14 +433,14 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 					endDate,
 					limit: "1000", // Get more data for analytics
 				},
-			});
+			})
 			if (!response.ok) {
 				throw new Error("Failed to fetch analytics data");
 			}
 			return response.json();
 		},
 		staleTime: 5 * 60 * 1000, // 5 minutes
-	});
+	})
 
 	// Extract data from the new response structure
 	const analyticsData = analyticsResponse?.data;
@@ -462,7 +462,7 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 					statusCounts: { "2xx": 0, "3xx": 0, "4xx": 0, "5xx": 0 },
 				},
 				histogramGranularity: "1ms",
-			};
+			}
 
 		// Group by status code category
 		const getStatusCategory = (statusCode: number): string => {
@@ -471,7 +471,7 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 			if (statusCode >= 400 && statusCode < 500) return "4xx";
 			if (statusCode >= 500) return "5xx";
 			return "other";
-		};
+		}
 
 		// Type for analytics data item
 		type AnalyticsItem = {
@@ -487,7 +487,7 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 			statusCode: number | null;
 			responseTimeMs: number | null;
 			createdAt: string | null;
-		};
+		}
 
 		// Daily average response time data
 		const dailyGroups = analyticsData.reduce(
@@ -496,11 +496,11 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 					string,
 					{
 						responses: number[];
-						total: number;
+						total: number
 						categories: Record<
 							string,
 							{ times: number[]; count: number }
-						>;
+						>
 					}
 				>,
 				item: AnalyticsItem,
@@ -521,7 +521,7 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 							"4xx": { times: [], count: 0 },
 							"5xx": { times: [], count: 0 },
 						},
-					};
+					}
 				}
 
 				acc[day].responses.push(responseTime);
@@ -529,10 +529,10 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 				acc[day].categories[statusCategory].times.push(responseTime);
 				acc[day].categories[statusCategory].count++;
 
-				return acc;
+				return acc
 			},
 			{},
-		);
+		)
 
 		// Generate all days in the range to avoid skipping dates
 		const days = timeRange === "7d" ? 7 : 30;
@@ -541,7 +541,7 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 				.utc()
 				.subtract(days - 1 - i, "day")
 				.format("MMM DD");
-		});
+		})
 
 		const dailyData = allDays.map((day) => {
 			const data = dailyGroups[day];
@@ -560,12 +560,12 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 									(sum: number, time: number) => sum + time,
 									0,
 								) / categoryData.times.length,
-							);
+							)
 						} else {
-							result[category] = 0;
+							result[category] = 0
 						}
 					},
-				);
+				)
 			} else {
 				// No data for this day, set all to 0
 				result["2xx"] = 0;
@@ -575,7 +575,7 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 			}
 
 			return result;
-		});
+		})
 
 		// Use server-side histogram data directly
 		const histogramData = serverHistogram;
@@ -589,14 +589,14 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 			chartData: { dailyData, histogramData },
 			statistics: serverStatistics,
 			histogramGranularity: granularity,
-		};
+		}
 	}, [
 		analyticsData,
 		serverStatistics,
 		serverHistogram,
 		analyticsResponse,
 		timeRange,
-	]);
+	])
 
 	if (isLoading) {
 		return (
@@ -651,7 +651,7 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 					</Card>
 				</div>
 			</div>
-		);
+		)
 	}
 
 	return (
@@ -932,17 +932,17 @@ function AnalyticsCharts({ endpoint, method }: AnalyticsChartsProps) {
 				</Card>
 			</div>
 		</div>
-	);
+	)
 }
 
 function EndpointRequestsTable() {
 	const navigate = useNavigate();
 	const { endpoint, method } = useSearch({
 		from: "/_dashboardLayout/observability/endpoint-requests",
-	});
+	})
 	const [selectedRequestId, setSelectedRequestId] = useState<string | null>(
 		null,
-	);
+	)
 
 	// Create a wrapper endpoint that includes the filters
 	const filteredEndpoint = async (
@@ -954,12 +954,12 @@ function EndpointRequestsTable() {
 			...args.query,
 			routePath: endpoint, // endpoint from search params is actually the routePath
 			method,
-		};
+		}
 
 		return client.observability.requests.$get({
 			query: filteredQuery,
-		});
-	};
+		})
+	}
 
 	// Create the table component with endpoint and method filters pre-applied
 	const tableComponent = createPageTemplate({
@@ -994,7 +994,7 @@ function EndpointRequestsTable() {
 							<TbEye className="h-4 w-4 mr-1" />
 							Explore
 						</Button>
-					);
+					)
 				},
 			}),
 			helper.accessor("createdAt", {
@@ -1007,7 +1007,7 @@ function EndpointRequestsTable() {
 								{formatUTCTimestamp(timestamp)}
 							</span>
 						</div>
-					);
+					)
 				},
 			}),
 			helper.accessor("endpoint", {
@@ -1029,7 +1029,7 @@ function EndpointRequestsTable() {
 								? `${displayEndpoint.substring(0, 50)}...`
 								: displayEndpoint || endpoint}
 						</span>
-					);
+					)
 				},
 			}),
 			helper.accessor("userName", {
@@ -1042,7 +1042,7 @@ function EndpointRequestsTable() {
 						<span className="text-sm text-muted-foreground">
 							Anonymous
 						</span>
-					);
+					)
 				},
 			}),
 			helper.accessor("responseTimeMs", {
@@ -1054,14 +1054,14 @@ function EndpointRequestsTable() {
 							<span className="text-sm text-muted-foreground">
 								-
 							</span>
-						);
+						)
 					return (
 						<span
 							className={`text-sm font-semibold ${getResponseTimeColor(responseTime)}`}
 						>
 							{responseTime}ms
 						</span>
-					);
+					)
 				},
 			}),
 			helper.accessor("statusCode", {
@@ -1073,16 +1073,16 @@ function EndpointRequestsTable() {
 							<span className="text-sm text-muted-foreground">
 								-
 							</span>
-						);
+						)
 					return (
 						<Badge variant={getStatusCodeVariant(statusCode)}>
 							{statusCode}
 						</Badge>
-					);
+					)
 				},
 			}),
 		],
-	});
+	})
 
 	return (
 		<div className="container mx-auto px-4 py-6 space-y-6">
@@ -1120,9 +1120,9 @@ function EndpointRequestsTable() {
 				/>
 			)}
 		</div>
-	);
+	)
 }
 
-export const Route = createFileRoute()({
+export const Route = createLazyFileRoute("/_dashboardLayout/observability/endpoint-requests")({
 	component: EndpointRequestsTable,
 });

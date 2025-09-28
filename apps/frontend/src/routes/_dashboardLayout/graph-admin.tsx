@@ -27,10 +27,10 @@ interface AdminAuthStatus {
 		id: string;
 		name: string;
 		email: string;
-	};
+	}
 }
 
-export const Route = createFileRoute()({
+export const Route = createFileRoute("/_dashboardLayout/graph-admin")({
 	component: GraphAdmin,
 	staticData: {
 		title: "Microsoft Graph Admin",
@@ -62,7 +62,7 @@ function GraphAdmin() {
 			// Use direct fetch for the status endpoint
 			const response = await fetchRPC(
 				client.auth.microsoft.admin.status.$get(),
-			);
+			)
 			setAuthStatus(response);
 		} catch (error) {
 			setAuthMessage({
@@ -71,12 +71,12 @@ function GraphAdmin() {
 					error instanceof ResponseError
 						? error.message
 						: "Failed to check authentication status",
-			});
+			})
 			setAuthStatus({ authenticated: false });
 		} finally {
 			setIsLoading(false);
 		}
-	};
+	}
 
 	// Function to authenticate with Microsoft Graph as admin
 	const authenticateWithMicrosoft = async () => {
@@ -87,7 +87,7 @@ function GraphAdmin() {
 			// Get a CSRF token from the backend
 			const csrfResponse = await fetchRPC<{ csrfToken: string }>(
 				client.auth.microsoft.admin["csrf-token"].$get(),
-			);
+			)
 
 			// Redirect to the login endpoint with the CSRF token
 			window.location.href = `${import.meta.env.VITE_BACKEND_BASE_URL}/auth/microsoft/admin/login?csrf_token=${csrfResponse.csrfToken}`;
@@ -98,10 +98,10 @@ function GraphAdmin() {
 					error instanceof ResponseError
 						? error.message
 						: "Authentication failed",
-			});
+			})
 			setAuthenticating(false);
 		}
-	};
+	}
 
 	// Function to deauthenticate from Microsoft Graph
 	const deauthenticateFromMicrosoft = async () => {
@@ -115,7 +115,7 @@ function GraphAdmin() {
 			setAuthMessage({
 				type: "success",
 				message: "Successfully deauthenticated from Microsoft Graph",
-			});
+			})
 
 			// Refresh authentication status
 			setAuthStatus({ authenticated: false });
@@ -126,11 +126,11 @@ function GraphAdmin() {
 					error instanceof ResponseError
 						? error.message
 						: "Failed to deauthenticate",
-			});
+			})
 		} finally {
 			setDeauthenticating(false);
 		}
-	};
+	}
 
 	return (
 		<div className="container mx-auto px-4 py-8">
@@ -240,5 +240,5 @@ function GraphAdmin() {
 				</CardFooter>
 			</Card>
 		</div>
-	);
+	)
 }

@@ -7,7 +7,7 @@ import client from "@/honoClient";
 import useAuth from "@/hooks/useAuth";
 import fetchRPC from "@/utils/fetchRPC";
 
-export const Route = createFileRoute()({
+export const Route = createFileRoute("/_dashboardLayout")({
 	component: DashboardLayout,
 });
 
@@ -24,12 +24,12 @@ function DashboardLayout() {
 				name: response.name,
 				permissions: response.permissions,
 				roles: response.roles,
-			});
+			})
 
 			return response;
 		},
 		enabled: isAuthenticated,
-	});
+	})
 
 	// const [openNavbar, { toggle }] = useDisclosure(false);
 
@@ -39,8 +39,8 @@ function DashboardLayout() {
 
 	return isAuthenticated ? (
 		// App Shell
-		<SidebarProvider>
-			<div className="w-screen h-screen flex">
+		(<SidebarProvider>
+            <div className="w-screen h-screen flex">
 				{/* Sidebar */}
 				<AppSidebar />
 
@@ -55,8 +55,8 @@ function DashboardLayout() {
 					</div>
 				</div>
 			</div>
-		</SidebarProvider>
+        </SidebarProvider>)
 	) : (
 		<Navigate to="/login" />
-	);
+	)
 }

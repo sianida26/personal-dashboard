@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import illustration from "@/assets/illustrations/undraw_alert_w756.svg";
 import usePermissionChecker from "@/hooks/usePermissionChecker";
 
-export const Route = createFileRoute()({
+export const Route = createFileRoute("/403")({
 	component: RouteComponent,
 });
 
@@ -40,7 +40,7 @@ function RouteComponent() {
 				sessionStorage.removeItem("originalPermissions");
 			},
 		},
-	);
+	)
 
 	return (
 		<div className="w-screen h-screen flex flex-col items-center justify-center gap-8 px-4 lg:px-8">
@@ -65,5 +65,5 @@ function RouteComponent() {
 				</a>
 			</div>
 		</div>
-	);
+	)
 }

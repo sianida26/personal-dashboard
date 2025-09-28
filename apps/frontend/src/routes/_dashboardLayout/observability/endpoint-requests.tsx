@@ -6,6 +6,6 @@ const endpointRequestsSearchSchema = z.object({
 	method: z.string(),
 });
 
-export const Route = createFileRoute()({
+export const Route = createFileRoute("/_dashboardLayout/observability/endpoint-requests")({
 	validateSearch: endpointRequestsSearchSchema,
 });

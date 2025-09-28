@@ -20,7 +20,7 @@ import client from "@/honoClient";
 import createInputComponents from "@/utils/createInputComponents";
 import fetchRPC from "@/utils/fetchRPC";
 
-export const Route = createFileRoute()({
+export const Route = createFileRoute("/_dashboardLayout/roles/edit/$roleId")({
 	component: RouteComponent,
 	staticData: {
 		title: "Edit Role",
@@ -32,7 +32,7 @@ function RouteComponent() {
 	const [permissionSearch, setPermissionSearch] = useState("");
 	const isMutating = useIsMutating({
 		mutationKey: ["edit-role"],
-	});
+	})
 	const { roleId: id } = Route.useParams();
 
 	const detailEndpoint = client.roles[":id"].$get;
@@ -40,7 +40,7 @@ function RouteComponent() {
 	const { data: roleData } = useQuery({
 		queryKey: ["roles", { id }],
 		queryFn: () => fetchRPC(detailEndpoint({ param: { id } })),
-	});
+	})
 
 	useEffect(() => {
 		roleData &&
@@ -49,7 +49,7 @@ function RouteComponent() {
 				code: roleData.code ?? "",
 				description: roleData.description ?? "",
 				permissions: roleData.permissions,
-			});
+			})
 	}, [roleData]);
 
 	const form = useForm<z.infer<typeof roleFormSchema>>({
@@ -59,11 +59,11 @@ function RouteComponent() {
 			description: "",
 			permissions: [] as PermissionCode[],
 		},
-	});
+	})
 
 	const filteredPermissions = permissions.filter((permission) =>
 		permission.toLowerCase().includes(permissionSearch.toLowerCase()),
-	);
+	)
 
 	const groupedPermissions = filteredPermissions.reduce(
 		(acc, permission) => {
@@ -75,7 +75,7 @@ function RouteComponent() {
 			return acc;
 		},
 		{} as Record<string, PermissionCode[]>,
-	);
+	)
 
 	const handlePermissionChange = (
 		permission: PermissionCode,
@@ -86,14 +86,14 @@ function RouteComponent() {
 			form.setFieldValue("permissions", [
 				...currentPermissions,
 				permission,
-			]);
+			])
 		} else {
 			form.setFieldValue(
 				"permissions",
 				currentPermissions.filter((p) => p !== permission),
-			);
+			)
 		}
-	};
+	}
 
 	const handleSubmit = async () => {
 		try {
@@ -107,16 +107,16 @@ function RouteComponent() {
 						permissions: form.values.permissions,
 					},
 				}),
-			);
+			)
 			navigate({ to: "/roles" });
 		} catch (error) {
 			console.error(error);
 		}
-	};
+	}
 
 	return (
-		<div className="container mx-auto py-6">
-			<Card>
+        <div className="container mx-auto py-6">
+            <Card>
 				<CardHeader>
 					<CardTitle>Edit Role</CardTitle>
 				</CardHeader>
@@ -162,11 +162,11 @@ function RouteComponent() {
 										onClick={() => {
 											const allPermissions = [
 												...permissions,
-											];
+											]
 											form.setFieldValue(
 												"permissions",
 												allPermissions,
-											);
+											)
 										}}
 										disabled={Boolean(isMutating)}
 									>
@@ -180,7 +180,7 @@ function RouteComponent() {
 											form.setFieldValue(
 												"permissions",
 												[],
-											);
+											)
 										}}
 										disabled={Boolean(isMutating)}
 									>
@@ -227,14 +227,14 @@ function RouteComponent() {
 															const currentPerms =
 																form.values
 																	.permissions ??
-																[];
+																[]
 															const hasAllGroupPerms =
 																groupPermissions.every(
 																	(p) =>
 																		currentPerms.includes(
 																			p,
 																		),
-																);
+																)
 
 															if (
 																hasAllGroupPerms
@@ -248,7 +248,7 @@ function RouteComponent() {
 																				p,
 																			),
 																	),
-																);
+																)
 															} else {
 																// Add all group permissions
 																const newPerms =
@@ -259,11 +259,11 @@ function RouteComponent() {
 																				...groupPermissions,
 																			],
 																		),
-																	];
+																	]
 																form.setFieldValue(
 																	"permissions",
 																	newPerms,
-																);
+																)
 															}
 														}}
 														disabled={Boolean(
@@ -345,6 +345,6 @@ function RouteComponent() {
 					</form>
 				</CardContent>
 			</Card>
-		</div>
-	);
+        </div>
+    )
 }

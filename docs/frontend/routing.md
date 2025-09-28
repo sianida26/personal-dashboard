@@ -4,6 +4,8 @@
 
 The frontend uses TanStack Router for file-based routing with full type safety. This provides automatic route generation, type-safe navigation, and powerful features like loaders, guards, and lazy loading.
 
+> IMPORTANT: Always pass the generated `routeTree` (from `routeTree.gen.ts`) to `createRouter({ routeTree, ... })`. Omitting `routeTree` results in a runtime error: `TypeError: flatRoutes is not iterable`. Ensure `import { routeTree } from './routeTree.gen'` exists in `App.tsx` (or wherever the router is created).
+
 ## File-Based Routing Structure
 
 ### Routing Conventions
