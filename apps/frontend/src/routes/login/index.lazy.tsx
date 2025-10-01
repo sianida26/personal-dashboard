@@ -1,15 +1,15 @@
-import TextInput from "@/components/TextInput";
-import { Alert, AlertDescription, AlertTitle, Button } from "@repo/ui";
-import useAuth from "@/hooks/useAuth";
 import { useForm } from "@mantine/form";
+import { Alert, AlertDescription, AlertTitle, Button } from "@repo/ui";
 import { useMutation } from "@tanstack/react-query";
-import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
+import { useNavigate, createLazyFileRoute } from "@tanstack/react-router";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
-import client from "@/honoClient";
 import MicrosoftLoginButton from "@/components/MicrosoftLoginButton";
+import TextInput from "@/components/TextInput";
+import client from "@/honoClient";
+import useAuth from "@/hooks/useAuth";
 import { loginWithGoogle } from "@/utils/googleAuth";
 
 export const Route = createLazyFileRoute("/login/")({
@@ -40,14 +40,14 @@ export default function LoginPage() {
 			password: "",
 		},
 		validate: zodResolver(formSchema),
-	});
+	})
 
 	useEffect(() => {
 		if (isAuthenticated) {
 			navigate({
 				to: "/dashboard",
 				replace: true,
-			});
+			})
 		}
 	}, [navigate, isAuthenticated]);
 
@@ -55,7 +55,7 @@ export default function LoginPage() {
 		mutationFn: async (values: FormSchema) => {
 			const res = await client.auth.login.$post({
 				json: values,
-			});
+			})
 
 			if (res.ok) {
 				return await res.json();
@@ -73,21 +73,21 @@ export default function LoginPage() {
 					roles: data.user.roles,
 				},
 				data.accessToken,
-			);
+			)
 		},
 
 		onError: async (error) => {
 			if (error instanceof Response) {
 				const body = await error.json();
 				setErrorMessage(body.message as string);
-				return;
+				return
 			}
 		},
-	});
+	})
 
 	const handleSubmit = (values: FormSchema) => {
 		loginMutation.mutate(values);
-	};
+	}
 
 	return (
 		<div className="w-screen h-screen flex">
@@ -202,5 +202,5 @@ export default function LoginPage() {
 				</div>
 			</div>
 		</div>
-	);
+	)
 }

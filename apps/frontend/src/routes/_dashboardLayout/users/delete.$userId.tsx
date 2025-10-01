@@ -7,11 +7,11 @@ import {
 	AlertDialogTitle,
 	Button,
 } from "@repo/ui";
-import client from "@/honoClient";
 import { useToast } from "@repo/ui/hooks";
-import fetchRPC from "@/utils/fetchRPC";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import client from "@/honoClient";
+import fetchRPC from "@/utils/fetchRPC";
 
 export const Route = createFileRoute("/_dashboardLayout/users/delete/$userId")({
 	component: UserDeleteModal,
@@ -38,9 +38,9 @@ export default function UserDeleteModal() {
 					},
 					query: {},
 				}),
-			);
+			)
 		},
-	});
+	})
 
 	const mutation = useMutation({
 		mutationKey: ["deleteUserMutation"],
@@ -52,7 +52,7 @@ export default function UserDeleteModal() {
 					},
 					form: {},
 				}),
-			);
+			)
 		},
 		onError: (error: unknown) => {
 			if (error instanceof Error) {
@@ -60,24 +60,24 @@ export default function UserDeleteModal() {
 					variant: "destructive",
 					title: "Error",
 					description: error.message,
-				});
+				})
 			}
 		},
 		onSuccess: () => {
 			toast({
 				description: "User deleted successfully.",
 				className: "bg-green-300 text-green-800",
-			});
+			})
 			queryClient.removeQueries({ queryKey: ["user", userId] });
 			queryClient.invalidateQueries({ queryKey: ["users"] });
 			handleCloseModal();
 		},
-	});
+	})
 
 	const handleCloseModal = () => {
 		if (mutation.isPending) return;
 		navigate({ to: "/users" });
-	};
+	}
 
 	const isModalOpen = Boolean(userId && userQuery.data);
 
@@ -115,5 +115,5 @@ export default function UserDeleteModal() {
 				</AlertDialogFooter>
 			</AlertDialogContent>
 		</AlertDialog>
-	);
+	)
 }

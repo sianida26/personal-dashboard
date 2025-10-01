@@ -1,21 +1,18 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
-import client from "@/honoClient";
 import { useForm } from "@mantine/form";
-import { zodResolver } from "mantine-form-zod-resolver";
-import { appSettingUpdateSchema } from "@repo/validation";
 import { Button, Input } from "@repo/ui";
 import { useToast } from "@repo/ui/hooks";
-import { useNavigate } from "@tanstack/react-router";
-import { Loader2, ArrowLeft } from "lucide-react";
-import type { z } from "zod";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import fetchRPC from "@/utils/fetchRPC";
+import { appSettingUpdateSchema } from "@repo/validation";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useNavigate, createLazyFileRoute } from "@tanstack/react-router";
+import { ArrowLeft, Loader2 } from "lucide-react";
+import { zodResolver } from "mantine-form-zod-resolver";
 import { useEffect } from "react";
+import type { z } from "zod";
+import client from "@/honoClient";
 import { usePermissions } from "@/hooks/useAuth";
+import fetchRPC from "@/utils/fetchRPC";
 
-export const Route = createLazyFileRoute(
-	"/_dashboardLayout/app-settings/edit/$id",
-)({
+export const Route = createLazyFileRoute("/_dashboardLayout/app-settings/edit/$id")({
 	component: RouteComponent,
 });
 
@@ -32,20 +29,20 @@ function RouteComponent() {
 			value: "",
 		},
 		validate: zodResolver(appSettingUpdateSchema),
-	});
+	})
 
 	const { data: setting, isLoading } = useQuery({
 		queryKey: ["app-settings", { id }],
 		queryFn: () =>
 			fetchRPC(client["app-settings"][":id"].$get({ param: { id } })),
-	});
+	})
 
 	useEffect(() => {
 		if (setting) {
 			form.setValues({
 				id: setting.id,
 				value: setting.value,
-			});
+			})
 		}
 	}, [setting]);
 
@@ -62,7 +59,7 @@ function RouteComponent() {
 			toast({
 				title: "Success",
 				description: "Setting updated successfully",
-			});
+			})
 			navigate({ to: "/app-settings" });
 		},
 		onError: (error: Error) => {
@@ -70,20 +67,20 @@ function RouteComponent() {
 				title: "Error",
 				description: error.message || "Failed to update setting",
 				variant: "destructive",
-			});
+			})
 		},
-	});
+	})
 
 	const handleSubmit = (values: z.infer<typeof appSettingUpdateSchema>) => {
 		updateMutation.mutate(values);
-	};
+	}
 
 	if (isLoading) {
 		return (
 			<div className="flex h-[50vh] items-center justify-center">
 				<Loader2 className="h-8 w-8 animate-spin" />
 			</div>
-		);
+		)
 	}
 
 	return (
@@ -179,5 +176,5 @@ function RouteComponent() {
 				</div>
 			</div>
 		</div>
-	);
+	)
 }

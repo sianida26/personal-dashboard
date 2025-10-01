@@ -1,9 +1,9 @@
+import { createLazyFileRoute } from "@tanstack/react-router";
+import dayjs from "dayjs";
+import { TbPencil } from "react-icons/tb";
 import { createPageTemplate } from "@/components/PageTemplate";
 import client from "@/honoClient";
 import createActionButtons from "@/utils/createActionButton";
-import { createLazyFileRoute } from "@tanstack/react-router";
-import { TbPencil } from "react-icons/tb";
-import dayjs from "dayjs";
 
 export const Route = createLazyFileRoute("/_dashboardLayout/app-settings/")({
 	component: RouteComponent,
@@ -44,5 +44,5 @@ function RouteComponent() {
 				),
 			}),
 		],
-	});
+	})
 }

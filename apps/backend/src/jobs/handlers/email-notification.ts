@@ -4,7 +4,7 @@ import type { JobHandler } from "../../services/jobs/types";
 const payloadSchema = z.object({
 	userId: z.string(),
 	template: z.string(),
-	data: z.record(z.unknown()).optional(),
+	data: z.record(z.string(), z.unknown()).optional(),
 });
 
 type EmailNotificationPayload = z.infer<typeof payloadSchema>;

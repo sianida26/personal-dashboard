@@ -1,4 +1,4 @@
-import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
+import { useNavigate, createLazyFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 
 export const Route = createLazyFileRoute("/")({
@@ -12,7 +12,7 @@ export default function HomePage() {
 		navigate({
 			to: "/dashboard",
 			replace: true,
-		});
+		})
 	}, [navigate]);
 
 	return <div>index.lazy</div>;

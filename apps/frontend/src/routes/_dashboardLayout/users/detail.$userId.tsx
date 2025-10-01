@@ -1,12 +1,12 @@
-import ModalFormTemplate from "@/components/ModalFormTemplate";
-import client from "@/honoClient";
-import createInputComponents from "@/utils/createInputComponents";
-import fetchRPC from "@/utils/fetchRPC";
 import { useForm } from "@mantine/form";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { InferResponseType } from "hono";
 import { useEffect } from "react";
+import ModalFormTemplate from "@/components/ModalFormTemplate";
+import client from "@/honoClient";
+import createInputComponents from "@/utils/createInputComponents";
+import fetchRPC from "@/utils/fetchRPC";
 
 export const Route = createFileRoute("/_dashboardLayout/users/detail/$userId")({
 	component: RouteComponent,
@@ -28,14 +28,14 @@ function RouteComponent() {
 					},
 				}),
 			),
-	});
+	})
 
 	const detailEndpoint = client.users[":id"].$get;
 
 	const { data: userData } = useQuery({
 		queryKey: ["users", { id }],
 		queryFn: () => fetchRPC(detailEndpoint({ param: { id }, query: {} })),
-	});
+	})
 
 	const form = useForm<Partial<InferResponseType<typeof detailEndpoint>>>({
 		initialValues: {
@@ -46,7 +46,7 @@ function RouteComponent() {
 			roles: [],
 			username: "",
 		},
-	});
+	})
 
 	useEffect(() => {
 		userData && form.setValues(userData);
@@ -106,5 +106,5 @@ function RouteComponent() {
 				],
 			})}
 		</ModalFormTemplate>
-	);
+	)
 }

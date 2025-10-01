@@ -18,7 +18,7 @@ export const frontendEventSchema = z.object({
 	logLevel: z.enum(["log", "info", "warn", "error", "debug"]).optional(), // For frontend_log events
 	logMessage: z.string().optional(), // For frontend_log events
 	logArgs: z.array(z.any()).optional(), // For frontend_log events
-	metadata: z.record(z.any()).optional(),
+	metadata: z.record(z.string(), z.any()).optional(),
 });
 
 // Query parameters for events filtering
@@ -85,20 +85,22 @@ export const analyticsQuerySchema = z.object({
 
 // Analytics response schema
 export const analyticsResponseSchema = z.object({
-	data: z.array(z.object({
-		id: z.string(),
-		requestId: z.string(),
-		userId: z.string().nullable(),
-		userName: z.string().nullable(),
-		method: z.string(),
-		endpoint: z.string(),
-		fullEndpoint: z.string(),
-		ipAddress: z.string().nullable(),
-		userAgent: z.string().nullable(),
-		statusCode: z.number().nullable(),
-		responseTimeMs: z.number().nullable(),
-		createdAt: z.string().nullable(),
-	})),
+	data: z.array(
+		z.object({
+			id: z.string(),
+			requestId: z.string(),
+			userId: z.string().nullable(),
+			userName: z.string().nullable(),
+			method: z.string(),
+			endpoint: z.string(),
+			fullEndpoint: z.string(),
+			ipAddress: z.string().nullable(),
+			userAgent: z.string().nullable(),
+			statusCode: z.number().nullable(),
+			responseTimeMs: z.number().nullable(),
+			createdAt: z.string().nullable(),
+		}),
+	),
 	statistics: z.object({
 		totalRequests: z.number(),
 		avgResponseTime: z.number(),
@@ -113,16 +115,18 @@ export const analyticsResponseSchema = z.object({
 			"5xx": z.number(),
 		}),
 	}),
-	histogram: z.array(z.object({
-		range: z.string(),
-		binStart: z.number(),
-		binSize: z.number(),
-		order: z.number(),
-		"2xx": z.number(),
-		"3xx": z.number(),
-		"4xx": z.number(),
-		"5xx": z.number(),
-	})),
+	histogram: z.array(
+		z.object({
+			range: z.string(),
+			binStart: z.number(),
+			binSize: z.number(),
+			order: z.number(),
+			"2xx": z.number(),
+			"3xx": z.number(),
+			"4xx": z.number(),
+			"5xx": z.number(),
+		}),
+	),
 	_metadata: z.object({
 		binType: z.enum(["linear", "logarithmic"]),
 		totalBins: z.number(),

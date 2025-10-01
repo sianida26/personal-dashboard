@@ -1,29 +1,29 @@
 import {
-	describe,
-	test,
-	expect,
-	beforeEach,
+	afterAll,
 	afterEach,
 	beforeAll,
-	afterAll,
+	beforeEach,
+	describe,
+	expect,
+	test,
 } from "bun:test";
 import { eq } from "drizzle-orm";
+import type { Context } from "hono";
+import appEnv from "../appEnv";
 import db from "../drizzle";
 import { observabilityEvents } from "../drizzle/schema/observability-events";
 import { requestDetails as requestDetailsTable } from "../drizzle/schema/request-details";
 import { users } from "../drizzle/schema/users";
+import type HonoEnv from "../types/HonoEnv";
+import { hashPassword } from "../utils/passwordUtils";
 import {
-	storeObservabilityEvent,
-	storeRequestDetails,
 	extractRequestBody,
 	extractResponseBody,
 	type ObservabilityEventData,
 	type RequestDetailsData,
+	storeObservabilityEvent,
+	storeRequestDetails,
 } from "./observability-service";
-import { hashPassword } from "../utils/passwordUtils";
-import type { Context } from "hono";
-import type HonoEnv from "../types/HonoEnv";
-import appEnv from "../appEnv";
 
 describe("ObservabilityService", () => {
 	let testUser: typeof users.$inferSelect;
@@ -75,40 +75,71 @@ describe("ObservabilityService", () => {
 		await db.delete(observabilityEvents);
 		await db.delete(requestDetailsTable);
 
-		// Reset environment values to defaults for testing
-		// @ts-ignore - We need to override these for testing
-		appEnv.OBSERVABILITY_ENABLED = true;
-		// @ts-ignore
-		appEnv.OBSERVABILITY_ANONYMIZE_USERS = false;
-		// @ts-ignore
-		appEnv.OBSERVABILITY_MASK_SENSITIVE_DATA = true;
-		// @ts-ignore
-		appEnv.OBSERVABILITY_STORE_REQUEST_BODIES = true;
-		// @ts-ignore
-		appEnv.OBSERVABILITY_STORE_RESPONSE_BODIES = true;
-		// @ts-ignore
-		appEnv.OBSERVABILITY_MAX_BODY_SIZE = 10240;
+		// Reset environment values to defaults for testing using defineProperty to avoid TS overrides
+		Object.defineProperty(appEnv, "OBSERVABILITY_ENABLED", {
+			value: true,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "OBSERVABILITY_ANONYMIZE_USERS", {
+			value: false,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "OBSERVABILITY_MASK_SENSITIVE_DATA", {
+			value: true,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "OBSERVABILITY_STORE_REQUEST_BODIES", {
+			value: true,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "OBSERVABILITY_STORE_RESPONSE_BODIES", {
+			value: true,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "OBSERVABILITY_MAX_BODY_SIZE", {
+			value: 10240,
+			writable: true,
+			configurable: true,
+		});
 	});
 
 	afterEach(() => {
 		// Restore original environment values
-		// @ts-ignore
-		appEnv.OBSERVABILITY_ENABLED = originalValues.OBSERVABILITY_ENABLED;
-		// @ts-ignore
-		appEnv.OBSERVABILITY_ANONYMIZE_USERS =
-			originalValues.OBSERVABILITY_ANONYMIZE_USERS;
-		// @ts-ignore
-		appEnv.OBSERVABILITY_MASK_SENSITIVE_DATA =
-			originalValues.OBSERVABILITY_MASK_SENSITIVE_DATA;
-		// @ts-ignore
-		appEnv.OBSERVABILITY_STORE_REQUEST_BODIES =
-			originalValues.OBSERVABILITY_STORE_REQUEST_BODIES;
-		// @ts-ignore
-		appEnv.OBSERVABILITY_STORE_RESPONSE_BODIES =
-			originalValues.OBSERVABILITY_STORE_RESPONSE_BODIES;
-		// @ts-ignore
-		appEnv.OBSERVABILITY_MAX_BODY_SIZE =
-			originalValues.OBSERVABILITY_MAX_BODY_SIZE;
+		Object.defineProperty(appEnv, "OBSERVABILITY_ENABLED", {
+			value: originalValues.OBSERVABILITY_ENABLED,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "OBSERVABILITY_ANONYMIZE_USERS", {
+			value: originalValues.OBSERVABILITY_ANONYMIZE_USERS,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "OBSERVABILITY_MASK_SENSITIVE_DATA", {
+			value: originalValues.OBSERVABILITY_MASK_SENSITIVE_DATA,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "OBSERVABILITY_STORE_REQUEST_BODIES", {
+			value: originalValues.OBSERVABILITY_STORE_REQUEST_BODIES,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "OBSERVABILITY_STORE_RESPONSE_BODIES", {
+			value: originalValues.OBSERVABILITY_STORE_RESPONSE_BODIES,
+			writable: true,
+			configurable: true,
+		});
+		Object.defineProperty(appEnv, "OBSERVABILITY_MAX_BODY_SIZE", {
+			value: originalValues.OBSERVABILITY_MAX_BODY_SIZE,
+			writable: true,
+			configurable: true,
+		});
 	});
 
 	describe("storeObservabilityEvent", () => {
@@ -206,8 +237,11 @@ describe("ObservabilityService", () => {
 		});
 
 		test("should anonymize user ID when OBSERVABILITY_ANONYMIZE_USERS is true", async () => {
-			// @ts-ignore
-			appEnv.OBSERVABILITY_ANONYMIZE_USERS = true;
+			Object.defineProperty(appEnv, "OBSERVABILITY_ANONYMIZE_USERS", {
+				value: true,
+				writable: true,
+				configurable: true,
+			});
 
 			const eventData: ObservabilityEventData = {
 				eventType: "api_request",
@@ -230,8 +264,11 @@ describe("ObservabilityService", () => {
 		});
 
 		test("should not store event when OBSERVABILITY_ENABLED is false", async () => {
-			// @ts-ignore
-			appEnv.OBSERVABILITY_ENABLED = false;
+			Object.defineProperty(appEnv, "OBSERVABILITY_ENABLED", {
+				value: false,
+				writable: true,
+				configurable: true,
+			});
 
 			const eventData: ObservabilityEventData = {
 				eventType: "api_request",
@@ -401,8 +438,11 @@ describe("ObservabilityService", () => {
 		});
 
 		test("should anonymize user ID when OBSERVABILITY_ANONYMIZE_USERS is true", async () => {
-			// @ts-ignore
-			appEnv.OBSERVABILITY_ANONYMIZE_USERS = true;
+			Object.defineProperty(appEnv, "OBSERVABILITY_ANONYMIZE_USERS", {
+				value: true,
+				writable: true,
+				configurable: true,
+			});
 
 			const detailsData: RequestDetailsData = {
 				requestId: "anon-details-request-123",
@@ -423,8 +463,15 @@ describe("ObservabilityService", () => {
 		});
 
 		test("should not store request bodies when OBSERVABILITY_STORE_REQUEST_BODIES is false", async () => {
-			// @ts-ignore
-			appEnv.OBSERVABILITY_STORE_REQUEST_BODIES = false;
+			Object.defineProperty(
+				appEnv,
+				"OBSERVABILITY_STORE_REQUEST_BODIES",
+				{
+					value: false,
+					writable: true,
+					configurable: true,
+				},
+			);
 
 			const detailsData: RequestDetailsData = {
 				requestId: "no-req-body-123",
@@ -450,8 +497,15 @@ describe("ObservabilityService", () => {
 		});
 
 		test("should not store response bodies when OBSERVABILITY_STORE_RESPONSE_BODIES is false", async () => {
-			// @ts-ignore
-			appEnv.OBSERVABILITY_STORE_RESPONSE_BODIES = false;
+			Object.defineProperty(
+				appEnv,
+				"OBSERVABILITY_STORE_RESPONSE_BODIES",
+				{
+					value: false,
+					writable: true,
+					configurable: true,
+				},
+			);
 
 			const detailsData: RequestDetailsData = {
 				requestId: "no-res-body-123",
@@ -477,8 +531,11 @@ describe("ObservabilityService", () => {
 		});
 
 		test("should truncate large request/response bodies", async () => {
-			// @ts-ignore
-			appEnv.OBSERVABILITY_MAX_BODY_SIZE = 50; // Very small size for testing
+			Object.defineProperty(appEnv, "OBSERVABILITY_MAX_BODY_SIZE", {
+				value: 50, // Very small size for testing
+				writable: true,
+				configurable: true,
+			});
 
 			const largeBody = { data: "x".repeat(100) }; // This will exceed the limit
 
@@ -506,8 +563,11 @@ describe("ObservabilityService", () => {
 		});
 
 		test("should not store details when OBSERVABILITY_ENABLED is false", async () => {
-			// @ts-ignore
-			appEnv.OBSERVABILITY_ENABLED = false;
+			Object.defineProperty(appEnv, "OBSERVABILITY_ENABLED", {
+				value: false,
+				writable: true,
+				configurable: true,
+			});
 
 			const detailsData: RequestDetailsData = {
 				requestId: "disabled-details-123",

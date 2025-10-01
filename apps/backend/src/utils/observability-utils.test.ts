@@ -1,15 +1,14 @@
-import { describe, test, expect, beforeEach, afterEach } from "bun:test";
+import { afterEach, beforeEach, describe, expect, test } from "bun:test";
+// Mock the appEnv module
+import appEnv from "../appEnv";
 import {
+	extractHeaders,
+	getClientIp,
 	sanitizeObject,
 	sanitizeRequestData,
 	shouldRecordRequest,
 	truncateData,
-	extractHeaders,
-	getClientIp,
 } from "./observability-utils";
-
-// Mock the appEnv module
-import appEnv from "../appEnv";
 
 describe("Observability Utils", () => {
 	// Store original values
@@ -89,8 +88,11 @@ describe("Observability Utils", () => {
 		});
 
 		test("should not mask fields when masking is disabled", () => {
-			// @ts-ignore
-			appEnv.OBSERVABILITY_MASK_SENSITIVE_DATA = false;
+			Object.defineProperty(appEnv, "OBSERVABILITY_MASK_SENSITIVE_DATA", {
+				value: false,
+				writable: true,
+				configurable: true,
+			});
 
 			const testData = {
 				username: "testuser",
@@ -208,8 +210,11 @@ describe("Observability Utils", () => {
 		});
 
 		test("should return original data when masking is disabled", () => {
-			// @ts-ignore
-			appEnv.OBSERVABILITY_MASK_SENSITIVE_DATA = false;
+			Object.defineProperty(appEnv, "OBSERVABILITY_MASK_SENSITIVE_DATA", {
+				value: false,
+				writable: true,
+				configurable: true,
+			});
 
 			const requestData = {
 				body: { password: "secret123" },

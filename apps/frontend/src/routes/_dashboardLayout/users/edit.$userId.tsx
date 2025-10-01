@@ -1,16 +1,16 @@
-import ModalFormTemplate from "@/components/ModalFormTemplate";
-import { Button, PasswordInput } from "@repo/ui";
-import client from "@/honoClient";
-import createInputComponents from "@/utils/createInputComponents";
-import fetchRPC from "@/utils/fetchRPC";
-import generateRandomPassword from "@/utils/generateRandomPassword";
 import { useForm } from "@mantine/form";
+import { Button, PasswordInput } from "@repo/ui";
 import type { userUpdateSchema } from "@repo/validation";
 import { useIsMutating, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { TbRefresh } from "react-icons/tb";
 import type { z } from "zod";
+import ModalFormTemplate from "@/components/ModalFormTemplate";
+import client from "@/honoClient";
+import createInputComponents from "@/utils/createInputComponents";
+import fetchRPC from "@/utils/fetchRPC";
+import generateRandomPassword from "@/utils/generateRandomPassword";
 
 export const Route = createFileRoute("/_dashboardLayout/users/edit/$userId")({
 	component: RouteComponent,
@@ -20,7 +20,7 @@ function RouteComponent() {
 	const navigate = useNavigate();
 	const isMutating = useIsMutating({
 		mutationKey: ["edit-user"],
-	});
+	})
 	const { userId: id } = Route.useParams();
 
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -30,7 +30,7 @@ function RouteComponent() {
 	const { data: userData } = useQuery({
 		queryKey: ["users", { id }],
 		queryFn: () => fetchRPC(detailEndpoint({ param: { id }, query: {} })),
-	});
+	})
 
 	useEffect(() => {
 		userData &&
@@ -40,7 +40,7 @@ function RouteComponent() {
 				name: userData.name,
 				roles: userData.roles.map((role) => role.id),
 				username: userData.username,
-			});
+			})
 	}, [userData]);
 
 	const form = useForm<z.infer<typeof userUpdateSchema>>({
@@ -52,7 +52,7 @@ function RouteComponent() {
 			isEnabled: true,
 			roles: [] as string[],
 		},
-	});
+	})
 
 	const { data: roles } = useQuery({
 		queryKey: ["roles"],
@@ -65,7 +65,7 @@ function RouteComponent() {
 					},
 				}),
 			),
-	});
+	})
 
 	return (
 		<ModalFormTemplate
@@ -139,8 +139,8 @@ function RouteComponent() {
 										form.setFieldValue(
 											"password",
 											generateRandomPassword(),
-										);
-										setIsPasswordVisible(true);
+										)
+										setIsPasswordVisible(true)
 									}}
 								>
 									<TbRefresh />
@@ -165,5 +165,5 @@ function RouteComponent() {
 				],
 			})}
 		</ModalFormTemplate>
-	);
+	)
 }

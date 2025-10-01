@@ -24,11 +24,11 @@ describe("Role Seeder", () => {
 
 	test("should seed roles and their permissions in batch", async () => {
 		// Ensure permissions exist first
-		const requiredPermissions = [...new Set(
-			exportedRoleData.flatMap(role => role.permissions)
-		)];
-		
-		const permissionsData = requiredPermissions.map(permission => ({
+		const requiredPermissions = [
+			...new Set(exportedRoleData.flatMap((role) => role.permissions)),
+		];
+
+		const permissionsData = requiredPermissions.map((permission) => ({
 			code: permission,
 			name: permission,
 		}));
@@ -45,15 +45,20 @@ describe("Role Seeder", () => {
 		const insertedRoles = await db
 			.select()
 			.from(rolesSchema)
-			.where(inArray(rolesSchema.code, exportedRoleData.map(r => r.code)));
+			.where(
+				inArray(
+					rolesSchema.code,
+					exportedRoleData.map((r) => r.code),
+				),
+			);
 
 		expect(insertedRoles).toHaveLength(exportedRoleData.length);
 
 		// Verify role-permission relationships were created
 		for (const role of exportedRoleData) {
-			const dbRole = insertedRoles.find(r => r.code === role.code);
+			const dbRole = insertedRoles.find((r) => r.code === role.code);
 			expect(dbRole).toBeDefined();
-			
+
 			if (!dbRole) continue; // This won't happen due to expect above, but satisfies TypeScript
 
 			const rolePermissions = await db
@@ -61,12 +66,17 @@ describe("Role Seeder", () => {
 					permissionCode: permissionsSchema.code,
 				})
 				.from(permissionsToRoles)
-				.innerJoin(permissionsSchema, eq(permissionsToRoles.permissionId, permissionsSchema.id))
+				.innerJoin(
+					permissionsSchema,
+					eq(permissionsToRoles.permissionId, permissionsSchema.id),
+				)
 				.where(eq(permissionsToRoles.roleId, dbRole.id));
 
 			expect(rolePermissions).toHaveLength(role.permissions.length);
-			
-			const permissionCodes = rolePermissions.map(p => p.permissionCode);
+
+			const permissionCodes = rolePermissions.map(
+				(p) => p.permissionCode,
+			);
 			for (const permissionCode of role.permissions) {
 				expect(permissionCodes).toContain(permissionCode);
 			}
@@ -75,11 +85,11 @@ describe("Role Seeder", () => {
 
 	test("should handle existing roles gracefully", async () => {
 		// Ensure permissions exist first
-		const requiredPermissions = [...new Set(
-			exportedRoleData.flatMap(role => role.permissions)
-		)];
-		
-		const permissionsData = requiredPermissions.map(permission => ({
+		const requiredPermissions = [
+			...new Set(exportedRoleData.flatMap((role) => role.permissions)),
+		];
+
+		const permissionsData = requiredPermissions.map((permission) => ({
 			code: permission,
 			name: permission,
 		}));
@@ -93,17 +103,23 @@ describe("Role Seeder", () => {
 		await roleSeeder();
 
 		const rolesAfterFirstRun = await db.select().from(rolesSchema);
-		const relationshipsAfterFirstRun = await db.select().from(permissionsToRoles);
+		const relationshipsAfterFirstRun = await db
+			.select()
+			.from(permissionsToRoles);
 
 		// Run seeder second time
 		await roleSeeder();
 
 		const rolesAfterSecondRun = await db.select().from(rolesSchema);
-		const relationshipsAfterSecondRun = await db.select().from(permissionsToRoles);
+		const relationshipsAfterSecondRun = await db
+			.select()
+			.from(permissionsToRoles);
 
 		// Should not create duplicates
 		expect(rolesAfterSecondRun).toHaveLength(rolesAfterFirstRun.length);
-		expect(relationshipsAfterSecondRun).toHaveLength(relationshipsAfterFirstRun.length);
+		expect(relationshipsAfterSecondRun).toHaveLength(
+			relationshipsAfterFirstRun.length,
+		);
 	});
 
 	test("should throw error if required permissions are missing", async () => {

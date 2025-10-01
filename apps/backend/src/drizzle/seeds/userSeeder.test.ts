@@ -48,7 +48,7 @@ describe("User Seeder", () => {
 		const user = insertedUsers[0];
 		expect(user?.name).toBe("Super Admin");
 		expect(user?.username).toBe("superadmin");
-		
+
 		if (!user) return; // This won't happen due to expects above, but satisfies TypeScript
 
 		// Verify user-role relationships were created
@@ -87,11 +87,15 @@ describe("User Seeder", () => {
 		await userSeeder();
 
 		const usersAfterSecondRun = await db.select().from(users);
-		const relationshipsAfterSecondRun = await db.select().from(rolesToUsers);
+		const relationshipsAfterSecondRun = await db
+			.select()
+			.from(rolesToUsers);
 
 		// Should not create duplicates
 		expect(usersAfterSecondRun).toHaveLength(usersAfterFirstRun.length);
-		expect(relationshipsAfterSecondRun).toHaveLength(relationshipsAfterFirstRun.length);
+		expect(relationshipsAfterSecondRun).toHaveLength(
+			relationshipsAfterFirstRun.length,
+		);
 	});
 
 	test("should throw error if required roles are missing", async () => {

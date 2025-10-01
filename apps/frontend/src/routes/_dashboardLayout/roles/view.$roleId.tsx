@@ -51,7 +51,7 @@ function RouteComponent() {
 	const { data: roleData, isLoading } = useQuery({
 		queryKey: ["roles", { id }],
 		queryFn: () => fetchRPC(detailEndpoint({ param: { id } })),
-	});
+	})
 
 	// Fetch users assigned to this role
 	const { data: usersData, isLoading: isUsersLoading } = useQuery({
@@ -72,7 +72,7 @@ function RouteComponent() {
 				}),
 			),
 		enabled: !!roleData?.code,
-	});
+	})
 
 	const deleteMutation = useMutation({
 		mutationKey: ["delete-role", id],
@@ -81,7 +81,7 @@ function RouteComponent() {
 				client.roles[":id"].$delete({
 					param: { id },
 				}),
-			);
+			)
 		},
 		onError: (error: unknown) => {
 			if (error instanceof Error) {
@@ -89,23 +89,23 @@ function RouteComponent() {
 					variant: "destructive",
 					title: "Error",
 					description: error.message,
-				});
+				})
 			}
 		},
 		onSuccess: () => {
 			toast({
 				description: "Role deleted successfully.",
 				className: "bg-green-300 text-green-800",
-			});
+			})
 			queryClient.invalidateQueries({ queryKey: ["roles"] });
 			navigate({ to: "/roles" });
 		},
-	});
+	})
 
 	const handleDeleteRole = () => {
 		deleteMutation.mutate();
 		setIsDeleteModalOpen(false);
-	};
+	}
 
 	const handleDuplicateRole = () => {
 		navigate({
@@ -113,8 +113,8 @@ function RouteComponent() {
 			search: {
 				template: id,
 			},
-		});
-	};
+		})
+	}
 
 	const groupedPermissions = permissions.reduce(
 		(acc, permission) => {
@@ -126,7 +126,7 @@ function RouteComponent() {
 			return acc;
 		},
 		{} as Record<string, PermissionCode[]>,
-	);
+	)
 
 	if (isLoading) {
 		return (
@@ -150,7 +150,7 @@ function RouteComponent() {
 					<div className="h-64 bg-gray-200 rounded-lg animate-pulse" />
 				</div>
 			</div>
-		);
+		)
 	}
 
 	if (!roleData) {
@@ -178,13 +178,13 @@ function RouteComponent() {
 					</CardContent>
 				</Card>
 			</div>
-		);
+		)
 	}
 
 	return (
-		<div className="container mx-auto py-6 space-y-6">
-			{/* Header */}
-			<div className="flex items-center justify-between">
+        <div className="container mx-auto py-6 space-y-6">
+            {/* Header */}
+            <div className="flex items-center justify-between">
 				<div className="flex items-center gap-4">
 					<Button
 						variant="outline"
@@ -273,9 +273,8 @@ function RouteComponent() {
 					</AlertDialog>
 				</div>
 			</div>
-
-			{/* Role Information */}
-			<Card>
+            {/* Role Information */}
+            <Card>
 				<CardHeader>
 					<CardTitle className="flex items-center gap-2">
 						<TbShield className="h-5 w-5" />
@@ -319,9 +318,8 @@ function RouteComponent() {
 					</div>
 				</CardContent>
 			</Card>
-
-			{/* Permissions */}
-			<Card>
+            {/* Permissions */}
+            <Card>
 				<CardHeader>
 					<CardTitle className="flex items-center gap-2">
 						<TbUsers className="h-5 w-5" />
@@ -336,17 +334,17 @@ function RouteComponent() {
 									const assignedPermissions =
 										groupPermissions.filter((p) =>
 											roleData.permissions.includes(p),
-										);
+										)
 
 									if (assignedPermissions.length === 0)
-										return null;
+										return null
 
 									return (
-										<div
+                                        <div
 											key={group}
 											className="border rounded-lg p-4 space-y-3 bg-gradient-to-r from-gray-50 to-gray-100"
 										>
-											<div className="flex items-center justify-between">
+                                            <div className="flex items-center justify-between">
 												<h3 className="text-sm font-semibold capitalize flex items-center gap-2">
 													{group.replace("-", " ")}
 													<Badge
@@ -372,7 +370,7 @@ function RouteComponent() {
 													)}
 												</h3>
 											</div>
-											<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
 												{assignedPermissions.map(
 													(permission) => (
 														<Badge
@@ -392,8 +390,8 @@ function RouteComponent() {
 													),
 												)}
 											</div>
-										</div>
-									);
+                                        </div>
+                                    )
 								},
 							)}
 						</div>
@@ -423,9 +421,8 @@ function RouteComponent() {
 					)}
 				</CardContent>
 			</Card>
-
-			{/* Users with this role */}
-			<Card>
+            {/* Users with this role */}
+            <Card>
 				<CardHeader>
 					<CardTitle className="flex items-center gap-2">
 						<TbUser className="h-5 w-5" />
@@ -532,6 +529,6 @@ function RouteComponent() {
 					)}
 				</CardContent>
 			</Card>
-		</div>
-	);
+        </div>
+    )
 }

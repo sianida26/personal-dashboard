@@ -1,55 +1,55 @@
-import ResponseError from "@/errors/ResponseError";
-import fetchRPC from "@/utils/fetchRPC";
 import { useDebouncedCallback } from "@mantine/hooks";
 import type { PaginatedResponse } from "@repo/data/types";
+import {
+	Button,
+	Input,
+	NativeSelect,
+	Pagination,
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@repo/ui";
 import { useQuery } from "@tanstack/react-query";
 import { Link, Navigate, Outlet } from "@tanstack/react-router";
 import {
 	type ColumnDef,
 	type ColumnHelper,
-	type SortingState,
 	createColumnHelper,
+	flexRender,
 	getCoreRowModel,
 	getFilteredRowModel,
 	getSortedRowModel,
-	useReactTable,
 	type HeaderContext,
-	flexRender,
+	type SortingState,
+	useReactTable,
 } from "@tanstack/react-table";
 import type { ClientRequestOptions } from "hono";
 import type { ClientResponse } from "hono/client";
 import React, {
-	type ReactNode,
-	useState,
-	memo,
-	useCallback,
-	useMemo,
-	useEffect,
 	type LazyExoticComponent,
+	memo,
+	type ReactNode,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
 } from "react";
 import {
-	TbPlus,
-	TbSearch,
-	TbFilter,
-	TbArrowUp,
 	TbArrowDown,
 	TbArrowsSort,
+	TbArrowUp,
+	TbFilter,
+	TbPlus,
+	TbSearch,
 } from "react-icons/tb";
+import ResponseError from "@/errors/ResponseError";
+import fetchRPC from "@/utils/fetchRPC";
 import DashboardTable from "./DashboardTable";
-import {
-	Button,
-	Input,
-	Pagination,
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-	SelectTrigger,
-	SelectValue,
-	SelectContent,
-	SelectItem,
-	NativeSelect,
-	Select,
-} from "@repo/ui";
 
 // Define filter types
 export type FilterType = "select";
@@ -146,7 +146,6 @@ const createCreateButton = (
 ) => {
 	if (property === true) {
 		return (
-			//@ts-expect-error global search param for create route
 			<Link to={"./create"}>
 				<Button leftSection={<TbPlus />}>Create New</Button>
 			</Link>
@@ -154,7 +153,6 @@ const createCreateButton = (
 	}
 	if (typeof property === "string") {
 		return (
-			//@ts-expect-error global search param for create route
 			<Link to={"./create"}>
 				<Button leftSection={<TbPlus />}>{property}</Button>
 			</Link>

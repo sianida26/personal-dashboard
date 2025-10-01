@@ -1,5 +1,5 @@
 import { Badge, Button } from "@repo/ui";
-import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
+import { useNavigate, createLazyFileRoute } from "@tanstack/react-router";
 import { TbCopy, TbEye, TbPencil, TbUsers } from "react-icons/tb";
 import { createPageTemplate } from "@/components/PageTemplate";
 import client from "@/honoClient";
@@ -53,7 +53,7 @@ export default function RolesPage() {
 						>
 							Name
 						</Button>
-					);
+					)
 				},
 			}),
 			helper.accessor("description", {
@@ -128,5 +128,5 @@ export default function RolesPage() {
 				),
 			}),
 		],
-	});
+	})
 }

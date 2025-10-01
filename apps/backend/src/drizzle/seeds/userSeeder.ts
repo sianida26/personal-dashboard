@@ -1,6 +1,7 @@
 import { inArray } from "drizzle-orm";
-import db from "..";
+import appLogger from "../../utils/logger";
 import { hashPassword } from "../..//utils/passwordUtils";
+import db from "..";
 import { rolesSchema } from "../schema/roles";
 import { rolesToUsers } from "../schema/rolesToUsers";
 import { users } from "../schema/users";
@@ -15,7 +16,7 @@ const userSeeder = async () => {
 		},
 	];
 
-	console.log("Seeding users...");
+	appLogger.info("Seeding users...");
 
 	// Step 1: Batch insert all users (excluding roles field)
 	const usersToInsert = usersData.map(({ roles, ...user }) => user);
@@ -25,22 +26,22 @@ const userSeeder = async () => {
 		.onConflictDoNothing()
 		.returning();
 
-	console.log(`${insertedUsers.length} new users inserted`);
+	appLogger.info(`${insertedUsers.length} new users inserted`);
 
 	// Step 2: Get all existing users (including newly inserted ones)
-	const allUsernames = usersData.map(user => user.username);
+	const allUsernames = usersData.map((user) => user.username);
 	const existingUsers = await db
 		.select()
 		.from(users)
 		.where(inArray(users.username, allUsernames));
 
 	// Create a map for quick user lookup
-	const userMap = new Map(existingUsers.map(user => [user.username, user.id]));
+	const userMap = new Map(
+		existingUsers.map((user) => [user.username, user.id]),
+	);
 
 	// Step 3: Get all unique role codes needed
-	const allRoleCodes = [...new Set(
-		usersData.flatMap(user => user.roles)
-	)];
+	const allRoleCodes = [...new Set(usersData.flatMap((user) => user.roles))];
 
 	// Step 4: Batch fetch all required roles
 	const existingRoles = await db
@@ -49,19 +50,19 @@ const userSeeder = async () => {
 		.where(inArray(rolesSchema.code, allRoleCodes));
 
 	// Create a map for quick role lookup
-	const roleMap = new Map(existingRoles.map(role => [role.code, role.id]));
+	const roleMap = new Map(existingRoles.map((role) => [role.code, role.id]));
 
 	// Step 5: Validate all roles exist
-	const missingRoles = allRoleCodes.filter(code => !roleMap.has(code));
+	const missingRoles = allRoleCodes.filter((code) => !roleMap.has(code));
 	if (missingRoles.length > 0) {
 		throw new Error(
-			`The following roles do not exist in database: ${missingRoles.join(', ')}`
+			`The following roles do not exist in database: ${missingRoles.join(", ")}`,
 		);
 	}
 
 	// Step 6: Prepare all user-role relationships for batch insert
 	const userRoleRelations: Array<{ userId: string; roleId: string }> = [];
-	
+
 	for (const user of usersData) {
 		const userId = userMap.get(user.username);
 		if (!userId) {
@@ -89,10 +90,12 @@ const userSeeder = async () => {
 			.onConflictDoNothing()
 			.returning();
 
-		console.log(`${insertedUserRoles.length} new user-role relationships created`);
+		appLogger.info(
+			`${insertedUserRoles.length} new user-role relationships created`,
+		);
 	}
 
-	console.log("User seeding completed successfully");
+	appLogger.info("User seeding completed successfully");
 };
 
 export default userSeeder;

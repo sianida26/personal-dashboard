@@ -1,11 +1,11 @@
+import { SidebarProvider } from "@repo/ui/hooks";
+import { useQuery } from "@tanstack/react-query";
+import { createFileRoute, Navigate, Outlet } from "@tanstack/react-router";
 import AppHeader from "@/components/AppHeader";
 import AppSidebar from "@/components/AppSidebar";
 import client from "@/honoClient";
 import useAuth from "@/hooks/useAuth";
 import fetchRPC from "@/utils/fetchRPC";
-import { SidebarProvider } from "@repo/ui/hooks";
-import { useQuery } from "@tanstack/react-query";
-import { Navigate, Outlet, createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_dashboardLayout")({
 	component: DashboardLayout,
@@ -24,12 +24,12 @@ function DashboardLayout() {
 				name: response.name,
 				permissions: response.permissions,
 				roles: response.roles,
-			});
+			})
 
 			return response;
 		},
 		enabled: isAuthenticated,
-	});
+	})
 
 	// const [openNavbar, { toggle }] = useDisclosure(false);
 
@@ -39,8 +39,8 @@ function DashboardLayout() {
 
 	return isAuthenticated ? (
 		// App Shell
-		<SidebarProvider>
-			<div className="w-screen h-screen flex">
+		(<SidebarProvider>
+            <div className="w-screen h-screen flex">
 				{/* Sidebar */}
 				<AppSidebar />
 
@@ -55,8 +55,8 @@ function DashboardLayout() {
 					</div>
 				</div>
 			</div>
-		</SidebarProvider>
+        </SidebarProvider>)
 	) : (
 		<Navigate to="/login" />
-	);
+	)
 }
