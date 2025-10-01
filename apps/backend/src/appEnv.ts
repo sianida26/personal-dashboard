@@ -50,6 +50,8 @@ const envSchema = z.object({
 	LOG_REQUEST: logSchema("true"),
 	LOG_SQL: logSchema("true"),
 
+	OPENAI_API_KEY: z.string().optional(),
+
 	//Observability Controls
 	OBSERVABILITY_ENABLED: logSchema("true"),
 	OBSERVABILITY_RECORD_SELF: logSchema("false"), // Record observability route calls
