@@ -21,6 +21,7 @@
 		"@microsoft/microsoft-graph-client": "^3.0.7",
 		"@repo/data": "workspace:*",
 		"@repo/validation": "workspace:*",
+		"ai": "^5.0.59",
 		"dotenv": "^17.2.2",
 		"drizzle-orm": "^0.44.5",
 		"jsonwebtoken": "^9.0.2",
