@@ -98,22 +98,49 @@ function NotificationsPage() {
 	const selectedActionRequiresComment =
 		selectedAction?.requiresComment ?? false;
 	const friendlyMetadata = useMemo(() => {
-		const items: Array<{ label: string; value: string }> = [];
-		if (typeof metadataRecord.resourceType === "string") {
-			items.push({ label: "Type", value: friendlyLabel(metadataRecord.resourceType) });
+		const friendlyMappings: Record<string, string> = {
+			resourceType: "Kind of update",
+			resourceId: "Reference ID",
+			reference: "Name",
+			status: "Status",
+			updatedBy: "Updated by",
+			updatedAt: "Updated on",
+			actedBy: "Handled by",
+			actedAt: "Handled on",
+		};
+		const friendlyItems: Array<{ label: string; value: string }> = [];
+		const leftoverEntries: Array<{ key: string; value: string }> = [];
+
+		for (const [key, value] of Object.entries(metadataRecord)) {
+			if (value === undefined || value === null) continue;
+			const stringValue = String(value);
+			if (friendlyMappings[key]) {
+				friendlyItems.push({
+					label: friendlyMappings[key],
+					value: friendlyLabel(stringValue),
+				});
+			} else if (typeof value === "string" || typeof value === "number") {
+				leftoverEntries.push({
+					key,
+					value: stringValue,
+				});
+			}
 		}
-		if (typeof metadataRecord.resourceId === "string") {
-			items.push({ label: "Reference ID", value: metadataRecord.resourceId });
-		}
-		if (typeof metadataRecord.reference === "string") {
-			items.push({ label: "Reference", value: metadataRecord.reference });
-		}
-		const linkHref = typeof metadataRecord.linkHref === "string" ? metadataRecord.linkHref : undefined;
-		const linkLabel = typeof metadataRecord.linkLabel === "string" ? metadataRecord.linkLabel : "Open related resource";
+
+		const linkHref =
+			typeof metadataRecord.linkHref === "string"
+				? metadataRecord.linkHref
+				: undefined;
+		const linkLabel =
+			typeof metadataRecord.linkLabel === "string"
+				? metadataRecord.linkLabel
+				: "Open related page";
+
 		return {
-			items,
+			items: friendlyItems,
 			linkHref,
 			linkLabel,
+			leftoverEntries,
 		};
 	}, [metadataRecord]);
 	const developerMetadataJson = useMemo(() => {
@@ -254,6 +281,8 @@ function NotificationsPage() {
 	};
 
 const hasUnreadSelection = selectedNotification?.status === "unread";
+// Keep metadata helpers wired for future integrations, but hide the card for the current non-technical experience.
+const showReferenceCard = false;
 
 const handleSubmitAction = () => {
 	if (!selectedNotification || !selectedAction) {
@@ -517,7 +546,7 @@ let mainContent: ReactNode;
 									</Card>
 								)}
 
-				{metadataEntries.length > 0 && (
+				{showReferenceCard && metadataEntries.length > 0 && (
 					<Card>
 						<CardContent className="space-y-3 p-4">
 							<div className="flex items-center justify-between gap-2">
@@ -548,7 +577,7 @@ let mainContent: ReactNode;
 								</ul>
 							) : (
 								<p className="text-xs text-muted-foreground">
-									This message includes extra data for connected tools. You can safely ignore it.
+									This message may include extra details for connected tools and other apps. Nothing else is needed from you.
 								</p>
 							)}
 							{friendlyMetadata.linkHref && (
@@ -561,9 +590,26 @@ let mainContent: ReactNode;
 								</Button>
 							)}
 							{showTechnicalDetails && developerMetadataJson && (
+								<div className="space-y-2">
+									{friendlyMetadata.leftoverEntries.length > 0 && (
+										<div className="space-y-1 text-xs text-muted-foreground">
+											<p className="font-semibold text-foreground">
+												Other data
+											</p>
+											<ul className="list-disc space-y-1 pl-4">
+												{friendlyMetadata.leftoverEntries.map((entry) => (
+													<li key={entry.key}>
+														<strong>{friendlyLabel(entry.key)}:</strong>{" "}
+														{entry.value}
+													</li>
+												))}
+											</ul>
+										</div>
+									)}
 								<pre className="whitespace-pre-wrap rounded-md bg-muted/30 p-3 text-xs text-muted-foreground">
 									{developerMetadataJson}
 								</pre>
+								</div>
 							)}
 						</CardContent>
 					</Card>
