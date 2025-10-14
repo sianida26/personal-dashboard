@@ -53,9 +53,9 @@ This document specifies the in-app notification system for the dashboard templat
   - Emit follow-up events (e.g., job queue entries) when actions are executed.
 
 #### 2.1.5 Notification UI Module
-- **Location**: `apps/dashboard/src/features/notifications/`
+- **Location**: `apps/frontend/src/routes/_dashboardLayout/notifications/`
 - **Responsibilities**:
-  - Dedicated page (`/notifications`) mirroring GitHub UX with list pane, filters, and detail preview.
+  - Dedicated route directory (`/notifications`) mirroring GitHub UX with list pane, filters, and detail preview.
   - React query hooks leveraging `@tanstack/react-query` or existing data layer.
   - State controls for read/unread toggles and grouped rendering.
 
@@ -176,10 +176,10 @@ CREATE INDEX idx_notification_action_logs_notification_id ON notification_action
 - Info notification detail may include deep links (open in new tab).
 
 ### 5.3 State Management
-- Use existing React Query setup (`apps/dashboard/src/lib/queryClient`).
+- Use the existing React Query instance defined in `apps/frontend/src/App.tsx`.
 - Local optimistic updates for read/unread toggles.
 - Cache invalidation when actions succeed.
-- Shared date grouping utility (`apps/dashboard/src/utils/groupByDate.ts`).
+- Shared date grouping utility should live under `apps/frontend/src/utils/` (e.g., `groupByDate.ts`) alongside other helpers.
 
 ### 5.4 Accessibility
 - Ensure focus management when toggling read state.
@@ -202,7 +202,7 @@ CREATE INDEX idx_notification_action_logs_notification_id ON notification_action
 - Hook into authentication to scope notifications to `user_id`.
 - Leverage existing `apps/backend/src/lib/audit` for logging approval decisions.
 - Optionally register approval actions to feed the background job queue when tasks need asynchronous handling.
-- Align styling with the design system (`apps/dashboard/src/design-system`), using existing components (Badge, List, Avatar, Button).
+- Align styling with the component library in `apps/frontend/src/components/`, reusing primitives (Badge, List, Avatar, Button) and shared styles.
 - Follow backend error handling conventions (`createAppResponse` helpers).
 
 ## 8. Permissions and Security
