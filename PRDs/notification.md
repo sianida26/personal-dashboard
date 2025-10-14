@@ -157,7 +157,8 @@ CREATE INDEX idx_notification_action_logs_notification_id ON notification_action
 - Integrates with Notification SDK to update UI without polling.
 
 ### 4.3 Request/Response Contracts
-- Use existing `zod` schemas under `apps/backend/src/schemas/notifications.ts`.
+- Define shared `zod` schemas for notification endpoints in `packages/validation/src/schemas/notifications.ts`. Create this schema file if it does not already exist so the contracts live in the shared validation package.
+- Backend notification routes must import these shared contracts instead of declaring local schemas to ensure consistent validation across services and the UI.
 - Enforce read/unread toggle payload: `{ ids: string[], markAs: 'read' | 'unread' }`.
 - Approval action payload: `{ comment?: string }`.
 
