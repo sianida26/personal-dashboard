@@ -34,6 +34,7 @@ For new developers, we recommend reading the documentation in this order:
 3. **[Component Patterns](./component-patterns.md)** - Master the component development patterns
 4. **[Development Workflow](./development-workflow.md)** - Follow step-by-step development guides
 5. **[Best Practices](./best-practices.md)** - Learn coding standards and conventions
+6. Review the `/notifications` route (new notification hub) for end-to-end examples of TanStack Router data loaders and React Query mutations.
 
 ## 🔧 Essential Commands
 

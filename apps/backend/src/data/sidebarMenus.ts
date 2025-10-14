@@ -53,6 +53,13 @@ const sidebarMenus: SidebarMenu[] = [
 				link: "/observability",
 				color: "orange",
 			},
+			{
+				label: "Notifications",
+				icon: { tb: "TbBell" },
+				allowedPermissions: ["*"],
+				link: "/notifications",
+				color: "amber",
+			},
 		],
 	},
 ];

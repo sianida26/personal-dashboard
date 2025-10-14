@@ -15,6 +15,7 @@ import * as kvStore from "./schema/kvStore";
 import * as observabilityEventsSchema from "./schema/observability-events";
 import * as requestDetailsSchema from "./schema/request-details";
 import * as jobQueueSchema from "./schema/job-queue";
+import * as notificationsSchema from "./schema/notifications";
 import SqlLogger from "./utils/SqlLogger";
 
 configDotenv();
@@ -36,6 +37,7 @@ const db = drizzle({
 		...observabilityEventsSchema,
 		...requestDetailsSchema,
 		...jobQueueSchema,
+		...notificationsSchema,
 	},
 	logger: new SqlLogger(),
 });

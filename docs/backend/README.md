@@ -19,6 +19,7 @@ This directory contains comprehensive documentation for the backend codebase, br
 - **[Route Development](routes.md)** - Endpoint creation, naming conventions, and patterns
 - **[Authentication & Authorization](auth.md)** - JWT, RBAC, permissions, and middleware
 - **[API Documentation](api-docs.md)** - Response formats, query parameters, and standards
+- **[Notifications Module](notifications.md)** - Endpoints, orchestration, eventing, and seeding
 
 ### Development Workflow
 - **[Common Development Tasks](development-tasks.md)** - Step-by-step guides for common tasks
