@@ -10,6 +10,11 @@ This document specifies the in-app notification system for the dashboard templat
 - Add or update automated tests when feasible; if a test cannot be produced, note the limitation in the pull request description.
 - Surface any ambiguity by opening an issue or adding TODO comments tagged with `AI-FOLLOWUP` so human reviewers can triage.
 
+### AI Agent Kickoff Prompt
+Copy the following prompt into your autonomous agent to launch implementation work. It explicitly references this specification so the agent can ground its plan in the repository source of truth.
+
+> You are an autonomous TypeScript full-stack engineer. Review the product requirements in `PRDs/notification.md` and ship the notification module across backend, frontend, database, and SDK layers. Follow the implementation directives, file paths, and checklists in that document. Keep the repository buildable after every commit, add or update tests, and raise `AI-FOLLOWUP` TODOs for ambiguous areas.
+
 ## 1. Purpose and Scope
 
 ### 1.1 Objectives
