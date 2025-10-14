@@ -9,11 +9,13 @@ This document specifies the in-app notification system for the dashboard templat
 - Prefer generating TypeScript types directly from `zod` schemas to avoid duplication.
 - Add or update automated tests when feasible; if a test cannot be produced, note the limitation in the pull request description.
 - Surface any ambiguity by opening an issue or adding TODO comments tagged with `AI-FOLLOWUP` so human reviewers can triage.
+- Favor the simplest application path that fits the template so maintainers can consume the work via `git apply`, copy/paste, or
+  direct merges without extra scaffolding steps.
 
 ### AI Agent Kickoff Prompt
 Copy the following prompt into your autonomous agent to launch implementation work. It explicitly references this specification so the agent can ground its plan in the repository source of truth.
 
-> You are an autonomous TypeScript full-stack engineer. Review the product requirements in `PRDs/notification.md` and ship the notification module across backend, frontend, database, and SDK layers. Follow the implementation directives, file paths, and checklists in that document. Keep the repository buildable after every commit, add or update tests, and raise `AI-FOLLOWUP` TODOs for ambiguous areas.
+> You are an autonomous TypeScript full-stack engineer. Review the product requirements in `PRDs/notification.md` and ship the notification module across backend, frontend, and database layers. Follow the implementation directives, file paths, and checklists in that document. Keep the repository buildable after every commit, add or update tests, favor the simplest template-aligned implementation path so changes can be applied via patch, copy/paste, or merge, and raise `AI-FOLLOWUP` TODOs for ambiguous areas.
 
 ## 1. Purpose and Scope
 
@@ -63,10 +65,10 @@ Copy the following prompt into your autonomous agent to launch implementation wo
 - **Responsibilities**:
   - Wrap the existing event emitter (Node `EventEmitter` or project bus) with typed topics.
   - Broadcast notification lifecycle events (`created`, `read`, `actioned`).
-  - Power an optional SDK (`packages/notification-sdk`) for external consumers.
+  - Keep the implementation simple and local to the template; avoid spinning up additional packages.
 - **Agent Tasks**:
-  - Reuse or extend the established event bus helper under `apps/backend/src/lib/event-bus` if present; otherwise create a new wrapper with exhaustive event typings.
-  - Document exported events in `packages/notification-sdk/README.md` and provide at least one usage example.
+  - Reuse or extend the established event bus helper under `apps/backend/src/lib/event-bus` if present; otherwise create a new wrapper with clear typings that stays within the backend app.
+  - Leave TODO notes if downstream forks later require a shareable client, but do not create SDK scaffolding in this pass.
 
 #### 2.1.4 Notification Action Handlers
 - **Location**: `apps/backend/src/modules/notifications/actions/`
@@ -90,16 +92,7 @@ Copy the following prompt into your autonomous agent to launch implementation wo
   - Build presentational components under `apps/frontend/src/routes/_dashboardLayout/notifications/components/` with Storybook stories when feasible.
   - Use the shared grouping utility from Section 5.3 and confirm accessibility with Playwright a11y checks.
 
-#### 2.1.6 Notification SDK (Optional Extension)
-- **Location**: `packages/notification-sdk/`
-- **Responsibilities**:
-  - Provide a typed client for the event hub using SSE/WebSocket/HTTP polling.
-  - Offer helper methods to embed notifications in downstream dashboards.
-  - Remain optional but documented for fork implementations.
-- **Agent Tasks**:
-  - Expose an `initializeNotificationClient` factory that accepts an event source URL and authentication token provider.
-  - Publish generated types derived from the shared validation schemas.
-  - Add basic usage tests in `packages/notification-sdk/src/__tests__/client.test.ts` guarding reconnection logic.
+> **Simplification Note**: Earlier drafts asked for an SDK deliverable. The maintainer feedback clarified that this is unnecessary overhead for the template. Focus the implementation on the in-repo backend and frontend modules; defer any SDK packaging to future work if forks ever need it.
 
 ### 2.2 Event Flow Architecture
 
@@ -121,7 +114,7 @@ Copy the following prompt into your autonomous agent to launch implementation wo
 1. Domain service raises an event (e.g., job completed).
 2. Notification Orchestrator maps the event to notification payload and type.
 3. Repository persists the notification records and associated actions.
-4. Event Hub emits `notification.created` for UI and SDK listeners.
+4. Event Hub emits `notification.created` for UI listeners.
 5. Front-end lists notifications grouped by date; user toggles read/unread via API.
 6. For approval notifications, user triggers an action; backend validates, persists outcome, and emits `notification.actioned`.
 
@@ -201,9 +194,8 @@ CREATE INDEX idx_notification_action_logs_notification_id ON notification_action
   - Cover success and failure paths with request tests located in `apps/backend/tests/routes/notifications.spec.ts`.
   - Ensure rate limiting or authentication middleware mirrors existing API patterns.
 
-### 4.2 WebSocket / SSE Channel (Phase 2 Optional)
-- `GET /api/notifications/stream` – Streams `notification.created` and `notification.actioned` events.
-- Integrates with Notification SDK to update UI without polling.
+### 4.2 Real-time Streaming (Defer)
+- The initial implementation should rely on existing REST endpoints. Note in code comments where real-time hooks might connect in the future, but do not add SSE/WebSocket plumbing now.
 
 ### 4.3 Request/Response Contracts
 - Define shared `zod` schemas for notification endpoints in `packages/validation/src/schemas/notifications.ts`. Create this schema file if it does not already exist so the contracts live in the shared validation package.
@@ -257,12 +249,11 @@ CREATE INDEX idx_notification_action_logs_notification_id ON notification_action
   notificationEvents.emit('created', payload);
   notificationEvents.on('created', handler);
   ```
-- Provide adapter for other transports (Redis, message queue) when forks require distributed events.
-- Document event contract in `packages/notification-sdk/README.md`.
-- Encourage dashboard forks to consume the hub for cross-app synchronization (e.g., electron app).
+- Provide adapter for other transports (Redis, message queue) when forks require distributed events; leave these as TODO markers rather than full implementations.
+- Keep documentation lightweight—update `PRDs/notification.md` and inline code comments instead of creating additional packages.
 - **Agent Tasks**:
-  - Add developer documentation in `docs/notifications.md` summarizing event topics and sample payloads.
-  - Verify end-to-end flow by scripting a scenario in `scripts/demo/notifications.seed.ts` that seeds demo data and prints CLI output.
+  - Ensure the event hub API is clear enough for future extension and mark any advanced requirements with `AI-FOLLOWUP` TODOs.
+  - If a demo script harness already exists, extend it with a simple notification seeding example; otherwise, document manual QA steps in the pull request.
 
 ## 7. Delivery Checklist for the AI Agent
 - [ ] All backend modules compile with `bun run turbo run lint --filter=backend...` and tests pass.
@@ -329,8 +320,8 @@ CREATE INDEX idx_notification_action_logs_notification_id ON notification_action
 2. **API layer**: REST endpoints with authorization and validation.
 3. **Front-end MVP**: notification list with grouping, read/unread toggle, detail panel.
 4. **Approval actions**: action buttons, backend handlers, audit logging.
-5. **Event streaming** (optional): SSE endpoint, React live updates.
-6. **SDK draft** (optional): initial package exposing subscription helpers.
+5. **Event streaming** (future): capture requirements with TODOs but keep implementation REST-only.
+6. **SDK packaging** (future): document expectations for forks instead of shipping a package.
 7. **Polish**: accessibility, empty states, performance tuning.
 
 ## 14. Risks and Mitigations
