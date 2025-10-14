@@ -53,5 +53,6 @@ The interface is tuned for non-technical teammates:
 - Friendly filter presets (“All updates”, “Unopened”, “Needs decision”, “Friendly updates”) described in plain language.
 - An inbox sidebar that highlights unread entries and offers a one-click “Mark everything as read”.
 - A conversational detail panel that replaces technical metadata with approachable labels and helper copy.
+- Technical metadata stays available behind a developer-only toggle so forks can still programmatically consume it without cluttering the main UI.
 - Approval actions surfaced as clear call-to-action buttons with optional note-taking for context.
 - Previous choices are summarised in everyday language, keeping the workflow transparent without overwhelming details.

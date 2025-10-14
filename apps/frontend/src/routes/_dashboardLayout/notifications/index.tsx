@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
 	Badge,
 	Button,
@@ -15,6 +15,7 @@ import {
 	CardContent,
 	ScrollArea,
 } from "@repo/ui";
+import { cn } from "@repo/ui/utils";
 import { useToast } from "@repo/ui/hooks";
 import {
 	executeNotificationAction,
@@ -49,9 +50,6 @@ const friendlyLabel = (input: string) =>
 		.trim()
 		.replace(/\b\w/g, (char) => char.toUpperCase());
 
-const emptyMetadataCopy =
-	"This update does not include extra details. You're all caught up!";
-
 const describeAction = (
 	actionKey: string,
 	label: string,
@@ -80,6 +78,10 @@ function NotificationsPage() {
 	const [filter, setFilter] = useState<NotificationListFilter>("all");
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [actionComment, setActionComment] = useState("");
+	const [selectedActionKey, setSelectedActionKey] = useState<string | null>(
+		null,
+	);
+	const [showTechnicalDetails, setShowTechnicalDetails] = useState(false);
 
 	const { data, isLoading, isFetching, isError, error } = useQuery({
 		queryKey: notificationQueryKeys.list(filter),
@@ -88,6 +90,51 @@ function NotificationsPage() {
 
 	const notificationsList = data?.items ?? [];
 	const selectedNotification = notificationsList[activeIndex] ?? null;
+	const metadataRecord = (selectedNotification?.metadata ?? {}) as Record<string, unknown>;
+	const selectedAction =
+		selectedNotification?.actions.find(
+			(action) => action.actionKey === selectedActionKey,
+		) ?? null;
+	const selectedActionRequiresComment =
+		selectedAction?.requiresComment ?? false;
+	const friendlyMetadata = useMemo(() => {
+		const items: Array<{ label: string; value: string }> = [];
+		if (typeof metadataRecord.resourceType === "string") {
+			items.push({ label: "Type", value: friendlyLabel(metadataRecord.resourceType) });
+		}
+		if (typeof metadataRecord.resourceId === "string") {
+			items.push({ label: "Reference ID", value: metadataRecord.resourceId });
+		}
+		if (typeof metadataRecord.reference === "string") {
+			items.push({ label: "Reference", value: metadataRecord.reference });
+		}
+		const linkHref = typeof metadataRecord.linkHref === "string" ? metadataRecord.linkHref : undefined;
+		const linkLabel = typeof metadataRecord.linkLabel === "string" ? metadataRecord.linkLabel : "Open related resource";
+		return {
+			items,
+			linkHref,
+			linkLabel,
+		};
+	}, [metadataRecord]);
+	const developerMetadataJson = useMemo(() => {
+		try {
+			const cleanRecord = Object.keys(metadataRecord).length
+				? metadataRecord
+				: undefined;
+			return cleanRecord
+				? JSON.stringify(cleanRecord, null, 2)
+				: "";
+		} catch {
+			return "";
+		}
+	}, [metadataRecord]);
+	const metadataEntries = useMemo(
+		() =>
+			Object.entries(metadataRecord).filter(([, value]) =>
+				value !== undefined && value !== null,
+			),
+		[metadataRecord],
+	);
 
 	useEffect(() => {
 		setActiveIndex(0);
@@ -95,7 +142,15 @@ function NotificationsPage() {
 
 	useEffect(() => {
 		setActionComment("");
+		setSelectedActionKey(null);
+		setShowTechnicalDetails(false);
 	}, [selectedNotification?.id]);
+
+	useEffect(() => {
+		if (selectedAction && !selectedAction.requiresComment) {
+			setActionComment("");
+		}
+	}, [selectedAction?.actionKey, selectedAction?.requiresComment]);
 
 	const bulkMutation = useMutation({
 		mutationFn: ({
@@ -173,6 +228,7 @@ function NotificationsPage() {
 				queryKey: notificationQueryKeys.unreadCount,
 			});
 			setActionComment("");
+			setSelectedActionKey(null);
 			toast({
 				title: "All set!",
 				description: "Your decision has been recorded.",
@@ -197,34 +253,38 @@ function NotificationsPage() {
 		singleMutation.mutate({ id: current.id, status });
 	};
 
-	const handleAction = (actionId: string, requiresComment: boolean) => {
-		if (!selectedNotification) return;
+const hasUnreadSelection = selectedNotification?.status === "unread";
 
-		const trimmedComment = actionComment.trim();
-
-		if (requiresComment && !trimmedComment) {
-			toast({
-				title: "A quick note helps",
-				description:
-					"This choice needs a short comment so teammates understand the decision.",
-				variant: "destructive",
-			});
-			return;
-		}
-
-		actionMutation.mutate({
-			notificationId: selectedNotification.id,
-			actionKey: actionId,
-			comment: requiresComment ? trimmedComment : undefined,
+const handleSubmitAction = () => {
+	if (!selectedNotification || !selectedAction) {
+		toast({
+			title: "Pick an option",
+			description: "Choose how you’d like to respond before submitting.",
+			variant: "destructive",
 		});
-	};
+		return;
+	}
 
-	const hasUnreadSelection = selectedNotification?.status === "unread";
-	const metadataEntries = Object.entries(
-		selectedNotification?.metadata ?? {},
-	).filter(([, value]) => value !== undefined && value !== null);
+	const trimmedComment = actionComment.trim();
 
-	let mainContent: React.ReactNode;
+	if (selectedAction.requiresComment && !trimmedComment) {
+		toast({
+			title: "A quick note helps",
+			description:
+				"This choice needs a short comment so teammates understand the decision.",
+			variant: "destructive",
+		});
+		return;
+	}
+
+	actionMutation.mutate({
+		notificationId: selectedNotification.id,
+		actionKey: selectedAction.actionKey,
+		comment: selectedAction.requiresComment ? trimmedComment : undefined,
+	});
+};
+
+let mainContent: ReactNode;
 
 	if (isLoading) {
 		mainContent = (
@@ -377,7 +437,7 @@ function NotificationsPage() {
 
 								{selectedNotification.type === "approval" && (
 									<Card>
-										<CardContent className="space-y-3 p-4">
+										<CardContent className="space-y-4 p-4">
 											<p className="text-sm font-semibold text-muted-foreground">
 												Take action
 											</p>
@@ -387,80 +447,127 @@ function NotificationsPage() {
 														action.actionKey,
 														action.label,
 													);
+													const isSelected =
+														selectedActionKey === action.actionKey;
 													return (
-														<div
+														<button
+															type="button"
 															key={action.id}
-															className="rounded-md border p-3"
-														>
-															<p className="text-sm font-medium">
-																{friendlyAction.title}
-															</p>
-															{friendlyAction.helper && (
-																<p className="mt-1 text-xs text-muted-foreground">
-																	{friendlyAction.helper}
-																</p>
-															)}
-															{action.requiresComment && (
-																<p className="mt-1 text-xs text-muted-foreground">
-																	Add a quick note before choosing this.
-																</p>
-															)}
-															<Button
-																size="sm"
-																className="mt-3"
-																onClick={() =>
-																	handleAction(
-																		action.actionKey,
-																		action.requiresComment,
-																	)
+															onClick={() => {
+																setSelectedActionKey(action.actionKey);
+																if (!action.requiresComment) {
+																	setActionComment("");
 																}
-																disabled={actionMutation.isPending}
-															>
-																{friendlyAction.title}
-															</Button>
-														</div>
+															}}
+															className={cn(
+																"w-full rounded-md border p-3 text-left transition",
+																isSelected
+																	? "border-primary bg-primary/10 shadow-sm"
+																	: "border-muted hover:border-primary/40",
+															)}
+														>
+															<div className="flex items-start justify-between gap-2">
+																<div className="space-y-1">
+																	<p className="text-sm font-medium">
+																		{friendlyAction.title}
+																	</p>
+																	{friendlyAction.helper && (
+																		<p className="text-xs text-muted-foreground">
+																			{friendlyAction.helper}
+																		</p>
+																	)}
+																	{action.requiresComment && (
+																		<p className="text-xs text-muted-foreground">
+																			Add a quick note if you choose this option.
+																		</p>
+																	)}
+																</div>
+																{isSelected && (
+																	<Badge variant="default">Selected</Badge>
+																)}
+															</div>
+														</button>
 													);
 												})}
 											</div>
-											<Textarea
-												value={actionComment}
-												onChange={(event) =>
-													setActionComment(event.target.value)
-												}
-												placeholder="Share a short note (optional unless required)…"
-												className="resize-none"
-											/>
-											<p className="text-xs text-muted-foreground">
-												Notes help teammates understand your choice.
-											</p>
+											{selectedActionRequiresComment && (
+												<div className="space-y-2">
+													<Textarea
+														value={actionComment}
+														onChange={(event) =>
+															setActionComment(event.target.value)
+														}
+														placeholder="Share a short note so the team knows what needs to change."
+														className="resize-none"
+													/>
+													<p className="text-xs text-muted-foreground">
+														Notes help teammates understand your request.
+													</p>
+												</div>
+											)}
+											<Button
+												onClick={handleSubmitAction}
+												disabled={!selectedAction || actionMutation.isPending}
+											>
+												{actionMutation.isPending
+													? "Sending…"
+													: "Submit decision"}
+											</Button>
 										</CardContent>
 									</Card>
 								)}
 
-								{metadataEntries.length > 0 && (
-									<Card>
-										<CardContent className="space-y-3 p-4">
-											<p className="text-sm font-semibold text-muted-foreground">
-												Extra details
-											</p>
-											<ul className="space-y-2 text-sm">
-												{metadataEntries.map(([key, value]) => (
-													<li
-														key={key}
-														className="flex items-start justify-between gap-3 rounded-lg bg-muted/30 px-3 py-2"
-													>
-														<span className="font-medium">
-															{friendlyLabel(key)}
-														</span>
-														<span className="text-muted-foreground">
-															{String(value)}
-														</span>
-													</li>
-												))}
-											</ul>
-										</CardContent>
-									</Card>
+				{metadataEntries.length > 0 && (
+					<Card>
+						<CardContent className="space-y-3 p-4">
+							<div className="flex items-center justify-between gap-2">
+								<p className="text-sm font-semibold text-muted-foreground">
+									Reference details
+								</p>
+								{developerMetadataJson && (
+									<Button
+										variant="ghost"
+										size="xs"
+										onClick={() => setShowTechnicalDetails((prev) => !prev)}
+									>
+										{showTechnicalDetails ? "Hide developer data" : "Show developer data"}
+									</Button>
 								)}
+							</div>
+							{friendlyMetadata.items.length > 0 ? (
+								<ul className="space-y-2 text-sm">
+									{friendlyMetadata.items.map((item) => (
+										<li
+											key={item.label}
+											className="flex items-start justify-between gap-3 rounded-lg bg-muted/30 px-3 py-2"
+										>
+											<span className="font-medium">{item.label}</span>
+											<span className="text-muted-foreground">{item.value}</span>
+										</li>
+									))}
+								</ul>
+							) : (
+								<p className="text-xs text-muted-foreground">
+									This message includes extra data for connected tools. You can safely ignore it.
+								</p>
+							)}
+							{friendlyMetadata.linkHref && (
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={() => window.open(friendlyMetadata.linkHref, "_blank", "noopener")}
+								>
+									{friendlyMetadata.linkLabel}
+								</Button>
+							)}
+							{showTechnicalDetails && developerMetadataJson && (
+								<pre className="whitespace-pre-wrap rounded-md bg-muted/30 p-3 text-xs text-muted-foreground">
+									{developerMetadataJson}
+								</pre>
+							)}
+						</CardContent>
+					</Card>
+				)}
 
 								{selectedNotification.actionLogs.length > 0 && (
 									<Card>
