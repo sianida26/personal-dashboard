@@ -16,16 +16,16 @@ export default function AppHeader() {
 	const pageTitle = matches[matches.length - 1]?.staticData.title ?? "";
 
 	return (
-		<div className="w-full h-16 border-b flex items-center justify-between px-4 fixed bg-background">
+		<div className="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b bg-background px-4">
 			{/* Left Side */}
-			<div className="flex gap-4 items-center">
+			<div className="flex flex-1 min-w-0 items-center gap-4">
 				<SidebarTrigger />
 
-				<div className="font-semibold">{pageTitle}</div>
+				<div className="font-semibold truncate">{pageTitle}</div>
 			</div>
 
 			{/* RIght Side */}
-			<div className="flex items-center gap-2">
+			<div className="flex shrink-0 items-center gap-2">
 				<Link
 					to="/notifications"
 					className="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium transition hover:bg-muted"

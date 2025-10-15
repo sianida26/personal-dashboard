@@ -1,3 +1,4 @@
+import { SidebarInset } from "@repo/ui";
 import { SidebarProvider } from "@repo/ui/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Navigate, Outlet } from "@tanstack/react-router";
@@ -24,12 +25,12 @@ function DashboardLayout() {
 				name: response.name,
 				permissions: response.permissions,
 				roles: response.roles,
-			})
+			});
 
 			return response;
 		},
 		enabled: isAuthenticated,
-	})
+	});
 
 	// const [openNavbar, { toggle }] = useDisclosure(false);
 
@@ -39,24 +40,16 @@ function DashboardLayout() {
 
 	return isAuthenticated ? (
 		// App Shell
-		(<SidebarProvider>
-            <div className="w-screen h-screen flex">
-				{/* Sidebar */}
-				<AppSidebar />
-
-				{/* Right Side */}
-				<div className="w-full h-full">
-					{/* Header */}
-					<AppHeader />
-
-					{/* Main Content */}
-					<div className="h-full pt-16">
-						<Outlet />
-					</div>
+		<SidebarProvider className="flex min-h-screen w-screen">
+			<AppSidebar />
+			<SidebarInset className="relative flex flex-1 flex-col">
+				<AppHeader />
+				<div className="flex-1 overflow-auto">
+					<Outlet />
 				</div>
-			</div>
-        </SidebarProvider>)
+			</SidebarInset>
+		</SidebarProvider>
 	) : (
 		<Navigate to="/login" />
-	)
+	);
 }
