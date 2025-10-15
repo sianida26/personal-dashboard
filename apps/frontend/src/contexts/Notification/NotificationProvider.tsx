@@ -32,6 +32,29 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
 			duration: 5000,
 			dismissible: true,
 		});
+
+		if (typeof window !== "undefined" && "Notification" in window) {
+			if (Notification.permission === "granted") {
+				try {
+					new Notification(title, { body: description });
+				} catch (error) {
+					console.error("Failed to show browser notification", error);
+				}
+			}
+		}
+	}, []);
+
+	useEffect(() => {
+		if (typeof window !== "undefined" && "Notification" in window) {
+			if (Notification.permission === "default") {
+				Notification.requestPermission().catch((error) => {
+					console.error(
+						"Notification permission request failed",
+						error,
+					);
+				});
+			}
+		}
 	}, []);
 
 	const remove = (id: string) => {
@@ -52,7 +75,7 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
 
 			const url = new URL(
 				"/notifications/stream",
-				window.location.origin,
+				(import.meta.env.VITE_BACKEND_BASE_URL || window.location.origin),
 			);
 			url.searchParams.set("token", auth.accessToken);
 
