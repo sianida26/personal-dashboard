@@ -1,19 +1,19 @@
-import { Hono } from "hono";
-import type { Context } from "hono";
-import { streamSSE } from "hono/streaming";
-import { z } from "zod";
 import {
 	bulkMarkNotificationsSchema,
 	createNotificationSchema,
 	listNotificationsQuerySchema,
 	singleMarkNotificationSchema,
 } from "@repo/validation";
-import NotificationOrchestrator from "../../modules/notifications/notification-orchestrator";
+import type { Context } from "hono";
+import { Hono } from "hono";
+import { streamSSE } from "hono/streaming";
+import { z } from "zod";
+import { forbidden, unauthorized } from "../../errors/DashboardError";
 import notificationEventHub from "../../lib/event-bus/notification-event-hub";
 import authInfo from "../../middlewares/authInfo";
+import NotificationOrchestrator from "../../modules/notifications/notification-orchestrator";
 import type HonoEnv from "../../types/HonoEnv";
 import requestValidator from "../../utils/requestValidator";
-import { forbidden, unauthorized } from "../../errors/DashboardError";
 
 const orchestrator = new NotificationOrchestrator();
 
@@ -69,24 +69,36 @@ const notificationsRoute = new Hono<HonoEnv>()
 		const userId = requireUserId(c);
 
 		return streamSSE(c, async (stream) => {
+			await stream.writeSSE({ event: "connected", data: "ok" });
+			await stream.writeSSE({
+				event: "heartbeat",
+				data: Date.now().toString(),
+			});
+
 			const unsubscribeCreated = notificationEventHub.on(
 				"created",
-				(payload) => {
+				async (payload) => {
 					if (payload.userId !== userId) return;
-					stream.writeSSE({
+					await stream.writeSSE({
 						event: "notification",
 						data: JSON.stringify(payload),
 					});
 				},
 			);
 
-			const heartbeat = setInterval(() => {
-				stream.writeSSE({ event: "heartbeat", data: Date.now().toString() });
+			const heartbeat = setInterval(async () => {
+				await stream.writeSSE({
+					event: "heartbeat",
+					data: Date.now().toString(),
+				});
 			}, 30000);
 
-			await stream.onAbort(async () => {
-				clearInterval(heartbeat);
-				unsubscribeCreated();
+			await new Promise<void>((resolve) => {
+				stream.onAbort(async () => {
+					clearInterval(heartbeat);
+					unsubscribeCreated();
+					resolve();
+				});
 			});
 		});
 	})
@@ -164,7 +176,8 @@ const notificationsRoute = new Hono<HonoEnv>()
 			}
 
 			const payload = c.req.valid("json");
-			const notifications = await orchestrator.createNotification(payload);
+			const notifications =
+				await orchestrator.createNotification(payload);
 
 			return c.json(
 				{

@@ -16,3 +16,5 @@ const client = hc<AppType>(backendUrl, {
 });
 
 export default client;
+
+export { backendUrl };

@@ -73,13 +73,23 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
 				return;
 			}
 
-			const url = new URL(
-				"/notifications/stream",
-				(import.meta.env.VITE_BACKEND_BASE_URL || window.location.origin),
-			);
+			const baseUrl =
+				import.meta.env.VITE_BACKEND_BASE_URL || window.location.origin;
+			const normalizedBase = baseUrl.endsWith("/")
+				? baseUrl
+				: `${baseUrl}/`;
+			const url = new URL("notifications/stream", normalizedBase);
 			url.searchParams.set("token", auth.accessToken);
 
 			source = new EventSource(url.toString());
+
+			source.addEventListener("connected", () => {
+				console.debug("Notification stream connected");
+			});
+
+			source.addEventListener("heartbeat", () => {
+				console.debug("Notification stream heartbeat");
+			});
 
 			source.addEventListener("notification", (event) => {
 				if (event?.data) {
@@ -108,7 +118,8 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
 				});
 			});
 
-			source.onerror = () => {
+			source.onerror = (error) => {
+				console.error("Notification stream error", error);
 				source?.close();
 				if (!stopped) {
 					setTimeout(connect, 5000);
