@@ -1,11 +1,10 @@
-import { and, desc, eq, ilike, isNull, or, sql, asc } from "drizzle-orm";
-import { Hono } from "hono";
-
 import {
 	paginationRequestSchema,
 	userFormSchema,
 	userUpdateSchema,
 } from "@repo/validation";
+import { and, asc, desc, eq, ilike, isNull, or, sql } from "drizzle-orm";
+import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
 import db from "../../drizzle";
@@ -15,9 +14,13 @@ import { users } from "../../drizzle/schema/users";
 import DashboardError from "../../errors/DashboardError";
 import authInfo from "../../middlewares/authInfo";
 import checkPermission from "../../middlewares/checkPermission";
+import NotificationOrchestrator from "../../modules/notifications/notification-orchestrator";
 import type HonoEnv from "../../types/HonoEnv";
+import appLogger from "../../utils/logger";
 import { hashPassword } from "../../utils/passwordUtils";
 import requestValidator from "../../utils/requestValidator";
+
+const notificationOrchestrator = new NotificationOrchestrator();
 
 export interface DateRange {
 	from?: Date;
@@ -346,6 +349,8 @@ const usersRoute = new Hono<HonoEnv>()
 					});
 			}
 
+			let createdUser: typeof users.$inferSelect | null = null;
+
 			await db.transaction(async (trx) => {
 				const [user] = await trx
 					.insert(users)
@@ -367,6 +372,8 @@ const usersRoute = new Hono<HonoEnv>()
 					});
 				}
 
+				createdUser = user;
+
 				if (userData.roles) {
 					const roles = userData.roles;
 
@@ -381,9 +388,47 @@ const usersRoute = new Hono<HonoEnv>()
 				}
 			});
 
+			if (!createdUser) {
+				throw new DashboardError({
+					errorCode: "INTERNAL_SERVER_ERROR",
+					message: "User creation failed",
+					severity: "HIGH",
+					statusCode: 500,
+				});
+			}
+
+			try {
+				await notificationOrchestrator.createNotification({
+					roleCodes: ["super-admin"],
+					type: "informational",
+					title: "New user created",
+					message: `${createdUser.name} just joined the platform`,
+					category: "users",
+					metadata: {
+						userId: createdUser.id,
+						username: createdUser.username,
+						email: createdUser.email,
+					},
+				});
+			} catch (error) {
+				appLogger.warn(
+					"Failed to broadcast new user notification",
+					error,
+				);
+			}
+
 			return c.json(
 				{
 					message: "User created successfully",
+					user: {
+						id: createdUser.id,
+						name: createdUser.name,
+						username: createdUser.username,
+						email: createdUser.email,
+						isEnabled: createdUser.isEnabled,
+						createdAt: createdUser.createdAt,
+						updatedAt: createdUser.updatedAt,
+					},
 				},
 				201,
 			);

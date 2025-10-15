@@ -1,9 +1,6 @@
 import { z } from "zod";
 
-export const notificationTypeSchema = z.enum([
-	"informational",
-	"approval",
-]);
+export const notificationTypeSchema = z.enum(["informational", "approval"]);
 
 export const notificationStatusSchema = z.enum(["unread", "read"]);
 
@@ -34,11 +31,7 @@ export const notificationActionLogSchema = z.object({
 	notificationId: z.string().cuid2(),
 	actionKey: z.string().min(1).max(50),
 	actedBy: z.string().min(1),
-	comment: z
-		.string()
-		.max(1000)
-		.nullable()
-		.optional(),
+	comment: z.string().max(1000).nullable().optional(),
 	actedAt: z.date().optional(),
 });
 
@@ -75,7 +68,7 @@ export const createNotificationSchema = z
 		actions: z.array(notificationActionSchema).optional(),
 		expiresAt: z
 			.union([z.date(), z.string().datetime(), z.null()])
-			.optional()
+			.default(null)
 			.transform((value) => {
 				if (!value) return null;
 				if (value instanceof Date) return value;
@@ -132,15 +125,11 @@ export const notificationActionExecutionSchema = z.object({
 
 export type NotificationTypeEnum = z.infer<typeof notificationTypeSchema>;
 export type NotificationStatusEnum = z.infer<typeof notificationStatusSchema>;
-export type NotificationActionInput = z.infer<
-	typeof notificationActionSchema
->;
+export type NotificationActionInput = z.infer<typeof notificationActionSchema>;
 export type NotificationActionLogInput = z.infer<
 	typeof notificationActionLogSchema
 >;
-export type CreateNotificationInput = z.infer<
-	typeof createNotificationSchema
->;
+export type CreateNotificationInput = z.infer<typeof createNotificationSchema>;
 export type ListNotificationsQuery = z.infer<
 	typeof listNotificationsQuerySchema
 >;

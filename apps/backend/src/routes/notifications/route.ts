@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import type { Context } from "hono";
+import { streamSSE } from "hono/streaming";
 import { z } from "zod";
 import {
 	bulkMarkNotificationsSchema,
@@ -8,6 +9,7 @@ import {
 	singleMarkNotificationSchema,
 } from "@repo/validation";
 import NotificationOrchestrator from "../../modules/notifications/notification-orchestrator";
+import notificationEventHub from "../../lib/event-bus/notification-event-hub";
 import authInfo from "../../middlewares/authInfo";
 import type HonoEnv from "../../types/HonoEnv";
 import requestValidator from "../../utils/requestValidator";
@@ -62,6 +64,31 @@ const notificationsRoute = new Hono<HonoEnv>()
 		const userId = requireUserId(c);
 		const count = await orchestrator.getUnreadCount(userId);
 		return c.json({ count });
+	})
+	.get("/stream", async (c) => {
+		const userId = requireUserId(c);
+
+		return streamSSE(c, async (stream) => {
+			const unsubscribeCreated = notificationEventHub.on(
+				"created",
+				(payload) => {
+					if (payload.userId !== userId) return;
+					stream.writeSSE({
+						event: "notification",
+						data: JSON.stringify(payload),
+					});
+				},
+			);
+
+			const heartbeat = setInterval(() => {
+				stream.writeSSE({ event: "heartbeat", data: Date.now().toString() });
+			}, 30000);
+
+			await stream.onAbort(async () => {
+				clearInterval(heartbeat);
+				unsubscribeCreated();
+			});
+		});
 	})
 	.post(
 		"/read",

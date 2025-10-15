@@ -177,6 +177,7 @@ function NotificationsPage() {
 		setActiveIndex(0);
 	}, [activeFilterKey, notificationsList.length]);
 
+	
 	useEffect(() => {
 		setActionComment("");
 		setSelectedActionKey(null);
