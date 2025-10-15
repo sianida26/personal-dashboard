@@ -1,23 +1,15 @@
 import client from "@/honoClient";
 import type {
 	NotificationStatus,
+	Notification,
 	PaginatedNotificationsResponse,
 } from "./types";
 
-export type NotificationListFilter =
-	| "all"
-	| "unread"
-	| "approval"
-	| "informational";
-
-const FILTER_TO_QUERY: Record<
-	Exclude<NotificationListFilter, "all">,
-	Record<string, string>
-> = {
-	unread: { status: "unread" },
-	approval: { type: "approval" },
-	informational: { type: "informational" },
-};
+export interface NotificationListQuery {
+	status?: NotificationStatus;
+	type?: Notification["type"];
+	category?: string;
+}
 
 const ensureOk = async (response: Response) => {
 	if (!response.ok) {
@@ -28,17 +20,14 @@ const ensureOk = async (response: Response) => {
 };
 
 export const fetchNotifications = async (
-	filter: NotificationListFilter,
+	queryParams: NotificationListQuery = {},
 ): Promise<PaginatedNotificationsResponse> => {
-	const query =
-		filter === "all"
-			? {}
-			: {
-					...FILTER_TO_QUERY[filter],
-				};
-
 	const response = await client.notifications.$get({
-		query,
+		query: Object.fromEntries(
+			Object.entries(queryParams).filter(
+				([, value]) => value !== undefined && value !== "",
+			),
+		),
 	});
 
 	await ensureOk(response);

@@ -96,29 +96,69 @@ export class NotificationOrchestrator {
 
 	async createNotification(
 		input: CreateNotificationInput,
-	): Promise<NotificationViewModel> {
-		const notificationId = input.id ?? createId();
+	): Promise<NotificationViewModel[]> {
+		const recipients = new Set<string>();
+		const {
+			userId,
+			userIds,
+			roleCodes,
+			id,
+			expiresAt,
+			metadata,
+			actions,
+			...rest
+		} = input;
 
-		const record = await this.repository.createNotification({
-			...input,
-			id: notificationId,
-			metadata: normalizeMetadata(input.metadata),
-			actions: input.actions?.map((action) => ({
-				id: action.id ?? createId(),
-				actionKey: action.actionKey,
-				label: action.label,
-				requiresComment: action.requiresComment ?? false,
-			})),
+		if (userId) {
+			recipients.add(userId);
+		}
+
+		userIds?.forEach((recipient) => {
+			if (recipient) {
+				recipients.add(recipient);
+			}
 		});
 
-		const view: NotificationViewModel = {
-			...record,
-			metadata: normalizeMetadata(record.metadata),
-		};
+		if (roleCodes?.length) {
+			const idsFromRoles = await this.repository.findUserIdsByRoleCodes(
+				roleCodes,
+			);
+			idsFromRoles.forEach((recipient) => recipients.add(recipient));
+		}
 
-		this.eventHub.emit("created", view);
+		if (recipients.size === 0) {
+			throw new Error("No recipients resolved for notification");
+		}
 
-		return view;
+		const normalizedMetadata = normalizeMetadata(metadata);
+
+		const notifications: NotificationViewModel[] = [];
+
+		for (const recipientId of recipients) {
+			const record = await this.repository.createNotification({
+				...rest,
+				userId: recipientId,
+				id: recipients.size === 1 && id ? id : createId(),
+				metadata: normalizedMetadata,
+				actions: actions?.map((action) => ({
+					id: createId(),
+					actionKey: action.actionKey,
+					label: action.label,
+					requiresComment: action.requiresComment ?? false,
+				})),
+				expiresAt: expiresAt ?? null,
+			});
+
+			const view: NotificationViewModel = {
+				...record,
+				metadata: normalizeMetadata(record.metadata),
+			};
+
+			notifications.push(view);
+			this.eventHub.emit("created", view);
+		}
+
+		return notifications;
 	}
 
 	async listNotifications(

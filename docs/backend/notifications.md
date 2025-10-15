@@ -22,12 +22,12 @@ Located at `apps/backend/src/routes/notifications/route.ts` and mounted under `/
 
 | Method | Path | Description |
 | --- | --- | --- |
-| `GET` | `/notifications` | Returns grouped notifications for the authenticated user. Accepts `status`, `type`, `before`, `after`, `cursor`, and `limit` query params. |
+| `GET` | `/notifications` | Returns grouped notifications for the authenticated user. Accepts `status`, `type`, `category`, `before`, `after`, `cursor`, and `limit` query params. |
 | `GET` | `/notifications/unread/count` | Lightweight unread counter used for the bell badge in the dashboard header. |
 | `POST` | `/notifications/read` | Bulk toggle of read/unread state. |
 | `POST` | `/notifications/:id/read` | Single notification toggle. |
 | `POST` | `/notifications/:id/actions/:actionKey` | Executes an approval action, enforcing comment requirements when configured. |
-| `POST` | `/notifications` | Internal seeding endpoint (super-admin only, flagged with `AI-FOLLOWUP` to scope further). |
+| `POST` | `/notifications` | Internal seeding endpoint (super-admin only, flagged with `AI-FOLLOWUP` to scope further). Supports `userId`, `userIds[]`, and/or `roleCodes[]` to target multiple recipients and returns the list of created notifications. |
 
 Validation contracts live in `packages/validation/src/schemas/notifications.ts` and are re-used across backend + frontend.
 
@@ -50,9 +50,19 @@ Validation contracts live in `packages/validation/src/schemas/notifications.ts` 
 The interface is tuned for non-technical teammates:
 
 - Familiar mail-style layout with the inbox list on the left and message details on the right, plus top-level filters/actions.
-- Friendly filter presets (“All updates”, “Unopened”, “Needs decision”, “Friendly updates”) described in plain language.
+- Friendly filter presets (“All updates”, “Unopened”, “Needs decision”, “Friendly updates”) plus category shortcuts (Leads, Orders, Products, Pricing) described in plain language.
 - An inbox sidebar that highlights unread entries and offers a one-click “Mark everything as read”.
 - A conversational detail panel that replaces technical metadata with approachable labels and helper copy.
 - Technical metadata stays available behind a developer-only toggle so forks can still programmatically consume it without cluttering the main UI.
 - Approval actions surfaced as clear call-to-action buttons with optional note-taking for context.
 - Previous choices are summarised in everyday language, keeping the workflow transparent without overwhelming details.
+
+### Targeting real-world audiences
+
+- Notifications can now be fanned out to multiple recipients in one call using `userIds[]` and/or `roleCodes[]`. Recipients are automatically de-duplicated.
+- Common business categories (`leads`, `orders`, `products`, `pricing`, etc.) are stored in the `category` column and exposed as quick filters in the UI, aligning with DSG and Revantine scenarios (deal closures, order status, product cost changes, price adjustments, incentives, etc.).
+- The REST `GET /notifications` endpoint accepts `category` filters so forked apps can tailor inbox views per workflow.
+- Metadata continues to accept arbitrary JSON for downstream automations (e.g., linking to orders, leads, or pricing records) while the UI renders a human-friendly summary.
+- Suggested mapping for the provided use-cases:
+	- DSG: use `category: "leads"` for closed-won deals, `category: "orders"` for license uploads/payments/order changes, `category: "incentives"` for incentive updates.
+	- Revantine: use `category: "products"` for HPP updates and `category: "pricing"` for margin/price changes.

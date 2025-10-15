@@ -48,6 +48,7 @@ const notificationsRoute = new Hono<HonoEnv>()
 				userId,
 				status: query.status,
 				type: query.type,
+				category: query.category,
 				before: query.before ? new Date(query.before) : undefined,
 				after: query.after ? new Date(query.after) : undefined,
 				cursor: query.cursor ? new Date(query.cursor) : undefined,
@@ -136,13 +137,15 @@ const notificationsRoute = new Hono<HonoEnv>()
 			}
 
 			const payload = c.req.valid("json");
-			const notification = await orchestrator.createNotification({
-				...payload,
-				// Allow creating notifications on behalf of another user, fallback to caller
-				userId: payload.userId ?? userId,
-			});
+			const notifications = await orchestrator.createNotification(payload);
 
-			return c.json(notification, 201);
+			return c.json(
+				{
+					notifications,
+					recipients: notifications.map((item) => item.userId),
+				},
+				201,
+			);
 		},
 	);
 

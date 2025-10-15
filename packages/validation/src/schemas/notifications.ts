@@ -42,31 +42,68 @@ export const notificationActionLogSchema = z.object({
 	actedAt: z.date().optional(),
 });
 
-export const createNotificationSchema = z.object({
-	id: z.string().cuid2().optional(),
-	userId: z.string().min(1),
-	type: notificationTypeSchema,
-	title: z.string().min(1),
-	message: z.string().min(1),
-	metadata: metadataSchema,
-	status: notificationStatusSchema.default("unread"),
-	category: z.string().max(50).optional(),
-	actions: z.array(notificationActionSchema).optional(),
-	expiresAt: z
-		.union([z.date(), z.string().datetime(), z.null()])
-		.optional()
-		.transform((value) => {
-			if (!value) return null;
-			if (value instanceof Date) return value;
-			if (typeof value === "string") return new Date(value);
-			return null;
-		}),
-});
+const notificationAudienceSchema = z
+	.object({
+		userId: z.string().min(1).optional(),
+		userIds: z.array(z.string().min(1)).optional(),
+		roleCodes: z.array(z.string().min(1)).optional(),
+	})
+	.superRefine((value, ctx) => {
+		if (
+			!value.userId &&
+			(!value.userIds || value.userIds.length === 0) &&
+			(!value.roleCodes || value.roleCodes.length === 0)
+		) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message:
+					"Provide at least one recipient via userId, userIds, or roleCodes.",
+				path: ["userId"],
+			});
+		}
+	});
+
+export const createNotificationSchema = z
+	.object({
+		id: z.string().cuid2().optional(),
+		type: notificationTypeSchema,
+		title: z.string().min(1),
+		message: z.string().min(1),
+		metadata: metadataSchema,
+		status: notificationStatusSchema.default("unread"),
+		category: z.string().max(50).optional(),
+		actions: z.array(notificationActionSchema).optional(),
+		expiresAt: z
+			.union([z.date(), z.string().datetime(), z.null()])
+			.optional()
+			.transform((value) => {
+				if (!value) return null;
+				if (value instanceof Date) return value;
+				if (typeof value === "string") return new Date(value);
+				return null;
+			}),
+	})
+	.merge(notificationAudienceSchema)
+	.superRefine((value, ctx) => {
+		if (
+			!value.userId &&
+			(!value.userIds || value.userIds.length === 0) &&
+			(!value.roleCodes || value.roleCodes.length === 0)
+		) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message:
+					"Provide at least one recipient via userId, userIds, or roleCodes.",
+				path: ["userId"],
+			});
+		}
+	});
 
 export const listNotificationsQuerySchema = z
 	.object({
 		status: notificationStatusSchema.optional(),
 		type: notificationTypeSchema.optional(),
+		category: z.string().max(50).optional(),
 		before: z.string().datetime().optional(),
 		after: z.string().datetime().optional(),
 		cursor: z.string().datetime().optional(),

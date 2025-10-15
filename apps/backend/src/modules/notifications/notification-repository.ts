@@ -10,6 +10,8 @@ import {
 	type NotificationActionInsert,
 	type NotificationActionLogInsert,
 } from "../../drizzle/schema/notifications";
+import { rolesSchema } from "../../drizzle/schema/roles";
+import { rolesToUsers } from "../../drizzle/schema/rolesToUsers";
 
 export type DatabaseClient = typeof db;
 
@@ -17,6 +19,7 @@ export interface ListNotificationsParams {
 	userId: string;
 	status?: NotificationStatusEnum;
 	type?: NotificationTypeEnum;
+	category?: string;
 	before?: Date;
 	after?: Date;
 	cursor?: Date;
@@ -60,7 +63,8 @@ export interface NotificationRepository {
 	recordActionLog: (
 		data: NotificationActionLogInsert,
 	) => Promise<typeof notificationActionLogs.$inferSelect>;
-	countUnread: (userId: string) => Promise<number>;
+    countUnread: (userId: string) => Promise<number>;
+    findUserIdsByRoleCodes: (roleCodes: string[]) => Promise<string[]>;
 }
 
 const buildTemporalFilters = (
@@ -74,8 +78,12 @@ const buildTemporalFilters = (
 		filters.push(eq(notifications.status, query.status));
 	}
 
-	if (query.type) {
-		filters.push(eq(notifications.type, query.type));
+    if (query.type) {
+        filters.push(eq(notifications.type, query.type));
+    }
+
+	if (query.category) {
+		filters.push(eq(notifications.category, query.category));
 	}
 
 	if (query.before) {
@@ -222,6 +230,19 @@ export const createNotificationRepository = (
 				);
 
 			return Number(result?.count ?? 0);
+		},
+		findUserIdsByRoleCodes: async (roleCodes) => {
+			if (!roleCodes?.length) {
+				return [];
+			}
+
+			const rows = await database
+				.select({ userId: rolesToUsers.userId })
+				.from(rolesToUsers)
+				.innerJoin(rolesSchema, eq(rolesToUsers.roleId, rolesSchema.id))
+				.where(inArray(rolesSchema.code, roleCodes));
+
+			return Array.from(new Set(rows.map((row) => row.userId)));
 		},
 	};
 };

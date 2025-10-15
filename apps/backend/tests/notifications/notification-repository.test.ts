@@ -81,6 +81,7 @@ describe("NotificationRepository", () => {
 				title: "Info",
 				message: "Informational notice",
 				metadata: {},
+				category: "leads",
 			}),
 			repository.createNotification({
 				userId,
@@ -88,6 +89,7 @@ describe("NotificationRepository", () => {
 				title: "Approval needed",
 				message: "Approval notice",
 				metadata: {},
+				category: "orders",
 			}),
 		]);
 
@@ -99,6 +101,36 @@ describe("NotificationRepository", () => {
 
 		expect(approvals).toHaveLength(1);
 		expect(approvals[0]?.type).toBe("approval");
+	});
+
+	it("filters notifications by category", async () => {
+		await Promise.all([
+			repository.createNotification({
+				userId,
+				type: "informational",
+				title: "Order update",
+				message: "License uploaded",
+				metadata: {},
+				category: "orders",
+			}),
+			repository.createNotification({
+				userId,
+				type: "informational",
+				title: "Leads update",
+				message: "Lead closed",
+				metadata: {},
+				category: "leads",
+			}),
+		]);
+
+		const orders = await repository.listNotificationsForUser({
+			userId,
+			category: "orders",
+			limit: 10,
+		});
+
+		expect(orders).toHaveLength(1);
+		expect(orders[0]?.category).toBe("orders");
 	});
 
 	it("marks notifications as read and clears readAt when unread", async () => {

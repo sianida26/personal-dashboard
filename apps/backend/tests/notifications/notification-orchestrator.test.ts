@@ -1,4 +1,5 @@
 import {
+	afterAll,
 	afterEach,
 	beforeAll,
 	describe,
@@ -13,6 +14,8 @@ import {
 	notifications,
 } from "../../src/drizzle/schema/notifications";
 import { users } from "../../src/drizzle/schema/users";
+import { rolesSchema } from "../../src/drizzle/schema/roles";
+import { rolesToUsers } from "../../src/drizzle/schema/rolesToUsers";
 import createNotificationRepository from "../../src/modules/notifications/notification-repository";
 import {
 	NotificationEventHub,
@@ -21,6 +24,7 @@ import NotificationOrchestrator from "../../src/modules/notifications/notificati
 
 describe("NotificationOrchestrator", () => {
 	let userId: string;
+	let secondaryUserId: string | undefined;
 	const repository = createNotificationRepository();
 
 	beforeAll(async () => {
@@ -33,12 +37,49 @@ describe("NotificationOrchestrator", () => {
 		}
 
 		userId = user.id;
+
+		const [newUser] = await db
+			.insert(users)
+			.values({
+				name: "Notification Recipient",
+				username: "notification-recipient",
+				email: "notification@example.com",
+			})
+			.onConflictDoNothing()
+			.returning();
+
+		if (newUser) {
+			secondaryUserId = newUser.id;
+			const [superAdminRole] = await db
+				.select()
+				.from(rolesSchema)
+				.where(eq(rolesSchema.code, "super-admin"))
+				.limit(1);
+			if (superAdminRole) {
+				await db
+					.insert(rolesToUsers)
+					.values({ userId: newUser.id, roleId: superAdminRole.id })
+					.onConflictDoNothing();
+			}
+		} else {
+			const existing = await db.query.users.findFirst({
+				where: eq(users.username, "notification-recipient"),
+			});
+			secondaryUserId = existing?.id;
+		}
 	});
 
 	afterEach(async () => {
 		await db.delete(notificationActionLogs);
 		await db.delete(notificationActions);
 		await db.delete(notifications);
+	});
+
+	afterAll(async () => {
+		if (secondaryUserId && secondaryUserId !== userId) {
+			await db.delete(rolesToUsers).where(eq(rolesToUsers.userId, secondaryUserId));
+			await db.delete(users).where(eq(users.id, secondaryUserId));
+		}
 	});
 
 	it("emits created events when creating notifications", async () => {
@@ -53,7 +94,7 @@ describe("NotificationOrchestrator", () => {
 			emittedId = payload.id;
 		});
 
-		const created = await orchestrator.createNotification({
+		const [created] = await orchestrator.createNotification({
 			userId,
 			type: "informational",
 			title: "Welcome",
@@ -61,8 +102,8 @@ describe("NotificationOrchestrator", () => {
 			metadata: {},
 		});
 
-		expect(created.title).toBe("Welcome");
-		expect(emittedId).toBe(created.id);
+		expect(created?.title).toBe("Welcome");
+		expect(emittedId).toBe(created?.id ?? null);
 	});
 
 	it("groups notifications by date bucket", async () => {
@@ -71,7 +112,6 @@ describe("NotificationOrchestrator", () => {
 			eventHub: new NotificationEventHub(),
 		});
 
-		// Today
 		await orchestrator.createNotification({
 			userId,
 			type: "informational",
@@ -80,7 +120,6 @@ describe("NotificationOrchestrator", () => {
 			metadata: {},
 		});
 
-		// Yesterday
 		await repository.createNotification({
 			userId,
 			type: "informational",
@@ -107,7 +146,7 @@ describe("NotificationOrchestrator", () => {
 			eventHub: hub,
 		});
 
-		const created = await orchestrator.createNotification({
+		const [created] = await orchestrator.createNotification({
 			userId,
 			type: "informational",
 			title: "Toggle",
@@ -121,13 +160,13 @@ describe("NotificationOrchestrator", () => {
 		});
 
 		const updated = await orchestrator.markNotifications(
-			[created.id],
+			created ? [created.id] : [],
 			"read",
 			userId,
 		);
 
 		expect(updated).toBe(1);
-		expect(payload?.ids).toContain(created.id);
+		expect(payload?.ids).toContain(created?.id ?? "");
 		expect(payload?.status).toBe("read");
 	});
 
@@ -199,5 +238,32 @@ describe("NotificationOrchestrator", () => {
 
 		const count = await orchestrator.getUnreadCount(userId);
 		expect(count).toBeGreaterThanOrEqual(1);
+	});
+
+	it("creates notifications for mixed audiences", async () => {
+		const orchestrator = new NotificationOrchestrator({
+			repository,
+			eventHub: new NotificationEventHub(),
+		});
+
+		const results = await orchestrator.createNotification({
+			userIds: [userId],
+			roleCodes: ["super-admin"],
+			type: "informational",
+			title: "Bulk update",
+			message: "Multiple audiences",
+			category: "orders",
+			metadata: {
+				resourceType: "order",
+				resourceId: "ORD-1001",
+			},
+		});
+
+		const recipients = new Set(results.map((item) => item.userId));
+		expect(recipients.has(userId)).toBe(true);
+		if (secondaryUserId) {
+			expect(recipients.has(secondaryUserId)).toBe(true);
+		}
+		expect(results.every((item) => item.category === "orders")).toBe(true);
 	});
 });

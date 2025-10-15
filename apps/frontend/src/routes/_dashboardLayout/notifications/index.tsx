@@ -1,28 +1,28 @@
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import { createFileRoute } from "@tanstack/react-router";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
+	Alert,
+	AlertDescription,
+	AlertTitle,
 	Badge,
 	Button,
-	LoadingSpinner,
-	Textarea,
-	Alert,
-	AlertTitle,
-	AlertDescription,
 	Card,
 	CardContent,
+	LoadingSpinner,
 	ScrollArea,
+	Textarea,
 } from "@repo/ui";
-import { cn } from "@repo/ui/utils";
 import { useToast } from "@repo/ui/hooks";
+import { cn } from "@repo/ui/utils";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
 import {
 	executeNotificationAction,
 	fetchNotifications,
 	markNotification,
 	markNotifications,
-	type NotificationListFilter,
+	type NotificationListQuery,
 } from "@/modules/notifications/api";
 import { notificationQueryKeys } from "@/modules/notifications/queryKeys";
 import type { Notification } from "@/modules/notifications/types";
@@ -36,11 +36,16 @@ export const Route = createFileRoute("/_dashboardLayout/notifications/")({
 	},
 });
 
-const filters: { label: string; value: NotificationListFilter }[] = [
-	{ label: "All updates", value: "all" },
-	{ label: "Unopened", value: "unread" },
-	{ label: "Needs decision", value: "approval" },
-	{ label: "Friendly updates", value: "informational" },
+type FilterDefinition = {
+	label: string;
+	key: string;
+	description?: string;
+	query: NotificationListQuery;
+};
+
+const filters: FilterDefinition[] = [
+	{ label: "All", key: "all", query: {} },
+	{ label: "Unread", key: "status:unread", query: { status: "unread" } },
 ];
 
 const friendlyLabel = (input: string) =>
@@ -75,7 +80,9 @@ const describeAction = (
 function NotificationsPage() {
 	const queryClient = useQueryClient();
 	const { toast } = useToast();
-	const [filter, setFilter] = useState<NotificationListFilter>("all");
+	const [activeFilterKey, setActiveFilterKey] = useState<string>(
+		filters[0]?.key ?? "all",
+	);
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [actionComment, setActionComment] = useState("");
 	const [selectedActionKey, setSelectedActionKey] = useState<string | null>(
@@ -83,14 +90,19 @@ function NotificationsPage() {
 	);
 	const [showTechnicalDetails, setShowTechnicalDetails] = useState(false);
 
+	const activeFilter =
+		filters.find((item) => item.key === activeFilterKey) ?? filters[0];
 	const { data, isLoading, isFetching, isError, error } = useQuery({
-		queryKey: notificationQueryKeys.list(filter),
-		queryFn: () => fetchNotifications(filter),
+		queryKey: notificationQueryKeys.list(activeFilterKey),
+		queryFn: () => fetchNotifications(activeFilter.query),
 	});
 
 	const notificationsList = data?.items ?? [];
 	const selectedNotification = notificationsList[activeIndex] ?? null;
-	const metadataRecord = (selectedNotification?.metadata ?? {}) as Record<string, unknown>;
+	const metadataRecord = (selectedNotification?.metadata ?? {}) as Record<
+		string,
+		unknown
+	>;
 	const selectedAction =
 		selectedNotification?.actions.find(
 			(action) => action.actionKey === selectedActionKey,
@@ -148,24 +160,22 @@ function NotificationsPage() {
 			const cleanRecord = Object.keys(metadataRecord).length
 				? metadataRecord
 				: undefined;
-			return cleanRecord
-				? JSON.stringify(cleanRecord, null, 2)
-				: "";
+			return cleanRecord ? JSON.stringify(cleanRecord, null, 2) : "";
 		} catch {
 			return "";
 		}
 	}, [metadataRecord]);
 	const metadataEntries = useMemo(
 		() =>
-			Object.entries(metadataRecord).filter(([, value]) =>
-				value !== undefined && value !== null,
+			Object.entries(metadataRecord).filter(
+				([, value]) => value !== undefined && value !== null,
 			),
 		[metadataRecord],
 	);
 
 	useEffect(() => {
 		setActiveIndex(0);
-	}, [filter, notificationsList.length]);
+	}, [activeFilterKey, notificationsList.length]);
 
 	useEffect(() => {
 		setActionComment("");
@@ -189,7 +199,7 @@ function NotificationsPage() {
 		}) => markNotifications(ids, markAs),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
-				queryKey: notificationQueryKeys.list(filter),
+				queryKey: notificationQueryKeys.list(activeFilterKey),
 			});
 			queryClient.invalidateQueries({
 				queryKey: notificationQueryKeys.unreadCount,
@@ -218,7 +228,7 @@ function NotificationsPage() {
 		}) => markNotification(id, status),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
-				queryKey: notificationQueryKeys.list(filter),
+				queryKey: notificationQueryKeys.list(activeFilterKey),
 			});
 			queryClient.invalidateQueries({
 				queryKey: notificationQueryKeys.unreadCount,
@@ -249,7 +259,7 @@ function NotificationsPage() {
 		}) => executeNotificationAction(notificationId, actionKey, comment),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
-				queryKey: notificationQueryKeys.list(filter),
+				queryKey: notificationQueryKeys.list(activeFilterKey),
 			});
 			queryClient.invalidateQueries({
 				queryKey: notificationQueryKeys.unreadCount,
@@ -280,40 +290,43 @@ function NotificationsPage() {
 		singleMutation.mutate({ id: current.id, status });
 	};
 
-const hasUnreadSelection = selectedNotification?.status === "unread";
-// Keep metadata helpers wired for future integrations, but hide the card for the current non-technical experience.
-const showReferenceCard = false;
+	const hasUnreadSelection = selectedNotification?.status === "unread";
+	// Keep metadata helpers wired for future integrations, but hide the card for the current non-technical experience.
+	const showReferenceCard = false;
 
-const handleSubmitAction = () => {
-	if (!selectedNotification || !selectedAction) {
-		toast({
-			title: "Pick an option",
-			description: "Choose how you’d like to respond before submitting.",
-			variant: "destructive",
+	const handleSubmitAction = () => {
+		if (!selectedNotification || !selectedAction) {
+			toast({
+				title: "Pick an option",
+				description:
+					"Choose how you’d like to respond before submitting.",
+				variant: "destructive",
+			});
+			return;
+		}
+
+		const trimmedComment = actionComment.trim();
+
+		if (selectedAction.requiresComment && !trimmedComment) {
+			toast({
+				title: "A quick note helps",
+				description:
+					"This choice needs a short comment so teammates understand the decision.",
+				variant: "destructive",
+			});
+			return;
+		}
+
+		actionMutation.mutate({
+			notificationId: selectedNotification.id,
+			actionKey: selectedAction.actionKey,
+			comment: selectedAction.requiresComment
+				? trimmedComment
+				: undefined,
 		});
-		return;
-	}
+	};
 
-	const trimmedComment = actionComment.trim();
-
-	if (selectedAction.requiresComment && !trimmedComment) {
-		toast({
-			title: "A quick note helps",
-			description:
-				"This choice needs a short comment so teammates understand the decision.",
-			variant: "destructive",
-		});
-		return;
-	}
-
-	actionMutation.mutate({
-		notificationId: selectedNotification.id,
-		actionKey: selectedAction.actionKey,
-		comment: selectedAction.requiresComment ? trimmedComment : undefined,
-	});
-};
-
-let mainContent: ReactNode;
+	let mainContent: ReactNode;
 
 	if (isLoading) {
 		mainContent = (
@@ -337,7 +350,8 @@ let mainContent: ReactNode;
 			<Alert>
 				<AlertTitle>All caught up</AlertTitle>
 				<AlertDescription>
-					There are no updates right now. We’ll place new messages here automatically.
+					There are no updates right now. We’ll place new messages
+					here automatically.
 				</AlertDescription>
 			</Alert>
 		);
@@ -360,38 +374,56 @@ let mainContent: ReactNode;
 					<div className="min-h-0 flex-1">
 						<ScrollArea className="h-72 md:h-full">
 							<div className="space-y-1 px-2 pb-3">
-								{notificationsList.map((notification, index) => {
-									const isActive = index === activeIndex;
-									return (
-										<button
-											type="button"
-											key={notification.id}
-											onClick={() => setActiveIndex(index)}
-											className={`w-full rounded-md border px-3 py-3 text-left transition ${
-												isActive
-													? "border-primary bg-primary/10"
-													: "border-transparent hover:border-primary/40"
-											}`}
-										>
-											<div className="flex items-start justify-between gap-2">
-												<div className="space-y-1">
-													<p className="text-sm font-medium">
-														{notification.title}
-													</p>
-													<p className="text-xs text-muted-foreground line-clamp-2">
-														{notification.message}
-													</p>
+								{notificationsList.map(
+									(notification, index) => {
+										const isActive = index === activeIndex;
+										return (
+											<button
+												type="button"
+												key={notification.id}
+												onClick={() =>
+													setActiveIndex(index)
+												}
+												className={`w-full rounded-md border px-3 py-3 text-left transition ${
+													isActive
+														? "border-primary bg-primary/10"
+														: "border-transparent hover:border-primary/40"
+												}`}
+											>
+												<div className="flex items-start justify-between gap-2">
+													<div className="space-y-1">
+														{notification.category && (
+															<span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+																{friendlyLabel(
+																	notification.category,
+																)}
+															</span>
+														)}
+														<p className="text-sm font-medium">
+															{notification.title}
+														</p>
+														<p className="text-xs text-muted-foreground line-clamp-2">
+															{
+																notification.message
+															}
+														</p>
+													</div>
+													{notification.status ===
+														"unread" && (
+														<Badge variant="default">
+															New
+														</Badge>
+													)}
 												</div>
-												{notification.status === "unread" && (
-													<Badge variant="default">New</Badge>
-												)}
-											</div>
-											<p className="mt-2 text-xs text-muted-foreground">
-												{dayjs(notification.createdAt).fromNow()}
-											</p>
-										</button>
-									);
-								})}
+												<p className="mt-2 text-xs text-muted-foreground">
+													{dayjs(
+														notification.createdAt,
+													).fromNow()}
+												</p>
+											</button>
+										);
+									},
+								)}
 							</div>
 						</ScrollArea>
 					</div>
@@ -405,15 +437,19 @@ let mainContent: ReactNode;
 									? "Needs decision"
 									: "Update"}
 							</Badge>
+							{selectedNotification.category && (
+								<Badge variant="outline">
+									{friendlyLabel(
+										selectedNotification.category,
+									)}
+								</Badge>
+							)}
 							<span>
 								Sent{" "}
 								{dayjs(selectedNotification.createdAt).format(
 									"MMM D, YYYY h:mm A",
 								)}
 							</span>
-							{selectedNotification.status === "unread" && (
-								<Badge variant="outline">Unopened</Badge>
-							)}
 							{isFetching && <LoadingSpinner size="sm" />}
 						</div>
 						<div className="flex flex-wrap items-center gap-2">
@@ -421,17 +457,23 @@ let mainContent: ReactNode;
 								variant="outline"
 								size="sm"
 								onClick={() =>
-									markCurrent(hasUnreadSelection ? "read" : "unread")
+									markCurrent(
+										hasUnreadSelection ? "read" : "unread",
+									)
 								}
 								disabled={singleMutation.isPending}
 							>
-								{hasUnreadSelection ? "Mark as read" : "Mark as unread"}
+								{hasUnreadSelection
+									? "Mark as read"
+									: "Mark as unread"}
 							</Button>
 							<Button
 								variant="ghost"
 								size="sm"
 								onClick={() =>
-									setActiveIndex((prev) => Math.max(prev - 1, 0))
+									setActiveIndex((prev) =>
+										Math.max(prev - 1, 0),
+									)
 								}
 								disabled={activeIndex === 0}
 							>
@@ -442,10 +484,15 @@ let mainContent: ReactNode;
 								size="sm"
 								onClick={() =>
 									setActiveIndex((prev) =>
-										Math.min(prev + 1, notificationsList.length - 1),
+										Math.min(
+											prev + 1,
+											notificationsList.length - 1,
+										),
 									)
 								}
-								disabled={activeIndex >= notificationsList.length - 1}
+								disabled={
+									activeIndex >= notificationsList.length - 1
+								}
 							>
 								Next
 							</Button>
@@ -471,72 +518,103 @@ let mainContent: ReactNode;
 												Take action
 											</p>
 											<div className="grid gap-3 sm:grid-cols-2">
-												{selectedNotification.actions.map((action) => {
-													const friendlyAction = describeAction(
-														action.actionKey,
-														action.label,
-													);
-													const isSelected =
-														selectedActionKey === action.actionKey;
-													return (
-														<button
-															type="button"
-															key={action.id}
-															onClick={() => {
-																setSelectedActionKey(action.actionKey);
-																if (!action.requiresComment) {
-																	setActionComment("");
-																}
-															}}
-															className={cn(
-																"w-full rounded-md border p-3 text-left transition",
-																isSelected
-																	? "border-primary bg-primary/10 shadow-sm"
-																	: "border-muted hover:border-primary/40",
-															)}
-														>
-															<div className="flex items-start justify-between gap-2">
-																<div className="space-y-1">
-																	<p className="text-sm font-medium">
-																		{friendlyAction.title}
-																	</p>
-																	{friendlyAction.helper && (
-																		<p className="text-xs text-muted-foreground">
-																			{friendlyAction.helper}
+												{selectedNotification.actions.map(
+													(action) => {
+														const friendlyAction =
+															describeAction(
+																action.actionKey,
+																action.label,
+															);
+														const isSelected =
+															selectedActionKey ===
+															action.actionKey;
+														return (
+															<button
+																type="button"
+																key={action.id}
+																onClick={() => {
+																	setSelectedActionKey(
+																		action.actionKey,
+																	);
+																	if (
+																		!action.requiresComment
+																	) {
+																		setActionComment(
+																			"",
+																		);
+																	}
+																}}
+																className={cn(
+																	"w-full rounded-md border p-3 text-left transition",
+																	isSelected
+																		? "border-primary bg-primary/10 shadow-sm"
+																		: "border-muted hover:border-primary/40",
+																)}
+															>
+																<div className="flex items-start justify-between gap-2">
+																	<div className="space-y-1">
+																		<p className="text-sm font-medium">
+																			{
+																				friendlyAction.title
+																			}
 																		</p>
-																	)}
-																	{action.requiresComment && (
-																		<p className="text-xs text-muted-foreground">
-																			Add a quick note if you choose this option.
-																		</p>
+																		{friendlyAction.helper && (
+																			<p className="text-xs text-muted-foreground">
+																				{
+																					friendlyAction.helper
+																				}
+																			</p>
+																		)}
+																		{action.requiresComment && (
+																			<p className="text-xs text-muted-foreground">
+																				Add
+																				a
+																				quick
+																				note
+																				if
+																				you
+																				choose
+																				this
+																				option.
+																			</p>
+																		)}
+																	</div>
+																	{isSelected && (
+																		<Badge variant="default">
+																			Selected
+																		</Badge>
 																	)}
 																</div>
-																{isSelected && (
-																	<Badge variant="default">Selected</Badge>
-																)}
-															</div>
-														</button>
-													);
-												})}
+															</button>
+														);
+													},
+												)}
 											</div>
 											{selectedActionRequiresComment && (
 												<div className="space-y-2">
 													<Textarea
 														value={actionComment}
 														onChange={(event) =>
-															setActionComment(event.target.value)
+															setActionComment(
+																event.target
+																	.value,
+															)
 														}
 														placeholder="Share a short note so the team knows what needs to change."
 														className="resize-none"
 													/>
 													<p className="text-xs text-muted-foreground">
-														Notes help teammates understand your request.
+														Notes help teammates
+														understand your request.
 													</p>
 												</div>
 											)}
 											<Button
 												onClick={handleSubmitAction}
-												disabled={!selectedAction || actionMutation.isPending}
+												disabled={
+													!selectedAction ||
+													actionMutation.isPending
+												}
 											>
 												{actionMutation.isPending
 													? "Sending…"
@@ -546,74 +624,128 @@ let mainContent: ReactNode;
 									</Card>
 								)}
 
-				{showReferenceCard && metadataEntries.length > 0 && (
-					<Card>
-						<CardContent className="space-y-3 p-4">
-							<div className="flex items-center justify-between gap-2">
-								<p className="text-sm font-semibold text-muted-foreground">
-									Reference details
-								</p>
-								{developerMetadataJson && (
-									<Button
-										variant="ghost"
-										size="xs"
-										onClick={() => setShowTechnicalDetails((prev) => !prev)}
-									>
-										{showTechnicalDetails ? "Hide developer data" : "Show developer data"}
-									</Button>
-								)}
-							</div>
-							{friendlyMetadata.items.length > 0 ? (
-								<ul className="space-y-2 text-sm">
-									{friendlyMetadata.items.map((item) => (
-										<li
-											key={item.label}
-											className="flex items-start justify-between gap-3 rounded-lg bg-muted/30 px-3 py-2"
-										>
-											<span className="font-medium">{item.label}</span>
-											<span className="text-muted-foreground">{item.value}</span>
-										</li>
-									))}
-								</ul>
-							) : (
-								<p className="text-xs text-muted-foreground">
-									This message may include extra details for connected tools and other apps. Nothing else is needed from you.
-								</p>
-							)}
-							{friendlyMetadata.linkHref && (
-								<Button
-									variant="outline"
-									size="sm"
-									onClick={() => window.open(friendlyMetadata.linkHref, "_blank", "noopener")}
-								>
-									{friendlyMetadata.linkLabel}
-								</Button>
-							)}
-							{showTechnicalDetails && developerMetadataJson && (
-								<div className="space-y-2">
-									{friendlyMetadata.leftoverEntries.length > 0 && (
-										<div className="space-y-1 text-xs text-muted-foreground">
-											<p className="font-semibold text-foreground">
-												Other data
-											</p>
-											<ul className="list-disc space-y-1 pl-4">
-												{friendlyMetadata.leftoverEntries.map((entry) => (
-													<li key={entry.key}>
-														<strong>{friendlyLabel(entry.key)}:</strong>{" "}
-														{entry.value}
-													</li>
-												))}
-											</ul>
-										</div>
+								{showReferenceCard &&
+									metadataEntries.length > 0 && (
+										<Card>
+											<CardContent className="space-y-3 p-4">
+												<div className="flex items-center justify-between gap-2">
+													<p className="text-sm font-semibold text-muted-foreground">
+														Reference details
+													</p>
+													{developerMetadataJson && (
+														<Button
+															variant="ghost"
+															size="xs"
+															onClick={() =>
+																setShowTechnicalDetails(
+																	(prev) =>
+																		!prev,
+																)
+															}
+														>
+															{showTechnicalDetails
+																? "Hide developer data"
+																: "Show developer data"}
+														</Button>
+													)}
+												</div>
+												{friendlyMetadata.items.length >
+												0 ? (
+													<ul className="space-y-2 text-sm">
+														{friendlyMetadata.items.map(
+															(item) => (
+																<li
+																	key={
+																		item.label
+																	}
+																	className="flex items-start justify-between gap-3 rounded-lg bg-muted/30 px-3 py-2"
+																>
+																	<span className="font-medium">
+																		{
+																			item.label
+																		}
+																	</span>
+																	<span className="text-muted-foreground">
+																		{
+																			item.value
+																		}
+																	</span>
+																</li>
+															),
+														)}
+													</ul>
+												) : (
+													<p className="text-xs text-muted-foreground">
+														This message may include
+														extra details for
+														connected tools and
+														other apps. Nothing else
+														is needed from you.
+													</p>
+												)}
+												{friendlyMetadata.linkHref && (
+													<Button
+														variant="outline"
+														size="sm"
+														onClick={() =>
+															window.open(
+																friendlyMetadata.linkHref,
+																"_blank",
+																"noopener",
+															)
+														}
+													>
+														{
+															friendlyMetadata.linkLabel
+														}
+													</Button>
+												)}
+												{showTechnicalDetails &&
+													developerMetadataJson && (
+														<div className="space-y-2">
+															{friendlyMetadata
+																.leftoverEntries
+																.length > 0 && (
+																<div className="space-y-1 text-xs text-muted-foreground">
+																	<p className="font-semibold text-foreground">
+																		Other
+																		data
+																	</p>
+																	<ul className="list-disc space-y-1 pl-4">
+																		{friendlyMetadata.leftoverEntries.map(
+																			(
+																				entry,
+																			) => (
+																				<li
+																					key={
+																						entry.key
+																					}
+																				>
+																					<strong>
+																						{friendlyLabel(
+																							entry.key,
+																						)}
+																						:
+																					</strong>{" "}
+																					{
+																						entry.value
+																					}
+																				</li>
+																			),
+																		)}
+																	</ul>
+																</div>
+															)}
+															<pre className="whitespace-pre-wrap rounded-md bg-muted/30 p-3 text-xs text-muted-foreground">
+																{
+																	developerMetadataJson
+																}
+															</pre>
+														</div>
+													)}
+											</CardContent>
+										</Card>
 									)}
-								<pre className="whitespace-pre-wrap rounded-md bg-muted/30 p-3 text-xs text-muted-foreground">
-									{developerMetadataJson}
-								</pre>
-								</div>
-							)}
-						</CardContent>
-					</Card>
-				)}
 
 								{selectedNotification.actionLogs.length > 0 && (
 									<Card>
@@ -622,40 +754,49 @@ let mainContent: ReactNode;
 												Previous decisions
 											</p>
 											<ul className="space-y-2 text-sm">
-												{selectedNotification.actionLogs.map((log) => (
-													<li
-														key={log.id}
-														className="rounded-lg bg-muted/30 px-3 py-2"
-													>
-														<div className="flex justify-between">
-															<span className="font-medium">
-																{
-																	describeAction(
-																		log.actionKey,
-																		log.actionKey,
-																	).title
-																}
-															</span>
-															<span className="text-xs text-muted-foreground">
-																{dayjs(log.actedAt).format(
-																	"MMM D, YYYY h:mm A",
-																)}
-															</span>
-														</div>
-														{log.comment && (
-															<p className="mt-1 text-muted-foreground">
-																“{log.comment}”
-															</p>
-														)}
-													</li>
-												))}
+												{selectedNotification.actionLogs.map(
+													(log) => (
+														<li
+															key={log.id}
+															className="rounded-lg bg-muted/30 px-3 py-2"
+														>
+															<div className="flex justify-between">
+																<span className="font-medium">
+																	{
+																		describeAction(
+																			log.actionKey,
+																			log.actionKey,
+																		).title
+																	}
+																</span>
+																<span className="text-xs text-muted-foreground">
+																	{dayjs(
+																		log.actedAt,
+																	).format(
+																		"MMM D, YYYY h:mm A",
+																	)}
+																</span>
+															</div>
+															{log.comment && (
+																<p className="mt-1 text-muted-foreground">
+																	“
+																	{
+																		log.comment
+																	}
+																	”
+																</p>
+															)}
+														</li>
+													),
+												)}
 											</ul>
 										</CardContent>
 									</Card>
 								)}
 
 								<p className="text-xs text-muted-foreground">
-									Viewing message {activeIndex + 1} of {notificationsList.length}
+									Viewing message {activeIndex + 1} of{" "}
+									{notificationsList.length}
 								</p>
 							</div>
 						</ScrollArea>
@@ -671,7 +812,8 @@ let mainContent: ReactNode;
 				<div>
 					<h1 className="text-xl font-semibold">Your updates</h1>
 					<p className="text-sm text-muted-foreground">
-						A familiar inbox for every message that needs your attention.
+						A familiar inbox for every message that needs your
+						attention.
 					</p>
 				</div>
 				<Button
@@ -686,8 +828,7 @@ let mainContent: ReactNode;
 						if (!unreadIds.length) {
 							toast({
 								title: "Nothing to mark",
-								description:
-									"Everything here is already read.",
+								description: "Everything here is already read.",
 							});
 							return;
 						}
@@ -706,15 +847,25 @@ let mainContent: ReactNode;
 			<div className="flex flex-wrap gap-2">
 				{filters.map((entry) => (
 					<Button
-						key={entry.value}
-						variant={filter === entry.value ? "default" : "outline"}
+						key={entry.key}
+						variant={
+							activeFilterKey === entry.key
+								? "default"
+								: "outline"
+						}
 						size="sm"
-						onClick={() => setFilter(entry.value)}
+						onClick={() => setActiveFilterKey(entry.key)}
+						title={entry.description}
 					>
 						{entry.label}
 					</Button>
 				))}
 			</div>
+			{activeFilter?.description && (
+				<p className="text-xs text-muted-foreground">
+					{activeFilter.description}
+				</p>
+			)}
 
 			{mainContent}
 		</div>
