@@ -3,4 +3,5 @@ export * from "./schemas/userSchema";
 export * from "./schemas/paginationSchema";
 export * from "./schemas/roleSchema";
 export * from "./schemas/observabilitySchema";
+export * from "./schemas/notifications";
 export * from "./appSettings";

@@ -4,9 +4,15 @@ import { verifyAccessToken } from "../utils/authUtils";
 
 const authTokenMiddleware = createMiddleware<HonoEnv>(async (c, next) => {
 	const authHeader = c.req.header("Authorization");
+	let token: string | undefined;
 
 	if (authHeader?.startsWith("Bearer ")) {
-		const token = authHeader.substring(7);
+		token = authHeader.substring(7);
+	} else {
+		token = c.req.query("token") ?? undefined;
+	}
+
+	if (token) {
 		const payload = await verifyAccessToken(token);
 
 		if (payload) c.set("uid", payload.uid);

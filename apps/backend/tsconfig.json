@@ -1,15 +1,22 @@
 {
-	"extends": "@repo/typescript-config/react-library.json",
-	"compilerOptions": {
-		"target": "ESNext",
-		"module": "ESNext",
-		"moduleResolution": "Bundler",
-		"strict": true,
-		"types": ["node", "bun"],
-		"jsx": "react-jsx",
-		"jsxImportSource": "hono/jsx",
-		"noEmit": true,
-		"skipLibCheck": true
-	},
-	"include": ["src/**/*", "../frontend/src/utils/getTablerIcon.ts"]
+  "extends": "@repo/typescript-config/react-library.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "declarationMap": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "types": [
+      "node",
+      "bun"
+    ],
+    "jsx": "react-jsx",
+    "jsxImportSource": "hono/jsx",
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/**/*",
+    "../frontend/src/utils/getTablerIcon.ts"
+  ]
 }
