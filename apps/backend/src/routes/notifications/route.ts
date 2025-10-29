@@ -18,7 +18,7 @@ import requestValidator from "../../utils/requestValidator";
 const orchestrator = new NotificationOrchestrator();
 
 const notificationIdParamSchema = z.object({
-	id: z.string().cuid2(),
+	id: z.cuid2(),
 });
 
 const actionParamSchema = notificationIdParamSchema.extend({
@@ -32,9 +32,9 @@ const actionBodySchema = z.object({
 const requireUserId = (c: Context<HonoEnv>): string => {
 	const uid = c.var.uid;
 	if (!uid) {
-		unauthorized({ message: "User session not found" });
+		throw unauthorized({ message: "User session not found" });
 	}
-	return uid!;
+	return uid;
 };
 
 const notificationsRoute = new Hono<HonoEnv>()
@@ -69,16 +69,9 @@ const notificationsRoute = new Hono<HonoEnv>()
 		const userId = requireUserId(c);
 
 		return streamSSE(c, async (stream) => {
-			await stream.writeSSE({ event: "connected", data: "ok" });
-			await stream.writeSSE({
-				event: "heartbeat",
-				data: Date.now().toString(),
-			});
-
-			const unsubscribeCreated = notificationEventHub.on(
-				"created",
+			const unsubscribeCreated = notificationEventHub.onCreatedForUser(
+				userId,
 				async (payload) => {
-					if (payload.userId !== userId) return;
 					await stream.writeSSE({
 						event: "notification",
 						data: JSON.stringify(payload),
@@ -86,16 +79,8 @@ const notificationsRoute = new Hono<HonoEnv>()
 				},
 			);
 
-			const heartbeat = setInterval(async () => {
-				await stream.writeSSE({
-					event: "heartbeat",
-					data: Date.now().toString(),
-				});
-			}, 30000);
-
 			await new Promise<void>((resolve) => {
 				stream.onAbort(async () => {
-					clearInterval(heartbeat);
 					unsubscribeCreated();
 					resolve();
 				});
@@ -165,7 +150,6 @@ const notificationsRoute = new Hono<HonoEnv>()
 		"/",
 		requestValidator("json", createNotificationSchema),
 		async (c) => {
-			const userId = requireUserId(c);
 			const { currentUser } = c.var;
 
 			if (!currentUser?.roles.includes("super-admin")) {
