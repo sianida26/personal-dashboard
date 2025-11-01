@@ -10,6 +10,7 @@ import { and, count, desc, eq } from "drizzle-orm";
 import db from "../../drizzle";
 import { jobExecutions, jobs } from "../../drizzle/schema/job-queue";
 import jobHandlerRegistry from "../../jobs/registry";
+import { jobMetrics } from "../../utils/custom-metrics";
 import appLogger from "../../utils/logger";
 import { jobPriorityMapping } from "./config";
 import type { CreateJobOptions, JobMetrics, JobStatus } from "./types";
@@ -102,6 +103,12 @@ export class JobQueueManager {
 
 		// Insert job into database
 		await db.insert(jobs).values(jobData);
+
+		// Track job enqueue
+		jobMetrics.jobsEnqueued.add(1, {
+			job_type: options.type,
+			priority: priorityKey,
+		});
 
 		appLogger.info(`Job ${jobId} created with type ${options.type}`);
 		return jobId;

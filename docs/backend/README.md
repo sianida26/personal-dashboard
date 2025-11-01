@@ -25,6 +25,7 @@ This directory contains comprehensive documentation for the backend codebase, br
 - **[Common Development Tasks](development-tasks.md)** - Step-by-step guides for common tasks
 - **[Testing](testing.md)** - Test structure, utilities, and best practices
 - **[Logging & Debugging](logging.md)** - Logger usage, log files, and debugging tips
+- **[Observability](observability.md)** - OpenTelemetry, SigNoz, metrics, and tracing
 
 ### Configuration & Deployment
 - **[Security](security.md)** - Security considerations and best practices
@@ -51,12 +52,14 @@ If you're new to this codebase, start with:
 - Need to add a database table? → [Common Development Tasks](development-tasks.md#2-adding-a-new-database-table)
 - Need to add middleware? → [Common Development Tasks](development-tasks.md#3-adding-new-middleware)
 - Need to process background tasks? → [Job Queue System](jobs.md#getting-started)
+- Need to add custom metrics? → [Observability](observability.md#adding-custom-instrumentation)
 
 ### For Troubleshooting
 - Tests failing? → [Troubleshooting](troubleshooting.md#test-debugging-checklist)
 - Database issues? → [Troubleshooting](troubleshooting.md#database-connection-issues)
 - Permission errors? → [Troubleshooting](troubleshooting.md#permission-errors)
 - Job queue issues? → [Job Queue System](jobs.md#troubleshooting)
+- No telemetry data? → [Observability](observability.md#troubleshooting)
 
 ### For Reference
 - Commands and scripts? → [Quick Reference](quick-reference.md#essential-commands)

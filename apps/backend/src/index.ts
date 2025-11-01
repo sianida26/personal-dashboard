@@ -1,3 +1,5 @@
+// MUST be first import to ensure instrumentation is loaded before any other modules
+import "./utils/telemetry";
 import { configDotenv } from "dotenv";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
@@ -6,20 +8,18 @@ import { rateLimiter } from "hono-rate-limiter";
 import appEnv from "./appEnv";
 import DashboardError from "./errors/DashboardError";
 import authTokenMiddleware from "./middlewares/authTokenMiddleware";
-import observabilityMiddleware from "./middlewares/observability-middleware";
 import appSettingsRoutes from "./routes/appSettingsRoute";
 import microsoftAdminRouter from "./routes/auth/microsoft/admin";
 import authRouter from "./routes/auth/route";
 import dashboardRoutes from "./routes/dashboard/routes";
 import devRoutes from "./routes/dev/route";
-import observabilityRoutes from "./routes/observability/routes";
 import notificationsRoute from "./routes/notifications/route";
 import permissionRoutes from "./routes/permissions/route";
 import rolesRoute from "./routes/roles/route";
 import usersRoute from "./routes/users/route";
-import { recordBackendError } from "./services/error-tracking-service";
 import { jobQueueManager } from "./services/jobs";
 import type HonoEnv from "./types/HonoEnv";
+import { recordError } from "./utils/error-tracking";
 import appLogger from "./utils/logger";
 
 configDotenv();
@@ -32,7 +32,6 @@ const app = new Hono<HonoEnv>();
  * Uses in-memory store (not suitable for multi-instance production).
  */
 export const appRoutes = app
-	.use(observabilityMiddleware)
 	.use(
 		cors({
 			origin: "*",
@@ -60,7 +59,6 @@ export const appRoutes = app
 	.route("/roles", rolesRoute)
 	.route("/dev", devRoutes)
 	.route("/app-settings", appSettingsRoutes)
-	.route("/observability", observabilityRoutes)
 	.route("/notifications", notificationsRoute)
 	.get("/test", (c) => {
 		return c.json({
@@ -68,10 +66,8 @@ export const appRoutes = app
 		} as const);
 	})
 	.onError(async (err, c) => {
-		// Record backend error for observability
-		recordBackendError(err, c).catch((recordingError) => {
-			console.error("Failed to record backend error:", recordingError);
-		});
+		// Record error to OpenTelemetry
+		recordError(err, c);
 
 		appLogger.error(err, c);
 		if (err instanceof DashboardError) {

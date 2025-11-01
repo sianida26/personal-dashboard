@@ -52,27 +52,11 @@ const envSchema = z.object({
 
 	OPENAI_API_KEY: z.string().optional(),
 
-	//Observability Controls
-	OBSERVABILITY_ENABLED: logSchema("true"),
-	OBSERVABILITY_RECORD_SELF: logSchema("false"), // Record observability route calls
-	OBSERVABILITY_RECORD_OPTIONS: logSchema("true"), // Record OPTIONS method requests (CORS preflight)
-	OBSERVABILITY_RETENTION_DAYS: z.coerce.number().int().default(30),
-	OBSERVABILITY_MAX_BODY_SIZE: z.coerce.number().int().default(10240), // Max request/response body size to store (bytes)
-	OBSERVABILITY_ERROR_STATUS_CODES: z
-		.string()
-		.default("500,422")
-		.transform((val) =>
-			val
-				.split(",")
-				.map((code) => Number.parseInt(code.trim(), 10))
-				.filter((code) => !Number.isNaN(code)),
-		), // Status codes that should be recorded as backend errors
-
-	//Data Privacy Controls
-	OBSERVABILITY_MASK_SENSITIVE_DATA: logSchema("true"), // Mask passwords, tokens, etc.
-	OBSERVABILITY_ANONYMIZE_USERS: logSchema("false"), // Store user IDs vs anonymous tracking
-	OBSERVABILITY_STORE_REQUEST_BODIES: logSchema("true"), // Toggle request body storage
-	OBSERVABILITY_STORE_RESPONSE_BODIES: logSchema("true"), // Toggle response body storage
+	// OpenTelemetry Configuration
+	OTEL_ENABLED: logSchema("false"),
+	OTEL_SERVICE_NAME: z.string().default("dashboard-backend"),
+	OTEL_EXPORTER_OTLP_ENDPOINT: z.string().default("http://localhost:4318"),
+	OTEL_EXPORTER_OTLP_HEADERS: z.string().optional(),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);

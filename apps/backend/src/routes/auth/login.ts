@@ -1,19 +1,17 @@
 import { zValidator } from "@hono/zod-validator";
-import checkPermission from "../../middlewares/checkPermission";
-import { createHonoRoute } from "../../utils/createHonoRoute";
-import { eq, ne, or } from "drizzle-orm";
-import { and } from "drizzle-orm";
-import { sql } from "drizzle-orm";
-import { getAppSettingValue } from "../../services/appSettings/appSettingServices";
-import { loginSchema } from "../../../../../packages/validation/src/schemas/authSchema";
-import { isNull } from "drizzle-orm";
-import { users } from "../../drizzle/schema/users";
-import db from "../../drizzle";
-import DashboardError from "../../errors/DashboardError";
-import { checkPassword } from "../../utils/passwordUtils";
-import { generateAccessToken } from "../../utils/authUtils";
 import type { PermissionCode } from "@repo/data";
+import { and, eq, isNull, ne, or, sql } from "drizzle-orm";
+import { loginSchema } from "../../../../../packages/validation/src/schemas/authSchema";
+import db from "../../drizzle";
+import { users } from "../../drizzle/schema/users";
+import DashboardError from "../../errors/DashboardError";
+import checkPermission from "../../middlewares/checkPermission";
 import rateLimit from "../../middlewares/rateLimiter";
+import { getAppSettingValue } from "../../services/appSettings/appSettingServices";
+import { generateAccessToken } from "../../utils/authUtils";
+import { createHonoRoute } from "../../utils/createHonoRoute";
+import { authMetrics } from "../../utils/custom-metrics";
+import { checkPassword } from "../../utils/passwordUtils";
 
 const loginRoute = createHonoRoute()
 	.use(
@@ -28,6 +26,11 @@ const loginRoute = createHonoRoute()
 		zValidator("json", loginSchema),
 		async (c) => {
 			const formData = c.req.valid("json");
+
+			// Track login attempt
+			authMetrics.loginAttempts.add(1, {
+				method: "username_password",
+			});
 
 			const enableUsernameAndPasswordLogin = await getAppSettingValue(
 				"login.usernameAndPassword.enabled",
@@ -87,6 +90,10 @@ const loginRoute = createHonoRoute()
 			});
 
 			if (!user) {
+				// Track login failure
+				authMetrics.loginFailures.add(1, {
+					reason: "invalid_credentials",
+				});
 				throw new DashboardError({
 					errorCode: "INVALID_CREDENTIALS",
 					message: "Invalid username or password",
@@ -100,6 +107,10 @@ const loginRoute = createHonoRoute()
 				const isUsingSocialProvider =
 					user.oauthGoogle || user.oauthMicrosoft;
 				if (isUsingSocialProvider) {
+					// Track login failure
+					authMetrics.loginFailures.add(1, {
+						reason: "social_provider_required",
+					});
 					// Send a message to the user to login with a social provider
 					throw new DashboardError({
 						errorCode: "LOGIN_WITH_SOCIAL_PROVIDER",
@@ -111,6 +122,10 @@ const loginRoute = createHonoRoute()
 					});
 				}
 
+				// Track login failure
+				authMetrics.loginFailures.add(1, {
+					reason: "no_password_set",
+				});
 				throw new DashboardError({
 					errorCode: "USER_HAS_NO_PASSWORD",
 					message:
@@ -126,6 +141,10 @@ const loginRoute = createHonoRoute()
 			);
 
 			if (!isSuccess) {
+				// Track login failure
+				authMetrics.loginFailures.add(1, {
+					reason: "invalid_password",
+				});
 				throw new DashboardError({
 					errorCode: "INVALID_CREDENTIALS",
 					message: "Invalid username or password",
@@ -133,6 +152,12 @@ const loginRoute = createHonoRoute()
 					statusCode: 400,
 				});
 			}
+
+			// Track login success
+			authMetrics.loginSuccesses.add(1, {
+				method: "username_password",
+			});
+			authMetrics.activeUsers.add(1);
 
 			const accessToken = await generateAccessToken({
 				uid: user.id,

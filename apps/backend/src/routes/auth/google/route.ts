@@ -1,16 +1,17 @@
-import { Hono } from "hono";
-import type HonoEnv from "../../../types/HonoEnv";
 import { googleAuth } from "@hono/oauth-providers/google";
-import { getAppSettingValue } from "../../../services/appSettings/appSettingServices";
-import DashboardError, { notFound } from "../../../errors/DashboardError";
-import db from "../../../drizzle";
-import { and, eq, not } from "drizzle-orm";
-import { users } from "../../../drizzle/schema/users";
 import { createId } from "@paralleldrive/cuid2";
-import { oauthGoogle } from "../../../drizzle/schema/oauthGoogle";
-import { generateAccessToken } from "../../../utils/authUtils";
 import type { PermissionCode } from "@repo/data";
+import { and, eq, not } from "drizzle-orm";
+import { Hono } from "hono";
 import appEnv from "../../../appEnv";
+import db from "../../../drizzle";
+import { oauthGoogle } from "../../../drizzle/schema/oauthGoogle";
+import { users } from "../../../drizzle/schema/users";
+import DashboardError, { notFound } from "../../../errors/DashboardError";
+import { getAppSettingValue } from "../../../services/appSettings/appSettingServices";
+import type HonoEnv from "../../../types/HonoEnv";
+import { generateAccessToken } from "../../../utils/authUtils";
+import { authMetrics, userMetrics } from "../../../utils/custom-metrics";
 
 const FRONTEND_CALLBACK_ROUTE = "/oauth/google-callback";
 
@@ -136,6 +137,11 @@ const googleOAuthRoutes = new Hono<HonoEnv>()
 				isEnabled: true,
 			});
 
+			// Track user creation
+			userMetrics.userCreations.add(1, {
+				method: "google_oauth",
+			});
+
 			// Query the newly created user
 			userRecord = await db.query.users.findFirst({
 				where: eq(users.email, user.email),
@@ -206,6 +212,12 @@ const googleOAuthRoutes = new Hono<HonoEnv>()
 		const accessToken = await generateAccessToken({
 			uid: userRecord.id,
 		});
+
+		// Track successful login
+		authMetrics.loginSuccesses.add(1, {
+			method: "google_oauth",
+		});
+		authMetrics.activeUsers.add(1);
 
 		// Collect all permissions the user has, both user-specific and role-specific
 		const permissions = new Set<PermissionCode>();
