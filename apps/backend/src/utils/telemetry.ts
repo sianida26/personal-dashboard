@@ -70,6 +70,47 @@ if (process.env.OTEL_ENABLED === "true") {
 							url.includes("/robots.txt")
 						);
 					},
+					requestHook: (span, request) => {
+						// Add additional HTTP request attributes (check for IncomingMessage)
+						if ("headers" in request && request.headers) {
+							span.setAttribute(
+								"http.user_agent",
+								request.headers["user-agent"] || "",
+							);
+							span.setAttribute(
+								"http.content_length",
+								request.headers["content-length"] || "0",
+							);
+						}
+
+						// Add request timestamp
+						span.setAttribute(
+							"http.request_timestamp",
+							new Date().toISOString(),
+						);
+					},
+					responseHook: (span, response) => {
+						// Add response timestamp
+						span.setAttribute(
+							"http.response_timestamp",
+							new Date().toISOString(),
+						);
+
+						// Add response content length if available (check for ServerResponse)
+						if (
+							"getHeader" in response &&
+							typeof response.getHeader === "function"
+						) {
+							const contentLength =
+								response.getHeader("content-length");
+							if (contentLength) {
+								span.setAttribute(
+									"http.response_content_length",
+									contentLength,
+								);
+							}
+						}
+					},
 				},
 
 				// Disable pino instrumentation if using custom pino setup

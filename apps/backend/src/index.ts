@@ -8,6 +8,7 @@ import { rateLimiter } from "hono-rate-limiter";
 import appEnv from "./appEnv";
 import DashboardError from "./errors/DashboardError";
 import authTokenMiddleware from "./middlewares/authTokenMiddleware";
+import requestLogger from "./middlewares/requestLogger";
 import appSettingsRoutes from "./routes/appSettingsRoute";
 import microsoftAdminRouter from "./routes/auth/microsoft/admin";
 import authRouter from "./routes/auth/route";
@@ -51,6 +52,7 @@ export const appRoutes = app
 		}),
 	)
 	.use(authTokenMiddleware)
+	.use(requestLogger)
 	.route("/auth", authRouter)
 	.route("/auth/microsoft/admin", microsoftAdminRouter)
 	.route("/users", usersRoute)
