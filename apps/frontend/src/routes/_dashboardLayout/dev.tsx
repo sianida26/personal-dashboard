@@ -96,7 +96,12 @@ function RouteComponent() {
 	return (
 		<div className="p-4">
 			<h1 className="text-2xl font-bold mb-4">Chemical Elements Table</h1>
-			<AdaptiveTable columns={columns} data={chemicalElements} columnOrderable />
+			<AdaptiveTable 
+				columns={columns} 
+				data={chemicalElements} 
+				columnOrderable 
+				saveState="chemical-elements-table"
+			/>
 		</div>
 	);
 }

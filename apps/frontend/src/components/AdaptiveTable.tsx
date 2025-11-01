@@ -1,4 +1,4 @@
-import { type CSSProperties, useMemo, useState } from "react";
+import { type CSSProperties, useEffect, useMemo, useState } from "react";
 import {
 	type Cell,
 	type ColumnDef,
@@ -32,6 +32,7 @@ type AdaptiveTableProps<T> = {
 	columns: ColumnDef<T>[];
 	data: T[];
 	columnOrderable?: boolean;
+	saveState?: string; // Unique key to save/load table state
 };
 
 // Helper function to ensure all columns have IDs
@@ -47,6 +48,35 @@ function ensureColumnIds<T>(columns: ColumnDef<T>[]): ColumnDef<T>[] {
 		// Fallback to index-based ID
 		return { ...col, id: `column_${index}` };
 	});
+}
+
+// Helper functions for localStorage
+const STORAGE_PREFIX = "adaptive-table-";
+
+interface TableState {
+	columnOrder?: string[];
+}
+
+function getStorageKey(saveKey: string): string {
+	return `${STORAGE_PREFIX}${saveKey}`;
+}
+
+function loadTableState(saveKey: string): TableState | null {
+	try {
+		const stored = localStorage.getItem(getStorageKey(saveKey));
+		return stored ? JSON.parse(stored) : null;
+	} catch (error) {
+		console.error("Failed to load table state:", error);
+		return null;
+	}
+}
+
+function saveTableState(saveKey: string, state: TableState): void {
+	try {
+		localStorage.setItem(getStorageKey(saveKey), JSON.stringify(state));
+	} catch (error) {
+		console.error("Failed to save table state:", error);
+	}
 }
 
 // Draggable header component
@@ -111,9 +141,58 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		[props.columns],
 	);
 
-	const [columnOrder, setColumnOrder] = useState<string[]>(() =>
-		columnsWithIds.map((c) => c.id as string),
-	);
+	// Initialize column order from saved state or default order
+	const [columnOrder, setColumnOrder] = useState<string[]>(() => {
+		const defaultOrder = columnsWithIds.map((c) => c.id as string);
+		
+		// Load saved state if saveState key is provided
+		if (props.saveState) {
+			try {
+				const savedState = loadTableState(props.saveState);
+				if (savedState?.columnOrder && Array.isArray(savedState.columnOrder)) {
+					// Validate that saved columns still exist
+					const validColumns = savedState.columnOrder.filter((id) =>
+						defaultOrder.includes(id),
+					);
+					
+					// Check if all saved columns are valid and count matches
+					// If there's a mismatch, reset to default
+					if (
+						validColumns.length === savedState.columnOrder.length &&
+						validColumns.length === defaultOrder.length
+					) {
+						return validColumns;
+					}
+					
+					// Reset to default if there's any mismatch
+					console.warn(
+						`Table state mismatch for "${props.saveState}". Resetting to default.`,
+					);
+					saveTableState(props.saveState, { columnOrder: defaultOrder });
+				}
+			} catch (error) {
+				console.error(
+					`Error loading table state for "${props.saveState}". Resetting to default.`,
+					error,
+				);
+				// Reset saved state to default on error
+				try {
+					saveTableState(props.saveState, { columnOrder: defaultOrder });
+				} catch (saveError) {
+					console.error("Failed to reset table state:", saveError);
+				}
+			}
+		}
+		
+		return defaultOrder;
+	});
+
+	// Save state whenever columnOrder changes
+	useEffect(() => {
+		if (props.saveState && props.columnOrderable) {
+			saveTableState(props.saveState, { columnOrder });
+		}
+	}, [columnOrder, props.saveState, props.columnOrderable]);
 
 	const table = useReactTable({
 		data: props.data,
