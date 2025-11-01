@@ -10,6 +10,7 @@ import { and, eq, isNull, lte, or } from "drizzle-orm";
 import db from "../../drizzle";
 import { jobExecutions, jobs } from "../../drizzle/schema/job-queue";
 import jobHandlerRegistry from "../../jobs/registry";
+import { jobMetrics } from "../../utils/custom-metrics";
 import appLogger from "../../utils/logger";
 import { defaultJobQueueConfig, retryDelayCalculators } from "./config";
 import type { JobContext, JobHandler, JobResult, WorkerInfo } from "./types";
@@ -263,6 +264,14 @@ export class JobWorker {
 		const now = new Date();
 		const executionTimeMs = now.getTime() - execution.startedAt.getTime();
 
+		// Track job completion
+		jobMetrics.jobsCompleted.add(1, {
+			job_type: job.type,
+		});
+		jobMetrics.jobDuration.record(executionTimeMs, {
+			job_type: job.type,
+		});
+
 		// Update job status
 		await db
 			.update(jobs)
@@ -309,6 +318,15 @@ export class JobWorker {
 	): Promise<void> {
 		const now = new Date();
 		const executionTimeMs = now.getTime() - execution.startedAt.getTime();
+
+		// Track job failure if no retries left
+		if (
+			!(result.shouldRetry !== false && job.retryCount < job.maxRetries)
+		) {
+			jobMetrics.jobsFailed.add(1, {
+				job_type: job.type,
+			});
+		}
 
 		// Update execution record
 		await db
@@ -378,6 +396,14 @@ export class JobWorker {
 	 */
 	private async handleJobError(job: DbJob, error: Error): Promise<void> {
 		const now = new Date();
+
+		// Track job failure if no retries left
+		if (job.retryCount >= job.maxRetries) {
+			jobMetrics.jobsFailed.add(1, {
+				job_type: job.type,
+				error_type: error.constructor.name,
+			});
+		}
 
 		// Check if should retry
 		if (job.retryCount < job.maxRetries) {

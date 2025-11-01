@@ -76,6 +76,7 @@ const authInfo = createMiddleware<HonoEnv>(async (c, next) => {
 
 			c.set("currentUser", {
 				name: user.name,
+				email: user.email,
 				permissions: Array.from(permissions),
 				roles: Array.from(roles),
 			});

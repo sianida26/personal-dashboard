@@ -6,6 +6,7 @@ type HonoEnv = {
 		uid?: string;
 		currentUser?: {
 			name: string;
+			email: string | null;
 			permissions: SpecificPermissionCode[];
 			roles: RoleCode[];
 		};

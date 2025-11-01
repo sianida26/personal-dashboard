@@ -2,20 +2,18 @@ import { configDotenv } from "dotenv";
 import { drizzle } from "drizzle-orm/postgres-js";
 import appEnv from "../appEnv";
 import * as appSettingsSchema from "./schema/appSettingsSchema";
+import * as jobQueueSchema from "./schema/job-queue";
+import * as kvStore from "./schema/kvStore";
+import * as microsoftAdmin from "./schema/microsoftAdmin";
+import * as notificationsSchema from "./schema/notifications";
+import * as oauthGoogleSchema from "./schema/oauthGoogle";
+import * as oauthMicrosoftSchema from "./schema/oauthMicrosoft";
 import * as permissionsSchema from "./schema/permissions";
 import * as permissionsToRolesSchema from "./schema/permissionsToRoles";
 import * as permissionsToUsersSchema from "./schema/permissionsToUsers";
 import * as rolesSchema from "./schema/roles";
 import * as rolesToUsersSchema from "./schema/rolesToUsers";
 import * as usersSchema from "./schema/users";
-import * as microsoftAdmin from "./schema/microsoftAdmin";
-import * as oauthGoogleSchema from "./schema/oauthGoogle";
-import * as oauthMicrosoftSchema from "./schema/oauthMicrosoft";
-import * as kvStore from "./schema/kvStore";
-import * as observabilityEventsSchema from "./schema/observability-events";
-import * as requestDetailsSchema from "./schema/request-details";
-import * as jobQueueSchema from "./schema/job-queue";
-import * as notificationsSchema from "./schema/notifications";
 import SqlLogger from "./utils/SqlLogger";
 
 configDotenv();
@@ -34,8 +32,6 @@ const db = drizzle({
 		...oauthGoogleSchema,
 		...oauthMicrosoftSchema,
 		...kvStore,
-		...observabilityEventsSchema,
-		...requestDetailsSchema,
 		...jobQueueSchema,
 		...notificationsSchema,
 	},

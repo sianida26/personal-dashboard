@@ -1,19 +1,20 @@
-import { Hono } from "hono";
-import type HonoEnv from "../../../types/HonoEnv";
-import appEnv from "../../../appEnv";
-import { notFound, unauthorized } from "../../../errors/DashboardError";
-import { createGraphClientForUser } from "../../../services/microsoft/graphClient";
-import { and, eq } from "drizzle-orm";
-import db from "../../../drizzle";
-import { users } from "../../../drizzle/schema/users";
-import { generateAccessToken } from "../../../utils/authUtils";
-import { getCookie, setCookie } from "hono/cookie";
 import { createId } from "@paralleldrive/cuid2";
 import type { PermissionCode } from "@repo/data";
-import { getMsalClient } from "../../../services/microsoft/msalClient";
-import microsoftAdminRouter from "./admin";
+import { and, eq } from "drizzle-orm";
+import { Hono } from "hono";
+import { getCookie, setCookie } from "hono/cookie";
+import appEnv from "../../../appEnv";
+import db from "../../../drizzle";
 import { oauthMicrosoft } from "../../../drizzle/schema/oauthMicrosoft";
+import { users } from "../../../drizzle/schema/users";
+import { notFound, unauthorized } from "../../../errors/DashboardError";
 import { getAppSettingValue } from "../../../services/appSettings/appSettingServices";
+import { createGraphClientForUser } from "../../../services/microsoft/graphClient";
+import { getMsalClient } from "../../../services/microsoft/msalClient";
+import type HonoEnv from "../../../types/HonoEnv";
+import { generateAccessToken } from "../../../utils/authUtils";
+import { authMetrics, userMetrics } from "../../../utils/custom-metrics";
+import microsoftAdminRouter from "./admin";
 
 // Move the validation check inside the router middleware
 // to allow the module to be imported even when Microsoft OAuth is disabled
@@ -404,6 +405,11 @@ const microsoftRouter = new Hono<HonoEnv>()
 					isEnabled: true,
 				});
 
+				// Track user creation
+				userMetrics.userCreations.add(1, {
+					method: "microsoft_oauth",
+				});
+
 				// Query the newly created user
 				const createdUserRecord = await db.query.users.findFirst({
 					where: eq(users.id, newUserId),
@@ -473,6 +479,12 @@ const microsoftRouter = new Hono<HonoEnv>()
 			const accessToken = await generateAccessToken({
 				uid: user.id,
 			});
+
+			// Track successful login
+			authMetrics.loginSuccesses.add(1, {
+				method: "microsoft_oauth",
+			});
+			authMetrics.activeUsers.add(1);
 
 			// Collect all permissions the user has, both user-specific and role-specific
 			const permissions = new Set<PermissionCode>();

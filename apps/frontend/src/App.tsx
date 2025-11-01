@@ -3,8 +3,6 @@ import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { AppProvider } from "./contexts/App/AppContext";
 import { AuthProvider } from "./contexts/Auth/AuthProvider";
 import { NotificationProvider } from "./contexts/Notification/NotificationProvider";
-import { useConsoleLogger } from "./hooks/useConsoleLogger";
-import { usePerformanceMonitor } from "./hooks/usePerformanceMonitor";
 import { routeTree } from "./routeTree.gen";
 
 const queryClient = new QueryClient({
@@ -31,30 +29,12 @@ declare module "@tanstack/react-router" {
 	}
 }
 
-/**
- * Performance monitoring component that initializes performance tracking
- */
-function PerformanceMonitor() {
-	usePerformanceMonitor();
-	return null;
-}
-
-/**
- * Console logger component that captures frontend logs
- */
-function ConsoleLogger() {
-	useConsoleLogger();
-	return null;
-}
-
 function App() {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<AppProvider>
 				<AuthProvider>
 					<NotificationProvider>
-						<PerformanceMonitor />
-						<ConsoleLogger />
 						<RouterProvider router={router} />
 					</NotificationProvider>
 				</AuthProvider>

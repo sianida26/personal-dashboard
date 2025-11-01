@@ -1,7 +1,4 @@
-import { useState, useEffect, type ReactNode } from "react";
-import { useObservabilityToggle } from "@/hooks/useObservabilityToggle";
-import client from "@/honoClient";
-import useAuth from "@/hooks/useAuth";
+import { type ReactNode, useEffect, useState } from "react";
 
 interface ErrorBoundaryProps {
 	children: ReactNode;
@@ -95,82 +92,10 @@ function ErrorFallback({ error, resetError }: ErrorFallbackProps) {
 }
 
 /**
- * Hook to report errors to the observability system
- */
-function useErrorReporting() {
-	const isObservabilityEnabled = useObservabilityToggle();
-
-	// Safely try to get auth info, but don't throw if AuthProvider is not available
-	let user = null;
-	try {
-		const authContext = useAuth();
-		user = authContext.user;
-	} catch {
-		// useAuth hook throws when used outside AuthProvider context
-		// This is expected when ErrorBoundary is rendered above AuthProvider
-		// Continue without user info
-	}
-
-	const reportError = async (
-		error: Error,
-		errorInfo?: { componentStack?: string },
-	) => {
-		if (!isObservabilityEnabled) return;
-
-		try {
-			// Get current route information
-			const currentRoute = window.location.pathname;
-			const currentSearch = window.location.search;
-			const currentHash = window.location.hash;
-			const fullUrl = `${currentRoute}${currentSearch}${currentHash}`;
-
-			// Prepare error report payload
-			const errorReport = {
-				eventType: "frontend_error" as const,
-				errorMessage: error.message,
-				stackTrace: error.stack || "",
-				componentStack: errorInfo?.componentStack || undefined,
-				route: fullUrl,
-				metadata: {
-					userAgent: navigator.userAgent,
-					url: window.location.href,
-					userId: user?.id || null,
-					userName: user?.name || null,
-					errorName: error.name,
-					cause: error.cause ? String(error.cause) : null,
-					timestamp: new Date().toISOString(),
-				},
-			};
-
-			// Send error report to backend
-			const response = await client.observability.frontend.$post({
-				json: errorReport,
-			});
-
-			if (!response.ok) {
-				console.warn(
-					"Failed to report error to observability system:",
-					response.status,
-				);
-			}
-		} catch (reportError) {
-			// Don't throw errors when reporting fails - this could cause infinite loops
-			console.warn(
-				"Failed to report error to observability system:",
-				reportError,
-			);
-		}
-	};
-
-	return { reportError };
-}
-
-/**
  * Functional Error Boundary component using modern React patterns
  */
 export default function ErrorBoundary({ children }: ErrorBoundaryProps) {
 	const [error, setError] = useState<Error | null>(null);
-	const { reportError } = useErrorReporting();
 
 	// Reset error when children change
 	useEffect(() => {
@@ -182,7 +107,6 @@ export default function ErrorBoundary({ children }: ErrorBoundaryProps) {
 		const handleError = (event: ErrorEvent) => {
 			const newError = new Error(event.message);
 			setError(newError);
-			reportError(newError);
 		};
 
 		const handlePromiseRejection = (event: PromiseRejectionEvent) => {
@@ -190,7 +114,6 @@ export default function ErrorBoundary({ children }: ErrorBoundaryProps) {
 				event.reason?.message || "Unhandled promise rejection",
 			);
 			setError(newError);
-			reportError(newError);
 		};
 
 		window.addEventListener("error", handleError);
@@ -203,7 +126,7 @@ export default function ErrorBoundary({ children }: ErrorBoundaryProps) {
 				handlePromiseRejection,
 			);
 		};
-	}, [reportError]);
+	}, []);
 
 	if (error) {
 		return (

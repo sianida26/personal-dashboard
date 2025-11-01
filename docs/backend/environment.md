@@ -32,12 +32,20 @@ LOG_DEBUG=false         # Enable debug logging (recommended false in production)
 LOG_REQUEST=true        # Enable request logging
 LOG_SQL=true            # Enable SQL query logging
 
+# OpenTelemetry / Observability
+OTEL_ENABLED=false                          # Enable OpenTelemetry instrumentation
+OTEL_SERVICE_NAME=dashboard-backend         # Service name in SigNoz
+OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318  # SigNoz collector endpoint
+OTEL_EXPORTER_OTLP_HEADERS=                 # Optional headers (JSON string for auth)
+
 # OAuth Configuration (if using OAuth)
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 MICROSOFT_CLIENT_ID=your_microsoft_client_id
 MICROSOFT_CLIENT_SECRET=your_microsoft_client_secret
 ```
+
+**See also**: `.env.example.otel` for complete OpenTelemetry configuration examples
 
 ## Environment Configuration
 
