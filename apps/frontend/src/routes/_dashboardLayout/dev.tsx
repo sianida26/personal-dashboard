@@ -100,7 +100,7 @@ function RouteComponent() {
 				columns={columns} 
 				data={chemicalElements} 
 				columnOrderable 
-				saveState="chemical-elements-table"
+				// saveState="chemical-elements-table"
 			/>
 		</div>
 	);
