@@ -93,11 +93,6 @@ const requestLogger = createMiddleware<HonoEnv>(async (c, next) => {
 				if (user.email) {
 					span.setAttribute("user.email", user.email);
 				}
-
-				// Add user roles for better context
-				if (user.roles?.length > 0) {
-					span.setAttribute("user.roles", user.roles.join(","));
-				}
 			}
 
 			// Add response information
