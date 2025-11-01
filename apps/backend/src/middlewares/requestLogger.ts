@@ -55,13 +55,47 @@ const requestLogger = createMiddleware<HonoEnv>(async (c, next) => {
 		span.setAttribute("http.user_agent", req.header("user-agent") || "");
 		span.setAttribute("request.start_time", new Date().toISOString());
 		span.setAttribute("request.id", c.get("requestId"));
+
+		// Set request headers as span attribute
+		span.setAttribute(
+			"http.request.headers",
+			JSON.stringify(Object.fromEntries(req.raw.headers.entries())),
+		);
 	}
 
 	try {
 		// Clone the request to preserve the body for logging
-		const originalRequest = appEnv.LOG_REQUEST
-			? c.req.raw.clone()
-			: undefined;
+		const originalRequest = c.req.raw.clone();
+
+		// Capture raw request data for logging
+		let requestBody: unknown = null;
+		try {
+			const contentType = c.req.header("content-type");
+			if (contentType?.includes("application/json")) {
+				requestBody = await originalRequest.json();
+			} else if (
+				contentType?.includes("application/x-www-form-urlencoded") ||
+				contentType?.includes("multipart/form-data")
+			) {
+				// For form data, we'll just log that it exists
+				requestBody = "<form-data>";
+			} else if (contentType?.includes("text/")) {
+				requestBody = await originalRequest.text();
+			}
+		} catch {
+			// If body parsing fails, continue without it
+			requestBody = "<unparseable>";
+		}
+
+		// Add request body to span if enabled
+		if (span && requestBody) {
+			span.setAttribute(
+				"http.request.body",
+				typeof requestBody === "string"
+					? requestBody
+					: JSON.stringify(requestBody),
+			);
+		}
 
 		// Execute the request within the span context (if span exists)
 		if (span) {
@@ -77,6 +111,33 @@ const requestLogger = createMiddleware<HonoEnv>(async (c, next) => {
 
 		const endTime = performance.now();
 		const responseTime = Math.floor(endTime - startTime);
+
+		// Capture raw response data for logging
+		let responseBody: unknown = null;
+		try {
+			// Clone the response to read it without consuming it
+			const responseClone = c.res.clone();
+			const contentType = responseClone.headers.get("content-type");
+
+			if (contentType?.includes("application/json")) {
+				responseBody = await responseClone.json();
+			} else if (contentType?.includes("text/")) {
+				responseBody = await responseClone.text();
+			}
+		} catch {
+			// If body parsing fails, continue without it
+			responseBody = "<unparseable>";
+		}
+
+		// Add response body to span if enabled
+		if (span && responseBody) {
+			span.setAttribute(
+				"http.response.body",
+				typeof responseBody === "string"
+					? responseBody
+					: JSON.stringify(responseBody),
+			);
+		}
 
 		// Add user context to span after request is processed (after authInfo middleware)
 		if (span) {
@@ -102,18 +163,36 @@ const requestLogger = createMiddleware<HonoEnv>(async (c, next) => {
 			span.setAttribute("response.end_time", new Date().toISOString());
 			span.setAttribute("response.time_ms", responseTime);
 
+			// Add response headers to span
+			span.setAttribute(
+				"http.response.headers",
+				JSON.stringify(Object.fromEntries(c.res.headers.entries())),
+			);
+
 			// Mark span as error if status code indicates failure
 			if (status >= 400) {
 				span.setStatus({ code: SpanStatusCode.ERROR });
 			}
 		}
 
-		// Log the request if enabled
-		if (appEnv.LOG_REQUEST && originalRequest) {
-			const originalReq = c.req.raw;
-			c.req.raw = originalRequest;
-			appLogger.request(c, responseTime);
-			c.req.raw = originalReq;
+		// Log the request and response
+		if (appEnv.LOG_REQUEST) {
+			const logData = {
+				requestId: c.get("requestId"),
+				method: c.req.method,
+				path: c.req.path,
+				url: c.req.url,
+				headers: Object.fromEntries(c.req.raw.headers.entries()),
+				requestBody,
+				responseStatus: c.res?.status,
+				responseHeaders: Object.fromEntries(c.res.headers.entries()),
+				responseBody,
+				responseTime,
+				userId: c.var.uid,
+				userName: c.var.currentUser?.name,
+			};
+
+			appLogger.info(JSON.stringify(logData), c);
 		}
 	} catch (error) {
 		// Record the exception and mark span as error
