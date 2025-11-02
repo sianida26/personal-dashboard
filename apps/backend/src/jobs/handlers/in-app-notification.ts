@@ -1,13 +1,8 @@
 import type { CreateNotificationInput } from "@repo/validation";
 import { NotificationEventHub } from "../../lib/event-bus/notification-event-hub";
 import createNotificationRepository from "../../modules/notifications/notification-repository";
-import type { JobHandler, JobPriority } from "../../services/jobs/types";
-
-export interface InAppNotificationJobPayload extends Record<string, unknown> {
-	notification: CreateNotificationInput & {
-		priority?: JobPriority;
-	};
-}
+import type { JobHandler } from "../../services/jobs/types";
+import type { InAppNotificationJobPayload } from "./types";
 
 const notificationRepository = createNotificationRepository();
 const notificationEventHub = new NotificationEventHub();

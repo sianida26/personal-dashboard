@@ -1,5 +1,5 @@
 import type { CreateNotificationInput } from "@repo/validation";
-import type { InAppNotificationJobPayload } from "../../../jobs/handlers/in-app-notification";
+import type { InAppNotificationJobPayload } from "../../../jobs/handlers/types";
 import jobQueueManager from "../../../services/jobs/queue-manager";
 import type { JobPriority } from "../../../services/jobs/types";
 import type {
