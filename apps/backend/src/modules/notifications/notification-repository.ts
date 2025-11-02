@@ -1,21 +1,17 @@
 import { createId } from "@paralleldrive/cuid2";
-import type {
-	NotificationStatusEnum,
-	NotificationTypeEnum,
-} from "@repo/validation";
 import { and, desc, eq, gt, inArray, lt, sql } from "drizzle-orm";
 import db from "../../drizzle";
+import type { NotificationStatusEnum, NotificationTypeEnum } from "@repo/validation";
 import {
+	notifications,
+	notificationActions,
+	notificationActionLogs,
+	type NotificationInsert,
 	type NotificationActionInsert,
 	type NotificationActionLogInsert,
-	type NotificationInsert,
-	notificationActionLogs,
-	notificationActions,
-	notifications,
 } from "../../drizzle/schema/notifications";
 import { rolesSchema } from "../../drizzle/schema/roles";
 import { rolesToUsers } from "../../drizzle/schema/rolesToUsers";
-import { withDbTransaction } from "../../utils/db-tracing";
 
 export type DatabaseClient = typeof db;
 
@@ -37,22 +33,26 @@ export interface NotificationRepository {
 		},
 	) => Promise<
 		typeof notifications.$inferSelect & {
-			actions: (typeof notificationActions.$inferSelect)[];
-			actionLogs: (typeof notificationActionLogs.$inferSelect)[];
+			actions: typeof notificationActions.$inferSelect[];
+			actionLogs: typeof notificationActionLogs.$inferSelect[];
 		}
 	>;
-	listNotificationsForUser: (params: ListNotificationsParams) => Promise<
+	listNotificationsForUser: (
+		params: ListNotificationsParams,
+	) => Promise<
 		Array<
 			typeof notifications.$inferSelect & {
-				actions: (typeof notificationActions.$inferSelect)[];
-				actionLogs: (typeof notificationActionLogs.$inferSelect)[];
+				actions: typeof notificationActions.$inferSelect[];
+				actionLogs: typeof notificationActionLogs.$inferSelect[];
 			}
 		>
 	>;
-	getNotificationById: (id: string) => Promise<
+	getNotificationById: (
+		id: string,
+	) => Promise<
 		| (typeof notifications.$inferSelect & {
-				actions: (typeof notificationActions.$inferSelect)[];
-				actionLogs: (typeof notificationActionLogs.$inferSelect)[];
+				actions: typeof notificationActions.$inferSelect[];
+				actionLogs: typeof notificationActionLogs.$inferSelect[];
 		  })
 		| undefined
 	>;
@@ -63,22 +63,24 @@ export interface NotificationRepository {
 	recordActionLog: (
 		data: NotificationActionLogInsert,
 	) => Promise<typeof notificationActionLogs.$inferSelect>;
-	countUnread: (userId: string) => Promise<number>;
-	findUserIdsByRoleCodes: (roleCodes: string[]) => Promise<string[]>;
+    countUnread: (userId: string) => Promise<number>;
+    findUserIdsByRoleCodes: (roleCodes: string[]) => Promise<string[]>;
 }
 
-const buildTemporalFilters = (query: ListNotificationsParams) => {
-	const filters = [eq(notifications.userId, query.userId)] as Array<
-		ReturnType<typeof eq>
-	>;
+const buildTemporalFilters = (
+	query: ListNotificationsParams,
+) => {
+	const filters = [
+		eq(notifications.userId, query.userId),
+	] as Array<ReturnType<typeof eq>>;
 
 	if (query.status) {
 		filters.push(eq(notifications.status, query.status));
 	}
 
-	if (query.type) {
-		filters.push(eq(notifications.type, query.type));
-	}
+    if (query.type) {
+        filters.push(eq(notifications.type, query.type));
+    }
 
 	if (query.category) {
 		filters.push(eq(notifications.category, query.category));
@@ -103,7 +105,10 @@ export const createNotificationRepository = (
 	database: DatabaseClient = db,
 ): NotificationRepository => {
 	const listNotificationsForUser: NotificationRepository["listNotificationsForUser"] =
-		async ({ limit = 20, ...filters }) => {
+		async ({
+			limit = 20,
+			...filters
+		}) => {
 			const safeLimit = Math.min(Math.max(limit, 1), 50);
 			const where = buildTemporalFilters(filters);
 
@@ -120,52 +125,43 @@ export const createNotificationRepository = (
 
 	const createNotification: NotificationRepository["createNotification"] =
 		async ({ actions, ...notification }) => {
-			return withDbTransaction(
-				"create_notification",
-				async () => {
-					return database.transaction(async (tx) => {
-						const [created] = await tx
-							.insert(notifications)
-							.values(notification)
-							.returning();
+			return database.transaction(async (tx) => {
+				const [created] = await tx
+					.insert(notifications)
+					.values(notification)
+					.returning();
 
-						if (!created) {
-							throw new Error(
-								"Failed to insert notification record for unknown reasons",
-							);
-						}
+				if (!created) {
+					throw new Error(
+						"Failed to insert notification record for unknown reasons",
+					);
+				}
 
-						let insertedActions: (typeof notificationActions.$inferSelect)[] =
-							[];
+				let insertedActions: typeof notificationActions.$inferSelect[] =
+					[];
 
-						if (actions?.length) {
-							insertedActions = await tx
-								.insert(notificationActions)
-								.values(
-									actions.map(
-										(action) =>
-											({
-												id: action.id ?? createId(),
-												notificationId: created.id,
-												...action,
-											}) satisfies NotificationActionInsert,
-									),
-								)
-								.returning();
-						}
+				if (actions?.length) {
+					insertedActions = await tx
+						.insert(notificationActions)
+						.values(
+							actions.map(
+								(action) =>
+									({
+										id: action.id ?? createId(),
+										notificationId: created.id,
+										...action,
+									}) satisfies NotificationActionInsert,
+							),
+						)
+						.returning();
+				}
 
-						return {
-							...created,
-							actions: insertedActions,
-							actionLogs: [],
-						};
-					});
-				},
-				{
-					"notification.type": notification.type,
-					"notification.category": notification.category || "unknown",
-				},
-			);
+				return {
+					...created,
+					actions: insertedActions,
+					actionLogs: [],
+				};
+			});
 		};
 
 	const getNotificationById: NotificationRepository["getNotificationById"] =
@@ -197,24 +193,22 @@ export const createNotificationRepository = (
 			return result.length;
 		};
 
-	const recordActionLog: NotificationRepository["recordActionLog"] = async ({
-		id,
-		...rest
-	}) => {
-		const [log] = await database
-			.insert(notificationActionLogs)
-			.values({
-				id: id ?? createId(),
-				...rest,
-			})
-			.returning();
+	const recordActionLog: NotificationRepository["recordActionLog"] =
+		async ({ id, ...rest }) => {
+			const [log] = await database
+				.insert(notificationActionLogs)
+				.values({
+					id: id ?? createId(),
+					...rest,
+				})
+				.returning();
 
-		if (!log) {
-			throw new Error("Failed to persist action log");
-		}
+			if (!log) {
+				throw new Error("Failed to persist action log");
+			}
 
-		return log;
-	};
+			return log;
+		};
 
 	return {
 		createNotification,
