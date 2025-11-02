@@ -1,54 +1,5 @@
 import { z } from "zod";
 import type { JobHandler } from "../../services/jobs/types";
-<<<<<<< HEAD
-
-const payloadSchema = z.object({
-	phoneNumber: z.string(),
-	message: z.string(),
-	metadata: z.record(z.string(), z.unknown()).optional(),
-});
-
-type WhatsAppNotificationPayload = z.infer<typeof payloadSchema>;
-
-const whatsappNotificationHandler: JobHandler<WhatsAppNotificationPayload> = {
-	type: "whatsapp-notification",
-	description: "Send WhatsApp notifications to users",
-	defaultMaxRetries: 3,
-	defaultTimeoutSeconds: 30,
-
-	validate(payload: unknown): WhatsAppNotificationPayload {
-		return payloadSchema.parse(payload);
-	},
-
-	async execute(payload, context) {
-		const { phoneNumber, message } = payload;
-
-		context.logger.info(
-			`Sending WhatsApp notification to ${phoneNumber}`,
-		);
-
-		try {
-			// TODO: Implement real WhatsApp delivery via WAHA or Twilio
-			// For now, using mock implementation
-
-			// Mock implementation: simulate sending
-			await new Promise((resolve) => setTimeout(resolve, 500));
-
-			// For demo purposes, randomly fail 5% of messages
-			if (Math.random() < 0.05) {
-				throw new Error("WhatsApp service temporarily unavailable");
-			}
-
-			context.logger.info(
-				`WhatsApp notification sent successfully to ${phoneNumber}`,
-			);
-
-			return {
-				success: true,
-				message: `WhatsApp message sent to ${phoneNumber}`,
-				data: { phoneNumber, message },
-||||||| d08ce3c7
-=======
 import whatsappService from "../../services/whatsapp/whatsapp-service";
 
 const payloadSchema = z.object({
@@ -94,7 +45,6 @@ const whatsappNotificationHandler: JobHandler<WhatsAppNotificationPayload> = {
 				success: true,
 				message: `WhatsApp sent to ${phoneNumber}`,
 				data: { messageId: result.messageId, phoneNumber, message },
->>>>>>> main
 			};
 		} catch (error) {
 			const errorMsg = new Error(

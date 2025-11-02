@@ -1,36 +1,29 @@
+import type { NotificationChannelEnum } from "@repo/validation";
 import { inArray } from "drizzle-orm";
 import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
-<<<<<<< HEAD
-import { employees } from "../../drizzle/schema/employees";
-||||||| d08ce3c7
-import { employees } from "../../drizzle/schema/employees";
-import NotificationOrchestrator from "./notification-orchestrator";
-=======
->>>>>>> main
-import createNotificationRepository from "./notification-repository";
-import notificationPreferenceService, {
-	type NotificationPreferenceService,
-} from "../notification-preferences/notification-preferences-service";
-import type {
-	NotificationPreferenceSummary,
-	NotificationPreferenceView,
-} from "../notification-preferences/notification-preferences-service";
 import {
 	DEFAULT_NOTIFICATION_PREFERENCE_MATRIX,
 	NOTIFICATION_CHANNELS,
 } from "../notification-preferences/constants";
-import { InAppChannelAdapter } from "./channels/in-app-adapter";
+import type {
+	NotificationPreferenceSummary,
+	NotificationPreferenceView,
+} from "../notification-preferences/notification-preferences-service";
+import notificationPreferenceService, {
+	type NotificationPreferenceService,
+} from "../notification-preferences/notification-preferences-service";
 import { EmailChannelAdapter } from "./channels/email-adapter";
-import { WhatsAppChannelAdapter } from "./channels/whatsapp-adapter";
+import { InAppChannelAdapter } from "./channels/in-app-adapter";
 import type { NotificationChannelAdapter } from "./channels/types";
+import { WhatsAppChannelAdapter } from "./channels/whatsapp-adapter";
+import createNotificationRepository from "./notification-repository";
 import type {
 	ChannelDispatchResult,
 	NotificationRecipient,
 	UnifiedNotificationRequest,
 	UnifiedNotificationResponse,
 } from "./unified-notification-types";
-import type { NotificationChannelEnum } from "@repo/validation";
 
 const DEFAULT_CHANNELS: NotificationChannelEnum[] = ["inApp"];
 
@@ -50,29 +43,11 @@ export class UnifiedNotificationService {
 	) {
 		this.preferenceService =
 			options.preferenceService ?? notificationPreferenceService;
-<<<<<<< HEAD
-		const adapterList =
-			options.adapters ??
-			[
-				new InAppChannelAdapter(),
-				new EmailChannelAdapter(),
-				new WhatsAppChannelAdapter(),
-			];
-||||||| d08ce3c7
-		const adapterList =
-			options.adapters ??
-			[
-				new InAppChannelAdapter(this.orchestrator),
-				new EmailChannelAdapter(),
-				new WhatsAppChannelAdapter(),
-			];
-=======
 		const adapterList = options.adapters ?? [
 			new InAppChannelAdapter(),
 			new EmailChannelAdapter(),
 			new WhatsAppChannelAdapter(),
 		];
->>>>>>> main
 		this.adapters = new Map(
 			adapterList.map((adapter) => [adapter.channel, adapter]),
 		);

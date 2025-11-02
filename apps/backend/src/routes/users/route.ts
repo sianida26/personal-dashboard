@@ -16,9 +16,9 @@ import authInfo from "../../middlewares/authInfo";
 import checkPermission from "../../middlewares/checkPermission";
 import type HonoEnv from "../../types/HonoEnv";
 import appLogger from "../../utils/logger";
+import { sendToRoles } from "../../utils/notifications/notification-helpers";
 import { hashPassword } from "../../utils/passwordUtils";
 import requestValidator from "../../utils/requestValidator";
-import { sendToRoles } from "../../utils/notifications/notification-helpers";
 
 export interface DateRange {
 	from?: Date;
@@ -403,15 +403,7 @@ const usersRoute = new Hono<HonoEnv>()
 					type: "informational",
 					title: "New user created",
 					message: `${userRecord.name} just joined the platform`,
-<<<<<<< HEAD
-					category: "users",
-||||||| d08ce3c7
-					category: "users",
-					status: "unread",
-					expiresAt: null,
-=======
 					category: "general",
->>>>>>> main
 					metadata: {
 						userId: userRecord.id,
 						username: userRecord.username,

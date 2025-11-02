@@ -1,12 +1,31 @@
 import type { CreateNotificationInput } from "@repo/validation";
+import type { InAppNotificationJobPayload } from "../../../jobs/handlers/in-app-notification";
 import jobQueueManager from "../../../services/jobs/queue-manager";
+import type { JobPriority } from "../../../services/jobs/types";
 import type {
 	ChannelDeliveryRequest,
-	NotificationChannelAdapter,
+NotificationChannelAdapter,
 } from "./types";
-import type { InAppNotificationJobPayload } from "../../../jobs/handlers/in-app-notification";
 
 const JOB_TYPE = "in-app-notification" as const;
+
+/**
+ * Maps numeric priority to JobPriority string
+ */
+function mapNumericPriorityToJobPriority(priority?: number): JobPriority {
+	switch (priority) {
+		case 0:
+			return "critical";
+		case 1:
+			return "high";
+		case 2:
+			return "normal";
+		case 3:
+			return "low";
+		default:
+			return "normal";
+	}
+}
 
 export class InAppChannelAdapter implements NotificationChannelAdapter {
 	readonly channel = "inApp" as const;
@@ -56,14 +75,8 @@ export class InAppChannelAdapter implements NotificationChannelAdapter {
 
 			const jobOptions = {
 				type: request.jobOptions?.jobType ?? JOB_TYPE,
-<<<<<<< HEAD
-				payload: jobPayload as unknown,
-||||||| d08ce3c7
-			await this.orchestrator.createNotification(payload);
-=======
-				payload: jobPayload as unknown as Record<string, unknown>,
->>>>>>> main
-				priority: request.jobOptions?.priority,
+				payload: jobPayload,
+				priority: mapNumericPriorityToJobPriority(request.jobOptions?.priority),
 				maxRetries: request.jobOptions?.maxRetries,
 			};
 

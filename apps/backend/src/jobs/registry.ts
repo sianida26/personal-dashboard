@@ -5,13 +5,13 @@ import inAppNotificationHandler from "./handlers/in-app-notification";
 import whatsappNotificationHandler from "./handlers/whatsapp-notification";
 
 export class JobHandlerRegistry {
-	private handlers = new Map<string, JobHandler<Record<string, unknown>>>();
+	private handlers = new Map<string, JobHandler>();
 
 	/**
 	 * Register a job handler
 	 * @param handler - The job handler to register
 	 */
-	register(handler: JobHandler<Record<string, unknown>>): void {
+	register(handler: JobHandler): void {
 		if (this.handlers.has(handler.type)) {
 			throw new Error(
 				`Job handler for type '${handler.type}' already registered`,
@@ -25,7 +25,7 @@ export class JobHandlerRegistry {
 	 * @param type - The job type
 	 * @returns The job handler or undefined if not found
 	 */
-	get(type: string): JobHandler<Record<string, unknown>> | undefined {
+	get(type: string): JobHandler | undefined {
 		return this.handlers.get(type);
 	}
 
@@ -50,7 +50,7 @@ export class JobHandlerRegistry {
 	 * Get all registered handlers
 	 * @returns Array of registered handlers
 	 */
-	getHandlers(): JobHandler<Record<string, unknown>>[] {
+	getHandlers(): JobHandler[] {
 		return Array.from(this.handlers.values());
 	}
 
@@ -74,19 +74,9 @@ export class JobHandlerRegistry {
 // Global registry instance
 const jobHandlerRegistry = new JobHandlerRegistry();
 
-// Register built-in handlers
-<<<<<<< HEAD
-jobHandlerRegistry.register(inAppNotificationHandler);
-||||||| d08ce3c7
-=======
 // All handlers now properly extend Record<string, unknown>
->>>>>>> main
-jobHandlerRegistry.register(emailNotificationHandler);
-<<<<<<< HEAD
-||||||| d08ce3c7
-=======
 jobHandlerRegistry.register(inAppNotificationHandler);
->>>>>>> main
+jobHandlerRegistry.register(emailNotificationHandler);
 jobHandlerRegistry.register(whatsappNotificationHandler);
 jobHandlerRegistry.register(dataProcessingHandler);
 

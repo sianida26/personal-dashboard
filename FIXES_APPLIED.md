@@ -506,8 +506,6 @@ To verify everything works:
 
 ### For PR Integration
 
-This commit fixes the foundation for the `remove-old-createnotification` PR to work correctly. The PR adds:
-- `_createNotificationInternal()` method (private)
 - Helper functions: `sendToRoles()`, `sendToUsers()`, `sendToUsersAndRoles()`
 - Route updates to use helpers
 - Test updates

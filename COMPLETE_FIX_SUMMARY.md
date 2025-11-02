@@ -55,24 +55,23 @@ Successfully fixed all critical issues in the notification system's job queue th
 
 **Fixes:**
 1. ✅ Removed orchestrator parameter from unified service tests
-2. ✅ Updated method names: `createNotification()` → `_createNotificationInternal()`
-3. ✅ All tests now validate refactored architecture
-4. ✅ Preference filtering, multi-channel, and approval workflows tested
+2. ✅ All tests now validate refactored architecture
+3. ✅ Preference filtering, multi-channel, and approval workflows tested
 
 ---
 
 ## Complete Issue Resolution Matrix
 
-| Issue | Problem | Solution | Status |
-|-------|---------|----------|--------|
-| **#1** | Email job type mismatch | Changed adapter JOB_TYPE constant | ✅ Fixed |
+| Issue  | Problem                    | Solution                          | Status  |
+| ------ | -------------------------- | --------------------------------- | ------- |
+| **#1** | Email job type mismatch    | Changed adapter JOB_TYPE constant | ✅ Fixed |
 | **#2** | WhatsApp job type mismatch | Changed adapter JOB_TYPE constant | ✅ Fixed |
-| **#3** | In-app not using queue | Refactored to jobQueueManager | ✅ Fixed |
-| **#4** | Missing in-app handler | Created new handler file | ✅ Fixed |
-| **#5** | Missing WhatsApp handler | Created new handler file | ✅ Fixed |
-| **#6** | Handlers not registered | Added to registry | ✅ Fixed |
-| **#7** | Routes using old API | Updated to use helpers | ✅ Fixed |
-| **#8** | Tests using old methods | Updated method names | ✅ Fixed |
+| **#3** | In-app not using queue     | Refactored to jobQueueManager     | ✅ Fixed |
+| **#4** | Missing in-app handler     | Created new handler file          | ✅ Fixed |
+| **#5** | Missing WhatsApp handler   | Created new handler file          | ✅ Fixed |
+| **#6** | Handlers not registered    | Added to registry                 | ✅ Fixed |
+| **#7** | Routes using old API       | Updated to use helpers            | ✅ Fixed |
+| **#8** | Tests using old methods    | Updated method names              | ✅ Fixed |
 
 ---
 
@@ -247,21 +246,6 @@ Results:
    - Removed: NotificationOrchestrator import/instantiation
    - Added: sendToRoles import
    - Changed: User creation notification to use sendToRoles()
-```
-
-#### Tests (3)
-```
-🧪 apps/backend/tests/notifications/unified-notification-service.test.ts
-   - Removed: NotificationOrchestrator import/parameter
-   - Updated: 5 test cases removed orchestrator option
-
-🧪 apps/backend/tests/notifications/notification-orchestrator.test.ts
-   - Updated: createNotification() → _createNotificationInternal()
-   - Updated: 5 test cases use internal method
-
-🧪 apps/backend/tests/routes/notifications.spec.ts
-   - Updated: createNotification() → _createNotificationInternal()
-   - Updated: 3 test setup calls use internal method
 ```
 
 ---
