@@ -8,7 +8,7 @@ import defaultProfilePicture from "@/assets/images/default-picture.jpg";
 import logo from "@/assets/logos/logo.png";
 import useAuth from "@/hooks/useAuth";
 import { Link, useMatchRoute } from "@tanstack/react-router";
-import { TbChevronUp, TbDoorExit, TbUser } from "react-icons/tb";
+import { TbChevronUp, TbDoorExit, TbUser, TbBell } from "react-icons/tb";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -192,6 +192,13 @@ export default function AppSidebar() {
 										<TbUser /> Account
 									</span>
 								</DropdownMenuItem>
+								<Link to="/personal/notifications">
+									<DropdownMenuItem>
+										<span className="flex items-center gap-2">
+											<TbBell /> Notification Settings
+										</span>
+									</DropdownMenuItem>
+								</Link>
 								<Link to="/logout">
 									<DropdownMenuItem>
 										<span className="flex items-center gap-2 text-red-500">
