@@ -4,6 +4,9 @@ import createNotificationRepository from "../../modules/notifications/notificati
 import type { JobHandler } from "../../services/jobs/types";
 import type { InAppNotificationJobPayload } from "./types";
 
+// Re-export for backward compatibility
+export type { InAppNotificationJobPayload };
+
 const notificationRepository = createNotificationRepository();
 const notificationEventHub = new NotificationEventHub();
 
