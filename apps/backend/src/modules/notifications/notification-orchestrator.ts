@@ -1,21 +1,21 @@
 import { createId } from "@paralleldrive/cuid2";
 import type {
 	CreateNotificationInput,
-	NotificationStatusEnum,
 	NotificationActionExecutionInput,
+	NotificationStatusEnum,
 } from "@repo/validation";
+import type {
+	NotificationActionLogRecord,
+	NotificationActionRecord,
+	NotificationRecord,
+} from "../../drizzle/schema/notifications";
 import notificationEventHub, {
-	NotificationEventHub,
+	type NotificationEventHub,
 } from "../../lib/event-bus/notification-event-hub";
 import createNotificationRepository, {
 	type ListNotificationsParams,
 	type NotificationRepository,
 } from "./notification-repository";
-import type {
-	NotificationRecord,
-	NotificationActionRecord,
-	NotificationActionLogRecord,
-} from "../../drizzle/schema/notifications";
 
 export type NotificationViewModel = NotificationRecord & {
 	actions: NotificationActionRecord[];
@@ -89,56 +89,73 @@ export class NotificationOrchestrator {
 	private eventHub: NotificationEventHub;
 
 	constructor(options: NotificationOrchestratorOptions = {}) {
-		this.repository =
-			options.repository ?? createNotificationRepository();
+		this.repository = options.repository ?? createNotificationRepository();
 		this.eventHub = options.eventHub ?? notificationEventHub;
 	}
 
 	async createNotification(
-		input: CreateNotificationInput,
+		input: CreateNotificationInput & {
+			priority?: string;
+		},
 	): Promise<NotificationViewModel[]> {
 		const recipients = new Set<string>();
 		const {
 			userId,
 			userIds,
 			roleCodes,
-			id,
+			id: inputId,
 			expiresAt,
 			metadata,
 			actions,
+			type,
+			title,
+			message,
+			priority,
 			...rest
+		}: CreateNotificationInput & {
+			priority?: string;
 		} = input;
 
 		if (userId) {
 			recipients.add(userId);
 		}
 
-		userIds?.forEach((recipient) => {
+		userIds?.forEach((recipient: string) => {
 			if (recipient) {
 				recipients.add(recipient);
 			}
 		});
 
 		if (roleCodes?.length) {
-			const idsFromRoles = await this.repository.findUserIdsByRoleCodes(
-				roleCodes,
-			);
-			idsFromRoles.forEach((recipient) => recipients.add(recipient));
+			const idsFromRoles =
+				await this.repository.findUserIdsByRoleCodes(roleCodes);
+			idsFromRoles.forEach((recipient) => {
+				recipients.add(recipient);
+			});
 		}
 
 		if (recipients.size === 0) {
 			throw new Error("No recipients resolved for notification");
 		}
 
+		// Add priority to metadata if provided
 		const normalizedMetadata = normalizeMetadata(metadata);
+		if (priority) {
+			normalizedMetadata.priority = priority;
+		}
 
 		const notifications: NotificationViewModel[] = [];
 
 		for (const recipientId of recipients) {
-			const record = await this.repository.createNotification({
+			const payload: Parameters<
+				NotificationRepository["createNotification"]
+			>[0] = {
 				...rest,
+				type,
+				title,
+				message,
 				userId: recipientId,
-				id: recipients.size === 1 && id ? id : createId(),
+				id: recipients.size === 1 && inputId ? inputId : createId(),
 				metadata: normalizedMetadata,
 				actions: actions?.map((action) => ({
 					id: createId(),
@@ -147,7 +164,9 @@ export class NotificationOrchestrator {
 					requiresComment: action.requiresComment ?? false,
 				})),
 				expiresAt: expiresAt ?? null,
-			});
+			};
+
+			const record = await this.repository.createNotification(payload);
 
 			const view: NotificationViewModel = {
 				...record,
@@ -171,7 +190,10 @@ export class NotificationOrchestrator {
 			metadata: normalizeMetadata(record.metadata),
 		}));
 
-		const groupsMap = new Map<NotificationGroup["key"], NotificationGroup>();
+		const groupsMap = new Map<
+			NotificationGroup["key"],
+			NotificationGroup
+		>();
 
 		for (const item of items) {
 			const { key, title } = resolveGroupTitle(item.createdAt);

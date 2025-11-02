@@ -4,13 +4,94 @@ export const notificationTypeSchema = z.enum(["informational", "approval"]);
 
 export const notificationStatusSchema = z.enum(["unread", "read"]);
 
+export const notificationCategorySchema = z.enum([
+	"global",
+	"general",
+	"system",
+]);
+
+export const notificationChannelSchema = z.enum([
+	"inApp",
+	"email",
+	"whatsapp",
+	"push",
+]);
+
+export const notificationPreferenceSourceSchema = z.enum([
+	"user",
+	"default",
+	"override",
+]);
+
+const notificationDeliveryWindowSchema = z
+	.object({
+		startHour: z
+			.number()
+			.int()
+			.min(0, { message: "startHour must be between 0-23" })
+			.max(23, { message: "startHour must be between 0-23" }),
+		endHour: z
+			.number()
+			.int()
+			.min(0, { message: "endHour must be between 0-23" })
+			.max(23, { message: "endHour must be between 0-23" }),
+		timezone: z.string().min(1).optional(),
+		daysOfWeek: z
+			.array(z.number().int().min(0).max(6))
+			.min(1)
+			.max(7)
+			.optional(),
+	})
+	.superRefine((value, ctx) => {
+		if (value.endHour === value.startHour) {
+			ctx.addIssue({
+				code: "custom",
+				message: "endHour must be different from startHour",
+				path: ["endHour"],
+			});
+		}
+
+		if (value.daysOfWeek && new Set(value.daysOfWeek).size !== value.daysOfWeek.length) {
+			ctx.addIssue({
+				code: "custom",
+				message: "daysOfWeek must contain unique values",
+				path: ["daysOfWeek"],
+			});
+		}
+	});
+
+export const notificationPreferenceSchema = z.object({
+	id: z.cuid2().optional(),
+	userId: z.string().min(1),
+	category: notificationCategorySchema,
+	channel: notificationChannelSchema,
+	enabled: z.boolean().prefault(true),
+	deliveryWindow: notificationDeliveryWindowSchema.optional(),
+	source: notificationPreferenceSourceSchema.optional(),
+	createdAt: z.date().optional(),
+	updatedAt: z.date().optional(),
+});
+
+export const upsertNotificationPreferenceSchema = notificationPreferenceSchema
+	.pick({ category: true, channel: true, enabled: true, deliveryWindow: true })
+	.extend({
+		reason: z
+			.string()
+			.max(1000)
+			.optional(),
+	});
+
+export const bulkUpsertNotificationPreferencesSchema = z.object({
+	preferences: z.array(upsertNotificationPreferenceSchema).min(1),
+});
+
 const metadataSchema = z
 	.record(z.string(), z.unknown())
-	.default({})
+	.prefault({})
 	.transform((value) => value ?? {});
 
 export const notificationActionSchema = z.object({
-	id: z.string().cuid2().optional(),
+	id: z.cuid2().optional(),
 	actionKey: z
 		.string({
 			error: "Action key must be a string",
@@ -23,12 +104,12 @@ export const notificationActionSchema = z.object({
 		})
 		.min(1)
 		.max(100),
-	requiresComment: z.boolean().default(false),
+	requiresComment: z.boolean().prefault(false),
 });
 
 export const notificationActionLogSchema = z.object({
-	id: z.string().cuid2().optional(),
-	notificationId: z.string().cuid2(),
+	id: z.cuid2().optional(),
+	notificationId: z.cuid2(),
 	actionKey: z.string().min(1).max(50),
 	actedBy: z.string().min(1),
 	comment: z.string().max(1000).nullable().optional(),
@@ -48,7 +129,7 @@ const notificationAudienceSchema = z
 			(!value.roleCodes || value.roleCodes.length === 0)
 		) {
 			ctx.addIssue({
-				code: z.ZodIssueCode.custom,
+				code: "custom",
 				message:
 					"Provide at least one recipient via userId, userIds, or roleCodes.",
 				path: ["userId"],
@@ -58,17 +139,17 @@ const notificationAudienceSchema = z
 
 export const createNotificationSchema = z
 	.object({
-		id: z.string().cuid2().optional(),
+		id: z.cuid2().optional(),
 		type: notificationTypeSchema,
 		title: z.string().min(1),
 		message: z.string().min(1),
 		metadata: metadataSchema,
-		status: notificationStatusSchema.default("unread"),
+		status: notificationStatusSchema.optional().prefault("unread"),
 		category: z.string().max(50).optional(),
 		actions: z.array(notificationActionSchema).optional(),
 		expiresAt: z
-			.union([z.date(), z.string().datetime(), z.null()])
-			.default(null)
+			.union([z.date(), z.iso.datetime(), z.null()])
+			.prefault(null)
 			.transform((value) => {
 				if (!value) return null;
 				if (value instanceof Date) return value;
@@ -76,7 +157,7 @@ export const createNotificationSchema = z
 				return null;
 			}),
 	})
-	.merge(notificationAudienceSchema)
+	.extend(notificationAudienceSchema.shape)
 	.superRefine((value, ctx) => {
 		if (
 			!value.userId &&
@@ -84,7 +165,7 @@ export const createNotificationSchema = z
 			(!value.roleCodes || value.roleCodes.length === 0)
 		) {
 			ctx.addIssue({
-				code: z.ZodIssueCode.custom,
+				code: "custom",
 				message:
 					"Provide at least one recipient via userId, userIds, or roleCodes.",
 				path: ["userId"],
@@ -97,15 +178,15 @@ export const listNotificationsQuerySchema = z
 		status: notificationStatusSchema.optional(),
 		type: notificationTypeSchema.optional(),
 		category: z.string().max(50).optional(),
-		before: z.string().datetime().optional(),
-		after: z.string().datetime().optional(),
-		cursor: z.string().datetime().optional(),
+		before: z.iso.datetime().optional(),
+		after: z.iso.datetime().optional(),
+		cursor: z.iso.datetime().optional(),
 		limit: z.coerce.number().int().min(1).max(50).optional(),
 	})
 	.strict();
 
 export const bulkMarkNotificationsSchema = z.object({
-	ids: z.array(z.string().cuid2()).min(1),
+	ids: z.array(z.cuid2()).min(1),
 	markAs: notificationStatusSchema,
 });
 
@@ -114,7 +195,7 @@ export const singleMarkNotificationSchema = z.object({
 });
 
 export const notificationActionExecutionSchema = z.object({
-	notificationId: z.string().cuid2(),
+	notificationId: z.cuid2(),
 	actionKey: z.string().min(1).max(50),
 	comment: z
 		.string()
@@ -140,5 +221,19 @@ export type SingleMarkNotificationInput = z.infer<
 	typeof singleMarkNotificationSchema
 >;
 export type NotificationActionExecutionInput = z.infer<
-	typeof notificationActionExecutionSchema
+ typeof notificationActionExecutionSchema
+>;
+export type NotificationCategoryEnum = z.infer<
+ typeof notificationCategorySchema
+>;
+export type NotificationChannelEnum = z.infer<typeof notificationChannelSchema>;
+export type NotificationPreferenceSourceEnum = z.infer<
+ typeof notificationPreferenceSourceSchema
+>;
+export type NotificationPreference = z.infer<typeof notificationPreferenceSchema>;
+export type UpsertNotificationPreferenceInput = z.infer<
+ typeof upsertNotificationPreferenceSchema
+>;
+export type BulkUpsertNotificationPreferencesInput = z.infer<
+ typeof bulkUpsertNotificationPreferencesSchema
 >;
