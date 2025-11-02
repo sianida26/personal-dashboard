@@ -13,8 +13,8 @@ import notificationEventHub from "../../lib/event-bus/notification-event-hub";
 import authInfo from "../../middlewares/authInfo";
 import NotificationOrchestrator from "../../modules/notifications/notification-orchestrator";
 import type HonoEnv from "../../types/HonoEnv";
-import requestValidator from "../../utils/requestValidator";
 import { sendToUsersAndRoles } from "../../utils/notifications/notification-helpers";
+import requestValidator from "../../utils/requestValidator";
 
 const orchestrator = new NotificationOrchestrator();
 
@@ -166,16 +166,7 @@ const notificationsRoute = new Hono<HonoEnv>()
 			await sendToUsersAndRoles({
 				userIds: payload.userId ? [payload.userId] : payload.userIds,
 				roleCodes: payload.roleCodes,
-<<<<<<< HEAD
 				category: payload.category,
-||||||| d08ce3c7
-			const notifications =
-				await orchestrator.createNotification(payload);
-=======
-				category:
-					(payload.category as "global" | "general" | "system") ??
-					"general",
->>>>>>> main
 				type: payload.type,
 				title: payload.title,
 				message: payload.message,

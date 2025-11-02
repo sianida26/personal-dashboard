@@ -51,7 +51,10 @@ const notificationDeliveryWindowSchema = z
 			});
 		}
 
-		if (value.daysOfWeek && new Set(value.daysOfWeek).size !== value.daysOfWeek.length) {
+		if (
+			value.daysOfWeek &&
+			new Set(value.daysOfWeek).size !== value.daysOfWeek.length
+		) {
 			ctx.addIssue({
 				code: "custom",
 				message: "daysOfWeek must contain unique values",
@@ -73,12 +76,14 @@ export const notificationPreferenceSchema = z.object({
 });
 
 export const upsertNotificationPreferenceSchema = notificationPreferenceSchema
-	.pick({ category: true, channel: true, enabled: true, deliveryWindow: true })
+	.pick({
+		category: true,
+		channel: true,
+		enabled: true,
+		deliveryWindow: true,
+	})
 	.extend({
-		reason: z
-			.string()
-			.max(1000)
-			.optional(),
+		reason: z.string().max(1000).optional(),
 	});
 
 export const bulkUpsertNotificationPreferencesSchema = z.object({
@@ -145,7 +150,7 @@ export const createNotificationSchema = z
 		message: z.string().min(1),
 		metadata: metadataSchema,
 		status: notificationStatusSchema.optional().prefault("unread"),
-		category: z.string().max(50).optional(),
+		category: notificationCategorySchema,
 		actions: z.array(notificationActionSchema).optional(),
 		expiresAt: z
 			.union([z.date(), z.iso.datetime(), z.null()])
@@ -221,19 +226,21 @@ export type SingleMarkNotificationInput = z.infer<
 	typeof singleMarkNotificationSchema
 >;
 export type NotificationActionExecutionInput = z.infer<
- typeof notificationActionExecutionSchema
+	typeof notificationActionExecutionSchema
 >;
 export type NotificationCategoryEnum = z.infer<
- typeof notificationCategorySchema
+	typeof notificationCategorySchema
 >;
 export type NotificationChannelEnum = z.infer<typeof notificationChannelSchema>;
 export type NotificationPreferenceSourceEnum = z.infer<
- typeof notificationPreferenceSourceSchema
+	typeof notificationPreferenceSourceSchema
 >;
-export type NotificationPreference = z.infer<typeof notificationPreferenceSchema>;
+export type NotificationPreference = z.infer<
+	typeof notificationPreferenceSchema
+>;
 export type UpsertNotificationPreferenceInput = z.infer<
- typeof upsertNotificationPreferenceSchema
+	typeof upsertNotificationPreferenceSchema
 >;
 export type BulkUpsertNotificationPreferencesInput = z.infer<
- typeof bulkUpsertNotificationPreferencesSchema
+	typeof bulkUpsertNotificationPreferencesSchema
 >;
