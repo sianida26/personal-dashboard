@@ -1,6 +1,6 @@
 -- Create notification preference related enums
-CREATE TYPE "notification_preference_category" AS ENUM ('global','general','leads','projects','tasks','system');
-CREATE TYPE "notification_channel" AS ENUM ('inApp','email','whatsapp','sms','push');
+CREATE TYPE "notification_preference_category" AS ENUM ('global','general','system');
+CREATE TYPE "notification_channel" AS ENUM ('inApp','email','whatsapp','push');
 CREATE TYPE "notification_preference_source" AS ENUM ('default','user','override');
 
 -- Table to store per-user notification preferences
@@ -46,8 +46,6 @@ WITH channels AS (
     SELECT 'email', true
     UNION ALL
     SELECT 'whatsapp', false
-    UNION ALL
-    SELECT 'sms', false
     UNION ALL
     SELECT 'push', false
 )

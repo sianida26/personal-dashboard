@@ -7,9 +7,6 @@ export const notificationStatusSchema = z.enum(["unread", "read"]);
 export const notificationCategorySchema = z.enum([
 	"global",
 	"general",
-	"leads",
-	"projects",
-	"tasks",
 	"system",
 ]);
 

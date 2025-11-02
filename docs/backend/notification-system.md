@@ -50,7 +50,7 @@ Berisi semua TypeScript interfaces untuk type safety:
 // Base types
 type NotificationType = "informational" | "success" | "warning" | "error" | "urgent";
 type NotificationPriority = "low" | "normal" | "high" | "critical";
-type NotificationCategory = "leads" | "projects" | "tasks" | "system" | "general";
+type NotificationCategory = "global" | "general" | "system";
 
 // Template data interfaces
 interface LeadClosedWinTemplateData extends BaseNotificationTemplateData {}
@@ -142,26 +142,24 @@ export async function sendLeadClosedWinNotification(
             type: template.type,
             title: template.title,
             message: template.message,
-            category: "leads",
+            category: "general",
             priority: template.priority,
             userIds: data.salesId ? [data.salesId] : [],
-            expiresAt: getExpirationDate("leads", "closed_win"),
+            expiresAt: getExpirationDate("general", "notification"),
             metadata: {
-                leadId: data.leadId,
-                companyName: data.companyName,
-                salesId: data.salesId,
-                status: "Buy",
+                userId: data.userId,
+                entityId: data.entityId,
             },
         },
         email: {
             to: data.sendToEmail,
             cc: data.ccEmails,
-            subject: template.emailSubject ?? "Lead Closed Win",
+            subject: template.emailSubject ?? "Notification",
             body: template.emailBody ?? "",
             metadata: {
-                leadId: data.leadId,
-                category: "leads",
-                type: "closed_win",
+                entityId: data.entityId,
+                category: "general",
+                type: "notification",
             },
         },
     };

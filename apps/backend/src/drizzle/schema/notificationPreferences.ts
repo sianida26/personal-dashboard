@@ -15,7 +15,7 @@ import { users } from "./users";
 
 export const notificationPreferenceCategoryEnum = pgEnum(
 	"notification_preference_category",
-	["global", "general", "leads", "projects", "tasks", "system"],
+	["global", "general", "system"],
 );
 
 export const notificationChannelEnum = pgEnum("notification_channel", [
