@@ -43,7 +43,7 @@ describe("Notifications API", () => {
 	});
 
 	it("lists notifications for authenticated user", async () => {
-		await orchestrator.createNotification({
+		await orchestrator._createNotificationInternal({
 			userId,
 			type: "informational",
 			title: "API visible",
@@ -66,7 +66,7 @@ describe("Notifications API", () => {
 	});
 
 	it("bulk marks notifications as read", async () => {
-	const [created] = await orchestrator.createNotification({
+	const [created] = await orchestrator._createNotificationInternal({
 		userId,
 		type: "informational",
 		title: "Mark read",
@@ -97,7 +97,7 @@ describe("Notifications API", () => {
 	});
 
 	it("executes approval actions requiring comments", async () => {
-	const [notification] = await orchestrator.createNotification({
+	const [notification] = await orchestrator._createNotificationInternal({
 		userId,
 		type: "approval",
 		title: "Needs comment",

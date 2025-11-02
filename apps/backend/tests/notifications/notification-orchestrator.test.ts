@@ -94,7 +94,7 @@ describe("NotificationOrchestrator", () => {
 			emittedId = payload.id;
 		});
 
-		const [created] = await orchestrator.createNotification({
+		const [created] = await orchestrator._createNotificationInternal({
 			userId,
 			type: "informational",
 			title: "Welcome",
@@ -112,7 +112,7 @@ describe("NotificationOrchestrator", () => {
 			eventHub: new NotificationEventHub(),
 		});
 
-		await orchestrator.createNotification({
+		await orchestrator._createNotificationInternal({
 			userId,
 			type: "informational",
 			title: "Today item",
@@ -146,7 +146,7 @@ describe("NotificationOrchestrator", () => {
 			eventHub: hub,
 		});
 
-		const [created] = await orchestrator.createNotification({
+		const [created] = await orchestrator._createNotificationInternal({
 			userId,
 			type: "informational",
 			title: "Toggle",
@@ -228,7 +228,7 @@ describe("NotificationOrchestrator", () => {
 			eventHub: new NotificationEventHub(),
 		});
 
-		await orchestrator.createNotification({
+		await orchestrator._createNotificationInternal({
 			userId,
 			type: "informational",
 			title: "Unread count",
@@ -246,7 +246,7 @@ describe("NotificationOrchestrator", () => {
 			eventHub: new NotificationEventHub(),
 		});
 
-		const results = await orchestrator.createNotification({
+		const results = await orchestrator._createNotificationInternal({
 			userIds: [userId],
 			roleCodes: ["super-admin"],
 			type: "informational",

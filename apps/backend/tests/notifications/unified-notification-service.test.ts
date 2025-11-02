@@ -11,7 +11,6 @@ import type {
 	NotificationChannelAdapter,
 } from "../../src/modules/notifications/channels/types";
 import UnifiedNotificationService from "../../src/modules/notifications/unified-notification-service";
-import NotificationOrchestrator from "../../src/modules/notifications/notification-orchestrator";
 import notificationPreferenceService from "../../src/modules/notification-preferences/notification-preferences-service";
 import db from "../../src/drizzle";
 import { users } from "../../src/drizzle/schema/users";
@@ -68,7 +67,6 @@ describe("UnifiedNotificationService", () => {
 
 	it("delivers in-app notifications when preferences allow", async () => {
 		service = new UnifiedNotificationService({
-			orchestrator: new NotificationOrchestrator(),
 			adapters: [new StubAdapter("inApp")],
 		});
 
@@ -96,7 +94,6 @@ describe("UnifiedNotificationService", () => {
 		});
 
 		service = new UnifiedNotificationService({
-			orchestrator: new NotificationOrchestrator(),
 			adapters: [new StubAdapter("email")],
 		});
 
@@ -124,7 +121,6 @@ describe("UnifiedNotificationService", () => {
 		});
 
 		service = new UnifiedNotificationService({
-			orchestrator: new NotificationOrchestrator(),
 			adapters: [new StubAdapter("email")],
 		});
 
@@ -155,7 +151,6 @@ describe("UnifiedNotificationService", () => {
 		});
 
 		service = new UnifiedNotificationService({
-			orchestrator: new NotificationOrchestrator(),
 			adapters: [
 				new StubAdapter("email"),
 				new StubAdapter("inApp"),
@@ -197,7 +192,6 @@ describe("UnifiedNotificationService", () => {
 
 	it("defaults to inApp channel when no channels specified", async () => {
 		service = new UnifiedNotificationService({
-			orchestrator: new NotificationOrchestrator(),
 			adapters: [new StubAdapter("inApp")],
 		});
 
