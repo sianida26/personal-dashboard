@@ -45,10 +45,10 @@ const envSchema = z.object({
 
 	//Logging
 	LOG_ERROR: logSchema("true"),
-	LOG_INFO: logSchema("true"),
+	LOG_INFO: logSchema("false"),
 	LOG_DEBUG: logSchema("false"),
 	LOG_REQUEST: logSchema("true"),
-	LOG_SQL: logSchema("true"),
+	LOG_SQL: logSchema("false"),
 
 	OPENAI_API_KEY: z.string().optional(),
 

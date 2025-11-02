@@ -3,12 +3,12 @@
  * Provides simple wrappers for common notification patterns using the unified notification service
  */
 
-import unifiedNotificationService from "../../modules/notifications/unified-notification-service";
 import type {
-	NotificationChannelEnum,
 	NotificationCategoryEnum,
+	NotificationChannelEnum,
 	NotificationTypeEnum,
 } from "@repo/validation";
+import unifiedNotificationService from "../../modules/notifications/unified-notification-service";
 
 interface SendToUsersAndRolesOptions {
 	userIds?: string[];
@@ -37,7 +37,7 @@ export async function sendToUsersAndRoles(
 		type,
 		title,
 		message,
-		channels = ["inApp"],
+		channels,
 		metadata = {},
 		priority = "normal",
 		respectPreferences = true,
