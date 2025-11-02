@@ -75,18 +75,9 @@ export class JobHandlerRegistry {
 const jobHandlerRegistry = new JobHandlerRegistry();
 
 // Register built-in handlers
-<<<<<<< HEAD
-jobHandlerRegistry.register(inAppNotificationHandler);
-||||||| d08ce3c7
-=======
 // All handlers now properly extend Record<string, unknown>
->>>>>>> main
 jobHandlerRegistry.register(emailNotificationHandler);
-<<<<<<< HEAD
-||||||| d08ce3c7
-=======
 jobHandlerRegistry.register(inAppNotificationHandler);
->>>>>>> main
 jobHandlerRegistry.register(whatsappNotificationHandler);
 jobHandlerRegistry.register(dataProcessingHandler);
 

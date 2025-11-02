@@ -2,548 +2,650 @@
 
 ## Overview
 
-System notifikasi yang type-safe dengan support untuk 3 channel berbeda:
-- **In-App Notifications**: Notifikasi di aplikasi
-- **Email**: Notifikasi via email dengan Microsoft Graph API
-- **WhatsApp**: Notifikasi via WhatsApp menggunakan WAHA
+This is a minimal, type-safe notification system with support for multiple delivery channels:
+
+- **In-App Notifications**: Displayed in application inbox
+- **Email**: Email delivery (configurable)
+- **WhatsApp**: WhatsApp messaging (configurable)
+
+All notifications are real-time, preference-aware, and support approval workflows.
+
+---
+
+## Quick Start
+
+Use the helper functions to send notifications from anywhere in your application:
+
+```typescript
+import { sendToRoles, sendToUsers, sendToUsersAndRoles } from "../../utils/notifications/notification-helpers";
+
+// Send to specific roles
+await sendToRoles(["admin"], {
+  type: "informational",
+  title: "System Update",
+  message: "A system update has been deployed",
+  category: "system",
+  channels: ["inApp", "email"],
+  metadata: { version: "1.2.0" },
+});
+
+// Send to specific users
+await sendToUsers(["user-123", "user-456"], {
+  type: "informational",
+  title: "Welcome",
+  message: "Welcome to the platform!",
+  category: "users",
+});
+
+// Send to both users and roles
+await sendToUsersAndRoles({
+  userIds: ["user-123"],
+  roleCodes: ["manager"],
+  type: "approval",
+  title: "Action Required",
+  message: "Please review and approve this request",
+  category: "system",
+  channels: ["inApp"],
+  actions: [
+    { actionKey: "approve", label: "Approve", requiresComment: false },
+    { actionKey: "reject", label: "Reject", requiresComment: true },
+  ],
+});
+```
+
+### API Response
+```typescript
+{
+  results: [
+    {
+      userId: "user-123",
+      channel: "inApp",
+      status: "scheduled", // or "sent", "skipped", "failed"
+      jobId: "job-456",    // present if queued
+      reason?: "Channel disabled by user preference"
+    }
+  ]
+}
+```
+
+---
+
+## Features
+
+### Multi-Channel Support
+Notifications automatically route to enabled channels based on user preferences:
+
+- **In-App**: Stored in database, delivered via real-time SSE stream
+- **Email**: Queued for email service delivery
+- **WhatsApp**: Queued for WhatsApp service delivery
+
+### User Preferences
+Users can control notifications at the category + channel level:
+
+```typescript
+// Categories: any string (recommended: "users", "system", "orders", etc.)
+// Channels: "inApp" | "email" | "whatsapp" | "push"
+```
+
+Users manage preferences in the UI at: `/personal/notifications`
+
+### Approval Notifications
+Notifications can include actionable buttons:
+
+```typescript
+{
+  type: "approval",
+  title: "Review Request",
+  message: "Please review this submission",
+  actions: [
+    {
+      actionKey: "approve",
+      label: "Approve",
+      requiresComment: false, // optional comment input
+    },
+    {
+      actionKey: "reject",
+      label: "Reject",
+      requiresComment: true, // comment is required
+    },
+  ],
+}
+```
+
+Users can execute actions from the UI. Actions are logged and notifications auto-mark as read.
+
+### Real-Time Delivery
+Notifications are delivered in real-time via Server-Sent Events (SSE):
+
+- Frontend connects to `GET /api/notifications/stream`
+- New notifications appear instantly in the UI
+- Graceful reconnection on network failure
+
+### Preference Checking
+Notifications respect user preferences:
+
+```typescript
+// Only send if user has enabled the channel for this category
+respectPreferences: true, // default
+
+// Force delivery regardless of preferences (admin/critical)
+respectPreferences: false,
+```
+
+---
 
 ## Architecture
 
 ```
-┌─────────────────┐
-│  Route Handler  │
-│  (quick-update) │
-└────────┬────────┘
+┌─────────────────────────────────────┐
+│  Application Code                   │
+│  (Route Handler, Service, etc.)     │
+└────────────────┬────────────────────┘
+                 │
+                 v
+┌─────────────────────────────────────┐
+│  Helper Functions                   │
+│  sendToRoles(), sendToUsers()       │
+└────────────────┬────────────────────┘
+                 │
+                 v
+┌─────────────────────────────────────┐
+│  UnifiedNotificationService         │
+│  - Resolves audience (users + roles)│
+│  - Filters by preferences           │
+│  - Routes to channel adapters       │
+└────────────────┬────────────────────┘
+                 │
+         ┌───────┼───────┬───────────┐
+         v       v       v           v
+    ┌─────────┐ ┌───────┐ ┌────────┐
+    │In-App   │ │Email  │ │WhatsApp│
+    │Adapter  │ │Adapter│ │Adapter │
+    └────┬────┘ └───┬───┘ └───┬────┘
+         │          │         │
+         v          v         v
+    ┌─────────┐ ┌─────────────────┐
+    │  DB     │ │  Job Queue      │
+    │Store    │ │  (async tasks)  │
+    └─────────┘ └─────────────────┘
+         │              │
+         v              v
+    ┌─────────────────────────────┐
+    │  Job Handlers               │
+    │ - in-app-notification       │
+    │ - email-notification        │
+    │ - whatsapp-notification     │
+    └─────────────────────────────┘
          │
          v
-┌─────────────────────────────┐
-│  Notification Service       │
-│  (lead-notifications.ts)    │
-└────────┬────────────────────┘
-         │
-         v
-┌─────────────────────────────┐
-│  Job Queue Manager          │
-│  (creates background job)   │
-└────────┬────────────────────┘
-         │
-         v
-┌─────────────────────────────┐
-│  Send Notification Handler  │
-│  (send-notification.ts)     │
-└────────┬────────────────────┘
-         │
-         ├──────────┬──────────┬──────────┐
-         v          v          v          v
-    ┌────────┐ ┌───────┐ ┌────────┐ ┌────────┐
-    │ In-App │ │ Email │ │WhatsApp│ │  Logs  │
-    └────────┘ └───────┘ └────────┘ └────────┘
+    ┌─────────────────────────────┐
+    │  Delivery                   │
+    │ (Database, Email, WhatsApp) │
+    └─────────────────────────────┘
 ```
+
+---
 
 ## Core Components
 
-### 1. Type Definitions (`src/types/notifications.ts`)
+### 1. Helper Functions
 
-Berisi semua TypeScript interfaces untuk type safety:
+**Location**: `src/utils/notifications/notification-helpers.ts`
 
-```typescript
-// Base types
-type NotificationType = "informational" | "success" | "warning" | "error" | "urgent";
-type NotificationPriority = "low" | "normal" | "high" | "critical";
-type NotificationCategory = "global" | "general" | "system";
+- `sendToRoles(roleCodes, options)` - Send to role-based recipients
+- `sendToUsers(userIds, options)` - Send to specific users
+- `sendToUsersAndRoles(options)` - Send to users and/or roles
 
-// Template data interfaces
-interface LeadClosedWinTemplateData extends BaseNotificationTemplateData {}
-interface SalesAssignmentTemplateData extends BaseNotificationTemplateData {
-    isUnassignment: boolean;
-    previousSalesName?: string;
-}
-interface PresalesAssignmentTemplateData extends BaseNotificationTemplateData {
-    presalesName: string;
-    isUnassignment: boolean;
-    previousPresalesName?: string;
-}
+All helpers use the unified notification service under the hood.
 
-// Job payload
-interface NotificationJobPayload extends Record<string, unknown> {
-    inApp?: BaseNotificationPayload;
-    email?: EmailNotificationPayload;
-    whatsapp?: WhatsAppNotificationPayload;
-    checkPreferences?: boolean;
-}
+### 2. Unified Notification Service
+
+**Location**: `src/modules/notifications/unified-notification-service.ts`
+
+Orchestrates the complete notification workflow:
+
+1. **Audience Resolution**: Converts userIds + roleCodes to actual user list
+2. **Preference Filtering**: Partitions recipients by channel preference
+3. **Channel Dispatch**: Routes to appropriate channel adapter
+4. **Result Aggregation**: Returns delivery status for each recipient
+
+### 3. Channel Adapters
+
+**Location**: `src/modules/notifications/channels/`
+
+Each channel implements the same interface:
+
+- **InAppChannelAdapter**: Queues in-app-notification job
+- **EmailChannelAdapter**: Queues email-notification job
+- **WhatsAppChannelAdapter**: Queues whatsapp-notification job
+
+Adapters return delivery status without blocking.
+
+### 4. Job Queue & Handlers
+
+**Location**: `src/jobs/handlers/` and `src/services/jobs/`
+
+Background workers process notifications asynchronously:
+
+- **in-app-notification**: Stores notifications in DB, emits events
+- **email-notification**: Sends emails (mock implementation)
+- **whatsapp-notification**: Sends WhatsApp messages (mock implementation)
+
+### 5. Database Layer
+
+**Location**: `src/modules/notifications/notification-repository.ts`
+
+CRUD operations for notifications:
+
+- `createNotification()` - Insert notification(s)
+- `listNotificationsForUser()` - Query with pagination
+- `markNotifications()` - Update read/unread status
+- `recordActionLog()` - Log action execution
+- `getNotificationById()` - Single fetch
+
+### 6. Real-Time Events
+
+**Location**: `src/lib/event-bus/notification-event-hub.ts`
+
+Emits events for real-time UI updates:
+
+- `created` - When notification is created
+- `read` - When notification is marked read/unread
+- `actioned` - When approval action is executed
+
+---
+
+## API Endpoints
+
+### List Notifications
+
 ```
+GET /api/notifications?status=unread&category=system&limit=20&cursor=<date>
 
-### 2. Notification Templates (`src/utils/notification-templates.ts`)
+Query Params:
+  status: "read" | "unread" (optional)
+  type: "informational" | "approval" (optional)
+  category: string (optional)
+  limit: 1-50 (default: 20)
+  cursor: ISO date string (for pagination)
 
-Template sistem untuk generate konten notifikasi:
-
-```typescript
-export const notificationTemplates = {
-    lead: {
-        closedWin: (data: LeadClosedWinTemplateData): NotificationTemplate => ({
-            type: "success",
-            priority: "high",
-            title: "Deal Closed - Win! 🎉",
-            message: `Deal "${data.dealName}" telah ditutup oleh ${data.salesName}`,
-            emailSubject: `🎉 Deal Closed Win - ${data.dealName}`,
-            emailBody: `<html>...</html>`, // HTML email template
-        }),
-        
-        salesAssignment: (data: SalesAssignmentTemplateData): NotificationTemplate => ({
-            // ... sales assignment template
-        }),
-        
-        presalesAssignment: (data: PresalesAssignmentTemplateData): NotificationTemplate => ({
-            // ... presales assignment template
-        }),
-    },
-};
-```
-
-### 3. Notification Service (`src/utils/notifications/lead-notifications.ts`)
-
-Service layer untuk mengirim notifikasi dengan job queue:
-
-```typescript
-// Exported interfaces untuk type safety
-export interface LeadClosedWinNotificationData {
-    leadId: string;
-    dealName: string;
-    companyName: string;
-    salesId: string | null;
-    salesName: string;
-    salesEmail?: string;
-    estimatedPrice: string;
-    customerEmail: string;
-    customerPhone: string;
-    leadDetailUrl: string;
-    sendToEmail: string;
-    ccEmails: string[];
-}
-
-// Function untuk kirim notifikasi
-export async function sendLeadClosedWinNotification(
-    data: LeadClosedWinNotificationData,
-): Promise<void> {
-    // Generate template
-    const template = notificationTemplates.lead.closedWin({
-        dealName: data.dealName,
-        companyName: data.companyName,
-        salesName: data.salesName,
-        estimatedPrice: data.estimatedPrice,
-        customerEmail: data.customerEmail,
-        customerPhone: data.customerPhone,
-        leadDetailUrl: data.leadDetailUrl,
-    });
-
-    // Prepare payload untuk semua channels
-    const payload: NotificationJobPayload = {
-        inApp: {
-            type: template.type,
-            title: template.title,
-            message: template.message,
-            category: "general",
-            priority: template.priority,
-            userIds: data.salesId ? [data.salesId] : [],
-            expiresAt: getExpirationDate("general", "notification"),
-            metadata: {
-                userId: data.userId,
-                entityId: data.entityId,
-            },
-        },
-        email: {
-            to: data.sendToEmail,
-            cc: data.ccEmails,
-            subject: template.emailSubject ?? "Notification",
-            body: template.emailBody ?? "",
-            metadata: {
-                entityId: data.entityId,
-                category: "general",
-                type: "notification",
-            },
-        },
-    };
-
-    // Queue notification job untuk background processing
-    await jobQueueManager.createJob({
-        type: "send-notification",
-        priority: 200, // high priority
-        payload,
-        maxRetries: 3,
-    });
+Response:
+{
+  items: [ /* notifications */ ],
+  groups: [
+    { key: "today", title: "Today", notifications: [...] },
+    { key: "yesterday", title: "Yesterday", notifications: [...] },
+    { key: "thisWeek", title: "This Week", notifications: [...] },
+    { key: "earlier", title: "Earlier", notifications: [...] }
+  ],
+  nextCursor: "2024-11-01T10:00:00Z"
 }
 ```
 
-### 4. Job Handler (`src/jobs/handlers/send-notification.ts`)
+### Get Unread Count
 
-Background job handler untuk process notifikasi:
+```
+GET /api/notifications/unread/count
 
-```typescript
-const sendNotificationHandler: JobHandler<NotificationJobPayload> = {
-    type: "send-notification",
-    description: "Send notification handler\nProcesses multi-channel notifications",
-    defaultMaxRetries: 3,
-    defaultTimeoutSeconds: 60,
-
-    async execute(payload, context) {
-        const results: NotificationResult[] = [];
-
-        // Send in-app notification
-        if (payload.inApp) {
-            const inAppType = mapToInAppType(payload.inApp.type);
-            await notificationOrchestrator.createNotification({
-                ...payload.inApp,
-                type: inAppType,
-                metadata: payload.inApp.metadata ?? {},
-            });
-            results.push({ channel: "inApp", success: true });
-        }
-
-        // Send email notification
-        if (payload.email) {
-            await sendEmailWithAttachment({
-                to: payload.email.to,
-                cc: payload.email.cc,
-                subject: payload.email.subject,
-                body: payload.email.body,
-            });
-            results.push({ channel: "email", success: true });
-        }
-
-        // Send WhatsApp notification
-        if (payload.whatsapp) {
-            await whatsAppService.sendMessage(
-                payload.whatsapp.phoneNumber,
-                payload.whatsapp.message,
-            );
-            results.push({ channel: "whatsapp", success: true });
-        }
-
-        return { success: true, results };
-    },
-
-    async onSuccess(_result, context) {
-        context.logger.info(`Notification job ${context.jobId} completed successfully`);
-    },
-
-    async onFailure(error, context) {
-        context.logger.error(
-            error instanceof Error
-                ? error
-                : new Error(`Notification job ${context.jobId} failed`),
-        );
-    },
-};
-
-export default sendNotificationHandler;
+Response:
+{ count: 5 }
 ```
 
-### 5. Registry Integration (`src/jobs/registry.ts`)
+### Real-Time Stream (SSE)
 
-Register handler ke job queue system:
+```
+GET /api/notifications/stream
+Authorization: Bearer <token>
 
-```typescript
-import sendNotificationHandler from "./handlers/send-notification";
-
-export class JobHandlerRegistry {
-    register<T extends Record<string, unknown>>(handler: JobHandler<T>): void {
-        if (this.handlers.has(handler.type)) {
-            throw new Error(`Job handler for type '${handler.type}' already registered`);
-        }
-        this.handlers.set(handler.type, handler as JobHandler);
-    }
-}
-
-// Register handler
-jobHandlerRegistry.register(sendNotificationHandler);
+Events:
+event: notification
+data: { ...notification object... }
 ```
 
-## Usage Example
+### Mark as Read (Bulk)
 
-### Dalam Route Handler
-
-```typescript
-import {
-    sendLeadClosedWinNotification,
-    sendSalesAssignmentNotification,
-    sendPresalesAssignmentNotification,
-} from "../../utils/notifications/lead-notifications";
-
-// Example: Send notification saat lead closed win
-if (updateData.status === "Buy" && lead.status !== "Buy") {
-    try {
-        await sendLeadClosedWinNotification({
-            leadId: lead.id,
-            dealName: namaDeal,
-            companyName: customer?.companyName || "-",
-            salesId: updatedLeadPicId,
-            salesName: namaSales,
-            salesEmail: sales?.email ?? undefined,
-            estimatedPrice: String(lead.estimatedPrice || "0"),
-            customerEmail: customer?.email || "-",
-            customerPhone: customer?.phoneNumber || "",
-            leadDetailUrl,
-            sendToEmail,
-            ccEmails,
-        });
-    } catch (notificationError) {
-        console.error("Failed to send lead closed win notification", notificationError);
-    }
+```
+POST /api/notifications/read
+{
+  ids: ["notif-1", "notif-2"],
+  markAs: "read" | "unread"
 }
 
-// Example: Send notification saat sales assignment
-if (updateData.leadPic !== undefined && updateData.leadPic !== lead.leadPic) {
-    const isUnassignment = updateData.leadPic === "" && lead.leadPic;
-    
-    try {
-        await sendSalesAssignmentNotification({
-            leadId: lead.id,
-            dealName: namaDeal,
-            companyName: customer?.companyName || "-",
-            salesId: updateData.leadPic === "" ? null : updateData.leadPic,
-            salesName: namaSales,
-            salesEmail: salesUser?.email ?? undefined,
-            previousSalesId: lead.leadPic,
-            previousSalesName: namaPreviousSales,
-            previousSalesEmail: previousSalesUser?.email ?? undefined,
-            isUnassignment,
-            estimatedPrice: String(lead.estimatedPrice || "0"),
-            customerEmail: customer?.email || "-",
-            customerPhone: customer?.phoneNumber || "",
-            leadDetailUrl,
-            ccEmails,
-        });
-    } catch (notificationError) {
-        console.error("Failed to send sales assignment notification", notificationError);
-    }
+Response:
+{ updated: 2, status: "read" }
+```
+
+### Mark as Read (Single)
+
+```
+POST /api/notifications/:id/read
+{
+  markAs: "read" | "unread"
+}
+
+Response:
+{ updated: 1, status: "read" }
+```
+
+### Execute Approval Action
+
+```
+POST /api/notifications/:id/actions/:actionKey
+{
+  comment?: "optional comment if required by action"
+}
+
+Response:
+{
+  id: "log-123",
+  notificationId: "notif-456",
+  actionKey: "approve",
+  actedBy: "user-123",
+  comment: "Looks good",
+  actedAt: "2024-11-02T15:30:00Z"
 }
 ```
 
-## Environment Variables
+### Create Notification (Admin Only)
 
-```env
-# Frontend URL untuk links di notifikasi
-FRONTEND_URL=https://internal.dsg.id
-
-# Email configuration
-SENDMAIL_TO=dean@dsg.id
-SENDMAIL_CC=mey@dsg.id,retno.swari@dsg.id
-
-# WhatsApp configuration
-PHONE_NUMBER_WAHA=628123456789
 ```
+POST /api/notifications
+{
+  userId?: string,
+  userIds?: string[],
+  roleCodes?: string[],
+  type: "informational" | "approval",
+  title: string,
+  message: string,
+  category: string,
+  channels?: ["inApp", "email", "whatsapp"],
+  metadata?: { /* any JSON */ },
+  actions?: [
+    { actionKey: string, label: string, requiresComment?: boolean }
+  ]
+}
 
-## Migration Guide ke Project Lain
-
-### 1. Copy Files
-
-```bash
-# Core files yang wajib di-copy
-src/types/notifications.ts
-src/utils/notification-templates.ts
-src/utils/notification-expiration.ts
-src/utils/notifications/lead-notifications.ts
-src/jobs/handlers/send-notification.ts
-```
-
-### 2. Update Registry
-
-```typescript
-// src/jobs/registry.ts
-import sendNotificationHandler from "./handlers/send-notification";
-
-jobHandlerRegistry.register(sendNotificationHandler);
-```
-
-### 3. Adjust untuk Use Case Anda
-
-#### a. Tambah Notification Type Baru
-
-**Di `types/notifications.ts`:**
-```typescript
-export interface YourNewTemplateData extends BaseNotificationTemplateData {
-    // Add your custom fields
-    customField: string;
+Response:
+{
+  message: "Notification sent successfully"
 }
 ```
 
-**Di `notification-templates.ts`:**
-```typescript
-export const notificationTemplates = {
-    yourModule: {
-        yourEvent: (data: YourNewTemplateData): NotificationTemplate => ({
-            type: "informational",
-            priority: "normal",
-            title: "Your Title",
-            message: `Your message with ${data.customField}`,
-            emailSubject: "Your Email Subject",
-            emailBody: `<html>Your HTML email body</html>`,
-            whatsappMessage: `Your WhatsApp message`,
-        }),
-    },
-};
-```
+---
 
-**Buat service file baru:**
-```typescript
-// src/utils/notifications/your-notifications.ts
-export interface YourNotificationData {
-    // Define your data structure
-}
+## Usage Examples
 
-export async function sendYourNotification(
-    data: YourNotificationData,
-): Promise<void> {
-    const template = notificationTemplates.yourModule.yourEvent({
-        // Map data to template
-    });
-
-    const payload: NotificationJobPayload = {
-        inApp: { /* ... */ },
-        email: { /* ... */ },
-        whatsapp: { /* ... */ },
-    };
-
-    await jobQueueManager.createJob({
-        type: "send-notification",
-        priority: 100,
-        payload,
-        maxRetries: 3,
-    });
-}
-```
-
-#### b. Update Import Paths
-
-Sesuaikan import paths dengan struktur folder project Anda:
-```typescript
-// Contoh adjustment
-import jobQueueManager from "../../services/jobs/queue-manager";
-import type { NotificationJobPayload } from "../../types/notifications";
-```
-
-#### c. Tambah Environment Variables
-
-```env
-FRONTEND_URL=https://your-domain.com
-SENDMAIL_TO=your-email@domain.com
-SENDMAIL_CC=cc1@domain.com,cc2@domain.com
-PHONE_NUMBER_WAHA=628123456789
-```
-
-## Benefits
-
-### ✅ Type Safety
-- Semua data ter-type dengan TypeScript interfaces
-- IDE autocomplete dan error checking
-- Compile-time validation
-
-### ✅ Self-Documenting
-- Interface sebagai dokumentasi
-- Clear function signatures
-- No guessing parameter types
-
-### ✅ Maintainable
-- Centralized templates
-- Separation of concerns
-- Easy to extend
-
-### ✅ Scalable
-- Job queue untuk async processing
-- Multi-channel support
-- Retry mechanism
-
-### ✅ Testable
-- Pure functions untuk templates
-- Mockable dependencies
-- Clear interfaces
-
-## Testing
+### Example 1: System Announcement
 
 ```typescript
-// Example unit test
-describe("sendLeadClosedWinNotification", () => {
-    it("should create job with correct payload", async () => {
-        const mockData: LeadClosedWinNotificationData = {
-            leadId: "lead-123",
-            dealName: "Test Deal",
-            companyName: "Test Company",
-            salesId: "sales-123",
-            salesName: "John Doe",
-            estimatedPrice: "1000000",
-            customerEmail: "customer@test.com",
-            customerPhone: "08123456789",
-            leadDetailUrl: "https://app.test.com/leads/123",
-            sendToEmail: "admin@test.com",
-            ccEmails: ["cc@test.com"],
-        };
-
-        await sendLeadClosedWinNotification(mockData);
-
-        // Assert job queue was called with correct payload
-        expect(jobQueueManager.createJob).toHaveBeenCalledWith({
-            type: "send-notification",
-            priority: 200,
-            payload: expect.objectContaining({
-                inApp: expect.any(Object),
-                email: expect.any(Object),
-            }),
-            maxRetries: 3,
-        });
-    });
+// In a route handler
+await sendToRoles(["admin", "manager"], {
+  type: "informational",
+  title: "Scheduled Maintenance",
+  message: "System will be down for 2 hours tonight at 10 PM",
+  category: "system",
+  channels: ["inApp", "email"],
 });
 ```
 
-## Troubleshooting
+### Example 2: User Onboarding
 
-### Issue: "Cannot find module '../notification-templates'"
-**Solution**: TypeScript Language Server cache issue. Restart VS Code atau run:
-```bash
-# Verify file exists
-ls -la src/utils/notification-templates.ts
-
-# Test import at runtime
-bun -e "import('./src/utils/notification-templates.ts').then(m => console.log(Object.keys(m)))"
+```typescript
+// In user creation route
+await sendToUsers([newUser.id], {
+  type: "informational",
+  title: "Welcome!",
+  message: "Your account has been created. Get started here.",
+  category: "users",
+  metadata: { userId: newUser.id },
+});
 ```
 
-### Issue: Type compatibility errors
-**Solution**: Ensure `NotificationJobPayload` extends `Record<string, unknown>`:
+### Example 3: Approval Workflow
+
 ```typescript
-export interface NotificationJobPayload extends Record<string, unknown> {
-    // ... fields
+// In order creation route
+await sendToRoles(["finance"], {
+  type: "approval",
+  title: "Order Approval Required",
+  message: `Order #${orderId} for $${amount} needs approval`,
+  category: "orders",
+  actions: [
+    { actionKey: "approve", label: "Approve", requiresComment: false },
+    { actionKey: "reject", label: "Reject", requiresComment: true },
+  ],
+  metadata: { orderId, amount },
+});
+```
+
+### Example 4: Critical Alert
+
+```typescript
+// Bypass user preferences for critical alerts
+await sendToRoles(["admin"], {
+  type: "informational",
+  title: "CRITICAL: System Error",
+  message: "Database connection lost",
+  category: "system",
+  respectPreferences: false, // Force delivery
+});
+```
+
+---
+
+## Database Schema
+
+### notifications table
+
+```typescript
+{
+  id: string (CUID),
+  userId: string (FK to users),
+  type: "informational" | "approval",
+  title: string,
+  message: string,
+  status: "unread" | "read",
+  category: string,
+  metadata: JSONB,
+  expiresAt: timestamp nullable,
+  createdAt: timestamp,
+  readAt: timestamp nullable,
+}
+
+Indexes:
+- (userId, status)
+- (userId, createdAt DESC)
+```
+
+### notificationActions table
+
+```typescript
+{
+  id: string (CUID),
+  notificationId: string (FK to notifications),
+  actionKey: string,
+  label: string,
+  requiresComment: boolean,
+  createdAt: timestamp,
 }
 ```
 
-### Issue: Job handler not processing
-**Solution**: Check registry registration:
+### notificationActionLogs table
+
 ```typescript
-// Verify handler is registered
-console.log(jobHandlerRegistry.has("send-notification")); // should be true
+{
+  id: string (CUID),
+  notificationId: string (FK to notifications),
+  actionKey: string,
+  actedBy: string (FK to users),
+  comment: string nullable,
+  actedAt: timestamp,
+}
 ```
+
+### userNotificationPreferences table
+
+```typescript
+{
+  id: string (CUID),
+  userId: string (FK to users),
+  category: string,
+  channel: "inApp" | "email" | "whatsapp" | "push",
+  enabled: boolean,
+  updatedAt: timestamp,
+}
+```
+
+---
+
+## Frontend Integration
+
+### Notification Center
+
+Users can view and manage notifications at: `/_dashboardLayout/notifications`
+
+Features:
+- View all notifications grouped by date (Today, Yesterday, This Week, Earlier)
+- Filter by status (All, Unread)
+- Search notifications
+- Mark as read/unread
+- Execute approval actions with comments
+- Pagination with cursor support
+
+### Preferences Page
+
+Users can configure notification settings at: `/_dashboardLayout/personal/notifications`
+
+Features:
+- Enable/disable channels per category
+- See current preferences
+- Save changes
+
+### Real-Time Updates
+
+Notifications appear in real-time via SSE:
+
+```typescript
+// Frontend automatically connects via NotificationProvider
+// New notifications appear instantly without page refresh
+```
+
+---
+
+## Testing
+
+### Manual Testing
+
+1. **Send a notification via API**:
+   ```bash
+   curl -X POST http://localhost:3000/api/notifications \
+     -H "Authorization: Bearer <token>" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "roleCodes": ["admin"],
+       "type": "informational",
+       "title": "Test",
+       "message": "This is a test",
+       "category": "system"
+     }'
+   ```
+
+2. **View in notification center**: Go to `/_dashboardLayout/notifications`
+
+3. **Test real-time delivery**: Open UI in two tabs, send notification, both tabs should update immediately
+
+4. **Test approval actions**: Create notification with actions, click button in UI, should log action
+
+### Automated Testing
+
+Test files:
+- `tests/notifications/notification-orchestrator.test.ts` - Core notification logic
+- `tests/notifications/unified-notification-service.test.ts` - Service routing and preferences
+- `tests/routes/notifications.spec.ts` - API endpoints
+
+Run tests:
+```bash
+bun test apps/backend/tests/notifications/
+```
+
+---
 
 ## Best Practices
 
-1. **Always use typed interfaces** - Never use `any` or generic objects
-2. **Handle errors gracefully** - Wrap notification calls in try-catch
-3. **Log failures** - Use context.logger for job handler logging
-4. **Set appropriate priority** - Critical notifications should have high priority
-5. **Use job queue** - Don't send notifications synchronously in request handlers
-6. **Test templates** - Verify email/WhatsApp content before deployment
-7. **Monitor metrics** - Track notification success/failure rates
+1. **Always specify the category** - Helps users filter and organize
+2. **Keep messages concise** - Especially for in-app notifications
+3. **Use meaningful metadata** - Enables linking to related records
+4. **Respect user preferences** - Set `respectPreferences: true` (default)
+5. **Test approval flows** - Ensure actions are needed before requiring them
+6. **Monitor delivery** - Check job queue for failures
 
-## Future Enhancements
+---
 
-- [ ] User notification preferences
-- [ ] Notification batching
-- [ ] Rate limiting per channel
-- [ ] Template versioning
-- [ ] A/B testing for templates
-- [ ] Push notifications support
-- [ ] SMS channel integration
-- [ ] Notification analytics dashboard
+## Adding a New Notification Trigger
 
-## References
+To add a new notification in your application:
 
-- [Job Queue Documentation](./jobs.md)
-- [Email Service Documentation](./notifications.md)
-- [TypeScript Best Practices](./best-practices.md)
+1. **Identify the event**: What action triggers the notification?
+
+2. **Find the route/service**: Where does this action happen?
+
+3. **Call the helper function**:
+   ```typescript
+   await sendToRoles(["role-code"], {
+     type: "informational",
+     title: "Human-readable title",
+     message: "Clear, actionable message",
+     category: "your-category",
+     metadata: { relatedId: "123" },
+   });
+   ```
+
+4. **Test**: Use the manual testing steps above
+
+That's it! The notification system handles the rest.
+
+---
+
+## Troubleshooting
+
+### Notifications not appearing in UI
+
+1. Check if user has the channel enabled for that category
+2. Verify `respectPreferences: false` if testing with disabled channels
+3. Check browser console for SSE connection errors
+4. Verify JWT token is valid in Authorization header
+
+### Notifications queued but not processed
+
+1. Check job queue worker is running: `jobQueueManager` should be initialized
+2. Verify job handler is registered: `registry.ts` should include the handler
+3. Check job handler logs for processing errors
+4. Monitor database for `job_queue` table entries
+
+### Email/WhatsApp not sending
+
+Currently using mock implementations. To enable real delivery:
+
+1. Configure email service credentials
+2. Configure WhatsApp/WAHA service credentials
+3. Update adapters to use real services
+4. Replace email/whatsapp handlers with actual implementations
+
+---
+
+## Minimalist Philosophy
+
+This notification system is kept intentionally minimal:
+
+- **No templates**: Use simple title + message (add templates if needed)
+- **No scheduling**: Send immediately or queue asynchronously (add scheduling if needed)
+- **No analytics**: Basic delivery tracking only (add metrics if needed)
+- **No complex rules**: Simple role/user targeting (add complex rules if needed)
+
+This approach keeps the system:
+- **Easy to understand**: Small codebase, clear flow
+- **Easy to extend**: Clean interfaces for adding features
+- **Easy to maintain**: Minimal dependencies, straightforward logic
+- **Easy to test**: Clear layers with isolated concerns
+
+Add features incrementally as your needs grow.

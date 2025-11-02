@@ -93,7 +93,12 @@ export class NotificationOrchestrator {
 		this.eventHub = options.eventHub ?? notificationEventHub;
 	}
 
-	async createNotification(
+	/**
+	 * @internal - Internal method for creating notifications directly in the database.
+	 * External callers should use sendToUsersAndRoles, sendToUsers, or sendToRoles helpers instead.
+	 * This method is used internally by channel adapters.
+	 */
+	async _createNotificationInternal(
 		input: CreateNotificationInput & {
 			priority?: string;
 		},

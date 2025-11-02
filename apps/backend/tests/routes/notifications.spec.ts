@@ -62,6 +62,23 @@ describe("Notifications API", () => {
 	});
 
 	it("bulk marks notifications as read", async () => {
+<<<<<<< HEAD
+	const [created] = await orchestrator._createNotificationInternal({
+		userId,
+		type: "informational",
+		title: "Mark read",
+		message: "Mark me",
+		metadata: {},
+	});
+||||||| d08ce3c7
+	const [created] = await orchestrator.createNotification({
+		userId,
+		type: "informational",
+		title: "Mark read",
+		message: "Mark me",
+		metadata: {},
+	});
+=======
 		const [created] = await orchestrator._createNotificationInternal({
 			userId,
 			type: "informational",
@@ -69,6 +86,7 @@ describe("Notifications API", () => {
 			message: "Mark me",
 			metadata: {},
 		});
+>>>>>>> main
 
 		if (!created) {
 			throw new Error("Expected notification to be created");
@@ -93,12 +111,28 @@ describe("Notifications API", () => {
 	});
 
 	it("executes approval actions requiring comments", async () => {
+<<<<<<< HEAD
+	const [notification] = await orchestrator._createNotificationInternal({
+		userId,
+		type: "approval",
+		title: "Needs comment",
+		message: "Action me",
+		metadata: {},
+||||||| d08ce3c7
+	const [notification] = await orchestrator.createNotification({
+		userId,
+		type: "approval",
+		title: "Needs comment",
+		message: "Action me",
+		metadata: {},
+=======
 		const [notification] = await orchestrator._createNotificationInternal({
 			userId,
 			type: "approval",
 			title: "Needs comment",
 			message: "Action me",
 			metadata: {},
+>>>>>>> main
 			actions: [
 				{
 					actionKey: "approve",
