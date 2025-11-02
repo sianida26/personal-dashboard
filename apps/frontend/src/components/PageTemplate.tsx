@@ -146,14 +146,16 @@ const createCreateButton = (
 ) => {
 	if (property === true) {
 		return (
-			<Link to={"./create"}>
+			// biome-ignore lint/suspicious/noExplicitAny: relative path not in route type
+			<Link to={"./create" as any}>
 				<Button leftSection={<TbPlus />}>Create New</Button>
 			</Link>
 		);
 	}
 	if (typeof property === "string") {
 		return (
-			<Link to={"./create"}>
+			// biome-ignore lint/suspicious/noExplicitAny: relative path not in route type
+			<Link to={"./create" as any}>
 				<Button leftSection={<TbPlus />}>{property}</Button>
 			</Link>
 		);

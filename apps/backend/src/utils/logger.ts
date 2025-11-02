@@ -1,7 +1,5 @@
 import type { Context } from "hono";
-import { HTTPException } from "hono/http-exception";
 import appEnv from "../appEnv";
-import DashboardError from "../errors/DashboardError";
 import type HonoEnv from "../types/HonoEnv";
 
 /**
@@ -24,7 +22,20 @@ class Logger {
 	error(error: Error, c?: Context<HonoEnv>) {
 		if (!appEnv.LOG_ERROR) return;
 
-		console.error(error);
+		// Build context information if available
+		let contextInfo = "";
+		if (c) {
+			const uid = c.var.uid ?? "-";
+			const requestId = c.var.requestId ?? "-";
+			const method = c.req.method;
+			const path = c.req.path;
+			contextInfo = `[${method} ${path}] [UID: ${uid}] [ReqID: ${requestId}] `;
+		}
+
+		console.error(`${contextInfo}${error.name}: ${error.message}`);
+		if (error.stack) {
+			console.error(error.stack);
+		}
 	}
 
 	/**
@@ -36,8 +47,18 @@ class Logger {
 	info(message: string, c?: Context<HonoEnv>) {
 		if (!appEnv.LOG_INFO) return;
 
+		// Build context information if available
+		let contextInfo = "";
+		if (c) {
+			const uid = c.var.uid ?? "-";
+			const requestId = c.var.requestId ?? "-";
+			const method = c.req.method;
+			const path = c.req.path;
+			contextInfo = `[${method} ${path}] [UID: ${uid}] [ReqID: ${requestId}] `;
+		}
+
 		// biome-ignore lint/suspicious/noConsole: This is a logger
-		console.log(`INFO: ${message}`);
+		console.log(`INFO: ${contextInfo}${message}`);
 	}
 
 	/**
@@ -49,8 +70,18 @@ class Logger {
 	debug(message: string, c?: Context<HonoEnv>) {
 		if (!appEnv.LOG_DEBUG) return;
 
+		// Build context information if available
+		let contextInfo = "";
+		if (c) {
+			const uid = c.var.uid ?? "-";
+			const requestId = c.var.requestId ?? "-";
+			const method = c.req.method;
+			const path = c.req.path;
+			contextInfo = `[${method} ${path}] [UID: ${uid}] [ReqID: ${requestId}] `;
+		}
+
 		// biome-ignore lint/suspicious/noConsole: This is a logger
-		console.log(`DEBUG: ${message}`);
+		console.log(`DEBUG: ${contextInfo}${message}`);
 	}
 
 	/**
