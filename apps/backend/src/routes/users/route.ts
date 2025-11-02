@@ -349,7 +349,7 @@ const usersRoute = new Hono<HonoEnv>()
 					});
 			}
 
-			let createdUser: typeof users.$inferSelect | null = null;
+			let createdUser: typeof users.$inferSelect | undefined;
 
 			await db.transaction(async (trx) => {
 				const [user] = await trx
@@ -397,23 +397,27 @@ const usersRoute = new Hono<HonoEnv>()
 				});
 			}
 
+			// Type assertion after null check
+			const userRecord = createdUser as typeof users.$inferSelect;
+
 			try {
 				await notificationOrchestrator.createNotification({
 					roleCodes: ["super-admin"],
 					type: "informational",
 					title: "New user created",
-					message: `${createdUser.name} just joined the platform`,
+					message: `${userRecord.name} just joined the platform`,
 					category: "users",
+					status: "unread",
+					expiresAt: null,
 					metadata: {
-						userId: createdUser.id,
-						username: createdUser.username,
-						email: createdUser.email,
+						userId: userRecord.id,
+						username: userRecord.username,
+						email: userRecord.email,
 					},
 				});
-			} catch (error) {
-				appLogger.warn(
-					"Failed to broadcast new user notification",
-					error,
+			} catch (_error) {
+				appLogger.error(
+					new Error("Failed to broadcast new user notification"),
 				);
 			}
 
@@ -421,13 +425,13 @@ const usersRoute = new Hono<HonoEnv>()
 				{
 					message: "User created successfully",
 					user: {
-						id: createdUser.id,
-						name: createdUser.name,
-						username: createdUser.username,
-						email: createdUser.email,
-						isEnabled: createdUser.isEnabled,
-						createdAt: createdUser.createdAt,
-						updatedAt: createdUser.updatedAt,
+						id: userRecord.id,
+						name: userRecord.name,
+						username: userRecord.username,
+						email: userRecord.email,
+						isEnabled: userRecord.isEnabled,
+						createdAt: userRecord.createdAt,
+						updatedAt: userRecord.updatedAt,
 					},
 				},
 				201,

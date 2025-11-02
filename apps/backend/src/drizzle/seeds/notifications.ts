@@ -2,18 +2,18 @@ import { createId } from "@paralleldrive/cuid2";
 import { eq, sql } from "drizzle-orm";
 import db from "../index";
 import {
-	notifications,
-	notificationActions,
 	notificationActionLogs,
+	notificationActions,
+	notifications,
 } from "../schema/notifications";
 import { users } from "../schema/users";
 
 const notificationsSeeder = async () => {
-	const [{ count }] = await db
+	const result = await db
 		.select({ count: sql<number>`count(*)` })
 		.from(notifications);
 
-	if (Number(count) > 0) {
+	if (result.length === 0 || Number(result[0]?.count) > 0) {
 		return;
 	}
 
@@ -32,12 +32,22 @@ const notificationsSeeder = async () => {
 
 	const now = new Date();
 
+	const notificationId1 = createId();
+	const notificationId2 = createId();
+	const notificationId3 = createId();
+
 	const sampleNotifications: (typeof notifications.$inferInsert & {
-		actions?: typeof notificationActions.$inferInsert[];
-		logs?: typeof notificationActionLogs.$inferInsert[];
+		actions?: (Omit<
+			typeof notificationActions.$inferInsert,
+			"notificationId"
+		> & { notificationId?: string })[];
+		logs?: (Omit<
+			typeof notificationActionLogs.$inferInsert,
+			"notificationId"
+		> & { notificationId?: string })[];
 	})[] = [
 		{
-			id: createId(),
+			id: notificationId1,
 			userId: recipient.id,
 			type: "informational",
 			title: "Welcome to the notification center",
@@ -54,7 +64,7 @@ const notificationsSeeder = async () => {
 			expiresAt: null,
 		},
 		{
-			id: createId(),
+			id: notificationId2,
 			userId: recipient.id,
 			type: "approval",
 			title: "Purchase order PO-1024 needs your review",
@@ -72,12 +82,14 @@ const notificationsSeeder = async () => {
 			actions: [
 				{
 					id: createId(),
+					notificationId: notificationId2,
 					actionKey: "approve",
 					label: "Approve",
 					requiresComment: false,
 				},
 				{
 					id: createId(),
+					notificationId: notificationId2,
 					actionKey: "request_changes",
 					label: "Request Changes",
 					requiresComment: true,
@@ -86,7 +98,7 @@ const notificationsSeeder = async () => {
 			logs: [],
 		},
 		{
-			id: createId(),
+			id: notificationId3,
 			userId: recipient.id,
 			type: "informational",
 			title: "Weekly security scan complete",
@@ -108,27 +120,32 @@ const notificationsSeeder = async () => {
 
 		await db.insert(notifications).values(record).onConflictDoNothing();
 
-		if (actions?.length) {
+		const notifId = notification.id;
+		if (actions?.length && notifId) {
+			const actionsToInsert = actions.map((action) => {
+				const { notificationId: _, ...rest } = action;
+				return {
+					...rest,
+					notificationId: notifId,
+				};
+			});
 			await db
 				.insert(notificationActions)
-				.values(
-					actions.map((action) => ({
-						...action,
-						notificationId: notification.id,
-					})),
-				)
+				.values(actionsToInsert)
 				.onConflictDoNothing();
 		}
 
-		if (logs?.length) {
+		if (logs?.length && notifId) {
+			const logsToInsert = logs.map((log) => {
+				const { notificationId: _, ...rest } = log;
+				return {
+					...rest,
+					notificationId: notifId,
+				};
+			});
 			await db
 				.insert(notificationActionLogs)
-				.values(
-					logs.map((log) => ({
-						...log,
-						notificationId: notification.id,
-					})),
-				)
+				.values(logsToInsert)
 				.onConflictDoNothing();
 		}
 	}
