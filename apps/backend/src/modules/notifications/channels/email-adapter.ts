@@ -3,12 +3,31 @@ import type {
 	NotificationJobPayload,
 } from "../../../types/notifications";
 import jobQueueManager from "../../../services/jobs/queue-manager";
+import type { JobPriority } from "../../../services/jobs/types";
 import type {
 	ChannelDeliveryRequest,
 	NotificationChannelAdapter,
 } from "./types";
 
 const JOB_TYPE = "email-notification" as const;
+
+/**
+ * Maps numeric priority to JobPriority string
+ */
+function mapNumericPriorityToJobPriority(priority?: number): JobPriority {
+	switch (priority) {
+		case 0:
+			return "critical";
+		case 1:
+			return "high";
+		case 2:
+			return "normal";
+		case 3:
+			return "low";
+		default:
+			return "normal";
+	}
+}
 
 // Simple HTML template for notifications
 function createEmailHtml(
@@ -69,7 +88,7 @@ function createEmailHtml(
 					</div>
 					<div class="content">
 						<p>${message}</p>
-						${metadata && metadata.category ? `<span class="category">Category: ${metadata.category}</span>` : ""}
+						${metadata?.category ? `<span class="category">Category: ${metadata.category}</span>` : ""}
 					</div>
 					<div class="footer">
 						<p>This is an automated notification. Please do not reply to this email.</p>
@@ -137,7 +156,9 @@ export class EmailChannelAdapter implements NotificationChannelAdapter {
 		const jobOptions = {
 			type: request.jobOptions?.jobType ?? JOB_TYPE,
 			payload: payload as unknown as Record<string, unknown>,
-			priority: request.jobOptions?.priority,
+			priority: mapNumericPriorityToJobPriority(
+				request.jobOptions?.priority,
+			),
 			maxRetries: request.jobOptions?.maxRetries,
 		};
 

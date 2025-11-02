@@ -34,12 +34,12 @@ export const defaultJobQueueConfig = {
 } as const;
 
 /**
-* Job priority mapping for database storage
-*/
+ * Job priority mapping for database storage
+ */
 export const jobPriorityMapping = {
-critical: 0,
-high: 1,
-normal: 2,
+	critical: 0,
+	high: 1,
+	normal: 2,
 	low: 3,
 } as const;
 

@@ -13,11 +13,35 @@ import jobHandlerRegistry from "../../jobs/registry";
 import { jobMetrics } from "../../utils/custom-metrics";
 import appLogger from "../../utils/logger";
 import { defaultJobQueueConfig, retryDelayCalculators } from "./config";
-import type { JobContext, JobHandler, JobResult, WorkerInfo } from "./types";
+import type {
+	JobContext,
+	JobHandler,
+	JobPriority,
+	JobResult,
+	WorkerInfo,
+} from "./types";
 
 // Type for database job record
 type DbJob = typeof jobs.$inferSelect;
 type DbJobExecution = typeof jobExecutions.$inferSelect;
+
+/**
+ * Maps numeric priority to JobPriority string
+ */
+function mapNumericPriorityToJobPriority(priority: number): JobPriority {
+	switch (priority) {
+		case 0:
+			return "critical";
+		case 1:
+			return "high";
+		case 2:
+			return "normal";
+		case 3:
+			return "low";
+		default:
+			return "normal";
+	}
+}
 
 export class JobWorker {
 	private id: string;
@@ -137,15 +161,6 @@ export class JobWorker {
 				})
 				.where(eq(jobs.id, job.id));
 
-			// Create job context
-			const context: JobContext = {
-				jobId: job.id,
-				attempt: job.retryCount + 1,
-				createdBy: job.createdBy || undefined,
-				logger: appLogger,
-				signal: this.abortController.signal,
-			};
-
 			// Validate payload if handler has validation
 			let validatedPayload: Record<string, unknown> =
 				(job.payload as Record<string, unknown>) || {};
@@ -153,6 +168,17 @@ export class JobWorker {
 				const validated = handler.validate(job.payload);
 				validatedPayload = validated as Record<string, unknown>;
 			}
+
+			// Create job context with all required fields
+			const context: JobContext = {
+				jobId: job.id,
+				attempt: job.retryCount + 1,
+				payload: validatedPayload,
+				priority: mapNumericPriorityToJobPriority(job.priority),
+				createdBy: job.createdBy || undefined,
+				logger: appLogger,
+				signal: this.abortController.signal,
+			};
 
 			// Execute job with timeout
 			const timeoutMs =

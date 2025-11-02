@@ -23,21 +23,25 @@ const inAppNotificationHandler: JobHandler<InAppNotificationJobPayload> = {
 
 		try {
 			context.logger.info(
-				`Creating in-app notification for user(s): ${notification.userId || (notification.userIds ? notification.userIds.join(", ") : "N/A")}`,
+				`Creating in-app notification for user: ${notification.userId || "N/A"}`,
 			);
 
-			// Resolve recipients from userId, userIds, and roleCodes
+			// Resolve recipients - handle both single userId and roleCode expansion
 			const recipients = new Set<string>();
 
 			if (notification.userId) {
 				recipients.add(notification.userId);
 			}
 
-			notification.userIds?.forEach((userId: string) => {
-				if (userId) {
-					recipients.add(userId);
-				}
-			});
+			// Note: userIds array should NOT be used in the job payload anymore
+			// Each recipient gets a separate job with their own userId
+			if (notification.userIds?.length) {
+				notification.userIds.forEach((userId: string) => {
+					if (userId) {
+						recipients.add(userId);
+					}
+				});
+			}
 
 			if (notification.roleCodes?.length) {
 				const idsFromRoles =
