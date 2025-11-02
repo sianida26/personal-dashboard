@@ -43,17 +43,11 @@ interface NotificationPreferenceSummary {
 const CATEGORY_LABELS: Record<string, string> = {
 	global: "Global Settings",
 	general: "General",
-	leads: "Leads & Opportunities",
-	projects: "Projects",
-	tasks: "Tasks & Assignments",
 	system: "System Notifications",
 };
 
 const CATEGORY_DESCRIPTIONS: Record<string, string> = {
 	general: "General notifications and updates",
-	leads: "Lead status changes and opportunities",
-	projects: "Project updates and milestones",
-	tasks: "Task assignments and completions",
 	system: "System announcements and alerts",
 };
 

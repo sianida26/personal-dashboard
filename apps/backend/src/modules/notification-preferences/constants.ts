@@ -6,9 +6,6 @@ import type {
 export const NOTIFICATION_CATEGORIES: NotificationCategoryEnum[] = [
 	"global",
 	"general",
-	"leads",
-	"projects",
-	"tasks",
 	"system",
 ];
 
@@ -19,9 +16,8 @@ export const NOTIFICATION_CHANNELS: NotificationChannelEnum[] = [
 	"push",
 ];
 
-export const DEFAULT_NOTIFICATION_PREFERENCE_MATRIX: Record<
-	NotificationCategoryEnum,
-	Record<NotificationChannelEnum, boolean>
+export const DEFAULT_NOTIFICATION_PREFERENCE_MATRIX: Partial<
+	Record<NotificationCategoryEnum, Record<NotificationChannelEnum, boolean>>
 > = {
 	global: {
 		inApp: true,
@@ -35,34 +31,13 @@ export const DEFAULT_NOTIFICATION_PREFERENCE_MATRIX: Record<
 		whatsapp: false,
 		push: false,
 	},
-	leads: {
-		inApp: true,
-		email: true,
-		whatsapp: false,
-		push: false,
-	},
-	projects: {
-		inApp: true,
-		email: true,
-		whatsapp: false,
-		push: false,
-	},
-	tasks: {
-		inApp: true,
-		email: false,
-		whatsapp: false,
-		push: false,
-	},
 	system: {
 		inApp: true,
 		email: true,
 		whatsapp: false,
 		push: false,
 	},
-} as const satisfies Record<
-	NotificationCategoryEnum,
-	Record<NotificationChannelEnum, boolean>
->;
+};
 
 export const USER_OVERRIDE_SOURCE = "user" as const;
 export const DEFAULT_SOURCE = "default" as const;
