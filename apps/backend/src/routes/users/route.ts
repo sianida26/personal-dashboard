@@ -14,13 +14,11 @@ import { users } from "../../drizzle/schema/users";
 import DashboardError from "../../errors/DashboardError";
 import authInfo from "../../middlewares/authInfo";
 import checkPermission from "../../middlewares/checkPermission";
-import NotificationOrchestrator from "../../modules/notifications/notification-orchestrator";
 import type HonoEnv from "../../types/HonoEnv";
 import appLogger from "../../utils/logger";
 import { hashPassword } from "../../utils/passwordUtils";
 import requestValidator from "../../utils/requestValidator";
-
-const notificationOrchestrator = new NotificationOrchestrator();
+import { sendToRoles } from "../../utils/notifications/notification-helpers";
 
 export interface DateRange {
 	from?: Date;
@@ -401,14 +399,11 @@ const usersRoute = new Hono<HonoEnv>()
 			const userRecord = createdUser as typeof users.$inferSelect;
 
 			try {
-				await notificationOrchestrator.createNotification({
-					roleCodes: ["super-admin"],
+				await sendToRoles(["super-admin"], {
 					type: "informational",
 					title: "New user created",
 					message: `${userRecord.name} just joined the platform`,
 					category: "users",
-					status: "unread",
-					expiresAt: null,
 					metadata: {
 						userId: userRecord.id,
 						username: userRecord.username,

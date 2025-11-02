@@ -14,6 +14,7 @@ import authInfo from "../../middlewares/authInfo";
 import NotificationOrchestrator from "../../modules/notifications/notification-orchestrator";
 import type HonoEnv from "../../types/HonoEnv";
 import requestValidator from "../../utils/requestValidator";
+import { sendToUsersAndRoles } from "../../utils/notifications/notification-helpers";
 
 const orchestrator = new NotificationOrchestrator();
 
@@ -160,13 +161,23 @@ const notificationsRoute = new Hono<HonoEnv>()
 			}
 
 			const payload = c.req.valid("json");
-			const notifications =
-				await orchestrator.createNotification(payload);
+
+			// Use the new unified notification service
+			await sendToUsersAndRoles({
+				userIds: payload.userId ? [payload.userId] : payload.userIds,
+				roleCodes: payload.roleCodes,
+				category: payload.category,
+				type: payload.type,
+				title: payload.title,
+				message: payload.message,
+				channels: ["inApp"], // Default to in-app, can be extended
+				metadata: payload.metadata || {},
+				respectPreferences: false, // Admin-created notifications bypass preferences
+			});
 
 			return c.json(
 				{
-					notifications,
-					recipients: notifications.map((item) => item.userId),
+					message: "Notification sent successfully",
 				},
 				201,
 			);
