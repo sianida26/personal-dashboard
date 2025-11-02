@@ -1,10 +1,9 @@
-import { inArray, eq } from "drizzle-orm";
+import { inArray } from "drizzle-orm";
 import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
-import { employees } from "../../drizzle/schema/employees";
 import createNotificationRepository from "./notification-repository";
 import notificationPreferenceService, {
-	NotificationPreferenceService,
+	type NotificationPreferenceService,
 } from "../notification-preferences/notification-preferences-service";
 import type {
 	NotificationPreferenceSummary,
@@ -31,7 +30,10 @@ const DEFAULT_CHANNELS: NotificationChannelEnum[] = ["inApp"];
 export class UnifiedNotificationService {
 	private readonly notificationRepo = createNotificationRepository();
 	private readonly preferenceService: NotificationPreferenceService;
-	private readonly adapters: Map<NotificationChannelEnum, NotificationChannelAdapter>;
+	private readonly adapters: Map<
+		NotificationChannelEnum,
+		NotificationChannelAdapter
+	>;
 
 	constructor(
 		options: {
@@ -41,13 +43,11 @@ export class UnifiedNotificationService {
 	) {
 		this.preferenceService =
 			options.preferenceService ?? notificationPreferenceService;
-		const adapterList =
-			options.adapters ??
-			[
-				new InAppChannelAdapter(),
-				new EmailChannelAdapter(),
-				new WhatsAppChannelAdapter(),
-			];
+		const adapterList = options.adapters ?? [
+			new InAppChannelAdapter(),
+			new EmailChannelAdapter(),
+			new WhatsAppChannelAdapter(),
+		];
 		this.adapters = new Map(
 			adapterList.map((adapter) => [adapter.channel, adapter]),
 		);
@@ -63,7 +63,10 @@ export class UnifiedNotificationService {
 		}
 
 		const recipients = await this.fetchRecipients(userIds);
-		const preferenceCache = new Map<string, NotificationPreferenceSummary>();
+		const preferenceCache = new Map<
+			string,
+			NotificationPreferenceSummary
+		>();
 		const results: ChannelDispatchResult[] = [];
 
 		for (const channel of channels) {
@@ -72,13 +75,14 @@ export class UnifiedNotificationService {
 				continue;
 			}
 
-			const { allowed, skipped } = await this.partitionRecipientsByPreference(
-				recipients,
-				request.category,
-				channel,
-				request.respectPreferences ?? true,
-				preferenceCache,
-			);
+			const { allowed, skipped } =
+				await this.partitionRecipientsByPreference(
+					recipients,
+					request.category,
+					channel,
+					request.respectPreferences ?? true,
+					preferenceCache,
+				);
 
 			results.push(
 				...skipped.map((recipient) => ({
@@ -125,32 +129,33 @@ export class UnifiedNotificationService {
 		});
 
 		if (request.roleCodes?.length) {
-			const idsFromRoles = await this.notificationRepo.findUserIdsByRoleCodes(
-				request.roleCodes,
-			);
-			idsFromRoles.forEach((id) => recipients.add(id));
+			const idsFromRoles =
+				await this.notificationRepo.findUserIdsByRoleCodes(
+					request.roleCodes,
+				);
+			for (const id of idsFromRoles) recipients.add(id);
 		}
 
 		return Array.from(recipients);
 	}
 
-	private async fetchRecipients(userIds: string[]): Promise<NotificationRecipient[]> {
+	private async fetchRecipients(
+		userIds: string[],
+	): Promise<NotificationRecipient[]> {
 		const rows = await db
 			.select({
 				id: users.id,
 				name: users.name,
 				email: users.email,
-				phoneNumber: employees.phoneNumber,
 			})
 			.from(users)
-			.leftJoin(employees, eq(employees.userId, users.id))
 			.where(inArray(users.id, userIds));
 
 		return rows.map((row) => ({
 			userId: row.id,
 			name: row.name,
-			email: row.email,
-			phoneNumber: row.phoneNumber,
+			email: row.email ?? "",
+			phoneNumber: null, // Phone number not available in minimal template
 		}));
 	}
 
@@ -162,14 +167,20 @@ export class UnifiedNotificationService {
 		cache: Map<string, NotificationPreferenceSummary>,
 	) {
 		if (!respectPreferences) {
-			return { allowed: recipients, skipped: [] as NotificationRecipient[] };
+			return {
+				allowed: recipients,
+				skipped: [] as NotificationRecipient[],
+			};
 		}
 
 		const allowed: NotificationRecipient[] = [];
 		const skipped: NotificationRecipient[] = [];
 
 		for (const recipient of recipients) {
-			const summary = await this.getPreferenceSummary(recipient.userId, cache);
+			const summary = await this.getPreferenceSummary(
+				recipient.userId,
+				cache,
+			);
 			const enabled = this.isChannelEnabled(summary, category, channel);
 			if (enabled) {
 				allowed.push(recipient);
@@ -186,7 +197,7 @@ export class UnifiedNotificationService {
 		cache: Map<string, NotificationPreferenceSummary>,
 	) {
 		if (cache.has(userId)) {
-			return cache.get(userId)!;
+			return cache.get(userId) ?? ({} as NotificationPreferenceSummary);
 		}
 
 		const summary = await this.preferenceService.getUserPreferences(userId);
@@ -199,11 +210,16 @@ export class UnifiedNotificationService {
 		category: UnifiedNotificationRequest["category"],
 		channel: NotificationChannelEnum,
 	) {
-		const preference = this.findPreference(summary.preferences, category, channel);
+		const preference = this.findPreference(
+			summary.preferences,
+			category,
+			channel,
+		);
 		if (preference) {
 			return preference.effective;
 		}
-		const fallback = DEFAULT_NOTIFICATION_PREFERENCE_MATRIX[category]?.[channel];
+		const fallback =
+			DEFAULT_NOTIFICATION_PREFERENCE_MATRIX[category]?.[channel];
 		if (typeof fallback === "boolean") {
 			return fallback;
 		}

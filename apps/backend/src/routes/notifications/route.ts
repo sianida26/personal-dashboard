@@ -166,7 +166,9 @@ const notificationsRoute = new Hono<HonoEnv>()
 			await sendToUsersAndRoles({
 				userIds: payload.userId ? [payload.userId] : payload.userIds,
 				roleCodes: payload.roleCodes,
-				category: payload.category,
+				category:
+					(payload.category as "global" | "general" | "system") ??
+					"general",
 				type: payload.type,
 				title: payload.title,
 				message: payload.message,

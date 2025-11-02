@@ -43,15 +43,16 @@ export interface NotificationPreferenceSummary {
 
 export class NotificationPreferenceService {
 	constructor(
-		private readonly repository: NotificationPreferenceRepository =
-			createNotificationPreferenceRepository(),
+		private readonly repository: NotificationPreferenceRepository = createNotificationPreferenceRepository(),
 	) {}
 
 	private resolveDefault(
 		category: NotificationCategoryEnum,
 		channel: NotificationChannelEnum,
 	): boolean {
-		return DEFAULT_NOTIFICATION_PREFERENCE_MATRIX[category]?.[channel] ?? false;
+		return (
+			DEFAULT_NOTIFICATION_PREFERENCE_MATRIX[category]?.[channel] ?? false
+		);
 	}
 
 	private toView(
@@ -64,7 +65,8 @@ export class NotificationPreferenceService {
 		);
 		const override = overrides.find(
 			(item) =>
-				item.category === record.category && item.channel === record.channel,
+				item.category === record.category &&
+				item.channel === record.channel,
 		);
 		let effective = record.enabled;
 		let source = record.source ?? DEFAULT_SOURCE;
@@ -86,7 +88,9 @@ export class NotificationPreferenceService {
 		};
 	}
 
-	async getUserPreferences(userId: string): Promise<NotificationPreferenceSummary> {
+	async getUserPreferences(
+		userId: string,
+	): Promise<NotificationPreferenceSummary> {
 		await this.repository.ensureDefaultsForUser(userId);
 		const [preferences, overrides] = await Promise.all([
 			this.repository.listPreferencesForUser(userId),

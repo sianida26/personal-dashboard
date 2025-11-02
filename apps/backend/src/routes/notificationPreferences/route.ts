@@ -24,9 +24,8 @@ const notificationPreferencesRoute = new Hono<HonoEnv>()
 	.use(authInfo)
 	.get("/", async (c) => {
 		const userId = requireUserId(c);
-		const summary = await notificationPreferenceService.getUserPreferences(
-			userId,
-		);
+		const summary =
+			await notificationPreferenceService.getUserPreferences(userId);
 		return c.json(summary);
 	})
 	.put(
@@ -41,9 +40,8 @@ const notificationPreferencesRoute = new Hono<HonoEnv>()
 				body,
 			);
 
-			const summary = await notificationPreferenceService.getUserPreferences(
-				userId,
-			);
+			const summary =
+				await notificationPreferenceService.getUserPreferences(userId);
 			return c.json(summary);
 		},
 	)

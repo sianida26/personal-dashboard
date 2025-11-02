@@ -56,7 +56,7 @@ export class InAppChannelAdapter implements NotificationChannelAdapter {
 
 			const jobOptions = {
 				type: request.jobOptions?.jobType ?? JOB_TYPE,
-				payload: jobPayload as unknown,
+				payload: jobPayload as unknown as Record<string, unknown>,
 				priority: request.jobOptions?.priority,
 				maxRetries: request.jobOptions?.maxRetries,
 			};
@@ -74,7 +74,8 @@ export class InAppChannelAdapter implements NotificationChannelAdapter {
 				userId: recipient.userId,
 				channel: this.channel,
 				status: "failed" as const,
-				reason: error instanceof Error ? error.message : "Unknown error",
+				reason:
+					error instanceof Error ? error.message : "Unknown error",
 			}));
 		}
 	}

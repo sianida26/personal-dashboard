@@ -1,11 +1,4 @@
-import {
-	afterAll,
-	afterEach,
-	beforeAll,
-	describe,
-	expect,
-	it,
-} from "bun:test";
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "bun:test";
 import { eq } from "drizzle-orm";
 import db from "../../src/drizzle";
 import {
@@ -17,9 +10,7 @@ import { users } from "../../src/drizzle/schema/users";
 import { rolesSchema } from "../../src/drizzle/schema/roles";
 import { rolesToUsers } from "../../src/drizzle/schema/rolesToUsers";
 import createNotificationRepository from "../../src/modules/notifications/notification-repository";
-import {
-	NotificationEventHub,
-} from "../../src/lib/event-bus/notification-event-hub";
+import { NotificationEventHub } from "../../src/lib/event-bus/notification-event-hub";
 import NotificationOrchestrator from "../../src/modules/notifications/notification-orchestrator";
 
 describe("NotificationOrchestrator", () => {
@@ -77,7 +68,9 @@ describe("NotificationOrchestrator", () => {
 
 	afterAll(async () => {
 		if (secondaryUserId && secondaryUserId !== userId) {
-			await db.delete(rolesToUsers).where(eq(rolesToUsers.userId, secondaryUserId));
+			await db
+				.delete(rolesToUsers)
+				.where(eq(rolesToUsers.userId, secondaryUserId));
 			await db.delete(users).where(eq(users.id, secondaryUserId));
 		}
 	});

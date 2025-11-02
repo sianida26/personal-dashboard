@@ -4,13 +4,17 @@
  */
 
 import unifiedNotificationService from "../../modules/notifications/unified-notification-service";
-import type { NotificationChannelEnum } from "@repo/validation";
+import type {
+	NotificationChannelEnum,
+	NotificationCategoryEnum,
+	NotificationTypeEnum,
+} from "@repo/validation";
 
 interface SendToUsersAndRolesOptions {
 	userIds?: string[];
 	roleCodes?: string[];
-	category: string;
-	type: string;
+	category: NotificationCategoryEnum;
+	type: NotificationTypeEnum;
 	title: string;
 	message: string;
 	channels?: NotificationChannelEnum[];
@@ -49,12 +53,12 @@ export async function sendToUsersAndRoles(
 		userIds: userIds.length > 0 ? userIds : undefined,
 		roleCodes: roleCodes.length > 0 ? roleCodes : undefined,
 		category,
-		type,
+		notificationType: type,
 		title,
 		message,
 		channels,
 		metadata,
-		priority,
+		priority: priority as "low" | "normal" | "high" | undefined,
 		respectPreferences,
 	});
 }

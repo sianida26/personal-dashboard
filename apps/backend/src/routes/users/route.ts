@@ -403,7 +403,7 @@ const usersRoute = new Hono<HonoEnv>()
 					type: "informational",
 					title: "New user created",
 					message: `${userRecord.name} just joined the platform`,
-					category: "users",
+					category: "general",
 					metadata: {
 						userId: userRecord.id,
 						username: userRecord.username,

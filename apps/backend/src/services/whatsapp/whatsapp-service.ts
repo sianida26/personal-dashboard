@@ -1,4 +1,7 @@
-import fetch from "node-fetch";
+/**
+ * WhatsApp service for sending messages via WAHA API
+ * Uses native Node.js 18+ fetch API (no external dependency needed)
+ */
 
 export interface WhatsAppMessage {
 	chatId: string;
@@ -31,7 +34,10 @@ export class WhatsAppService {
 		this.isConfigured = true;
 	}
 
-	async sendMessage(phoneNumber: string, message: string): Promise<WhatsAppResponse> {
+	async sendMessage(
+		phoneNumber: string,
+		message: string,
+	): Promise<WhatsAppResponse> {
 		if (!this.isConfigured) {
 			return {
 				success: false,
@@ -41,7 +47,9 @@ export class WhatsAppService {
 
 		try {
 			// Format phone number: ensure it has country code (e.g., +1234567890)
-			const chatId = phoneNumber.startsWith("+") ? phoneNumber.replace("+", "") : phoneNumber;
+			const chatId = phoneNumber.startsWith("+")
+				? phoneNumber.replace("+", "")
+				: phoneNumber;
 
 			const response = await fetch(`${this.apiUrl}/api/sendMessage`, {
 				method: "POST",
@@ -62,7 +70,10 @@ export class WhatsAppService {
 				};
 			}
 
-			const data = await response.json() as { id?: string; error?: string };
+			const data = (await response.json()) as {
+				id?: string;
+				error?: string;
+			};
 
 			if (data.error) {
 				return {
@@ -76,7 +87,8 @@ export class WhatsAppService {
 				messageId: data.id,
 			};
 		} catch (error) {
-			const errorMessage = error instanceof Error ? error.message : "Unknown error";
+			const errorMessage =
+				error instanceof Error ? error.message : "Unknown error";
 			return {
 				success: false,
 				error: errorMessage,

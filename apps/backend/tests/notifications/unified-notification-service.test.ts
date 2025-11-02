@@ -1,11 +1,4 @@
-import {
-	afterAll,
-	afterEach,
-	beforeAll,
-	describe,
-	expect,
-	it,
-} from "bun:test";
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "bun:test";
 import type {
 	ChannelDeliveryRequest,
 	NotificationChannelAdapter,
@@ -168,21 +161,23 @@ describe("UnifiedNotificationService", () => {
 
 		expect(result.results).toHaveLength(3);
 
-		const emailResult = result.results.find(r => r.channel === "email");
+		const emailResult = result.results.find((r) => r.channel === "email");
 		expect(emailResult).toMatchObject({
 			userId,
 			channel: "email",
 			status: "skipped",
 		});
 
-		const inAppResult = result.results.find(r => r.channel === "inApp");
+		const inAppResult = result.results.find((r) => r.channel === "inApp");
 		expect(inAppResult).toMatchObject({
 			userId,
 			channel: "inApp",
 			status: "sent",
 		});
 
-		const whatsappResult = result.results.find(r => r.channel === "whatsapp");
+		const whatsappResult = result.results.find(
+			(r) => r.channel === "whatsapp",
+		);
 		expect(whatsappResult).toMatchObject({
 			userId,
 			channel: "whatsapp",

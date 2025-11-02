@@ -133,7 +133,7 @@ class Logger {
 	 */
 	sql(query: string, params: unknown[]) {
 		if (!appEnv.LOG_SQL) return;
-		
+
 		// biome-ignore lint/suspicious/noConsole: This is a logger
 		console.log(`SQL: ${query} ${JSON.stringify(params)}`);
 	}

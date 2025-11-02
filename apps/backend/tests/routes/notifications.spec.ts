@@ -1,10 +1,4 @@
-import {
-	afterEach,
-	beforeAll,
-	describe,
-	expect,
-	it,
-} from "bun:test";
+import { afterEach, beforeAll, describe, expect, it } from "bun:test";
 import { eq } from "drizzle-orm";
 import { testClient } from "hono/testing";
 import db from "../../src/drizzle";
@@ -26,7 +20,9 @@ describe("Notifications API", () => {
 		});
 
 		if (!user) {
-			throw new Error("Super admin user not found for notifications tests");
+			throw new Error(
+				"Super admin user not found for notifications tests",
+			);
 		}
 
 		userId = user.id;
@@ -66,24 +62,24 @@ describe("Notifications API", () => {
 	});
 
 	it("bulk marks notifications as read", async () => {
-	const [created] = await orchestrator._createNotificationInternal({
-		userId,
-		type: "informational",
-		title: "Mark read",
-		message: "Mark me",
-		metadata: {},
-	});
+		const [created] = await orchestrator._createNotificationInternal({
+			userId,
+			type: "informational",
+			title: "Mark read",
+			message: "Mark me",
+			metadata: {},
+		});
 
-	if (!created) {
-		throw new Error("Expected notification to be created");
-	}
+		if (!created) {
+			throw new Error("Expected notification to be created");
+		}
 
-	const response = await client.notifications.read.$post(
-		{
-			json: {
-				ids: [created.id],
-				markAs: "read",
-			},
+		const response = await client.notifications.read.$post(
+			{
+				json: {
+					ids: [created.id],
+					markAs: "read",
+				},
 			},
 			{
 				headers: authHeaders(),
@@ -97,12 +93,12 @@ describe("Notifications API", () => {
 	});
 
 	it("executes approval actions requiring comments", async () => {
-	const [notification] = await orchestrator._createNotificationInternal({
-		userId,
-		type: "approval",
-		title: "Needs comment",
-		message: "Action me",
-		metadata: {},
+		const [notification] = await orchestrator._createNotificationInternal({
+			userId,
+			type: "approval",
+			title: "Needs comment",
+			message: "Action me",
+			metadata: {},
 			actions: [
 				{
 					actionKey: "approve",
@@ -112,13 +108,15 @@ describe("Notifications API", () => {
 			],
 		});
 
-	if (!notification) {
-		throw new Error("Expected approval notification to be created");
-	}
+		if (!notification) {
+			throw new Error("Expected approval notification to be created");
+		}
 
-		const response = await client.notifications[":id"]["actions"][":actionKey"].$post(
-		{
-			param: { id: notification.id, actionKey: "approve" },
+		const response = await client.notifications[":id"]["actions"][
+			":actionKey"
+		].$post(
+			{
+				param: { id: notification.id, actionKey: "approve" },
 				json: {
 					comment: "Approved via API test",
 				},
@@ -130,7 +128,7 @@ describe("Notifications API", () => {
 
 		expect(response.status).toBe(200);
 		const payload = await response.json();
-	expect(payload.notificationId).toBe(notification.id);
+		expect(payload.notificationId).toBe(notification.id);
 		expect(payload.actionKey).toBe("approve");
 	});
 });

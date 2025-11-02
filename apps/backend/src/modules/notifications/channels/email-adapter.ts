@@ -1,4 +1,7 @@
-import type { NotificationJobPayload } from "../../../types/notifications";
+import type {
+	EmailNotificationPayload,
+	NotificationJobPayload,
+} from "../../../types/notifications";
 import jobQueueManager from "../../../services/jobs/queue-manager";
 import type {
 	ChannelDeliveryRequest,
@@ -8,7 +11,11 @@ import type {
 const JOB_TYPE = "email-notification" as const;
 
 // Simple HTML template for notifications
-function createEmailHtml(title: string, message: string, metadata?: Record<string, unknown>): string {
+function createEmailHtml(
+	title: string,
+	message: string,
+	metadata?: Record<string, unknown>,
+): string {
 	return `
 		<!DOCTYPE html>
 		<html>
@@ -103,7 +110,7 @@ export class EmailChannelAdapter implements NotificationChannelAdapter {
 		}
 
 		const subject = override.subject ?? request.title;
-		const body = override.body ?? request.message;
+		const message = request.message; // Use request message, not override
 		const metadata = {
 			category: request.category,
 			eventType: request.eventType,
@@ -112,34 +119,46 @@ export class EmailChannelAdapter implements NotificationChannelAdapter {
 		};
 
 		// Create HTML email from message
-		const html = createEmailHtml(subject, body, metadata);
+		const html = createEmailHtml(subject, message, metadata);
+
+		const emailPayload: EmailNotificationPayload = {
+			to: uniqueEmails,
+			cc: override.cc,
+			subject,
+			html,
+			bcc: override.bcc,
+			text: message,
+		};
 
 		const payload: NotificationJobPayload = {
-			email: {
-				to: uniqueEmails,
-				cc: override.cc,
-				subject,
-				html,
-				bcc: override.bcc,
-				metadata,
-			},
+			email: emailPayload,
 		};
 
 		const jobOptions = {
 			type: request.jobOptions?.jobType ?? JOB_TYPE,
-			payload,
+			payload: payload as unknown as Record<string, unknown>,
 			priority: request.jobOptions?.priority,
 			maxRetries: request.jobOptions?.maxRetries,
 		};
 
-		const jobId = await jobQueueManager.createJob(jobOptions);
+		try {
+			const jobId = await jobQueueManager.createJob(jobOptions);
 
-		return recipients.map((recipient) => ({
-			userId: recipient.userId,
-			channel: this.channel,
-			status: "scheduled" as const,
-			jobId,
-		}));
+			return recipients.map((recipient) => ({
+				userId: recipient.userId,
+				channel: this.channel,
+				status: "scheduled" as const,
+				jobId,
+			}));
+		} catch (error) {
+			return recipients.map((recipient) => ({
+				userId: recipient.userId,
+				channel: this.channel,
+				status: "failed" as const,
+				reason:
+					error instanceof Error ? error.message : "Unknown error",
+			}));
+		}
 	}
 }
 

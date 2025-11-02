@@ -21,7 +21,9 @@ export class EmailService {
 
 	private initialize(): void {
 		const smtpHost = process.env.SMTP_HOST;
-		const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587;
+		const smtpPort = process.env.SMTP_PORT
+			? Number.parseInt(process.env.SMTP_PORT, 10)
+			: 587;
 		const smtpUser = process.env.SMTP_USER;
 		const smtpPass = process.env.SMTP_PASS;
 
@@ -45,7 +47,9 @@ export class EmailService {
 		this.isConfigured = true;
 	}
 
-	async sendEmail(options: EmailOptions): Promise<{ success: boolean; messageId?: string; error?: string }> {
+	async sendEmail(
+		options: EmailOptions,
+	): Promise<{ success: boolean; messageId?: string; error?: string }> {
 		if (!this.isConfigured || !this.transporter) {
 			return {
 				success: false,
@@ -55,7 +59,10 @@ export class EmailService {
 
 		try {
 			const fromName = process.env.SMTP_FROM_NAME || "Dashboard";
-			const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER || "noreply@example.com";
+			const fromEmail =
+				process.env.SMTP_FROM_EMAIL ||
+				process.env.SMTP_USER ||
+				"noreply@example.com";
 			const from = `${fromName} <${fromEmail}>`;
 
 			const info = await this.transporter.sendMail({
@@ -74,7 +81,8 @@ export class EmailService {
 				messageId: info.messageId,
 			};
 		} catch (error) {
-			const errorMessage = error instanceof Error ? error.message : "Unknown error";
+			const errorMessage =
+				error instanceof Error ? error.message : "Unknown error";
 			return {
 				success: false,
 				error: errorMessage,

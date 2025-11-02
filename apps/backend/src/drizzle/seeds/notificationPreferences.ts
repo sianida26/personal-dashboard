@@ -8,7 +8,7 @@ import {
 	NOTIFICATION_CHANNELS,
 } from "../../modules/notification-preferences/constants";
 import {
-	notificationPreferenceCategoryEnum,
+	type notificationPreferenceCategoryEnum,
 	userNotificationPreferences,
 } from "../schema/notificationPreferences";
 
@@ -22,9 +22,7 @@ const notificationPreferencesSeeder = async () => {
 		return;
 	}
 
-	const allUsers = await db
-		.select({ id: users.id })
-		.from(users);
+	const allUsers = await db.select({ id: users.id }).from(users);
 
 	if (!allUsers.length) {
 		return;
@@ -37,9 +35,12 @@ const notificationPreferencesSeeder = async () => {
 
 	for (const { id: userId } of allUsers) {
 		for (const category of categoriesToSeed) {
-			const channelMatrix = DEFAULT_NOTIFICATION_PREFERENCE_MATRIX[category];
+			const channelMatrix =
+				DEFAULT_NOTIFICATION_PREFERENCE_MATRIX[category];
 			for (const channel of NOTIFICATION_CHANNELS) {
-				const enabled = channelMatrix?.[channel as keyof typeof channelMatrix] ?? false;
+				const enabled =
+					channelMatrix?.[channel as keyof typeof channelMatrix] ??
+					false;
 				rows.push({
 					id: createId(),
 					userId,

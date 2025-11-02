@@ -26,10 +26,15 @@ const whatsappNotificationHandler: JobHandler<WhatsAppNotificationPayload> = {
 		context.logger.info(`Sending WhatsApp message to ${phoneNumber}`);
 
 		try {
-			const result = await whatsappService.sendMessage(phoneNumber, message);
+			const result = await whatsappService.sendMessage(
+				phoneNumber,
+				message,
+			);
 
 			if (!result.success) {
-				throw new Error(result.error || "Failed to send WhatsApp message");
+				throw new Error(
+					result.error || "Failed to send WhatsApp message",
+				);
 			}
 
 			context.logger.info(

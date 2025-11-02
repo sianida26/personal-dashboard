@@ -35,7 +35,9 @@ export const notifications = pgTable(
 		type: notificationTypeEnum("type").notNull(),
 		title: text("title").notNull(),
 		message: text("message").notNull(),
-		metadata: jsonb("metadata").$type<Record<string, unknown>>().default({}),
+		metadata: jsonb("metadata")
+			.$type<Record<string, unknown>>()
+			.default({}),
 		status: notificationStatusEnum("status").notNull().default("unread"),
 		category: varchar("category", { length: 50 }),
 		createdAt: timestamp("created_at", {
@@ -90,9 +92,9 @@ export const notificationActions = pgTable(
 			.defaultNow(),
 	},
 	(table) => ({
-		notificationIdx: index(
-			"idx_notification_actions_notification_id",
-		).on(table.notificationId),
+		notificationIdx: index("idx_notification_actions_notification_id").on(
+			table.notificationId,
+		),
 	}),
 );
 
