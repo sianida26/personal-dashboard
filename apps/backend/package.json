@@ -32,11 +32,13 @@
 		"@opentelemetry/sdk-node": "^0.206.0",
 		"@repo/data": "workspace:*",
 		"@repo/validation": "workspace:*",
+		"@types/nodemailer": "^7.0.3",
 		"ai": "^5.0.59",
 		"dotenv": "^17.2.2",
 		"drizzle-orm": "^0.44.5",
 		"jsonwebtoken": "^9.0.2",
 		"moment": "^2.30.1",
+		"nodemailer": "^7.0.10",
 		"pino-opentelemetry-transport": "^1.1.0",
 		"postgres": "^3.4.7",
 		"sharp": "^0.34.3"

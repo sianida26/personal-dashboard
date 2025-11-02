@@ -1,8 +1,9 @@
 import { z } from "zod";
 import type { JobHandler } from "../../services/jobs/types";
+import whatsappService from "../../services/whatsapp/whatsapp-service";
 
 const payloadSchema = z.object({
-	phoneNumber: z.string(),
+	phoneNumber: z.string().min(10),
 	message: z.string(),
 	metadata: z.record(z.string(), z.unknown()).optional(),
 });
@@ -11,7 +12,7 @@ type WhatsAppNotificationPayload = z.infer<typeof payloadSchema>;
 
 const whatsappNotificationHandler: JobHandler<WhatsAppNotificationPayload> = {
 	type: "whatsapp-notification",
-	description: "Send WhatsApp notifications to users",
+	description: "Send WhatsApp notifications using WAHA",
 	defaultMaxRetries: 3,
 	defaultTimeoutSeconds: 30,
 
@@ -22,30 +23,23 @@ const whatsappNotificationHandler: JobHandler<WhatsAppNotificationPayload> = {
 	async execute(payload, context) {
 		const { phoneNumber, message } = payload;
 
-		context.logger.info(
-			`Sending WhatsApp notification to ${phoneNumber}`,
-		);
+		context.logger.info(`Sending WhatsApp message to ${phoneNumber}`);
 
 		try {
-			// TODO: Implement real WhatsApp delivery via WAHA or Twilio
-			// For now, using mock implementation
+			const result = await whatsappService.sendMessage(phoneNumber, message);
 
-			// Mock implementation: simulate sending
-			await new Promise((resolve) => setTimeout(resolve, 500));
-
-			// For demo purposes, randomly fail 5% of messages
-			if (Math.random() < 0.05) {
-				throw new Error("WhatsApp service temporarily unavailable");
+			if (!result.success) {
+				throw new Error(result.error || "Failed to send WhatsApp message");
 			}
 
 			context.logger.info(
-				`WhatsApp notification sent successfully to ${phoneNumber}`,
+				`WhatsApp message sent successfully to ${phoneNumber} with message ID: ${result.messageId}`,
 			);
 
 			return {
 				success: true,
-				message: `WhatsApp message sent to ${phoneNumber}`,
-				data: { phoneNumber, message },
+				message: `WhatsApp sent to ${phoneNumber}`,
+				data: { messageId: result.messageId, phoneNumber, message },
 			};
 		} catch (error) {
 			const errorMsg = new Error(

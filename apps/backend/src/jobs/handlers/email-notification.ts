@@ -1,17 +1,21 @@
 import { z } from "zod";
 import type { JobHandler } from "../../services/jobs/types";
+import emailService from "../../services/email/email-service";
 
 const payloadSchema = z.object({
-	userId: z.string(),
-	template: z.string(),
-	data: z.record(z.string(), z.unknown()).optional(),
+	to: z.array(z.string().email()).min(1),
+	subject: z.string(),
+	html: z.string(),
+	text: z.string().optional(),
+	cc: z.array(z.string().email()).optional(),
+	bcc: z.array(z.string().email()).optional(),
 });
 
 type EmailNotificationPayload = z.infer<typeof payloadSchema>;
 
 const emailNotificationHandler: JobHandler<EmailNotificationPayload> = {
 	type: "email-notification",
-	description: "Send email notifications to users",
+	description: "Send email notifications using Nodemailer",
 	defaultMaxRetries: 3,
 	defaultTimeoutSeconds: 30,
 
@@ -20,33 +24,37 @@ const emailNotificationHandler: JobHandler<EmailNotificationPayload> = {
 	},
 
 	async execute(payload, context) {
-		const { userId, template } = payload;
+		const { to, subject, html, text, cc, bcc } = payload;
 
-		context.logger.info(
-			`Sending email notification to user ${userId} with template ${template}`,
-		);
+		const recipientList = Array.isArray(to) ? to.join(", ") : to;
+		context.logger.info(`Sending email to ${recipientList}`);
 
 		try {
-			// Simulate email sending
-			await new Promise((resolve) => setTimeout(resolve, 1000));
+			const result = await emailService.sendEmail({
+				to,
+				subject,
+				html,
+				text,
+				cc,
+				bcc,
+			});
 
-			// For demo purposes, randomly fail 10% of emails
-			if (Math.random() < 0.1) {
-				throw new Error("Email service temporarily unavailable");
+			if (!result.success) {
+				throw new Error(result.error || "Failed to send email");
 			}
 
 			context.logger.info(
-				`Email notification sent successfully to user ${userId}`,
+				`Email sent successfully with message ID: ${result.messageId}`,
 			);
 
 			return {
 				success: true,
-				message: `Email sent to user ${userId}`,
-				data: { userId, template },
+				message: `Email sent to ${recipientList}`,
+				data: { messageId: result.messageId, recipients: to },
 			};
 		} catch (error) {
 			const errorMsg = new Error(
-				`Failed to send email to user ${userId}: ${(error as Error).message}`,
+				`Failed to send email: ${(error as Error).message}`,
 			);
 			context.logger.error(errorMsg);
 
