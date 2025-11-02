@@ -1,14 +1,15 @@
 import type { CreateNotificationInput } from "@repo/validation";
-import NotificationOrchestrator from "../notification-orchestrator";
+import jobQueueManager from "../../../services/jobs/queue-manager";
 import type {
 	ChannelDeliveryRequest,
 	NotificationChannelAdapter,
 } from "./types";
+import type { InAppNotificationJobPayload } from "../../../jobs/handlers/in-app-notification";
+
+const JOB_TYPE = "in-app-notification" as const;
 
 export class InAppChannelAdapter implements NotificationChannelAdapter {
 	readonly channel = "inApp" as const;
-
-	constructor(private readonly orchestrator: NotificationOrchestrator) {}
 
 	async deliver({ channel, recipients, request }: ChannelDeliveryRequest) {
 		if (channel !== this.channel || !recipients.length) {
@@ -49,11 +50,24 @@ export class InAppChannelAdapter implements NotificationChannelAdapter {
 		}
 
 		try {
-			await this.orchestrator.createNotification(payload);
+			const jobPayload: InAppNotificationJobPayload = {
+				notification: payload,
+			};
+
+			const jobOptions = {
+				type: request.jobOptions?.jobType ?? JOB_TYPE,
+				payload: jobPayload as unknown,
+				priority: request.jobOptions?.priority,
+				maxRetries: request.jobOptions?.maxRetries,
+			};
+
+			const jobId = await jobQueueManager.createJob(jobOptions);
+
 			return recipients.map((recipient) => ({
 				userId: recipient.userId,
 				channel: this.channel,
-				status: "sent" as const,
+				status: "scheduled" as const,
+				jobId,
 			}));
 		} catch (error) {
 			return recipients.map((recipient) => ({

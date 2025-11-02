@@ -5,7 +5,7 @@ import type {
 	NotificationChannelAdapter,
 } from "./types";
 
-const JOB_TYPE = "send-notification" as const;
+const JOB_TYPE = "email-notification" as const;
 
 export class EmailChannelAdapter implements NotificationChannelAdapter {
 	readonly channel = "email" as const;

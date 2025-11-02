@@ -5,7 +5,7 @@ import type {
 	NotificationChannelAdapter,
 } from "./types";
 
-const JOB_TYPE = "send-notification" as const;
+const JOB_TYPE = "whatsapp-notification" as const;
 
 export class WhatsAppChannelAdapter implements NotificationChannelAdapter {
 	readonly channel = "whatsapp" as const;

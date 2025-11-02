@@ -2,7 +2,6 @@ import { inArray, eq } from "drizzle-orm";
 import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
 import { employees } from "../../drizzle/schema/employees";
-import NotificationOrchestrator from "./notification-orchestrator";
 import createNotificationRepository from "./notification-repository";
 import notificationPreferenceService, {
 	NotificationPreferenceService,
@@ -30,25 +29,22 @@ import type { NotificationChannelEnum } from "@repo/validation";
 const DEFAULT_CHANNELS: NotificationChannelEnum[] = ["inApp"];
 
 export class UnifiedNotificationService {
-	private readonly orchestrator: NotificationOrchestrator;
 	private readonly notificationRepo = createNotificationRepository();
 	private readonly preferenceService: NotificationPreferenceService;
 	private readonly adapters: Map<NotificationChannelEnum, NotificationChannelAdapter>;
 
 	constructor(
 		options: {
-			orchestrator?: NotificationOrchestrator;
 			preferenceService?: NotificationPreferenceService;
 			adapters?: NotificationChannelAdapter[];
 		} = {},
 	) {
-		this.orchestrator = options.orchestrator ?? new NotificationOrchestrator();
 		this.preferenceService =
 			options.preferenceService ?? notificationPreferenceService;
 		const adapterList =
 			options.adapters ??
 			[
-				new InAppChannelAdapter(this.orchestrator),
+				new InAppChannelAdapter(),
 				new EmailChannelAdapter(),
 				new WhatsAppChannelAdapter(),
 			];
