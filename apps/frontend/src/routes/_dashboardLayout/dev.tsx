@@ -100,6 +100,7 @@ function RouteComponent() {
 				columns={columns} 
 				data={chemicalElements} 
 				columnOrderable 
+				columnResizable
 				// saveState="chemical-elements-table"
 			/>
 		</div>

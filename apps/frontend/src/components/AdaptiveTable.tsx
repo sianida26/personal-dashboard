@@ -32,6 +32,7 @@ type AdaptiveTableProps<T> = {
 	columns: ColumnDef<T>[];
 	data: T[];
 	columnOrderable?: boolean;
+	columnResizable?: boolean;
 	saveState?: string; // Unique key to save/load table state
 };
 
@@ -55,6 +56,7 @@ const STORAGE_PREFIX = "adaptive-table-";
 
 interface TableState {
 	columnOrder?: string[];
+	columnSizing?: Record<string, number>;
 }
 
 function getStorageKey(saveKey: string): string {
@@ -82,8 +84,12 @@ function saveTableState(saveKey: string, state: TableState): void {
 // Draggable header component
 const DraggableTableHeader = <T,>({
 	header,
+	columnResizable,
+	table,
 }: {
 	header: Header<T, unknown>;
+	columnResizable?: boolean;
+	table: ReturnType<typeof useReactTable<T>>;
 }) => {
 	const { attributes, isDragging, listeners, setNodeRef, transform } =
 		useSortable({
@@ -96,24 +102,51 @@ const DraggableTableHeader = <T,>({
 		transform: CSS.Translate.toString(transform),
 		transition: "width transform 0.2s ease-in-out",
 		whiteSpace: "nowrap",
-		width: header.column.getSize(),
+		width: columnResizable ? `calc(var(--header-${header.id}-size) * 1px)` : header.column.getSize(),
 		zIndex: isDragging ? 1 : 0,
 	};
 
 	return (
-		<th colSpan={header.colSpan} ref={setNodeRef} style={style} className="border">
-			{header.isPlaceholder
-				? null
-				: flexRender(header.column.columnDef.header, header.getContext())}
-			<button type="button" {...attributes} {...listeners} className="ml-2 cursor-grab active:cursor-grabbing">
-				🟰
-			</button>
+		<th colSpan={header.colSpan} ref={setNodeRef} style={style} className="border relative">
+			<div className="flex items-center">
+				{header.isPlaceholder
+					? null
+					: flexRender(header.column.columnDef.header, header.getContext())}
+				<button type="button" {...attributes} {...listeners} className="ml-2 cursor-grab active:cursor-grabbing">
+					🟰
+				</button>
+			</div>
+			{columnResizable && (
+				<div
+					onDoubleClick={() => header.column.resetSize()}
+					onMouseDown={header.getResizeHandler()}
+					onTouchStart={header.getResizeHandler()}
+					className={`absolute right-0 top-0 h-full w-2 cursor-col-resize select-none touch-none hover:bg-blue-500 ${
+						header.column.getIsResizing() ? "bg-blue-500" : "bg-transparent"
+					}`}
+					style={{
+						transform: header.column.getIsResizing()
+							? `translateX(${
+									(table.getState().columnSizingInfo.deltaOffset ?? 0)
+								}px)`
+							: "",
+					}}
+				>
+					<div className="w-px h-full bg-gray-300 mx-auto" />
+				</div>
+			)}
 		</th>
 	);
 };
 
 // Drag along cell component
-const DragAlongCell = <T,>({ cell }: { cell: Cell<T, unknown> }) => {
+const DragAlongCell = <T,>({ 
+	cell,
+	columnResizable,
+}: { 
+	cell: Cell<T, unknown>;
+	columnResizable?: boolean;
+}) => {
 	const { isDragging, setNodeRef, transform } = useSortable({
 		id: cell.column.id,
 	});
@@ -123,7 +156,7 @@ const DragAlongCell = <T,>({ cell }: { cell: Cell<T, unknown> }) => {
 		position: "relative",
 		transform: CSS.Translate.toString(transform),
 		transition: "width transform 0.2s ease-in-out",
-		width: cell.column.getSize(),
+		width: columnResizable ? `calc(var(--col-${cell.column.id}-size) * 1px)` : cell.column.getSize(),
 		zIndex: isDragging ? 1 : 0,
 	};
 
@@ -187,12 +220,34 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		return defaultOrder;
 	});
 
-	// Save state whenever columnOrder changes
-	useEffect(() => {
-		if (props.saveState && props.columnOrderable) {
-			saveTableState(props.saveState, { columnOrder });
+	// Initialize column sizing from saved state
+	const [columnSizing, setColumnSizing] = useState<Record<string, number>>(() => {
+		if (props.saveState && props.columnResizable) {
+			try {
+				const savedState = loadTableState(props.saveState);
+				if (savedState?.columnSizing) {
+					return savedState.columnSizing;
+				}
+			} catch (error) {
+				console.error("Error loading column sizing:", error);
+			}
 		}
-	}, [columnOrder, props.saveState, props.columnOrderable]);
+		return {};
+	});
+
+	// Save state whenever columnOrder or columnSizing changes
+	useEffect(() => {
+		if (props.saveState) {
+			const state: TableState = {};
+			if (props.columnOrderable) {
+				state.columnOrder = columnOrder;
+			}
+			if (props.columnResizable) {
+				state.columnSizing = columnSizing;
+			}
+			saveTableState(props.saveState, state);
+		}
+	}, [columnOrder, columnSizing, props.saveState, props.columnOrderable, props.columnResizable]);
 
 	const table = useReactTable({
 		data: props.data,
@@ -200,9 +255,45 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		getCoreRowModel: getCoreRowModel(),
 		state: {
 			columnOrder: props.columnOrderable ? columnOrder : undefined,
+			...(props.columnResizable && { columnSizing }),
 		},
-		onColumnOrderChange: props.columnOrderable ? setColumnOrder : undefined,
+		...(props.columnOrderable && { onColumnOrderChange: setColumnOrder }),
+		...(props.columnResizable && { 
+			onColumnSizingChange: setColumnSizing,
+			columnResizeMode: 'onChange' as const,
+			defaultColumn: {
+				minSize: 60,
+				maxSize: 800,
+			},
+		}),
 	});
+
+	/**
+	 * Calculate all column sizes at once at the root table level in a useMemo
+	 * and pass the column sizes down as CSS variables to the <table> element.
+	 * This is more performant than calling column.getSize() on every render.
+	 */
+	const columnSizeVars = useMemo(() => {
+		if (!props.columnResizable) return {};
+		
+		const headers = table.getFlatHeaders();
+		const colSizes: { [key: string]: number } = {};
+		for (let i = 0; i < headers.length; i++) {
+			const header = headers[i];
+			if (header) {
+				colSizes[`--header-${header.id}-size`] = header.getSize();
+				colSizes[`--col-${header.column.id}-size`] = header.column.getSize();
+			}
+		}
+		return colSizes;
+	}, [
+		props.columnResizable, 
+		// Only depend on these if columnResizable is enabled
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		props.columnResizable ? table.getState().columnSizingInfo : null,
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		props.columnResizable ? table.getState().columnSizing : null,
+	]);
 
 	// Handle drag end for column reordering
 	const handleDragEnd = (event: DragEndEvent) => {
@@ -232,7 +323,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 				sensors={sensors}
 			>
 				<div>
-					<table className="border-collapse">
+					<table className="border-collapse" style={columnSizeVars}>
 						<thead>
 							{table.getHeaderGroups().map((headerGroup) => (
 								<tr key={headerGroup.id}>
@@ -241,7 +332,12 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 										strategy={horizontalListSortingStrategy}
 									>
 										{headerGroup.headers.map((header) => (
-											<DraggableTableHeader key={header.id} header={header} />
+											<DraggableTableHeader 
+												key={header.id} 
+												header={header} 
+												columnResizable={props.columnResizable}
+												table={table}
+											/>
 										))}
 									</SortableContext>
 								</tr>
@@ -256,7 +352,11 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 											items={columnOrder}
 											strategy={horizontalListSortingStrategy}
 										>
-											<DragAlongCell key={cell.id} cell={cell} />
+											<DragAlongCell 
+												key={cell.id} 
+												cell={cell} 
+												columnResizable={props.columnResizable}
+											/>
 										</SortableContext>
 									))}
 								</tr>
@@ -271,18 +371,47 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	// Render regular table
 	return (
 		<div>
-			<table className="border-collapse">
+			<table className="border-collapse" style={columnSizeVars}>
 				<thead>
 					{table.getHeaderGroups().map((headerGroup) => (
 						<tr key={headerGroup.id}>
 							{headerGroup.headers.map((header) => (
-								<th key={header.id} className="border">
+								<th 
+									key={header.id} 
+									className="border relative"
+									style={{
+										width: props.columnResizable 
+											? `calc(var(--header-${header.id}-size) * 1px)`
+											: undefined,
+									}}
+								>
 									{header.isPlaceholder
 										? null
 										: flexRender(
 												header.column.columnDef.header,
 												header.getContext(),
 											)}
+									{props.columnResizable && (
+										<div
+											onDoubleClick={() => header.column.resetSize()}
+											onMouseDown={header.getResizeHandler()}
+											onTouchStart={header.getResizeHandler()}
+											className={`absolute right-0 top-0 h-full w-2 cursor-col-resize select-none touch-none hover:bg-blue-500 ${
+												header.column.getIsResizing() 
+													? "bg-blue-500" 
+													: "bg-transparent"
+											}`}
+											style={{
+												transform: header.column.getIsResizing()
+													? `translateX(${
+															(table.getState().columnSizingInfo.deltaOffset ?? 0)
+														}px)`
+													: "",
+											}}
+										>
+											<div className="w-px h-full bg-gray-300 mx-auto" />
+										</div>
+									)}
 								</th>
 							))}
 						</tr>
@@ -292,7 +421,15 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 					{table.getRowModel().rows.map((row) => (
 						<tr key={row.id}>
 							{row.getVisibleCells().map((cell) => (
-								<td key={cell.id} className="border">
+								<td 
+									key={cell.id} 
+									className="border"
+									style={{
+										width: props.columnResizable 
+											? `calc(var(--col-${cell.column.id}-size) * 1px)`
+											: undefined,
+									}}
+								>
 									{flexRender(
 										cell.column.columnDef.cell,
 										cell.getContext(),
