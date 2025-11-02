@@ -15,6 +15,7 @@ import authRouter from "./routes/auth/route";
 import dashboardRoutes from "./routes/dashboard/routes";
 import devRoutes from "./routes/dev/route";
 import notificationsRoute from "./routes/notifications/route";
+import notificationPreferencesRoute from "./routes/notificationPreferences/route";
 import permissionRoutes from "./routes/permissions/route";
 import rolesRoute from "./routes/roles/route";
 import usersRoute from "./routes/users/route";
@@ -62,6 +63,7 @@ export const appRoutes = app
 	.route("/dev", devRoutes)
 	.route("/app-settings", appSettingsRoutes)
 	.route("/notifications", notificationsRoute)
+	.route("/notification-preferences", notificationPreferencesRoute)
 	.get("/test", (c) => {
 		return c.json({
 			message: "Server is up",
