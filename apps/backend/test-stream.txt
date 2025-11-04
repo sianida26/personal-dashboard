@@ -1,0 +1,1 @@
+Test to see the backend console log output when SSE connects

@@ -1,5 +1,5 @@
 import type { CreateNotificationInput } from "@repo/validation";
-import { NotificationEventHub } from "../../lib/event-bus/notification-event-hub";
+import notificationEventHub from "../../lib/event-bus/notification-event-hub";
 import createNotificationRepository from "../../modules/notifications/notification-repository";
 import type { JobHandler } from "../../services/jobs/types";
 import type { InAppNotificationJobPayload } from "./types";
@@ -8,7 +8,6 @@ import type { InAppNotificationJobPayload } from "./types";
 export type { InAppNotificationJobPayload };
 
 const notificationRepository = createNotificationRepository();
-const notificationEventHub = new NotificationEventHub();
 
 const inAppNotificationHandler: JobHandler<InAppNotificationJobPayload> = {
 	type: "in-app-notification",
@@ -20,75 +19,45 @@ const inAppNotificationHandler: JobHandler<InAppNotificationJobPayload> = {
 		const { notification } = payload;
 
 		try {
+			// Each job should only have a single userId
+			// The adapter creates one job per recipient to avoid duplication
+			if (!notification.userId) {
+				throw new Error("userId is required in the job payload");
+			}
+
 			context.logger.info(
-				`Creating in-app notification for user: ${notification.userId || "N/A"}`,
+				`Creating in-app notification for user: ${notification.userId}`,
 			);
 
-			// Resolve recipients - handle both single userId and roleCode expansion
-			const recipients = new Set<string>();
+			const created = await notificationRepository.createNotification({
+				type: notification.type,
+				title: notification.title,
+				message: notification.message,
+				userId: notification.userId,
+				metadata: notification.metadata || {},
+				status: notification.status || "unread",
+				category: notification.category,
+				actions: notification.actions?.map((action) => ({
+					actionKey: action.actionKey,
+					label: action.label,
+					requiresComment: action.requiresComment ?? false,
+				})),
+				expiresAt: notification.expiresAt ?? null,
+			});
 
-			if (notification.userId) {
-				recipients.add(notification.userId);
-			}
-
-			// Note: userIds array should NOT be used in the job payload anymore
-			// Each recipient gets a separate job with their own userId
-			if (notification.userIds?.length) {
-				notification.userIds.forEach((userId: string) => {
-					if (userId) {
-						recipients.add(userId);
-					}
-				});
-			}
-
-			if (notification.roleCodes?.length) {
-				const idsFromRoles =
-					await notificationRepository.findUserIdsByRoleCodes(
-						notification.roleCodes,
-					);
-				idsFromRoles.forEach((userId) => {
-					recipients.add(userId);
-				});
-			}
-
-			if (recipients.size === 0) {
-				throw new Error("No recipients resolved for notification");
-			}
-
-			// Create notification for each recipient
-			for (const recipientId of recipients) {
-				const created = await notificationRepository.createNotification(
-					{
-						type: notification.type,
-						title: notification.title,
-						message: notification.message,
-						userId: recipientId,
-						metadata: notification.metadata || {},
-						status: notification.status || "unread",
-						category: notification.category,
-						actions: notification.actions?.map((action) => ({
-							actionKey: action.actionKey,
-							label: action.label,
-							requiresComment: action.requiresComment ?? false,
-						})),
-						expiresAt: notification.expiresAt ?? null,
-					},
-				);
-
-				// Emit created event
-				notificationEventHub.emit("created", {
-					...created,
-					metadata: created.metadata || {},
-				});
-			}
+			// Emit created event using the singleton event hub
+			notificationEventHub.emit("created", {
+				...created,
+				metadata: created.metadata || {},
+			});
 
 			context.logger.info(
-				`In-app notification created successfully for ${recipients.size} recipient(s)`,
+				`In-app notification created successfully for recipient ${notification.userId}`,
 			);
 
 			return {
 				success: true,
-				message: `Created in-app notification for ${recipients.size} recipient(s)`,
+				message: `Created in-app notification for recipient ${notification.userId}`,
 			};
 		} catch (error) {
 			const errorMsg = new Error(

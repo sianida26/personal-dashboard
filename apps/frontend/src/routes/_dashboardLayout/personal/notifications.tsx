@@ -55,14 +55,12 @@ const CHANNEL_LABELS: Record<string, string> = {
 	inApp: "In-App",
 	email: "Email",
 	whatsapp: "WhatsApp",
-	push: "Push",
 };
 
 const CHANNEL_DESCRIPTIONS: Record<string, string> = {
-	inApp: "Receive notifications within the application",
+	inApp: "Receive notifications within the application and browser push notifications",
 	email: "Receive notifications via email",
 	whatsapp: "Receive notifications via WhatsApp",
-	push: "Receive browser push notifications",
 };
 
 export function NotificationPreferencesPage() {

@@ -1,7 +1,4 @@
-import type {
-	EmailNotificationPayload,
-	NotificationJobPayload,
-} from "../../../types/notifications";
+import type { EmailNotificationPayload } from "../../../types/notifications";
 import jobQueueManager from "../../../services/jobs/queue-manager";
 import type { JobPriority } from "../../../services/jobs/types";
 import type {
@@ -109,13 +106,19 @@ export class EmailChannelAdapter implements NotificationChannelAdapter {
 
 		const override = request.channelOverrides?.email ?? {};
 
+		const uniqueRecipients = Array.from(
+			new Map(
+				recipients.map((recipient) => [recipient.userId, recipient]),
+			).values(),
+		);
+
 		const recipientEmails = override.to
 			? Array.isArray(override.to)
 				? override.to
 				: [override.to]
-			: recipients
-					.map((recipient) => recipient.email)
-					.filter((email): email is string => Boolean(email));
+			: uniqueRecipients
+				.map((recipient) => recipient.email)
+				.filter((email): email is string => Boolean(email));
 
 		const uniqueEmails = Array.from(new Set(recipientEmails));
 
@@ -149,13 +152,9 @@ export class EmailChannelAdapter implements NotificationChannelAdapter {
 			text: message,
 		};
 
-		const payload: NotificationJobPayload = {
-			email: emailPayload,
-		};
-
 		const jobOptions = {
 			type: request.jobOptions?.jobType ?? JOB_TYPE,
-			payload: payload as unknown as Record<string, unknown>,
+			payload: emailPayload,
 			priority: mapNumericPriorityToJobPriority(
 				request.jobOptions?.priority,
 			),

@@ -12,7 +12,7 @@ import {
 } from "@repo/ui";
 import { useToast } from "@repo/ui/hooks";
 import { cn } from "@repo/ui/utils";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -25,7 +25,9 @@ import {
 	type NotificationListQuery,
 } from "@/modules/notifications/api";
 import { notificationQueryKeys } from "@/modules/notifications/queryKeys";
-import type { Notification } from "@/modules/notifications/types";
+import type { Notification, NotificationGroup } from "@/modules/notifications/types";
+import { authDB } from "@/indexedDB/authDB";
+import { backendUrl } from "@/honoClient";
 
 dayjs.extend(relativeTime);
 
@@ -45,7 +47,24 @@ type FilterDefinition = {
 
 const filters: FilterDefinition[] = [
 	{ label: "All", key: "all", query: {} },
-	{ label: "Unread", key: "status:unread", query: { status: "unread" } },
+	{
+		label: "Unread",
+		key: "status:unread",
+		query: { status: "unread" },
+		description: "Only show messages you have not opened yet.",
+	},
+	{
+		label: "Approvals",
+		key: "type:approval",
+		query: { type: "approval" },
+		description: "Highlight the requests that need a decision.",
+	},
+	{
+		label: "System",
+		key: "category:system",
+		query: { category: "system" },
+		description: "Infrastructure and status notifications.",
+	},
 ];
 
 const friendlyLabel = (input: string) =>
@@ -77,6 +96,61 @@ const describeAction = (
 	}
 };
 
+const PAGE_SIZE = 20;
+
+const GROUP_ORDER: NotificationGroup["key"][] = [
+	"today",
+	"yesterday",
+	"thisWeek",
+	"earlier",
+];
+
+const resolveGroupForDate = (isoString: string) => {
+	const created = dayjs(isoString);
+	const today = dayjs().startOf("day");
+	const createdDay = created.startOf("day");
+	const dayDiff = today.diff(createdDay, "day");
+
+	if (dayDiff === 0) {
+		return { key: "today", title: "Today" } as const;
+	}
+
+	if (dayDiff === 1) {
+		return { key: "yesterday", title: "Yesterday" } as const;
+	}
+
+	if (dayDiff <= 7) {
+		return { key: "thisWeek", title: "This Week" } as const;
+	}
+
+	return { key: "earlier", title: "Earlier" } as const;
+};
+
+const groupNotificationsByDate = (
+	items: Notification[],
+): NotificationGroup[] => {
+	const groups = new Map<NotificationGroup["key"], NotificationGroup>();
+
+	for (const item of items) {
+		const { key, title } = resolveGroupForDate(item.createdAt);
+		const existing = groups.get(key);
+
+		if (existing) {
+			existing.notifications.push(item);
+		} else {
+			groups.set(key, {
+				key,
+				title,
+				notifications: [item],
+			});
+		}
+	}
+
+	return GROUP_ORDER.map((key) => groups.get(key)).filter(
+		(group): group is NotificationGroup => Boolean(group),
+	);
+};
+
 function NotificationsPage() {
 	const queryClient = useQueryClient();
 	const { toast } = useToast();
@@ -92,12 +166,47 @@ function NotificationsPage() {
 
 	const activeFilter =
 		filters.find((item) => item.key === activeFilterKey) ?? filters[0];
-	const { data, isLoading, isFetching, isError, error } = useQuery({
+	const {
+		data,
+		isLoading,
+		isFetching,
+		isError,
+		error,
+		hasNextPage,
+		fetchNextPage,
+		isFetchingNextPage,
+	} = useInfiniteQuery({
 		queryKey: notificationQueryKeys.list(activeFilterKey),
-		queryFn: () => fetchNotifications(activeFilter.query),
+		initialPageParam: undefined as string | undefined,
+		queryFn: ({ pageParam }) =>
+			fetchNotifications({
+				...activeFilter.query,
+				cursor:
+					typeof pageParam === "string" ? pageParam : undefined,
+				limit: PAGE_SIZE,
+			}),
+		getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
 	});
 
-	const notificationsList = data?.items ?? [];
+	const notificationsList = useMemo(
+		() => data?.pages.flatMap((page) => page.items ?? []) ?? [],
+		[data],
+	);
+	const notificationIndexLookup = useMemo(() => {
+		const map = new Map<string, number>();
+		notificationsList.forEach((item, index) => {
+			map.set(item.id, index);
+		});
+		return map;
+	}, [notificationsList]);
+	const groupedNotifications = useMemo(
+		() => groupNotificationsByDate(notificationsList),
+		[notificationsList],
+	);
+	const hasUnread = useMemo(
+		() => notificationsList.some((item) => item.status === "unread"),
+		[notificationsList],
+	);
 	const selectedNotification = notificationsList[activeIndex] ?? null;
 	const metadataRecord = (selectedNotification?.metadata ?? {}) as Record<
 		string,
@@ -177,7 +286,6 @@ function NotificationsPage() {
 		setActiveIndex(0);
 	}, [activeFilterKey, notificationsList.length]);
 
-	
 	useEffect(() => {
 		setActionComment("");
 		setSelectedActionKey(null);
@@ -190,6 +298,77 @@ function NotificationsPage() {
 		}
 	}, [selectedAction?.actionKey, selectedAction?.requiresComment]);
 
+	useEffect(() => {
+		let eventSource: EventSource | null = null;
+		let retryTimeout: ReturnType<typeof setTimeout> | null = null;
+		let cancelled = false;
+
+		const connect = async () => {
+			const auth = await authDB.auth.get("auth");
+			if (cancelled) return;
+			const token = auth?.accessToken;
+			if (!token) return;
+
+			const url = new URL(`${backendUrl}/notifications/stream`);
+			url.searchParams.set("token", token);
+
+			eventSource = new EventSource(url.toString());
+
+			const handleMessage = (event: MessageEvent) => {
+				try {
+					const payload = JSON.parse(String(event.data)) as {
+						title?: string;
+						message?: string;
+					};
+
+					toast({
+						title: payload.title ?? "New notification",
+						description:
+							payload.message ??
+							"A new update just landed in your inbox.",
+					});
+				} catch {
+					toast({
+						title: "New notification",
+						description:
+							"A new update just landed in your inbox.",
+					});
+				}
+
+				void queryClient.invalidateQueries({
+					queryKey: notificationQueryKeys.all,
+					exact: false,
+				});
+				void queryClient.invalidateQueries({
+					queryKey: notificationQueryKeys.unreadCount,
+				});
+			};
+
+			eventSource.addEventListener("notification", handleMessage);
+
+			eventSource.onerror = () => {
+				eventSource?.close();
+				if (cancelled) return;
+				if (retryTimeout) {
+					clearTimeout(retryTimeout);
+				}
+				retryTimeout = setTimeout(() => {
+					void connect();
+				}, 5000);
+			};
+		};
+
+		void connect();
+
+		return () => {
+			cancelled = true;
+			eventSource?.close();
+			if (retryTimeout) {
+				clearTimeout(retryTimeout);
+			}
+		};
+	}, [queryClient, toast]);
+
 	const bulkMutation = useMutation({
 		mutationFn: ({
 			ids,
@@ -197,13 +376,17 @@ function NotificationsPage() {
 		}: {
 			ids: string[];
 			markAs: "read" | "unread";
-		}) => markNotifications(ids, markAs),
-		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: notificationQueryKeys.list(activeFilterKey),
-			});
-			queryClient.invalidateQueries({
-				queryKey: notificationQueryKeys.unreadCount,
+	}) => markNotifications(ids, markAs),
+	onSuccess: () => {
+		queryClient.invalidateQueries({
+			queryKey: notificationQueryKeys.all,
+			exact: false,
+		});
+		queryClient.invalidateQueries({
+			queryKey: notificationQueryKeys.list(activeFilterKey),
+		});
+		queryClient.invalidateQueries({
+			queryKey: notificationQueryKeys.unreadCount,
 			});
 		},
 		onError: (mutationError: unknown) => {
@@ -226,13 +409,17 @@ function NotificationsPage() {
 		}: {
 			id: string;
 			status: "read" | "unread";
-		}) => markNotification(id, status),
-		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: notificationQueryKeys.list(activeFilterKey),
-			});
-			queryClient.invalidateQueries({
-				queryKey: notificationQueryKeys.unreadCount,
+	}) => markNotification(id, status),
+	onSuccess: () => {
+		queryClient.invalidateQueries({
+			queryKey: notificationQueryKeys.all,
+			exact: false,
+		});
+		queryClient.invalidateQueries({
+			queryKey: notificationQueryKeys.list(activeFilterKey),
+		});
+		queryClient.invalidateQueries({
+			queryKey: notificationQueryKeys.unreadCount,
 			});
 		},
 		onError: (mutationError: unknown) => {
@@ -257,11 +444,15 @@ function NotificationsPage() {
 			notificationId: string;
 			actionKey: string;
 			comment?: string;
-		}) => executeNotificationAction(notificationId, actionKey, comment),
-		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: notificationQueryKeys.list(activeFilterKey),
-			});
+	}) => executeNotificationAction(notificationId, actionKey, comment),
+	onSuccess: () => {
+		queryClient.invalidateQueries({
+			queryKey: notificationQueryKeys.all,
+			exact: false,
+		});
+		queryClient.invalidateQueries({
+			queryKey: notificationQueryKeys.list(activeFilterKey),
+		});
 			queryClient.invalidateQueries({
 				queryKey: notificationQueryKeys.unreadCount,
 			});
@@ -374,57 +565,101 @@ function NotificationsPage() {
 					</div>
 					<div className="min-h-0 flex-1">
 						<ScrollArea className="h-72 md:h-full">
-							<div className="space-y-1 px-2 pb-3">
-								{notificationsList.map(
-									(notification, index) => {
-										const isActive = index === activeIndex;
-										return (
-											<button
-												type="button"
-												key={notification.id}
-												onClick={() =>
-													setActiveIndex(index)
-												}
-												className={`w-full rounded-md border px-3 py-3 text-left transition ${
-													isActive
-														? "border-primary bg-primary/10"
-														: "border-transparent hover:border-primary/40"
-												}`}
-											>
-												<div className="flex items-start justify-between gap-2">
-													<div className="space-y-1">
-														{notification.category && (
-															<span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-																{friendlyLabel(
-																	notification.category,
-																)}
-															</span>
-														)}
-														<p className="text-sm font-medium">
-															{notification.title}
-														</p>
-														<p className="text-xs text-muted-foreground line-clamp-2">
-															{
-																notification.message
+							<div className="space-y-4 px-2 pb-3">
+								{groupedNotifications.map((group) => (
+									<div key={group.key} className="space-y-2">
+										<p className="px-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+											{group.title}
+										</p>
+										<div className="space-y-1.5">
+											{group.notifications.map(
+												(notification) => {
+													const index =
+														notificationIndexLookup.get(
+															notification.id,
+														) ?? 0;
+													const isActive =
+														index === activeIndex;
+													return (
+														<button
+															type="button"
+															key={
+																notification.id
 															}
-														</p>
-													</div>
-													{notification.status ===
-														"unread" && (
-														<Badge variant="default">
-															New
-														</Badge>
-													)}
-												</div>
-												<p className="mt-2 text-xs text-muted-foreground">
-													{dayjs(
-														notification.createdAt,
-													).fromNow()}
-												</p>
-											</button>
-										);
-									},
+															onClick={() =>
+																setActiveIndex(
+																	index,
+																)
+															}
+															className={cn(
+																"w-full rounded-md border px-3 py-3 text-left transition",
+																isActive
+																	? "border-primary bg-primary/10"
+																	: "border-transparent hover:border-primary/40",
+															)}
+														>
+															<div className="flex items-start justify-between gap-2">
+																<div className="space-y-1">
+																	{notification.category && (
+																		<span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+																			{friendlyLabel(
+																				notification.category ??
+																					"",
+																			)}
+																		</span>
+																	)}
+																	<p className="text-sm font-medium">
+																		{
+																			notification.title
+																		}
+																	</p>
+																	<p className="text-xs text-muted-foreground line-clamp-2">
+																		{
+																			notification.message
+																		}
+																	</p>
+																</div>
+																{notification.status ===
+																	"unread" && (
+																	<Badge variant="default">
+																		New
+																	</Badge>
+																)}
+															</div>
+															<p className="mt-2 text-xs text-muted-foreground">
+																{dayjs(
+																	notification.createdAt,
+																).fromNow()}
+															</p>
+														</button>
+													);
+												},
+											)}
+										</div>
+									</div>
+								))}
+								{hasNextPage && (
+									<div className="pt-2">
+										<Button
+											variant="ghost"
+											size="sm"
+											className="w-full"
+											onClick={() => fetchNextPage()}
+											disabled={isFetchingNextPage}
+										>
+											{isFetchingNextPage
+												? "Loading more…"
+												: "Load older updates"}
+										</Button>
+									</div>
 								)}
+								{!hasNextPage &&
+									notificationsList.length > 0 && (
+										<p className="px-1 text-center text-[11px] text-muted-foreground">
+											You’ve reached the end of your
+											inbox.
+										</p>
+									)}
 							</div>
 						</ScrollArea>
 					</div>
@@ -821,25 +1056,25 @@ function NotificationsPage() {
 					variant="outline"
 					size="sm"
 					onClick={() => {
-						if (!notificationsList.length) return;
-						const unreadIds = notificationsList
-							.filter((item) => item.status === "unread")
-							.map((item) => item.id);
-
-						if (!unreadIds.length) {
+						if (!hasUnread) {
 							toast({
 								title: "Nothing to mark",
-								description: "Everything here is already read.",
+								description:
+									"Everything here is already read.",
 							});
 							return;
 						}
+
+						const unreadIds = notificationsList
+							.filter((item) => item.status === "unread")
+							.map((item) => item.id);
 
 						bulkMutation.mutate({
 							ids: unreadIds,
 							markAs: "read",
 						});
 					}}
-					disabled={bulkMutation.isPending}
+					disabled={bulkMutation.isPending || !hasUnread}
 				>
 					Mark everything as read
 				</Button>

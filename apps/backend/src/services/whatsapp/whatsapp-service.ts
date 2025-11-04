@@ -1,118 +1,132 @@
-/**
- * WhatsApp service for sending messages via WAHA API
- * Uses native Node.js 18+ fetch API (no external dependency needed)
- */
-
-export interface WhatsAppMessage {
+interface SendTextParams {
 	chatId: string;
+	reply_to?: string | null;
 	text: string;
-	replyTo?: string;
+	linkPreview?: boolean;
+	linkPreviewHighQuality?: boolean;
+	session?: string;
 }
 
 export interface WhatsAppResponse {
 	success: boolean;
-	messageId?: string;
-	error?: string;
+	message?: string;
+	data?: unknown;
+}
+
+export interface NotificationParams {
+	phoneNumber: string;
+	message: string;
+	session?: string;
+	linkPreview?: boolean;
+	linkPreviewHighQuality?: boolean;
 }
 
 export class WhatsAppService {
-	private apiUrl: string;
-	private apiToken: string;
-	private isConfigured = false;
+	private readonly apiKey: string;
+	private readonly baseUrl: string;
+	private readonly defaultSession: string;
 
 	constructor() {
-		this.apiUrl = process.env.WAHA_API_URL || "http://localhost:3001";
-		this.apiToken = process.env.WAHA_API_TOKEN || "";
+		this.apiKey = process.env.WAHA_API_KEY || "";
+		this.baseUrl = process.env.WAHA_BASE_URL || "https://waha.dsg.id";
+		this.defaultSession = process.env.WAHA_SESSION || "default";
 
-		if (!this.apiToken) {
-			console.warn(
-				"WhatsApp service not configured. Please set WAHA_API_URL and WAHA_API_TOKEN environment variables.",
-			);
-			return;
+		if (!this.apiKey) {
+			console.warn("WAHA API key not configured");
 		}
-
-		this.isConfigured = true;
 	}
 
-	async sendMessage(
-		phoneNumber: string,
-		message: string,
-	): Promise<WhatsAppResponse> {
-		if (!this.isConfigured) {
+	isReady(): boolean {
+		return Boolean(this.apiKey);
+	}
+
+	private async sendText(params: SendTextParams): Promise<WhatsAppResponse> {
+		const sessionToUse = params.session || this.defaultSession;
+		const payload = {
+			chatId: params.chatId,
+			reply_to: params.reply_to ?? null,
+			text: params.text,
+			linkPreview: params.linkPreview ?? true,
+			linkPreviewHighQuality: params.linkPreviewHighQuality ?? false,
+			session: sessionToUse,
+		};
+
+		if (!this.apiKey) {
 			return {
 				success: false,
-				error: "WhatsApp service not configured",
+				message: "WhatsApp API key not configured",
 			};
 		}
 
 		try {
-			// Format phone number: ensure it has country code (e.g., +1234567890)
-			const chatId = phoneNumber.startsWith("+")
-				? phoneNumber.replace("+", "")
-				: phoneNumber;
-
-			const response = await fetch(`${this.apiUrl}/api/sendMessage`, {
+			const response = await fetch(`${this.baseUrl}/api/sendText`, {
 				method: "POST",
 				headers: {
+					accept: "application/json",
+					"X-Api-Key": this.apiKey,
 					"Content-Type": "application/json",
-					Authorization: `Bearer ${this.apiToken}`,
 				},
-				body: JSON.stringify({
-					chatId: `${chatId}@c.us`,
-					text: message,
-				}),
+				body: JSON.stringify(payload),
 			});
 
 			if (!response.ok) {
+				const errorText = await response.text();
 				return {
 					success: false,
-					error: `WhatsApp API error: ${response.statusText}`,
+					message: `Failed to send WhatsApp message: ${response.status} ${errorText}`,
 				};
 			}
 
-			const data = (await response.json()) as {
-				id?: string;
-				error?: string;
-			};
-
-			if (data.error) {
-				return {
-					success: false,
-					error: data.error,
-				};
-			}
-
+			const result = await response.json();
 			return {
 				success: true,
-				messageId: data.id,
+				data: result,
 			};
 		} catch (error) {
-			const errorMessage =
-				error instanceof Error ? error.message : "Unknown error";
 			return {
 				success: false,
-				error: errorMessage,
+				message: `Internal error: ${error instanceof Error ? error.message : "Unknown error"}`,
 			};
 		}
 	}
 
-	async checkHealth(): Promise<boolean> {
-		if (!this.isConfigured) {
-			return false;
+	async sendNotification(
+		params: NotificationParams,
+	): Promise<WhatsAppResponse> {
+		if (!this.apiKey) {
+			return {
+				success: false,
+				message: "WhatsApp API key not configured",
+			};
 		}
 
-		try {
-			const response = await fetch(`${this.apiUrl}/api/status`, {
-				headers: {
-					Authorization: `Bearer ${this.apiToken}`,
-				},
-			});
-
-			return response.ok;
-		} catch (error) {
-			console.error("WhatsApp service health check failed:", error);
-			return false;
+		let phoneNumber = params.phoneNumber.trim();
+		if (phoneNumber.startsWith("+")) {
+			phoneNumber = phoneNumber.substring(1);
 		}
+		phoneNumber = phoneNumber.replace(/\D/g, "");
+
+		if (
+			!phoneNumber.startsWith("62") &&
+			!phoneNumber.startsWith("1") &&
+			!phoneNumber.startsWith("65")
+		) {
+			if (phoneNumber.startsWith("0")) {
+				phoneNumber = "62" + phoneNumber.substring(1);
+			} else {
+				phoneNumber = "62" + phoneNumber;
+			}
+		}
+
+		const chatId = `${phoneNumber}@c.us`;
+
+		return this.sendText({
+			chatId,
+			text: params.message,
+			linkPreview: params.linkPreview,
+			linkPreviewHighQuality: params.linkPreviewHighQuality,
+			session: params.session,
+		});
 	}
 }
 

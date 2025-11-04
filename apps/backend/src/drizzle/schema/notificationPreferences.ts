@@ -22,7 +22,6 @@ export const notificationChannelEnum = pgEnum("notification_channel", [
 	"inApp",
 	"email",
 	"whatsapp",
-	"push",
 ]);
 
 export const notificationPreferenceSourceEnum = pgEnum(

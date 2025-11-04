@@ -6,7 +6,7 @@
  */
 
 import { createId } from "@paralleldrive/cuid2";
-import { and, eq, isNull, lte, or } from "drizzle-orm";
+import { and, eq, isNull, lte, or, sql } from "drizzle-orm";
 import db from "../../drizzle";
 import { jobExecutions, jobs } from "../../drizzle/schema/job-queue";
 import jobHandlerRegistry from "../../jobs/registry";
@@ -150,16 +150,8 @@ export class JobWorker {
 				);
 			}
 
-			// Update job status to processing
-			await db
-				.update(jobs)
-				.set({
-					status: "processing",
-					startedAt: new Date(),
-					workerId: this.id,
-					updatedAt: new Date(),
-				})
-				.where(eq(jobs.id, job.id));
+			// Note: Job status is already updated to "processing" in getNextJob()
+			// within the same transaction that claimed the job
 
 			// Validate payload if handler has validation
 			let validatedPayload: Record<string, unknown> =
@@ -220,22 +212,47 @@ export class JobWorker {
 
 	/**
 	 * Get next job from queue
+	 * Uses FOR UPDATE SKIP LOCKED to prevent multiple workers from picking the same job
 	 */
 	private async getNextJob() {
 		const now = new Date();
-		const [job] = await db
-			.select()
-			.from(jobs)
-			.where(
-				and(
-					eq(jobs.status, "pending"),
-					or(isNull(jobs.scheduledAt), lte(jobs.scheduledAt, now)),
-				),
-			)
-			.orderBy(jobs.priority, jobs.createdAt)
-			.limit(1);
 
-		return job;
+		// Use a transaction with FOR UPDATE SKIP LOCKED to atomically claim a job
+		// This prevents race conditions where multiple workers pick the same job
+		const result = await db.transaction(async (tx) => {
+			const [job] = await tx
+				.select()
+				.from(jobs)
+				.where(
+					and(
+						eq(jobs.status, "pending"),
+						or(isNull(jobs.scheduledAt), lte(jobs.scheduledAt, now)),
+					),
+				)
+				.orderBy(jobs.priority, jobs.createdAt)
+				.limit(1)
+				.for("update", { skipLocked: true });
+
+			if (!job) {
+				return null;
+			}
+
+			// Immediately update the job to processing within the same transaction
+			// This ensures no other worker can pick it up
+			await tx
+				.update(jobs)
+				.set({
+					status: "processing",
+					startedAt: new Date(),
+					workerId: this.id,
+					updatedAt: new Date(),
+				})
+				.where(eq(jobs.id, job.id));
+
+			return job;
+		});
+
+		return result;
 	}
 
 	/**

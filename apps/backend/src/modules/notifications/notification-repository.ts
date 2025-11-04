@@ -58,6 +58,7 @@ export interface NotificationRepository {
 	markNotifications: (
 		ids: string[],
 		status: NotificationStatusEnum,
+		userId: string,
 	) => Promise<number>;
 	recordActionLog: (
 		data: NotificationActionLogInsert,
@@ -120,15 +121,40 @@ export const createNotificationRepository = (
 	const createNotification: NotificationRepository["createNotification"] =
 		async ({ actions, ...notification }) => {
 			return database.transaction(async (tx) => {
-				const [created] = await tx
+				const insertQuery = tx
 					.insert(notifications)
-					.values(notification)
-					.returning();
+					.values(notification);
+
+				if (notification.id) {
+					insertQuery.onConflictDoNothing({
+						target: notifications.id,
+					});
+				}
+
+				const [created] = await insertQuery.returning();
 
 				if (!created) {
-					throw new Error(
-						"Failed to insert notification record for unknown reasons",
-					);
+					if (!notification.id) {
+						throw new Error(
+							"Failed to insert notification record for unknown reasons",
+						);
+					}
+
+					const existing = await tx.query.notifications.findFirst({
+						where: eq(notifications.id, notification.id),
+						with: {
+							actions: true,
+							actionLogs: true,
+						},
+					});
+
+					if (!existing) {
+						throw new Error(
+							"Failed to load existing notification after conflict",
+						);
+					}
+
+					return existing;
 				}
 
 				let insertedActions: (typeof notificationActions.$inferSelect)[] =
@@ -147,6 +173,9 @@ export const createNotificationRepository = (
 									}) satisfies NotificationActionInsert,
 							),
 						)
+						.onConflictDoNothing({
+							target: notificationActions.id,
+						})
 						.returning();
 				}
 
@@ -170,18 +199,24 @@ export const createNotificationRepository = (
 		};
 
 	const markNotifications: NotificationRepository["markNotifications"] =
-		async (ids, status) => {
+		async (ids, status, userId) => {
 			if (!ids.length) {
 				return 0;
 			}
 
+			const uniqueIds = Array.from(new Set(ids));
 			const result = await database
 				.update(notifications)
 				.set({
 					status,
 					readAt: status === "read" ? new Date() : null,
 				})
-				.where(inArray(notifications.id, ids))
+				.where(
+					and(
+						inArray(notifications.id, uniqueIds),
+						eq(notifications.userId, userId),
+					),
+				)
 				.returning({ id: notifications.id });
 
 			return result.length;

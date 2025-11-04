@@ -4,7 +4,7 @@
 
 This is a minimal, type-safe notification system with support for multiple delivery channels:
 
-- **In-App Notifications**: Displayed in application inbox
+- **In-App Notifications**: Displayed in application inbox and browser native push notifications
 - **Email**: Email delivery (configurable)
 - **WhatsApp**: WhatsApp messaging (configurable)
 
@@ -75,7 +75,7 @@ await sendToUsersAndRoles({
 ### Multi-Channel Support
 Notifications automatically route to enabled channels based on user preferences:
 
-- **In-App**: Stored in database, delivered via real-time SSE stream
+- **In-App**: Stored in database, delivered via real-time SSE stream, includes browser native push notifications
 - **Email**: Queued for email service delivery
 - **WhatsApp**: Queued for WhatsApp service delivery
 
@@ -84,7 +84,8 @@ Users can control notifications at the category + channel level:
 
 ```typescript
 // Categories: any string (recommended: "users", "system", "orders", etc.)
-// Channels: "inApp" | "email" | "whatsapp" | "push"
+// Channels: "inApp" | "email" | "whatsapp"
+// Note: inApp includes browser native push notifications
 ```
 
 Users manage preferences in the UI at: `/personal/notifications`
@@ -490,7 +491,7 @@ Indexes:
   id: string (CUID),
   userId: string (FK to users),
   category: string,
-  channel: "inApp" | "email" | "whatsapp" | "push",
+  channel: "inApp" | "email" | "whatsapp",
   enabled: boolean,
   updatedAt: timestamp,
 }

@@ -1,3 +1,4 @@
+import { createId } from "@paralleldrive/cuid2";
 import type { CreateNotificationInput } from "@repo/validation";
 import type { InAppNotificationJobPayload } from "../../../jobs/handlers/types";
 import jobQueueManager from "../../../services/jobs/queue-manager";
@@ -48,8 +49,20 @@ export class InAppChannelAdapter implements NotificationChannelAdapter {
 		const results = [];
 
 		// Create one job per recipient to avoid duplication
-		for (const recipient of recipients) {
+		const uniqueRecipients = Array.from(
+			new Map(
+				recipients.map((recipient) => [recipient.userId, recipient]),
+			).values(),
+		);
+
+		for (const recipient of uniqueRecipients) {
+			const baseId = typeof override.id === "string" ? override.id : undefined;
+			const notificationId = baseId
+				? `${baseId}_${recipient.userId}`
+				: createId();
+
 			const payload: CreateNotificationInput = {
+				id: notificationId,
 				type:
 					override.type ??
 					request.notificationType ??
@@ -76,9 +89,9 @@ export class InAppChannelAdapter implements NotificationChannelAdapter {
 			}
 
 			try {
-				const jobPayload: InAppNotificationJobPayload = {
-					notification: payload,
-				};
+			const jobPayload: InAppNotificationJobPayload = {
+				notification: payload,
+			};
 
 				const jobOptions = {
 					type: request.jobOptions?.jobType ?? JOB_TYPE,

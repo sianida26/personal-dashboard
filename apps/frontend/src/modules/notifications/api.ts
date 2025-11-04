@@ -9,6 +9,8 @@ export interface NotificationListQuery {
 	status?: NotificationStatus;
 	type?: Notification["type"];
 	category?: string;
+	cursor?: string;
+	limit?: number;
 }
 
 const ensureOk = async (response: Response) => {
@@ -19,15 +21,26 @@ const ensureOk = async (response: Response) => {
 	return response;
 };
 
+const serializeQuery = (query: NotificationListQuery) =>
+	Object.fromEntries(
+		Object.entries(query)
+			.filter(
+				([, value]) =>
+					value !== undefined &&
+					value !== "" &&
+					value !== null,
+			)
+			.map(([key, value]) => [
+				key,
+				typeof value === "number" ? value.toString() : value,
+			]),
+	);
+
 export const fetchNotifications = async (
 	queryParams: NotificationListQuery = {},
 ): Promise<PaginatedNotificationsResponse> => {
 	const response = await client.notifications.$get({
-		query: Object.fromEntries(
-			Object.entries(queryParams).filter(
-				([, value]) => value !== undefined && value !== "",
-			),
-		),
+		query: serializeQuery(queryParams),
 	});
 
 	await ensureOk(response);

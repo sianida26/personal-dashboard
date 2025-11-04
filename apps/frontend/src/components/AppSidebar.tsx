@@ -195,7 +195,7 @@ export default function AppSidebar() {
 								<Link to="/personal/notifications">
 									<DropdownMenuItem>
 										<span className="flex items-center gap-2">
-											<TbBell /> Notification Settings
+											<TbBell /> Notification
 										</span>
 									</DropdownMenuItem>
 								</Link>

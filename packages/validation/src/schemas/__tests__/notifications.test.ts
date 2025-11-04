@@ -13,6 +13,7 @@ describe("notifications validation schemas", () => {
 			type: "informational",
 			title: "Hello",
 			message: "World",
+			category: "general",
 		});
 
 		expect(payload.status).toBe("unread");
@@ -25,11 +26,39 @@ describe("notifications validation schemas", () => {
 			type: "informational",
 			title: "Pricing update",
 			message: "Margin adjusted",
-			category: "pricing",
+			category: "general",
 		});
 
 		expect(payload.roleCodes).toContain("sales");
-		expect(payload.category).toBe("pricing");
+		expect(payload.category).toBe("general");
+	});
+
+	it("accepts channel overrides and preference controls", () => {
+		const payload = createNotificationSchema.parse({
+			userId: "user_123",
+			type: "informational",
+			title: "Ops alert",
+			message: "Check system",
+			category: "system",
+			channels: ["whatsapp", "email"],
+			respectPreferences: false,
+			channelOverrides: {
+				email: {
+					to: "ops@example.com",
+					subject: "Override subject",
+				},
+				whatsapp: {
+					phoneNumber: "+15555550100",
+					message: "Override message",
+				},
+			},
+		});
+
+		expect(payload.channels).toEqual(["whatsapp", "email"]);
+		expect(payload.respectPreferences).toBe(false);
+		expect(payload.channelOverrides?.whatsapp?.phoneNumber).toBe(
+			"+15555550100",
+		);
 	});
 
 	it("requires at least one recipient", () => {

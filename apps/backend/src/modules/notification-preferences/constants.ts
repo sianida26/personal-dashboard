@@ -13,10 +13,10 @@ export const NOTIFICATION_CHANNELS: NotificationChannelEnum[] = [
 	"inApp",
 	"email",
 	"whatsapp",
-	"push",
 ];
 
 // Updated: All channels enabled by default for all categories
+// Note: inApp channel includes browser native push notifications
 export const DEFAULT_NOTIFICATION_PREFERENCE_MATRIX: Partial<
 	Record<NotificationCategoryEnum, Record<NotificationChannelEnum, boolean>>
 > = {
@@ -24,19 +24,16 @@ export const DEFAULT_NOTIFICATION_PREFERENCE_MATRIX: Partial<
 		inApp: true,
 		email: true,
 		whatsapp: true,
-		push: false,
 	},
 	general: {
 		inApp: true,
 		email: true,
 		whatsapp: true,
-		push: false,
 	},
 	system: {
 		inApp: true,
 		email: true,
 		whatsapp: true,
-		push: false,
 	},
 };
 

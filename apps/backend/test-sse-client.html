@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SSE Test</title>
+</head>
+<body>
+    <h1>SSE Connection Test</h1>
+    <div id="log"></div>
+
+    <script>
+        const log = document.getElementById('log');
+        const token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJ5NDhzbGNyNmYwdmZpc3J5Ynlrb2U0OTEiLCJpYXQiOjE3NjIxNTQzMjR9.cUyBIRcMSq3TO4Fo5jVVQ_yWNaqhgqD2armYO4NzjWCP3xx4-480lTDs4hWJ4rybdrSP-P5ylXxMOgqAZ_wt1iLifwcXuj7sbj79OSoUCpxhR8RmuDicpivhKdxsqb0Vw4hSjCWRXX1kqh9NavhZHhUwWvNaIsSw38i4v0McQ3A9NdGnNRJRzTmzx6IwyiT7XyONwcpueo_Xq72b_XrrUODm7x4ZLTqXkJo88kHO5pNxOrRc1MXk_HByf1S6YnL8A3PgY4U4iyGf4XVX1GHnU3NpnbANscz_kiMFxNNIiaPpoj6633MB5VRT6kWD82p_9eieU_S9HBqJiNWvTBW8tw';
+
+        function addLog(message) {
+            const p = document.createElement('p');
+            p.textContent = `[${new Date().toISOString()}] ${message}`;
+            log.appendChild(p);
+            console.log(message);
+        }
+
+        addLog('Attempting to connect to SSE stream...');
+
+        const source = new EventSource(`http://localhost:3000/notifications/stream?token=${token}`);
+
+        source.addEventListener('connected', (e) => {
+            addLog(`✅ CONNECTED: ${e.data}`);
+        });
+
+        source.addEventListener('heartbeat', (e) => {
+            addLog(`💓 HEARTBEAT: ${e.data}`);
+        });
+
+        source.addEventListener('notification', (e) => {
+            addLog(`📬 NOTIFICATION: ${e.data}`);
+        });
+
+        source.addEventListener('open', () => {
+            addLog('✅ SSE connection opened');
+        });
+
+        source.addEventListener('error', (e) => {
+            addLog(`❌ ERROR: ${JSON.stringify(e)}`);
+            addLog(`ReadyState: ${source.readyState} (0=CONNECTING, 1=OPEN, 2=CLOSED)`);
+        });
+    </script>
+</body>
+</html>

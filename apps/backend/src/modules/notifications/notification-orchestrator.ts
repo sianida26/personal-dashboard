@@ -141,7 +141,18 @@ export class NotificationOrchestrator {
 		status: NotificationStatusEnum,
 		userId: string,
 	): Promise<number> {
-		const updated = await this.repository.markNotifications(ids, status);
+		const updated = await this.repository.markNotifications(
+			ids,
+			status,
+			userId,
+		);
+		const uniqueRequestedIds = new Set(ids);
+
+		if (updated !== uniqueRequestedIds.size) {
+			throw new Error(
+				"Some notifications could not be updated. They may not exist or may belong to another user.",
+			);
+		}
 
 		if (updated) {
 			this.eventHub.emit("read", {
@@ -163,6 +174,12 @@ export class NotificationOrchestrator {
 
 		if (!notification) {
 			throw new Error("Notification not found");
+		}
+
+		if (notification.userId !== input.actedBy) {
+			throw new Error(
+				"You can only act on notifications assigned to you.",
+			);
 		}
 
 		if (notification.type !== "approval") {
@@ -194,6 +211,7 @@ export class NotificationOrchestrator {
 		await this.repository.markNotifications(
 			[notification.id],
 			"read" satisfies NotificationStatusEnum,
+			notification.userId,
 		);
 
 		this.eventHub.emit("actioned", log);

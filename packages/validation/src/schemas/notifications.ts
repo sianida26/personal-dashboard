@@ -14,7 +14,6 @@ export const notificationChannelSchema = z.enum([
 	"inApp",
 	"email",
 	"whatsapp",
-	"push",
 ]);
 
 export const notificationPreferenceSourceSchema = z.enum([
@@ -95,6 +94,55 @@ const metadataSchema = z
 	.prefault({})
 	.transform((value) => value ?? {});
 
+const emailOverrideSchema = z
+	.object({
+		to: z.union([z.string(), z.array(z.string())]).optional(),
+		cc: z
+			.union([z.string(), z.array(z.string())])
+			.optional(),
+		bcc: z
+			.union([z.string(), z.array(z.string())])
+			.optional(),
+		subject: z.string().min(1).optional(),
+		metadata: metadataSchema.optional(),
+	})
+	.partial()
+	.optional();
+
+const whatsappOverrideSchema = z
+	.object({
+		phoneNumber: z.union([z.string(), z.number()]).optional(),
+		message: z.string().min(1).optional(),
+		metadata: metadataSchema.optional(),
+		session: z.string().optional(),
+		linkPreview: z.boolean().optional(),
+		linkPreviewHighQuality: z.boolean().optional(),
+	})
+	.partial()
+	.optional()
+	.transform((value) => {
+		if (!value) return value;
+		const normalized = { ...value } as Record<string, unknown>;
+		const rawPhone = normalized.phoneNumber;
+		if (typeof rawPhone === "number") {
+			normalized.phoneNumber = String(rawPhone);
+		} else if (rawPhone !== undefined && typeof rawPhone !== "string") {
+			normalized.phoneNumber = undefined;
+		}
+		return {
+			...normalized,
+		};
+	});
+
+const channelOverridesSchema = z
+	.object({
+		inApp: metadataSchema.optional(),
+		email: emailOverrideSchema,
+		whatsapp: whatsappOverrideSchema,
+	})
+	.partial()
+	.optional();
+
 export const notificationActionSchema = z.object({
 	id: z.cuid2().optional(),
 	actionKey: z
@@ -152,6 +200,9 @@ export const createNotificationSchema = z
 		status: notificationStatusSchema.optional().prefault("unread"),
 		category: notificationCategorySchema,
 		actions: z.array(notificationActionSchema).optional(),
+		channels: z.array(notificationChannelSchema).optional(),
+		channelOverrides: channelOverridesSchema,
+		respectPreferences: z.boolean().optional(),
 		expiresAt: z
 			.union([z.date(), z.iso.datetime(), z.null()])
 			.prefault(null)

@@ -27,6 +27,9 @@ export interface WhatsAppNotificationPayload {
 	phoneNumber: string;
 	message: string;
 	metadata?: Record<string, unknown>;
+	session?: string;
+	linkPreview?: boolean;
+	linkPreviewHighQuality?: boolean;
 }
 
 // Union type for all notification job payloads
@@ -35,7 +38,8 @@ export type NotificationJobPayload =
 	| { whatsapp: WhatsAppNotificationPayload };
 
 // Notification channel type
-export type NotificationChannel = "inApp" | "email" | "whatsapp" | "push";
+// Note: inApp includes browser native push notifications
+export type NotificationChannel = "inApp" | "email" | "whatsapp";
 
 // Notification priority type
 export type NotificationPriority = "low" | "normal" | "high";
