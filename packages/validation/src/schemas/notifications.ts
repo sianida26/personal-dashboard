@@ -10,11 +10,7 @@ export const notificationCategorySchema = z.enum([
 	"system",
 ]);
 
-export const notificationChannelSchema = z.enum([
-	"inApp",
-	"email",
-	"whatsapp",
-]);
+export const notificationChannelSchema = z.enum(["inApp", "email", "whatsapp"]);
 
 export const notificationPreferenceSourceSchema = z.enum([
 	"user",
@@ -89,27 +85,25 @@ export const bulkUpsertNotificationPreferencesSchema = z.object({
 	preferences: z.array(upsertNotificationPreferenceSchema).min(1),
 });
 
+const notificationPrioritySchema = z.enum(["low", "normal", "high"]);
+
 const metadataSchema = z
 	.record(z.string(), z.unknown())
 	.prefault({})
 	.transform((value) => value ?? {});
 
-const emailOverrideSchema = z
+const emailNotificationPayloadSchema = z
 	.object({
 		to: z.union([z.string(), z.array(z.string())]).optional(),
-		cc: z
-			.union([z.string(), z.array(z.string())])
-			.optional(),
-		bcc: z
-			.union([z.string(), z.array(z.string())])
-			.optional(),
+		cc: z.union([z.string(), z.array(z.string())]).optional(),
+		bcc: z.union([z.string(), z.array(z.string())]).optional(),
 		subject: z.string().min(1).optional(),
 		metadata: metadataSchema.optional(),
 	})
 	.partial()
 	.optional();
 
-const whatsappOverrideSchema = z
+const whatsappNotificationPayloadSchema = z
 	.object({
 		phoneNumber: z.union([z.string(), z.number()]).optional(),
 		message: z.string().min(1).optional(),
@@ -137,8 +131,8 @@ const whatsappOverrideSchema = z
 const channelOverridesSchema = z
 	.object({
 		inApp: metadataSchema.optional(),
-		email: emailOverrideSchema,
-		whatsapp: whatsappOverrideSchema,
+		email: emailNotificationPayloadSchema,
+		whatsapp: whatsappNotificationPayloadSchema,
 	})
 	.partial()
 	.optional();
@@ -295,3 +289,10 @@ export type UpsertNotificationPreferenceInput = z.infer<
 export type BulkUpsertNotificationPreferencesInput = z.infer<
 	typeof bulkUpsertNotificationPreferencesSchema
 >;
+export type EmailNotificationPayload = z.infer<
+	typeof emailNotificationPayloadSchema
+>;
+export type WhatsappNotificationPayload = z.infer<
+	typeof whatsappNotificationPayloadSchema
+>;
+export type NotificationPriority = z.infer<typeof notificationPrioritySchema>;

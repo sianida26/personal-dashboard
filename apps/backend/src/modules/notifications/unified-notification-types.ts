@@ -1,15 +1,12 @@
 import type {
+	EmailNotificationPayload,
 	NotificationCategoryEnum,
 	NotificationChannelEnum,
 	NotificationPreferenceSourceEnum,
-	NotificationTypeEnum,
-} from "@repo/validation";
-import type {
-	EmailNotificationPayload,
-	InAppNotificationPayload,
 	NotificationPriority,
-	WhatsAppNotificationPayload,
-} from "../../types/notifications";
+	NotificationTypeEnum,
+	WhatsappNotificationPayload,
+} from "@repo/validation";
 
 export interface UnifiedNotificationAudience {
 	userId?: string;
@@ -18,9 +15,9 @@ export interface UnifiedNotificationAudience {
 }
 
 export interface UnifiedNotificationChannelOverrides {
-	inApp?: Partial<InAppNotificationPayload>;
+	inApp?: Partial<Record<string, unknown>>;
 	email?: Partial<EmailNotificationPayload>;
-	whatsapp?: Partial<WhatsAppNotificationPayload>;
+	whatsapp?: Partial<WhatsappNotificationPayload>;
 }
 
 export interface UnifiedNotificationRequest

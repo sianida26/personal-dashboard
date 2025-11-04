@@ -1,14 +1,17 @@
 import { z } from "zod";
-import type { JobHandler } from "../../services/jobs/types";
 import emailService from "../../services/email/email-service";
+import type { JobHandler } from "../../services/jobs/types";
 
 const payloadSchema = z.object({
-	to: z.array(z.string().email()).min(1),
+	to: z.union([z.email(), z.array(z.email())]).refine((val) => {
+		const normalized = Array.isArray(val) ? val : [val];
+		return normalized.length > 0;
+	}),
 	subject: z.string(),
 	html: z.string(),
 	text: z.string().optional(),
-	cc: z.array(z.string().email()).optional(),
-	bcc: z.array(z.string().email()).optional(),
+	cc: z.union([z.email(), z.array(z.email())]).optional(),
+	bcc: z.union([z.email(), z.array(z.email())]).optional(),
 });
 
 type EmailNotificationPayload = z.infer<typeof payloadSchema>;
@@ -26,17 +29,26 @@ const emailNotificationHandler: JobHandler<EmailNotificationPayload> = {
 	async execute(payload, context) {
 		const { to, subject, html, text, cc, bcc } = payload;
 
-		const recipientList = Array.isArray(to) ? to.join(", ") : to;
+		// Normalize email addresses to arrays
+		const normalizedTo = Array.isArray(to) ? to : [to];
+		const normalizedCc = cc ? (Array.isArray(cc) ? cc : [cc]) : undefined;
+		const normalizedBcc = bcc
+			? Array.isArray(bcc)
+				? bcc
+				: [bcc]
+			: undefined;
+
+		const recipientList = normalizedTo.join(", ");
 		context.logger.info(`Sending email to ${recipientList}`);
 
 		try {
 			const result = await emailService.sendEmail({
-				to,
+				to: normalizedTo,
 				subject,
 				html,
 				text,
-				cc,
-				bcc,
+				cc: normalizedCc,
+				bcc: normalizedBcc,
 			});
 
 			if (!result.success) {
@@ -50,7 +62,7 @@ const emailNotificationHandler: JobHandler<EmailNotificationPayload> = {
 			return {
 				success: true,
 				message: `Email sent to ${recipientList}`,
-				data: { messageId: result.messageId, recipients: to },
+				data: { messageId: result.messageId, recipients: normalizedTo },
 			};
 		} catch (error) {
 			const errorMsg = new Error(

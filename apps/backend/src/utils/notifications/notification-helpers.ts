@@ -62,16 +62,22 @@ export async function sendToUsersAndRoles(
 	const normalizedOverrides: UnifiedNotificationChannelOverrides | undefined =
 		channelOverrides
 			? {
-				...channelOverrides,
-				email: channelOverrides.email
-					? {
-						...channelOverrides.email,
-						to: normalizeRecipients(channelOverrides.email.to),
-						cc: normalizeRecipients(channelOverrides.email.cc),
-						bcc: normalizeRecipients(channelOverrides.email.bcc),
-					}
-					: undefined,
-			}
+					...channelOverrides,
+					email: channelOverrides.email
+						? {
+								...channelOverrides.email,
+								to: normalizeRecipients(
+									channelOverrides.email.to,
+								),
+								cc: normalizeRecipients(
+									channelOverrides.email.cc,
+								),
+								bcc: normalizeRecipients(
+									channelOverrides.email.bcc,
+								),
+							}
+						: undefined,
+				}
 			: undefined;
 
 	// Only send if there are recipients
@@ -90,7 +96,7 @@ export async function sendToUsersAndRoles(
 			message,
 			channels,
 			metadata,
-			priority: priority as "low" | "normal" | "high" | undefined,
+			priority,
 			respectPreferences,
 			channelOverrides: normalizedOverrides,
 		});

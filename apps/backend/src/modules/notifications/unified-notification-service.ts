@@ -210,36 +210,37 @@ export class UnifiedNotificationService {
 		category: UnifiedNotificationRequest["category"],
 		channel: NotificationChannelEnum,
 	) {
-		const preference = this.findPreference(
-			summary.preferences,
-			category,
-			channel,
+		// First check global preference - it acts as a master switch
+		const globalPreference = summary.preferences.find(
+			(item) => item.category === "global" && item.channel === channel,
 		);
-		if (preference) {
-			return preference.effective;
+
+		// If global preference exists and is disabled, channel is disabled regardless of category-specific settings
+		if (globalPreference && !globalPreference.effective) {
+			return false;
 		}
+
+		// Then check category-specific preference
+		const categoryPreference = summary.preferences.find(
+			(item) => item.category === category && item.channel === channel,
+		);
+
+		if (categoryPreference) {
+			return categoryPreference.effective;
+		}
+
+		// If global preference exists and is enabled, use it
+		if (globalPreference) {
+			return globalPreference.effective;
+		}
+
+		// Fall back to default matrix
 		const fallback =
 			DEFAULT_NOTIFICATION_PREFERENCE_MATRIX[category]?.[channel];
 		if (typeof fallback === "boolean") {
 			return fallback;
 		}
 		return DEFAULT_NOTIFICATION_PREFERENCE_MATRIX.global?.[channel] ?? true;
-	}
-
-	private findPreference(
-		preferences: NotificationPreferenceView[],
-		category: UnifiedNotificationRequest["category"],
-		channel: NotificationChannelEnum,
-	) {
-		const byCategory = preferences.find(
-			(item) => item.category === category && item.channel === channel,
-		);
-		if (byCategory) {
-			return byCategory;
-		}
-		return preferences.find(
-			(item) => item.category === "global" && item.channel === channel,
-		);
 	}
 }
 

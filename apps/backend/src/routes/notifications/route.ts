@@ -6,7 +6,7 @@ import {
 } from "@repo/validation";
 import type { Context } from "hono";
 import { Hono } from "hono";
-import { stream, streamSSE } from "hono/streaming";
+import { streamSSE } from "hono/streaming";
 import { z } from "zod";
 import { forbidden, unauthorized } from "../../errors/DashboardError";
 import notificationEventHub from "../../lib/event-bus/notification-event-hub";
