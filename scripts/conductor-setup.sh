@@ -59,10 +59,6 @@ else
     echo "  → apps/frontend/.env already exists"
 fi
 
-# Setup Husky
-echo "🪝 Setting up git hooks..."
-bun run prepare
-
 echo ""
 echo "✅ Workspace setup complete!"
 echo ""
