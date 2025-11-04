@@ -23,29 +23,19 @@ bun install
 # Setup environment files with symlinks to root repo
 echo "⚙️  Setting up environment file symlinks..."
 
-# Root .env
-if [ ! -f ".env" ]; then
-    if [ -f "$CONDUCTOR_ROOT_PATH/.env" ]; then
-        ln -s "$CONDUCTOR_ROOT_PATH/.env" .env
-        echo "  ✓ Created symlink to root .env"
-    else
-        echo "  ⚠️  Warning: $CONDUCTOR_ROOT_PATH/.env not found"
-        echo "  Please create .env file in the root repository"
-        exit 1
-    fi
-else
-    echo "  → .env already exists"
-fi
-
 # Backend .env
 if [ ! -f "apps/backend/.env" ]; then
     if [ -f "$CONDUCTOR_ROOT_PATH/apps/backend/.env" ]; then
         ln -s "$CONDUCTOR_ROOT_PATH/apps/backend/.env" apps/backend/.env
         echo "  ✓ Created symlink to backend .env"
     else
-        echo "  ⚠️  Warning: $CONDUCTOR_ROOT_PATH/apps/backend/.env not found"
-        echo "  Please create apps/backend/.env file in the root repository"
-        exit 1
+        if [ -f "apps/backend/.env.example" ]; then
+            cp apps/backend/.env.example apps/backend/.env
+            echo "  ✓ Copied apps/backend/.env from .env.example"
+            else
+            echo "  ⚠️  Warning: $CONDUCTOR_ROOT_PATH/apps/backend/.env not found and apps/backend/.env.example not found"
+            echo "  Please create apps/backend/.env file or .env.example in the repository"
+            fi
     fi
 else
     echo "  → apps/backend/.env already exists"
@@ -57,9 +47,13 @@ if [ ! -f "apps/frontend/.env" ]; then
         ln -s "$CONDUCTOR_ROOT_PATH/apps/frontend/.env" apps/frontend/.env
         echo "  ✓ Created symlink to frontend .env"
     else
-        echo "  ⚠️  Warning: $CONDUCTOR_ROOT_PATH/apps/frontend/.env not found"
-        echo "  Please create apps/frontend/.env file in the root repository"
-        exit 1
+        if [ -f "apps/frontend/.env.example" ]; then
+            cp apps/frontend/.env.example apps/frontend/.env
+            echo "  ✓ Copied apps/frontend/.env from .env.example"
+            else
+            echo "  ⚠️  Warning: $CONDUCTOR_ROOT_PATH/apps/frontend/.env not found and apps/frontend/.env.example not found"
+            echo "  Please create apps/frontend/.env file or .env.example in the repository"
+            fi
     fi
 else
     echo "  → apps/frontend/.env already exists"
