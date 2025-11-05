@@ -1,5 +1,3 @@
-// MUST be first import to ensure instrumentation is loaded before any other modules
-import "./utils/telemetry";
 import { configDotenv } from "dotenv";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
@@ -14,8 +12,8 @@ import microsoftAdminRouter from "./routes/auth/microsoft/admin";
 import authRouter from "./routes/auth/route";
 import dashboardRoutes from "./routes/dashboard/routes";
 import devRoutes from "./routes/dev/route";
-import notificationsRoute from "./routes/notifications/route";
 import notificationPreferencesRoute from "./routes/notificationPreferences/route";
+import notificationsRoute from "./routes/notifications/route";
 import permissionRoutes from "./routes/permissions/route";
 import rolesRoute from "./routes/roles/route";
 import usersRoute from "./routes/users/route";

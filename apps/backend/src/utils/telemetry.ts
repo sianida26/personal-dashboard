@@ -14,28 +14,16 @@ if (process.env.OTEL_ENABLED === "true") {
 	const otlpExporterBaseUrl =
 		process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "http://localhost:4318";
 
-	// Trace Exporter
 	const traceExporter = new OTLPTraceExporter({
 		url: `${otlpExporterBaseUrl}/v1/traces`,
-		headers: process.env.OTEL_EXPORTER_OTLP_HEADERS
-			? JSON.parse(process.env.OTEL_EXPORTER_OTLP_HEADERS)
-			: {},
 	});
 
-	// Metric Exporter
 	const metricExporter = new OTLPMetricExporter({
 		url: `${otlpExporterBaseUrl}/v1/metrics`,
-		headers: process.env.OTEL_EXPORTER_OTLP_HEADERS
-			? JSON.parse(process.env.OTEL_EXPORTER_OTLP_HEADERS)
-			: {},
 	});
 
-	// Log Exporter
 	const logExporter = new OTLPLogExporter({
 		url: `${otlpExporterBaseUrl}/v1/logs`,
-		headers: process.env.OTEL_EXPORTER_OTLP_HEADERS
-			? JSON.parse(process.env.OTEL_EXPORTER_OTLP_HEADERS)
-			: {},
 	});
 
 	const metricReader = new PeriodicExportingMetricReader({
