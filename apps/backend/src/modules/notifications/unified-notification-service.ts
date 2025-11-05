@@ -2,6 +2,7 @@ import type { NotificationChannelEnum } from "@repo/validation";
 import { inArray } from "drizzle-orm";
 import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
+import { addSpanAttributes, addSpanEvent, withSpan } from "../../utils/tracing";
 import {
 	DEFAULT_NOTIFICATION_PREFERENCE_MATRIX,
 	NOTIFICATION_CHANNELS,
@@ -56,57 +57,131 @@ export class UnifiedNotificationService {
 	async sendNotification(
 		request: UnifiedNotificationRequest,
 	): Promise<UnifiedNotificationResponse> {
-		const channels = this.resolveChannels(request.channels);
-		const userIds = await this.resolveAudience(request);
-		if (!userIds.length) {
-			throw new Error("No recipients resolved for unified notification");
-		}
+		return withSpan(
+			"notification.send",
+			async () => {
+				// Add span attributes for the notification request
+				addSpanAttributes({
+					"notification.category": request.category,
+					"notification.channels.requested": request.channels?.join(",") || "default",
+					"notification.respect_preferences": request.respectPreferences ?? true,
+				});
 
-		const recipients = await this.fetchRecipients(userIds);
-		const preferenceCache = new Map<
-			string,
-			NotificationPreferenceSummary
-		>();
-		const results: ChannelDispatchResult[] = [];
+				const channels = this.resolveChannels(request.channels);
+				addSpanAttributes({
+					"notification.channels.resolved": channels.join(","),
+					"notification.channels.count": channels.length,
+				});
 
-		for (const channel of channels) {
-			const adapter = this.adapters.get(channel);
-			if (!adapter) {
-				continue;
-			}
+				const userIds = await this.resolveAudience(request);
+				if (!userIds.length) {
+					addSpanEvent("notification.no_recipients");
+					throw new Error("No recipients resolved for unified notification");
+				}
 
-			const { allowed, skipped } =
-				await this.partitionRecipientsByPreference(
-					recipients,
-					request.category,
-					channel,
-					request.respectPreferences ?? true,
-					preferenceCache,
-				);
+				addSpanAttributes({
+					"notification.recipients.count": userIds.length,
+				});
+				addSpanEvent("notification.recipients_resolved", {
+					count: userIds.length,
+				});
 
-			results.push(
-				...skipped.map((recipient) => ({
-					userId: recipient.userId,
-					channel,
-					status: "skipped" as const,
-					reason: "Channel disabled by user preference",
-				})),
-			);
+				const recipients = await this.fetchRecipients(userIds);
+				const preferenceCache = new Map<
+					string,
+					NotificationPreferenceSummary
+				>();
+				const results: ChannelDispatchResult[] = [];
 
-			if (!allowed.length) {
-				continue;
-			}
+				for (const channel of channels) {
+					const adapter = this.adapters.get(channel);
+					if (!adapter) {
+						addSpanEvent("notification.channel_adapter_missing", {
+							channel,
+						});
+						continue;
+					}
 
-			const channelResults = await adapter.deliver({
-				channel,
-				recipients: allowed,
-				request,
-			});
+					const { allowed, skipped } =
+						await this.partitionRecipientsByPreference(
+							recipients,
+							request.category,
+							channel,
+							request.respectPreferences ?? true,
+							preferenceCache,
+						);
 
-			results.push(...channelResults);
-		}
+					addSpanEvent("notification.channel_preferences_checked", {
+						channel,
+						allowed: allowed.length,
+						skipped: skipped.length,
+					});
 
-		return { results };
+					results.push(
+						...skipped.map((recipient) => ({
+							userId: recipient.userId,
+							channel,
+							status: "skipped" as const,
+							reason: "Channel disabled by user preference",
+						})),
+					);
+
+					if (!allowed.length) {
+						addSpanEvent("notification.channel_no_recipients", {
+							channel,
+						});
+						continue;
+					}
+
+					addSpanEvent("notification.channel_delivering", {
+						channel,
+						recipients: allowed.length,
+					});
+
+					const channelResults = await adapter.deliver({
+						channel,
+						recipients: allowed,
+						request,
+					});
+
+					results.push(...channelResults);
+
+					// Count success/failure for this channel
+					const successes = channelResults.filter(
+						(r) => r.status === "success",
+					).length;
+					const failures = channelResults.filter(
+						(r) => r.status === "failure",
+					).length;
+
+					addSpanEvent("notification.channel_completed", {
+						channel,
+						successes,
+						failures,
+					});
+				}
+
+				// Add final result summary
+				const totalSuccess = results.filter((r) => r.status === "success")
+					.length;
+				const totalFailure = results.filter((r) => r.status === "failure")
+					.length;
+				const totalSkipped = results.filter((r) => r.status === "skipped")
+					.length;
+
+				addSpanAttributes({
+					"notification.results.success": totalSuccess,
+					"notification.results.failure": totalFailure,
+					"notification.results.skipped": totalSkipped,
+					"notification.results.total": results.length,
+				});
+
+				return { results };
+			},
+			{
+				"notification.category": request.category,
+			},
+		);
 	}
 
 	private resolveChannels(channels?: NotificationChannelEnum[]) {

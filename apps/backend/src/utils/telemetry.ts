@@ -14,6 +14,8 @@ if (process.env.OTEL_ENABLED === "true") {
 	const otlpExporterBaseUrl =
 		process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "http://localhost:4318";
 
+	// OTLP exporters automatically read OTEL_EXPORTER_OTLP_HEADERS from environment
+	// No need to manually parse or pass headers
 	const traceExporter = new OTLPTraceExporter({
 		url: `${otlpExporterBaseUrl}/v1/traces`,
 	});
@@ -31,13 +33,59 @@ if (process.env.OTEL_ENABLED === "true") {
 		exportIntervalMillis: 60000, // Export every 60 seconds
 	});
 
-	sdk = new NodeSDK({
-		resource: resourceFromAttributes({
+	// Create resource attributes (shared across traces, metrics, and logs)
+	const resource = resourceFromAttributes({
+			// Service identification
 			"service.name":
 				process.env.OTEL_SERVICE_NAME || "dashboard-backend",
 			"service.version": process.env.npm_package_version || "1.0.0",
+			"service.namespace": "dasbort",
+
+			// Deployment environment
 			"deployment.environment": process.env.APP_ENV || "development",
-		}),
+
+			// Runtime information
+			"process.runtime.name": "bun",
+			"process.runtime.version": process.versions.bun || "unknown",
+			"process.runtime.description": "Bun JavaScript runtime",
+
+			// Host information
+			"host.name": process.env.HOSTNAME || "localhost",
+			"host.arch": process.arch,
+			"host.os": process.platform,
+
+			// Cloud/container information (if available)
+			...(process.env.K8S_POD_NAME && {
+				"k8s.pod.name": process.env.K8S_POD_NAME,
+			}),
+			...(process.env.K8S_NAMESPACE && {
+				"k8s.namespace.name": process.env.K8S_NAMESPACE,
+			}),
+			...(process.env.CONTAINER_NAME && {
+				"container.name": process.env.CONTAINER_NAME,
+			}),
+
+			// Git information (if available)
+			...(process.env.GIT_COMMIT && {
+				"vcs.commit.id": process.env.GIT_COMMIT,
+			}),
+			...(process.env.GIT_BRANCH && {
+				"vcs.branch": process.env.GIT_BRANCH,
+			}),
+
+			// Deployment metadata
+			...(process.env.BUILD_TIME && {
+				"deployment.build_time": process.env.BUILD_TIME,
+			}),
+			...(process.env.BUILD_NUMBER && {
+				"deployment.build_number": process.env.BUILD_NUMBER,
+			}),
+		});
+
+	// NodeSDK handles the LoggerProvider setup automatically
+	// We just need to pass the logRecordProcessor
+	sdk = new NodeSDK({
+		resource,
 		traceExporter,
 		metricReader,
 		logRecordProcessor: new BatchLogRecordProcessor(logExporter),
@@ -117,17 +165,29 @@ if (process.env.OTEL_ENABLED === "true") {
 		description: "Number of times the server process starts",
 	});
 	startupCounter.add(1);
+
+	console.log("✅ OpenTelemetry initialized successfully");
+	console.log(`📊 Service: ${process.env.OTEL_SERVICE_NAME || "dashboard-backend"}`);
+	console.log(`📡 Exporting to: ${otlpExporterBaseUrl}`);
+	console.log(
+		`🔑 Headers: ${process.env.OTEL_EXPORTER_OTLP_HEADERS ? "Configured" : "None"}`,
+	);
+	console.log(`📝 Logs: Enabled with structured export to SigNoz`);
+} else {
+	console.log("⚠️  OpenTelemetry is DISABLED (OTEL_ENABLED != true)");
 }
 
 // Graceful shutdown
-process.on("beforeExit", () => {
-	sdk?.shutdown();
+process.on("beforeExit", async () => {
+	await sdk?.shutdown();
 });
 
-process.on("SIGTERM", () => {
-	sdk?.shutdown().then(() => process.exit(0));
+process.on("SIGTERM", async () => {
+	await sdk?.shutdown();
+	process.exit(0);
 });
 
-process.on("SIGINT", () => {
-	sdk?.shutdown().then(() => process.exit(0));
+process.on("SIGINT", async () => {
+	await sdk?.shutdown();
+	process.exit(0);
 });
