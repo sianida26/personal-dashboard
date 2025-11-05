@@ -57,6 +57,11 @@ const envSchema = z.object({
 	OTEL_SERVICE_NAME: z.string().default("dashboard-backend"),
 	OTEL_EXPORTER_OTLP_ENDPOINT: z.string().default("http://localhost:4318"),
 	OTEL_EXPORTER_OTLP_HEADERS: z.string().optional(),
+
+	// Notification Override Recipients
+	// When set, these override all notification recipients (useful for testing/development)
+	NOTIFICATION_OVERRIDE_EMAIL: z.string().email().optional(),
+	NOTIFICATION_OVERRIDE_PHONE: z.string().optional(),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);

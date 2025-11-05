@@ -8,6 +8,7 @@ import type {
 	NotificationChannelEnum,
 	NotificationTypeEnum,
 } from "@repo/validation";
+import appEnv from "../../appEnv";
 import unifiedNotificationService from "../../modules/notifications/unified-notification-service";
 import type {
 	UnifiedNotificationChannelOverrides,
@@ -26,6 +27,45 @@ interface SendToUsersAndRolesOptions {
 	priority?: "low" | "normal" | "high";
 	respectPreferences?: boolean;
 	channelOverrides?: UnifiedNotificationChannelOverrides;
+}
+
+/**
+ * Build channel overrides from environment variables if they are set
+ * This allows overriding all notification recipients for testing/development
+ */
+function buildChannelOverridesFromEnv(
+	userProvidedOverrides?: UnifiedNotificationChannelOverrides,
+): UnifiedNotificationChannelOverrides | undefined {
+	const overrideEmail = appEnv.NOTIFICATION_OVERRIDE_EMAIL;
+	const overridePhone = appEnv.NOTIFICATION_OVERRIDE_PHONE;
+
+	// If no override recipients are set in env, return user-provided overrides as-is
+	if (!overrideEmail && !overridePhone) {
+		return userProvidedOverrides;
+	}
+
+	// Start with user-provided overrides or empty object
+	const overrides: UnifiedNotificationChannelOverrides = {
+		...userProvidedOverrides,
+	};
+
+	// Add email override if set in env
+	if (overrideEmail) {
+		overrides.email = {
+			...userProvidedOverrides?.email,
+			to: overrideEmail,
+		};
+	}
+
+	// Add whatsapp override if set in env
+	if (overridePhone) {
+		overrides.whatsapp = {
+			...userProvidedOverrides?.whatsapp,
+			phoneNumber: overridePhone,
+		};
+	}
+
+	return overrides;
 }
 
 /**
@@ -59,21 +99,24 @@ export async function sendToUsersAndRoles(
 		return [value];
 	};
 
+	// Build channel overrides from environment variables first
+	const envOverrides = buildChannelOverridesFromEnv(channelOverrides);
+
 	const normalizedOverrides: UnifiedNotificationChannelOverrides | undefined =
-		channelOverrides
+		envOverrides
 			? {
-					...channelOverrides,
-					email: channelOverrides.email
+					...envOverrides,
+					email: envOverrides.email
 						? {
-								...channelOverrides.email,
+								...envOverrides.email,
 								to: normalizeRecipients(
-									channelOverrides.email.to,
+									envOverrides.email.to,
 								),
 								cc: normalizeRecipients(
-									channelOverrides.email.cc,
+									envOverrides.email.cc,
 								),
 								bcc: normalizeRecipients(
-									channelOverrides.email.bcc,
+									envOverrides.email.bcc,
 								),
 							}
 						: undefined,
