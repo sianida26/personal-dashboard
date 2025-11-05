@@ -16,4 +16,6 @@ const seeder = async () => {
 	console.timeEnd("Done seeding");
 };
 
-await seeder();
+await seeder().then(() => {
+	process.exit(0);
+});
