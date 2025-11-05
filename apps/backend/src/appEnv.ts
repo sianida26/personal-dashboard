@@ -1,8 +1,5 @@
 import { isIP } from "node:net";
-import dotenv from "dotenv";
 import { z } from "zod";
-
-dotenv.config();
 
 /**
  * Creates a Zod schema for logging options with a default value.

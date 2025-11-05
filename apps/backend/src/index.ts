@@ -1,4 +1,3 @@
-import { configDotenv } from "dotenv";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
@@ -21,8 +20,6 @@ import { jobQueueManager } from "./services/jobs";
 import type HonoEnv from "./types/HonoEnv";
 import { recordError } from "./utils/error-tracking";
 import appLogger from "./utils/logger";
-
-configDotenv();
 
 const app = new Hono<HonoEnv>();
 
