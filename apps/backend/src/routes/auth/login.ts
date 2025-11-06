@@ -1,7 +1,7 @@
 import { zValidator } from "@hono/zod-validator";
 import type { PermissionCode } from "@repo/data";
 import { and, eq, isNull, ne, or, sql } from "drizzle-orm";
-import { loginSchema } from "../../../../../packages/validation/src/schemas/authSchema";
+import { loginSchema } from "@repo/validation";
 import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
 import DashboardError from "../../errors/DashboardError";
