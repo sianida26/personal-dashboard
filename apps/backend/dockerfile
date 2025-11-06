@@ -1,0 +1,38 @@
+FROM oven/bun:1.2-alpine AS base
+
+ENV NODE_ENV=production
+
+WORKDIR /node
+
+# =========================================================================== #
+
+FROM base AS builder
+
+RUN bun install --global turbo@^2
+
+COPY . .
+
+RUN turbo prune backend --docker
+
+# =========================================================================== #
+
+FROM base AS installer
+
+COPY --from=builder /node/out/full .
+RUN bun install --frozen-lockfile --production
+
+# =========================================================================== #
+
+FROM base AS production
+
+COPY --from=installer /node/apps/backend /node
+COPY --from=installer /node/packages /node/packages
+COPY --from=installer /node/node_modules /node/node_modules
+
+RUN mkdir -p /node/logs && chmod 777 /node/logs
+RUN mkdir -p /node/keys && chmod 777 /node/keys
+RUN mkdir -p /node/uploads && chmod 777 /node/uploads
+
+EXPOSE 81
+
+CMD ["sh", "-c", "bun db:migrate && bun db:seed && bun start"]

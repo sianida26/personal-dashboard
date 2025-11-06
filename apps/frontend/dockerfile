@@ -1,0 +1,41 @@
+FROM oven/bun:1.2-alpine AS base
+
+ENV NODE_ENV=production
+
+WORKDIR /node
+
+# =========================================================================== #
+
+FROM base AS builder
+
+RUN bun install -g turbo@^2
+
+COPY . .
+
+RUN turbo prune frontend --docker
+
+# =========================================================================== #
+
+FROM base AS installer
+
+COPY --from=builder /node/out/full .
+
+WORKDIR /node/apps/frontend
+
+ARG VITE_BACKEND_BASE_URL
+RUN echo "VITE_BACKEND_BASE_URL=${VITE_BACKEND_BASE_URL}" > .env
+
+RUN bun install --frozen-lockfile
+
+ENV NODE_OPTIONS="--max-old-space-size=1536"
+RUN bun run build
+
+# =========================================================================== #
+FROM caddy:2-alpine AS production
+
+COPY --from=installer /node/apps/frontend/caddyfile /etc/caddy/caddyfile
+COPY --from=installer /node/apps/frontend/dist /srv
+
+EXPOSE 80
+
+CMD ["caddy", "run", "--config", "/etc/caddy/caddyfile"]
