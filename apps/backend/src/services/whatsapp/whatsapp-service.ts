@@ -30,10 +30,6 @@ export class WhatsAppService {
 		this.apiKey = process.env.WAHA_API_KEY || "";
 		this.baseUrl = process.env.WAHA_BASE_URL || "https://waha.dsg.id";
 		this.defaultSession = process.env.WAHA_SESSION || "default";
-
-		if (!this.apiKey) {
-			console.warn("WAHA API key not configured");
-		}
 	}
 
 	isReady(): boolean {

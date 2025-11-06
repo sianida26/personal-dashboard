@@ -28,9 +28,6 @@ export class EmailService {
 		const smtpPass = process.env.SMTP_PASS;
 
 		if (!smtpHost || !smtpUser || !smtpPass) {
-			console.warn(
-				"Email service not configured. Please set SMTP_HOST, SMTP_USER, and SMTP_PASS environment variables.",
-			);
 			return;
 		}
 
