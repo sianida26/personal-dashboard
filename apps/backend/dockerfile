@@ -1,38 +1,40 @@
-FROM oven/bun:1.2-alpine AS base
+FROM oven/bun:1-alpine AS base
 
 ENV NODE_ENV=production
-
 WORKDIR /node
 
 # =========================================================================== #
 
 FROM base AS builder
 
-RUN bun install --global turbo@^2
+RUN bun install --global turbo
 
 COPY . .
-
 RUN turbo prune backend --docker
 
 # =========================================================================== #
 
 FROM base AS installer
 
-COPY --from=builder /node/out/full .
+COPY --from=builder /node/out/json/ ./
 RUN bun install --frozen-lockfile --production
+COPY --from=builder /node/out/full/ .
 
 # =========================================================================== #
 
 FROM base AS production
 
-COPY --from=installer /node/apps/backend /node
-COPY --from=installer /node/packages /node/packages
-COPY --from=installer /node/node_modules /node/node_modules
+COPY --from=installer /node/apps/backend ./apps/backend
+COPY --from=installer /node/packages ./packages
+COPY --from=installer /node/node_modules ./node_modules
+COPY --from=installer /node/package.json ./package.json
+COPY --from=installer /node/bun.lock ./bun.lock
 
-RUN mkdir -p /node/logs && chmod 777 /node/logs
-RUN mkdir -p /node/keys && chmod 777 /node/keys
-RUN mkdir -p /node/uploads && chmod 777 /node/uploads
+RUN mkdir -p /node/logs /node/keys /node/uploads \
+  && chmod 777 /node/logs /node/keys /node/uploads
+
+WORKDIR /node/apps/backend
 
 EXPOSE 81
 
-CMD ["sh", "-c", "bun db:migrate && bun db:seed && bun start"]
+CMD ["sh", "-c", "bun run db:migrate && bun run db:seed && bun run start"]
