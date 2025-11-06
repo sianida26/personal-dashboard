@@ -1,4 +1,3 @@
-import { isIP } from "node:net";
 import { z } from "zod";
 
 /**
@@ -23,12 +22,7 @@ const logSchema = (defaultValue: "true" | "false") =>
 const envSchema = z.object({
 	//Application
 	APP_ENV: z.enum(["development", "production"]),
-	APP_HOST: z
-		.string()
-		.default("127.0.0.1")
-		.refine((val) => isIP(val) !== 0, {
-			message: "Invalid IP address",
-		}),
+	APP_HOST: z.ipv4().default("0.0.0.0"),
 	APP_PORT: z.coerce.number().int(),
 	BASE_URL: z.string(),
 	FRONTEND_URL: z.string(),
