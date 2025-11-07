@@ -33,9 +33,5 @@
   },
   "devDependencies": {
     "@tanstack/router-devtools": "^1.134.13"
-  },
-  "overrides": {
-    "@tanstack/router-plugin:zod": "^3.25.76",
-    "@tanstack/router-generator:zod": "^3.25.76"
   }
 }
