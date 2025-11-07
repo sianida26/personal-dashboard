@@ -4,16 +4,13 @@ ENV NODE_ENV=production
 WORKDIR /node
 
 # =========================================================================== #
-
 FROM base AS builder
 
-RUN bun install --global turbo
-
 COPY . .
-RUN turbo prune backend --docker
+
+RUN bun x turbo prune backend --docker
 
 # =========================================================================== #
-
 FROM base AS installer
 
 COPY --from=builder /node/out/json/ ./
@@ -21,7 +18,6 @@ RUN bun install --frozen-lockfile --production
 COPY --from=builder /node/out/full/ .
 
 # =========================================================================== #
-
 FROM base AS production
 
 COPY --from=installer /node/apps/backend ./apps/backend

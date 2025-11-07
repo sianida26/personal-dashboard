@@ -5,31 +5,26 @@ ENV NODE_ENV=production
 WORKDIR /node
 
 # =========================================================================== #
-
 FROM base AS builder
-
-RUN bun install --global turbo
 
 COPY . .
 
-RUN turbo prune frontend --docker
+RUN bun x turbo prune frontend --docker
 
 # =========================================================================== #
-
 FROM base AS installer
 
 ARG VITE_BACKEND_BASE_URL
 
 COPY --from=builder /node/out/json/ ./
-RUN bun install --frozen-lockfile --linker hoisted
+RUN bun install --frozen-lockfile
 COPY --from=builder /node/out/full/ .
 
 WORKDIR /node/apps/frontend
 
 RUN echo "VITE_BACKEND_BASE_URL=${VITE_BACKEND_BASE_URL}" > .env
 
-ENV NODE_OPTIONS="--max-old-space-size=1536"
-RUN bun run build
+RUN NODE_OPTIONS="--max-old-space-size=768" bun run build
 
 # =========================================================================== #
 FROM caddy:2-alpine AS production
