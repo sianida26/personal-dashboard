@@ -41,5 +41,9 @@
     "react-dom": "^19.2.0",
     "react-icons": "^5.5.0",
     "zod": "^4.1.12"
+  },
+  "overrides": {
+    "@tanstack/router-plugin:zod": "^3.25.76",
+    "@tanstack/router-generator:zod": "^3.25.76"
   }
 }
