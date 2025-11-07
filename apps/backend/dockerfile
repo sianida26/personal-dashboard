@@ -15,7 +15,7 @@ RUN turbo prune backend --docker
 FROM base AS installer
 
 COPY --from=builder /node/out/json/ ./
-RUN bun install --no-save --production --linker hoisted
+RUN bun install
 COPY --from=builder /node/out/full/ .
 
 # =========================================================================== #
