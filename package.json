@@ -8,9 +8,7 @@
     "check": "turbo run check",
     "lint": "biome lint --write --diagnostic-level warn",
     "format": "biome format --write --diagnostic-level warn",
-    "bump-version": "bun scripts/bump-version.ts",
-    "patch:tanstack-router": "bun scripts/patch-tanstack-router.mjs",
-    "postinstall": "bun run patch:tanstack-router"
+    "bump-version": "bun scripts/bump-version.ts"
   },
   "workspaces": [
     "packages/*",
