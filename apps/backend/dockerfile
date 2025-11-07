@@ -8,28 +8,26 @@ FROM base AS builder
 
 COPY . .
 
-RUN bun x turbo prune backend --docker
+RUN bun install -g turbo
+RUN turbo prune backend --docker
 
 # =========================================================================== #
 FROM base AS installer
 
 COPY --from=builder /node/out/json/ ./
-RUN bun install --frozen-lockfile --production
+RUN bun install --frozen-lockfile --production --linker hoisted
 COPY --from=builder /node/out/full/ .
 
 # =========================================================================== #
 FROM base AS production
 
-COPY --from=installer /node/apps/backend ./apps/backend
-COPY --from=installer /node/packages ./packages
+COPY --from=installer /node/apps/backend/ ./
 COPY --from=installer /node/node_modules ./node_modules
 COPY --from=installer /node/package.json ./package.json
 COPY --from=installer /node/bun.lock ./bun.lock
 
 RUN mkdir -p /node/logs /node/keys /node/uploads \
   && chmod 777 /node/logs /node/keys /node/uploads
-
-WORKDIR /node/apps/backend
 
 EXPOSE 81
 
