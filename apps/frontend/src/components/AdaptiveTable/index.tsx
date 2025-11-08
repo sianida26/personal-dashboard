@@ -225,9 +225,6 @@ const DraggableTableHeader = <T,>({
 						Hide column
 					</ContextMenuItem>
 				)}
-				{!columnVisibilityToggle && (
-					<ContextMenuItem>Dummy Menu Item</ContextMenuItem>
-				)}
 			</ContextMenuContent>
 		</ContextMenu>
 	);
