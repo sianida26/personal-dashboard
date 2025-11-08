@@ -32,6 +32,10 @@ import {
 	PopoverTrigger,
 	ScrollArea,
 	Separator,
+	Sheet,
+	SheetContent,
+	SheetHeader,
+	SheetTitle,
 } from "@repo/ui";
 import {
 	type Cell,
@@ -41,7 +45,7 @@ import {
 	type Header,
 	useReactTable,
 } from "@tanstack/react-table";
-import { ChevronDown, Settings } from "lucide-react";
+import { ChevronDown, ChevronRight, Settings } from "lucide-react";
 import {
 	type CSSProperties,
 	type ReactNode,
@@ -80,6 +84,9 @@ type AdaptiveTableProps<T> = {
 	title?: string;
 	headerActions?: ReactNode;
 	showHeader?: boolean; // Default: true
+	// Detail view props
+	showDetail?: boolean; // Default: true
+	onDetailClick?: (row: T, rowIndex: number) => void;
 };
 
 // Helper function to ensure all columns have IDs
@@ -379,6 +386,187 @@ const EditableCell = <T,>({
 	);
 };
 
+// Detail cell component for side panel
+const DetailCell = <T,>({
+	column,
+	value,
+	rowIndex,
+}: {
+	column: AdaptiveColumnDef<T>;
+	value: unknown;
+	rowIndex: number;
+	row: T;
+}) => {
+	const [isEditing, setIsEditing] = useState(false);
+	const [editValue, setEditValue] = useState(value);
+
+	const handleSave = () => {
+		if (column.onEdited) {
+			column.onEdited(rowIndex, column.id as string, editValue);
+		}
+		setIsEditing(false);
+	};
+
+	const handleKeyDown = (e: React.KeyboardEvent) => {
+		if (e.key === "Enter") {
+			handleSave();
+		} else if (e.key === "Escape") {
+			setEditValue(value);
+			setIsEditing(false);
+		}
+	};
+
+	const handleSelectOption = (optionValue: string | number) => {
+		setEditValue(optionValue);
+		if (column.onEdited) {
+			column.onEdited(rowIndex, column.id as string, optionValue);
+		}
+		setIsEditing(false);
+	};
+
+	// Helper to get color for current value
+	const getColorForValue = () => {
+		if (column.getCellColor) {
+			return column.getCellColor(editValue);
+		}
+		if (column.options) {
+			const option = column.options.find(
+				(opt) => String(opt.value) === String(editValue),
+			);
+			return option?.color;
+		}
+		return undefined;
+	};
+
+	// If not editable, just display the value
+	if (!column.editable) {
+		// For select type, display as chip even if not editable
+		if (column.editType === "select" && column.options) {
+			const option = column.options.find(
+				(opt) => String(opt.value) === String(value),
+			);
+			const cellColor = option?.color || getColorForValue();
+			const displayValue = option?.label || String(value ?? "");
+
+			return (
+				<Badge
+					variant="secondary"
+					className={column.cellClassName}
+					style={
+						cellColor
+							? {
+									backgroundColor: cellColor,
+									color: "white",
+								}
+							: undefined
+					}
+				>
+					{displayValue}
+				</Badge>
+			);
+		}
+		return <span>{String(value ?? "")}</span>;
+	}
+
+	// For editable select type, use Popover with menu
+	if (column.editType === "select") {
+		const cellColor = getColorForValue();
+		const displayValue =
+			column.options?.find(
+				(opt) => String(opt.value) === String(editValue),
+			)?.label || String(editValue ?? "");
+
+		return (
+			<Popover open={isEditing} onOpenChange={setIsEditing}>
+				<PopoverTrigger asChild>
+					<button
+						type="button"
+						onClick={() => setIsEditing(true)}
+						className="cursor-pointer hover:bg-accent/50 px-2 py-1 min-h-[2rem] flex items-center justify-between w-full text-left group"
+					>
+						<Badge
+							variant="secondary"
+							className={column.cellClassName}
+							style={
+								cellColor
+									? {
+											backgroundColor: cellColor,
+											color: "white",
+										}
+									: undefined
+							}
+						>
+							{displayValue}
+						</Badge>
+						<ChevronDown className="h-3 w-3 opacity-50 group-hover:opacity-100 transition-opacity" />
+					</button>
+				</PopoverTrigger>
+				<PopoverContent
+					className="w-auto min-w-[120px] p-0.5"
+					align="start"
+				>
+					<div className="flex flex-col gap-0.5">
+						{column.options?.map((option) => (
+							<button
+								key={option.value}
+								type="button"
+								onClick={() => handleSelectOption(option.value)}
+								className="text-left px-2 py-1 hover:bg-accent rounded-sm text-sm transition-colors"
+							>
+								{column.customOptionComponent ? (
+									column.customOptionComponent(option)
+								) : (
+									<Badge
+										variant="secondary"
+										style={
+											option.color
+												? {
+														backgroundColor:
+															option.color,
+														color: "white",
+													}
+												: undefined
+										}
+									>
+										{option.label}
+									</Badge>
+								)}
+							</button>
+						))}
+					</div>
+				</PopoverContent>
+			</Popover>
+		);
+	}
+
+	// For text input, show input on click with outline
+	if (isEditing) {
+		return (
+			<input
+				type="text"
+				value={String(editValue ?? "")}
+				onChange={(e) => setEditValue(e.target.value)}
+				onBlur={handleSave}
+				onKeyDown={handleKeyDown}
+				// biome-ignore lint/a11y/noAutofocus: required for inline editing
+				autoFocus
+				className="w-full h-full px-2 py-1 outline outline-2 outline-blue-500 bg-transparent"
+			/>
+		);
+	}
+
+	// Text type shows plain value
+	return (
+		<button
+			type="button"
+			onClick={() => setIsEditing(true)}
+			className="cursor-pointer hover:bg-accent/50 px-2 py-1 min-h-[2rem] flex items-center w-full text-left"
+		>
+			{String(editValue ?? "")}
+		</button>
+	);
+};
+
 // Drag along cell component
 const DragAlongCell = <T,>({
 	cell,
@@ -415,6 +603,10 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	// Set default values
 	const columnVisibilityToggle = props.columnVisibilityToggle ?? true;
 	const showHeader = props.showHeader ?? true;
+	const showDetail = props.showDetail ?? true;
+
+	// State for detail view
+	const [detailRowIndex, setDetailRowIndex] = useState<number | null>(null);
 
 	// Ensure all columns have IDs
 	const columnsWithIds = useMemo(
@@ -422,9 +614,40 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		[props.columns],
 	);
 
+	// Add detail column if showDetail is enabled
+	const columnsWithDetail = useMemo(() => {
+		if (!showDetail) return columnsWithIds;
+
+		const detailColumn: AdaptiveColumnDef<T> = {
+			id: "_detail",
+			header: "",
+			cell: ({ row }) => (
+				<button
+					type="button"
+					onClick={() => {
+						const rowIndex = row.index;
+						if (props.onDetailClick) {
+							props.onDetailClick(row.original, rowIndex);
+						} else {
+							setDetailRowIndex(rowIndex);
+						}
+					}}
+					className="p-2 hover:bg-accent rounded transition-colors"
+					aria-label="Show details"
+				>
+					<ChevronRight className="h-4 w-4 text-gray-500" />
+				</button>
+			),
+			size: 50,
+			enableResizing: false,
+		};
+
+		return [detailColumn, ...columnsWithIds];
+	}, [showDetail, columnsWithIds, props]);
+
 	// Initialize column order from saved state or default order
 	const [columnOrder, setColumnOrder] = useState<string[]>(() => {
-		const defaultOrder = columnsWithIds.map((c) => c.id as string);
+		const defaultOrder = columnsWithDetail.map((c) => c.id as string);
 
 		// Load saved state if saveState key is provided
 		if (props.saveState) {
@@ -536,7 +759,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 
 	const table = useReactTable({
 		data: props.data,
-		columns: columnsWithIds,
+		columns: columnsWithDetail,
 		getCoreRowModel: getCoreRowModel(),
 		state: {
 			columnOrder: props.columnOrderable ? columnOrder : undefined,
@@ -825,6 +1048,98 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 						</table>
 					</div>
 				</DndContext>
+
+				{/* Detail Sheet */}
+				{showDetail && !props.onDetailClick && (
+					<Sheet
+						open={detailRowIndex !== null}
+						onOpenChange={(open) => {
+							if (!open) setDetailRowIndex(null);
+						}}
+					>
+						<SheetContent
+							side="right"
+							className="w-[400px] sm:w-[540px] p-4"
+						>
+							<SheetHeader className="mb-4">
+								<SheetTitle>Row Details</SheetTitle>
+							</SheetHeader>
+							<div>
+								{detailRowIndex !== null && (
+									<table className="w-full">
+										<tbody>
+											{columnsWithIds.map((column) => {
+												const columnId =
+													column.id as string;
+												const row =
+													props.data[detailRowIndex];
+												if (!row) return null;
+
+												// Get the value using accessorKey if available
+												let value: unknown;
+												if (
+													"accessorKey" in column &&
+													column.accessorKey
+												) {
+													value = (
+														row as Record<
+															string,
+															unknown
+														>
+													)[
+														column.accessorKey as string
+													];
+												} else if (
+													"accessorFn" in column &&
+													column.accessorFn
+												) {
+													value = column.accessorFn(
+														row,
+														detailRowIndex,
+													);
+												} else {
+													value = (
+														row as Record<
+															string,
+															unknown
+														>
+													)[columnId];
+												}
+
+												const header =
+													typeof column.header ===
+													"string"
+														? column.header
+														: columnId;
+
+												return (
+													<tr
+														key={columnId}
+														className="border-b last:border-b-0"
+													>
+														<td className="py-2 px-2 font-medium text-sm text-muted-foreground w-1/3">
+															{header}
+														</td>
+														<td className="py-2 px-2 text-sm">
+															<DetailCell
+																column={column}
+																value={value}
+																rowIndex={
+																	detailRowIndex
+																}
+																row={row}
+															/>
+														</td>
+													</tr>
+												);
+											})}
+										</tbody>
+									</table>
+								)}
+							</div>
+						</SheetContent>
+					</Sheet>
+				)}
 			</div>
 		);
 	}
@@ -932,6 +1247,96 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 					))}
 				</tbody>
 			</table>
+
+			{/* Detail Sheet */}
+			{showDetail && !props.onDetailClick && (
+				<Sheet
+					open={detailRowIndex !== null}
+					onOpenChange={(open) => {
+						if (!open) setDetailRowIndex(null);
+					}}
+				>
+					<SheetContent
+						side="right"
+						className="w-[400px] sm:w-[540px] p-4"
+					>
+						<SheetHeader className="mb-4">
+							<SheetTitle>Row Details</SheetTitle>
+						</SheetHeader>
+						<div>
+							{detailRowIndex !== null && (
+								<table className="w-full">
+									<tbody>
+										{columnsWithIds.map((column) => {
+											const columnId =
+												column.id as string;
+											const row =
+												props.data[detailRowIndex];
+											if (!row) return null;
+
+											// Get the value using accessorKey if available
+											let value: unknown;
+											if (
+												"accessorKey" in column &&
+												column.accessorKey
+											) {
+												value = (
+													row as Record<
+														string,
+														unknown
+													>
+												)[column.accessorKey as string];
+											} else if (
+												"accessorFn" in column &&
+												column.accessorFn
+											) {
+												value = column.accessorFn(
+													row,
+													detailRowIndex,
+												);
+											} else {
+												value = (
+													row as Record<
+														string,
+														unknown
+													>
+												)[columnId];
+											}
+
+											const header =
+												typeof column.header ===
+												"string"
+													? column.header
+													: columnId;
+
+											return (
+												<tr
+													key={columnId}
+													className="border-b last:border-b-0"
+												>
+													<td className="py-2 px-2 font-medium text-sm text-muted-foreground w-1/3">
+														{header}
+													</td>
+													<td className="py-2 px-2 text-sm">
+														<DetailCell
+															column={column}
+															value={value}
+															rowIndex={
+																detailRowIndex
+															}
+															row={row}
+														/>
+													</td>
+												</tr>
+											);
+										})}
+									</tbody>
+								</table>
+							)}
+						</div>
+					</SheetContent>
+				</Sheet>
+			)}
 		</div>
 	);
 }
