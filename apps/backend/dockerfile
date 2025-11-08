@@ -2,6 +2,8 @@ FROM oven/bun:1-alpine AS base
 
 ENV NODE_ENV=production
 ENV COREPACK_ENABLE_STRICT=0
+ENV PNPM_HOME="/root/.local/share/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
 WORKDIR /node
 
 RUN bun install -g pnpm@latest
@@ -12,8 +14,7 @@ COPY . .
 
 RUN printf 'packages:\n  - "packages/*"\n  - "apps/*"\n' > pnpm-workspace.yaml
 RUN pnpm install
-RUN pnpm install -g turbo
-RUN turbo prune backend --docker
+RUN pnpm exec turbo prune backend --docker
 
 FROM base AS installer
 
