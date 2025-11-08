@@ -50,9 +50,11 @@ import {
 import { ChevronDown, ChevronLeft, ChevronRight, Settings } from "lucide-react";
 import {
 	type CSSProperties,
+	type HTMLProps,
 	type ReactNode,
 	useEffect,
 	useMemo,
+	useRef,
 	useState,
 } from "react";
 
@@ -102,6 +104,11 @@ type AdaptiveTableProps<T> = {
 	recordsTotal?: number; // Total records count (shows "X of Y records")
 	maxPage?: number; // Mandatory if pagination is true
 	loading?: boolean; // Default: false, shows skeleton loader
+	// Row selection props
+	rowSelectable?: boolean; // Default: false
+	selectActions?: Array<{ name: string; button: ReactNode }>;
+	onSelect?: (row: T) => void;
+	onSelectAction?: (rows: T[], actionName: string) => void;
 };
 
 // Helper function to ensure all columns have IDs
@@ -131,6 +138,30 @@ interface TableState {
 	groupBy?: string | null;
 	expandedGroups?: Record<string, boolean>;
 	perPage?: number;
+}
+
+// IndeterminateCheckbox component for row selection
+function IndeterminateCheckbox({
+	indeterminate,
+	className = "",
+	...rest
+}: { indeterminate?: boolean } & HTMLProps<HTMLInputElement>) {
+	const ref = useRef<HTMLInputElement>(null);
+
+	useEffect(() => {
+		if (typeof indeterminate === "boolean" && ref.current) {
+			ref.current.indeterminate = !rest.checked && indeterminate;
+		}
+	}, [ref, indeterminate, rest.checked]);
+
+	return (
+		<input
+			type="checkbox"
+			ref={ref}
+			className={`cursor-pointer ${className}`}
+			{...rest}
+		/>
+	);
 }
 
 function getStorageKey(saveKey: string): string {
@@ -176,7 +207,7 @@ const DraggableTableHeader = <T,>({
 	paginationType?: "client" | "server";
 }) => {
 	const columnDef = header.column.columnDef as AdaptiveColumnDef<T>;
-	const isDetailColumn = header.column.id === "_detail";
+	const isActionsColumn = header.column.id === "_actions";
 
 	// Disable grouping for server-side pagination
 	const canGroup = groupable && paginationType !== "server";
@@ -184,15 +215,15 @@ const DraggableTableHeader = <T,>({
 	// Check column-level overrides
 	const isOrderable = columnDef.orderable ?? true; // Default to true if not specified
 	const isResizable =
-		(columnDef.resizable ?? columnResizable) && !isDetailColumn;
+		(columnDef.resizable ?? columnResizable) && !isActionsColumn;
 	const hasVisibilityToggle =
 		(columnDef.visibilityToggle ?? columnVisibilityToggle) &&
-		!isDetailColumn;
+		!isActionsColumn;
 
 	const { attributes, isDragging, listeners, setNodeRef, transform } =
 		useSortable({
 			id: header.column.id,
-			disabled: isDetailColumn || !isOrderable,
+			disabled: isActionsColumn || !isOrderable,
 		});
 
 	const style: CSSProperties = {
@@ -223,7 +254,7 @@ const DraggableTableHeader = <T,>({
 									header.column.columnDef.header,
 									header.getContext(),
 								)}
-						{!isDetailColumn && isOrderable && (
+						{!isActionsColumn && isOrderable && (
 							<button
 								type="button"
 								{...attributes}
@@ -268,7 +299,7 @@ const DraggableTableHeader = <T,>({
 						Hide column
 					</ContextMenuItem>
 				)}
-				{canGroup && !isDetailColumn && (
+				{canGroup && !isActionsColumn && (
 					<>
 						{hasVisibilityToggle && <Separator />}
 						<ContextMenuItem
@@ -638,14 +669,14 @@ const DragAlongCell = <T,>({
 	rowIndex: number;
 }) => {
 	const columnDef = cell.column.columnDef as AdaptiveColumnDef<T>;
-	const isDetailColumn = cell.column.id === "_detail";
+	const isActionsColumn = cell.column.id === "_actions";
 
 	// Check column-level override for orderable
 	const isOrderable = columnDef.orderable ?? true; // Default to true if not specified
 
 	const { isDragging, setNodeRef, transform } = useSortable({
 		id: cell.column.id,
-		disabled: isDetailColumn || !isOrderable,
+		disabled: isActionsColumn || !isOrderable,
 	});
 
 	const style: CSSProperties = {
@@ -675,9 +706,15 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	const pagination = props.pagination ?? false;
 	const paginationType = props.paginationType ?? "client";
 	const loading = props.loading ?? false;
+	const rowSelectable = props.rowSelectable ?? false;
 
 	// State for detail view
 	const [detailRowIndex, setDetailRowIndex] = useState<number | null>(null);
+
+	// State for row selection
+	const [rowSelection, setRowSelection] = useState<Record<string, boolean>>(
+		{},
+	);
 
 	// Pagination state
 	const [internalCurrentPage, setInternalCurrentPage] = useState(1);
@@ -703,31 +740,51 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		[props.columns],
 	);
 
-	// Add detail column if showDetail is enabled
-	const columnsWithDetail = useMemo(() => {
-		if (!showDetail) return columnsWithIds;
+	// Add combined actions column (selection + detail) if either is enabled
+	const columnsWithActions = useMemo(() => {
+		if (!showDetail && !rowSelectable) return columnsWithIds;
 
-		const detailColumn: AdaptiveColumnDef<T> = {
-			id: "_detail",
-			header: "",
+		const actionsColumn: AdaptiveColumnDef<T> = {
+			id: "_actions",
+			header: rowSelectable
+				? ({ table }) => (
+						<IndeterminateCheckbox
+							checked={table.getIsAllRowsSelected()}
+							indeterminate={table.getIsSomeRowsSelected()}
+							onChange={table.getToggleAllRowsSelectedHandler()}
+						/>
+					)
+				: "",
 			cell: ({ row }) => (
-				<button
-					type="button"
-					onClick={() => {
-						const rowIndex = row.index;
-						if (props.onDetailClick) {
-							props.onDetailClick(row.original, rowIndex);
-						} else {
-							setDetailRowIndex(rowIndex);
-						}
-					}}
-					className="p-2 hover:bg-accent rounded transition-colors"
-					aria-label="Show details"
-				>
-					<ChevronRight className="h-4 w-4 text-gray-500" />
-				</button>
+				<div className="px-1 flex items-center justify-center gap-1">
+					{rowSelectable && (
+						<IndeterminateCheckbox
+							checked={row.getIsSelected()}
+							disabled={!row.getCanSelect()}
+							indeterminate={row.getIsSomeSelected()}
+							onChange={row.getToggleSelectedHandler()}
+						/>
+					)}
+					{showDetail && (
+						<button
+							type="button"
+							onClick={() => {
+								const rowIndex = row.index;
+								if (props.onDetailClick) {
+									props.onDetailClick(row.original, rowIndex);
+								} else {
+									setDetailRowIndex(rowIndex);
+								}
+							}}
+							className="p-1 hover:bg-accent rounded transition-colors"
+							aria-label="Show details"
+						>
+							<ChevronRight className="h-4 w-4 text-gray-500" />
+						</button>
+					)}
+				</div>
 			),
-			size: 50,
+			size: rowSelectable && showDetail ? 80 : 50,
 			enableResizing: false,
 			enableHiding: false,
 			enableSorting: false,
@@ -737,8 +794,11 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 			visibilityToggle: false,
 		};
 
-		return [detailColumn, ...columnsWithIds];
-	}, [showDetail, columnsWithIds, props]);
+		return [actionsColumn, ...columnsWithIds];
+	}, [showDetail, rowSelectable, columnsWithIds, props]);
+
+	// Alias for backward compatibility
+	const columnsWithDetail = columnsWithActions;
 
 	// Initialize column order from saved state or default order
 	const [columnOrder, setColumnOrder] = useState<string[]>(() => {
@@ -992,6 +1052,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 			columnOrder: props.columnOrderable ? columnOrder : undefined,
 			...(props.columnResizable && { columnSizing }),
 			...(columnVisibilityToggle && { columnVisibility }),
+			...(rowSelectable && { rowSelection }),
 		},
 		...(props.columnOrderable && { onColumnOrderChange: setColumnOrder }),
 		...(props.columnResizable && {
@@ -1005,7 +1066,24 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		...(columnVisibilityToggle && {
 			onColumnVisibilityChange: setColumnVisibility,
 		}),
+		...(rowSelectable && {
+			enableRowSelection: true,
+			onRowSelectionChange: setRowSelection,
+		}),
 	});
+
+	// Handle row selection callback
+	useEffect(() => {
+		if (rowSelectable && props.onSelect) {
+			const selectedRows = table
+				.getSelectedRowModel()
+				.rows.map((row) => row.original);
+			if (selectedRows.length > 0) {
+				// Call onSelect with the first selected row for backward compatibility
+				props.onSelect(selectedRows[0]);
+			}
+		}
+	}, [rowSelection, rowSelectable, props, table]);
 
 	// Toggle group expansion
 	const toggleGroup = (groupValue: string) => {
@@ -1175,11 +1253,41 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	const renderHeader = () => {
 		if (!showHeader) return null;
 
+		const selectedRowsCount = rowSelectable
+			? Object.keys(rowSelection).length
+			: 0;
+		const selectedRows = rowSelectable
+			? table.getSelectedRowModel().rows.map((row) => row.original)
+			: [];
+
 		return (
 			<div className="flex items-center justify-between mb-4">
 				<div className="flex items-center gap-2">
 					{props.title && (
 						<h2 className="text-lg font-semibold">{props.title}</h2>
+					)}
+					{rowSelectable && selectedRowsCount > 0 && (
+						<>
+							<Badge variant="secondary">
+								{selectedRowsCount} selected
+							</Badge>
+							{props.selectActions?.map((action) => (
+								<button
+									key={action.name}
+									type="button"
+									onClick={() => {
+										if (props.onSelectAction) {
+											props.onSelectAction(
+												selectedRows,
+												action.name,
+											);
+										}
+									}}
+								>
+									{action.button}
+								</button>
+							))}
+						</>
 					)}
 				</div>
 				<div className="flex items-center gap-2">
@@ -1241,7 +1349,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 																		return (
 																			column.getIsVisible() &&
 																			column.id !==
-																				"_detail" &&
+																				"_actions" &&
 																			hasVisibilityToggle !==
 																				false
 																		);
@@ -1299,7 +1407,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 														return (
 															!column.getIsVisible() &&
 															column.id !==
-																"_detail" &&
+																"_actions" &&
 															hasVisibilityToggle !==
 																false
 														);
@@ -1325,7 +1433,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 																			return (
 																				!column.getIsVisible() &&
 																				column.id !==
-																					"_detail" &&
+																					"_actions" &&
 																				hasVisibilityToggle !==
 																					false
 																			);
@@ -1425,7 +1533,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 																			column,
 																		) =>
 																			column.id !==
-																			"_detail",
+																			"_actions",
 																	)
 																	.map(
 																		(
@@ -1903,7 +2011,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 										)}
 										{groupable &&
 											paginationType !== "server" &&
-											header.column.id !== "_detail" && (
+											header.column.id !== "_actions" && (
 												<>
 													{columnVisibilityToggle && (
 														<Separator />
