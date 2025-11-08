@@ -13,7 +13,7 @@ RUN if [ -d patches ]; then mkdir -p out/json/patches && cp -R patches/. out/jso
 FROM base AS installer
 
 COPY --from=builder /node/out/json/ ./
-RUN bun install --production
+RUN bun install
 COPY --from=builder /node/out/full/ .
 
 WORKDIR /node/apps/frontend
