@@ -1,25 +1,19 @@
 FROM oven/bun:1-alpine AS base
 
 ENV NODE_ENV=production
-ENV COREPACK_ENABLE_STRICT=0
-ENV PNPM_HOME="/root/.local/share/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
 WORKDIR /node
-
-RUN bun install -g pnpm@latest
 
 FROM base AS builder
 
 COPY . .
 
-RUN printf 'packages:\n  - "packages/*"\n  - "apps/*"\n' > pnpm-workspace.yaml
-RUN pnpm install
-RUN pnpm exec turbo prune backend --docker
+RUN bunx turbo prune backend --docker
+RUN if [ -d patches ]; then mkdir -p out/json/patches && cp -R patches/. out/json/patches/; fi
 
 FROM base AS installer
 
 COPY --from=builder /node/out/json/ ./
-RUN pnpm install --frozen-lockfile --prod
+RUN bun install --frozen-lockfile --production
 COPY --from=builder /node/out/full/ .
 
 FROM base AS production
