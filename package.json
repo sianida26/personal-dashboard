@@ -41,5 +41,8 @@
     "react-dom": "^19.2.0",
     "react-icons": "^5.5.0",
     "zod": "^4.1.12"
+  },
+  "patchedDependencies": {
+    "@tanstack/router-generator@1.134.14": "patches/@tanstack%2Frouter-generator@1.134.14.patch"
   }
 }
