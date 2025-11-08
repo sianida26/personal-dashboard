@@ -842,120 +842,166 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 									<Settings className="h-4 w-4" />
 								</Button>
 							</PopoverTrigger>
-							<PopoverContent className="w-64" align="end">
-								<div className="space-y-4">
-									<div>
-										<h4 className="font-medium mb-3">
-											Property visibility
-										</h4>
-										<div className="relative mb-3">
-											<Input
-												placeholder="Search for a property..."
-												className="h-9"
-											/>
-										</div>
-									</div>
-									<Separator />
-									<div>
-										<p className="text-sm text-muted-foreground mb-2">
-											Shown in table
-										</p>
-										<ScrollArea className="h-48">
-											<div className="space-y-1">
+							<PopoverContent className="w-48 p-1" align="end">
+								<div className="space-y-0.5">
+									<Popover>
+										<PopoverTrigger asChild>
+											<button
+												type="button"
+												className="flex items-center justify-between w-full text-left hover:bg-accent px-3 py-2 rounded-sm text-sm transition-colors"
+											>
+												<span>Column Visibility</span>
+												<ChevronRight className="h-4 w-4 text-muted-foreground" />
+											</button>
+										</PopoverTrigger>
+										<PopoverContent
+											className="w-64"
+											align="start"
+											side="right"
+											sideOffset={4}
+										>
+											<div className="space-y-4">
+												<div>
+													<h4 className="font-medium mb-3">
+														Property visibility
+													</h4>
+													<div className="relative mb-3">
+														<Input
+															placeholder="Search for a property..."
+															className="h-9"
+														/>
+													</div>
+												</div>
+												<Separator />
+												<div>
+													<p className="text-sm text-muted-foreground mb-2">
+														Shown in table
+													</p>
+													<ScrollArea className="h-48">
+														<div className="space-y-1">
+															{table
+																.getAllLeafColumns()
+																.filter(
+																	(column) =>
+																		column.getIsVisible(),
+																)
+																.map(
+																	(
+																		column,
+																	) => (
+																		<div
+																			key={
+																				column.id
+																			}
+																			className="flex items-center"
+																		>
+																			<button
+																				type="button"
+																				className="flex items-center gap-2 w-full text-left hover:bg-accent px-2 py-1 rounded-sm"
+																			>
+																				<Checkbox
+																					checked={column.getIsVisible()}
+																					onCheckedChange={(
+																						value,
+																					) =>
+																						column.toggleVisibility(
+																							!!value,
+																						)
+																					}
+																				/>
+																				<Label className="text-sm font-normal cursor-pointer flex-1">
+																					{typeof column
+																						.columnDef
+																						.header ===
+																					"string"
+																						? column
+																								.columnDef
+																								.header
+																						: column.id}
+																				</Label>
+																			</button>
+																		</div>
+																	),
+																)}
+														</div>
+													</ScrollArea>
+												</div>
 												{table
 													.getAllLeafColumns()
-													.filter((column) =>
-														column.getIsVisible(),
-													)
-													.map((column) => (
-														<div
-															key={column.id}
-															className="flex items-center"
-														>
-															<button
-																type="button"
-																className="flex items-center gap-2 w-full text-left hover:bg-accent px-2 py-1 rounded-sm"
-															>
-																<Checkbox
-																	checked={column.getIsVisible()}
-																	onCheckedChange={(
-																		value,
-																	) =>
-																		column.toggleVisibility(
-																			!!value,
-																		)
-																	}
-																/>
-																<Label className="text-sm font-normal cursor-pointer flex-1">
-																	{typeof column
-																		.columnDef
-																		.header ===
-																	"string"
-																		? column
-																				.columnDef
-																				.header
-																		: column.id}
-																</Label>
-															</button>
-														</div>
-													))}
-											</div>
-										</ScrollArea>
-									</div>
-									{table
-										.getAllLeafColumns()
-										.some(
-											(column) => !column.getIsVisible(),
-										) && (
-										<>
-											<Separator />
-											<div>
-												<p className="text-sm text-muted-foreground mb-2">
-													Hidden
-												</p>
-												<div className="space-y-1">
-													{table
-														.getAllLeafColumns()
-														.filter(
-															(column) =>
-																!column.getIsVisible(),
-														)
-														.map((column) => (
-															<div
-																key={column.id}
-																className="flex items-center"
-															>
-																<button
-																	type="button"
-																	className="flex items-center gap-2 w-full text-left hover:bg-accent px-2 py-1 rounded-sm"
-																>
-																	<Checkbox
-																		checked={column.getIsVisible()}
-																		onCheckedChange={(
-																			value,
+													.some(
+														(column) =>
+															!column.getIsVisible(),
+													) && (
+													<>
+														<Separator />
+														<div>
+															<p className="text-sm text-muted-foreground mb-2">
+																Hidden
+															</p>
+															<div className="space-y-1">
+																{table
+																	.getAllLeafColumns()
+																	.filter(
+																		(
+																			column,
 																		) =>
-																			column.toggleVisibility(
-																				!!value,
-																			)
-																		}
-																	/>
-																	<Label className="text-sm font-normal cursor-pointer flex-1">
-																		{typeof column
-																			.columnDef
-																			.header ===
-																		"string"
-																			? column
-																					.columnDef
-																					.header
-																			: column.id}
-																	</Label>
-																</button>
+																			!column.getIsVisible(),
+																	)
+																	.map(
+																		(
+																			column,
+																		) => (
+																			<div
+																				key={
+																					column.id
+																				}
+																				className="flex items-center"
+																			>
+																				<button
+																					type="button"
+																					className="flex items-center gap-2 w-full text-left hover:bg-accent px-2 py-1 rounded-sm"
+																				>
+																					<Checkbox
+																						checked={column.getIsVisible()}
+																						onCheckedChange={(
+																							value,
+																						) =>
+																							column.toggleVisibility(
+																								!!value,
+																							)
+																						}
+																					/>
+																					<Label className="text-sm font-normal cursor-pointer flex-1">
+																						{typeof column
+																							.columnDef
+																							.header ===
+																						"string"
+																							? column
+																									.columnDef
+																									.header
+																							: column.id}
+																					</Label>
+																				</button>
+																			</div>
+																		),
+																	)}
 															</div>
-														))}
-												</div>
+														</div>
+													</>
+												)}
 											</div>
-										</>
-									)}
+										</PopoverContent>
+									</Popover>
+									<button
+										type="button"
+										className="flex items-center justify-between w-full text-left hover:bg-accent px-3 py-2 rounded-sm text-sm transition-colors"
+										onClick={() => {
+											// TODO: Implement group by functionality
+										}}
+									>
+										<span>Group By</span>
+										<ChevronRight className="h-4 w-4 text-muted-foreground" />
+									</button>
 								</div>
 							</PopoverContent>
 						</Popover>
