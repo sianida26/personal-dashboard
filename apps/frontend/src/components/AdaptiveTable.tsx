@@ -18,6 +18,12 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
+	ContextMenu,
+	ContextMenuContent,
+	ContextMenuItem,
+	ContextMenuTrigger,
+} from "@repo/ui";
+import {
 	type Cell,
 	type ColumnDef,
 	flexRender,
@@ -108,53 +114,60 @@ const DraggableTableHeader = <T,>({
 	};
 
 	return (
-		<th
-			colSpan={header.colSpan}
-			ref={setNodeRef}
-			style={style}
-			className="border relative"
-		>
-			<div className="flex items-center">
-				{header.isPlaceholder
-					? null
-					: flexRender(
-							header.column.columnDef.header,
-							header.getContext(),
-						)}
-				<button
-					type="button"
-					{...attributes}
-					{...listeners}
-					className="ml-2 cursor-grab active:cursor-grabbing"
+		<ContextMenu>
+			<ContextMenuTrigger asChild>
+				<th
+					colSpan={header.colSpan}
+					ref={setNodeRef}
+					style={style}
+					className="border relative"
 				>
-					🟰
-				</button>
-			</div>
-			{columnResizable && (
-				<button
-					type="button"
-					onDoubleClick={() => header.column.resetSize()}
-					onMouseDown={header.getResizeHandler()}
-					onTouchStart={header.getResizeHandler()}
-					className={`absolute right-0 top-0 h-full w-2 cursor-col-resize select-none touch-none hover:bg-blue-500 border-0 p-0 ${
-						header.column.getIsResizing()
-							? "bg-blue-500"
-							: "bg-transparent"
-					}`}
-					style={{
-						transform: header.column.getIsResizing()
-							? `translateX(${
-									table.getState().columnSizingInfo
-										.deltaOffset ?? 0
-								}px)`
-							: "",
-					}}
-					aria-label="Resize column"
-				>
-					<div className="w-px h-full bg-gray-300 mx-auto pointer-events-none" />
-				</button>
-			)}
-		</th>
+					<div className="flex items-center">
+						{header.isPlaceholder
+							? null
+							: flexRender(
+									header.column.columnDef.header,
+									header.getContext(),
+								)}
+						<button
+							type="button"
+							{...attributes}
+							{...listeners}
+							className="ml-2 cursor-grab active:cursor-grabbing"
+						>
+							🟰
+						</button>
+					</div>
+					{columnResizable && (
+						<button
+							type="button"
+							onDoubleClick={() => header.column.resetSize()}
+							onMouseDown={header.getResizeHandler()}
+							onTouchStart={header.getResizeHandler()}
+							className={`absolute right-0 top-0 h-full w-2 cursor-col-resize select-none touch-none hover:bg-blue-500 border-0 p-0 ${
+								header.column.getIsResizing()
+									? "bg-blue-500"
+									: "bg-transparent"
+							}`}
+							style={{
+								transform: header.column.getIsResizing()
+									? `translateX(${
+											table.getState().columnSizingInfo
+												.deltaOffset ?? 0
+										}px)`
+									: "",
+							}}
+							aria-label="Resize column"
+						>
+							<div className="w-px h-full bg-gray-300 mx-auto pointer-events-none" />
+						</button>
+					)}
+				</th>
+			</ContextMenuTrigger>
+			<ContextMenuContent>
+				<ContextMenuItem>Dummy Menu Item</ContextMenuItem>
+			</ContextMenuContent>
+		</ContextMenu>
 	);
 };
 
@@ -419,51 +432,60 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 					{table.getHeaderGroups().map((headerGroup) => (
 						<tr key={headerGroup.id}>
 							{headerGroup.headers.map((header) => (
-								<th
-									key={header.id}
-									className="border relative"
-									style={{
-										width: props.columnResizable
-											? `calc(var(--header-${header.id}-size) * 1px)`
-											: undefined,
-									}}
-								>
-									{header.isPlaceholder
-										? null
-										: flexRender(
-												header.column.columnDef.header,
-												header.getContext(),
-											)}
-									{props.columnResizable && (
-										<button
-											type="button"
-											onDoubleClick={() =>
-												header.column.resetSize()
-											}
-											onMouseDown={header.getResizeHandler()}
-											onTouchStart={header.getResizeHandler()}
-											className={`absolute right-0 top-0 h-full w-2 cursor-col-resize select-none touch-none hover:bg-blue-500 border-0 p-0 ${
-												header.column.getIsResizing()
-													? "bg-blue-500"
-													: "bg-transparent"
-											}`}
+								<ContextMenu key={header.id}>
+									<ContextMenuTrigger asChild>
+										<th
+											className="border relative"
 											style={{
-												transform:
-													header.column.getIsResizing()
-														? `translateX(${
-																table.getState()
-																	.columnSizingInfo
-																	.deltaOffset ??
-																0
-															}px)`
-														: "",
+												width: props.columnResizable
+													? `calc(var(--header-${header.id}-size) * 1px)`
+													: undefined,
 											}}
-											aria-label="Resize column"
 										>
-											<div className="w-px h-full bg-gray-300 mx-auto pointer-events-none" />
-										</button>
-									)}
-								</th>
+											{header.isPlaceholder
+												? null
+												: flexRender(
+														header.column.columnDef
+															.header,
+														header.getContext(),
+													)}
+											{props.columnResizable && (
+												<button
+													type="button"
+													onDoubleClick={() =>
+														header.column.resetSize()
+													}
+													onMouseDown={header.getResizeHandler()}
+													onTouchStart={header.getResizeHandler()}
+													className={`absolute right-0 top-0 h-full w-2 cursor-col-resize select-none touch-none hover:bg-blue-500 border-0 p-0 ${
+														header.column.getIsResizing()
+															? "bg-blue-500"
+															: "bg-transparent"
+													}`}
+													style={{
+														transform:
+															header.column.getIsResizing()
+																? `translateX(${
+																		table.getState()
+																			.columnSizingInfo
+																			.deltaOffset ??
+																		0
+																	}px)`
+																: "",
+													}}
+													aria-label="Resize column"
+												>
+													<div className="w-px h-full bg-gray-300 mx-auto pointer-events-none" />
+												</button>
+											)}
+										</th>
+									</ContextMenuTrigger>
+									<ContextMenuContent>
+										<ContextMenuItem>
+											Dummy Menu Item
+										</ContextMenuItem>
+									</ContextMenuContent>
+								</ContextMenu>
 							))}
 						</tr>
 					))}
