@@ -1,0 +1,39 @@
+# Ignore bun.lock in Docker - force pnpm usage
+bun.lock
+
+# Ignore pnpm-workspace.yaml (created dynamically in Docker)
+pnpm-workspace.yaml
+
+# Node modules
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+build/
+out/
+.turbo/
+
+# Development files
+.git/
+.gitignore
+*.md
+!README.md
+
+# IDE
+.vscode/
+.idea/
+.claude/
+
+# Logs
+*.log
+logs/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db

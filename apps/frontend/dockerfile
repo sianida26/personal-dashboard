@@ -1,21 +1,24 @@
 FROM oven/bun:1-alpine AS base
 
 ENV NODE_ENV=production
+ENV COREPACK_ENABLE_STRICT=0
 WORKDIR /node
 
-# =========================================================================== #
+RUN bun install -g pnpm@latest
+
 FROM base AS builder
 
 COPY . .
 
-RUN bun install -g turbo
+RUN echo 'packages:\n  - "packages/*"\n  - "apps/*"' > pnpm-workspace.yaml
+RUN pnpm install
+RUN pnpm install -g turbo
 RUN turbo prune frontend --docker
 
-# =========================================================================== #
 FROM base AS installer
 
 COPY --from=builder /node/out/json/ ./
-RUN bun install --frozen-lockfile --production
+RUN pnpm install --frozen-lockfile --prod
 COPY --from=builder /node/out/full/ .
 
 WORKDIR /node/apps/frontend
@@ -25,7 +28,6 @@ RUN echo "VITE_BACKEND_BASE_URL=${VITE_BACKEND_BASE_URL}" > .env
 
 RUN NODE_OPTIONS="--max-old-space-size=768" bun run build
 
-# =========================================================================== #
 FROM caddy:2-alpine AS production
 
 COPY --from=installer /node/apps/frontend/caddyfile /etc/caddy/caddyfile
