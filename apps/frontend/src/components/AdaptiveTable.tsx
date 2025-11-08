@@ -49,8 +49,20 @@ import {
 	useState,
 } from "react";
 
+// Extended column definition for adaptive table
+export type AdaptiveColumnDef<T> = ColumnDef<T> & {
+	editable?: boolean;
+	onEdited?: (rowIndex: number, columnId: string, value: unknown) => void;
+	editType?: "text" | "select";
+	options?: Array<{ label: string; value: string | number }>;
+	customOptionComponent?: (option: {
+		label: string;
+		value: string | number;
+	}) => ReactNode;
+};
+
 type AdaptiveTableProps<T> = {
-	columns: ColumnDef<T>[];
+	columns: AdaptiveColumnDef<T>[];
 	data: T[];
 	columnOrderable?: boolean;
 	columnResizable?: boolean;
@@ -63,7 +75,9 @@ type AdaptiveTableProps<T> = {
 };
 
 // Helper function to ensure all columns have IDs
-function ensureColumnIds<T>(columns: ColumnDef<T>[]): ColumnDef<T>[] {
+function ensureColumnIds<T>(
+	columns: AdaptiveColumnDef<T>[],
+): AdaptiveColumnDef<T>[] {
 	return columns.map((col, index) => {
 		if (col.id) return col;
 
@@ -464,7 +478,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 											Shown in table
 										</p>
 										<ScrollArea className="h-48">
-											<div className="space-y-2">
+											<div className="space-y-1">
 												{table
 													.getAllLeafColumns()
 													.filter((column) =>
@@ -473,7 +487,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 													.map((column) => (
 														<div
 															key={column.id}
-															className="flex items-center space-x-2"
+															className="flex items-center"
 														>
 															<button
 																type="button"
@@ -516,7 +530,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 												<p className="text-sm text-muted-foreground mb-2">
 													Hidden
 												</p>
-												<div className="space-y-2">
+												<div className="space-y-1">
 													{table
 														.getAllLeafColumns()
 														.filter(
@@ -526,7 +540,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 														.map((column) => (
 															<div
 																key={column.id}
-																className="flex items-center space-x-2"
+																className="flex items-center"
 															>
 																<button
 																	type="button"
