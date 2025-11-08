@@ -18,10 +18,19 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
+	Button,
+	Checkbox,
 	ContextMenu,
 	ContextMenuContent,
 	ContextMenuItem,
 	ContextMenuTrigger,
+	Input,
+	Label,
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+	ScrollArea,
+	Separator,
 } from "@repo/ui";
 import {
 	type Cell,
@@ -31,7 +40,14 @@ import {
 	type Header,
 	useReactTable,
 } from "@tanstack/react-table";
-import { type CSSProperties, useEffect, useMemo, useState } from "react";
+import { Settings } from "lucide-react";
+import {
+	type CSSProperties,
+	type ReactNode,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
 
 type AdaptiveTableProps<T> = {
 	columns: ColumnDef<T>[];
@@ -40,6 +56,10 @@ type AdaptiveTableProps<T> = {
 	columnResizable?: boolean;
 	columnVisibilityToggle?: boolean; // Default: true
 	saveState?: string; // Unique key to save/load table state
+	// Header section props
+	title?: string;
+	headerActions?: ReactNode;
+	showHeader?: boolean; // Default: true
 };
 
 // Helper function to ensure all columns have IDs
@@ -217,6 +237,7 @@ const DragAlongCell = <T,>({
 export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	// Set default values
 	const columnVisibilityToggle = props.columnVisibilityToggle ?? true;
+	const showHeader = props.showHeader ?? true;
 
 	// Ensure all columns have IDs
 	const columnsWithIds = useMemo(
@@ -405,73 +426,231 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		useSensor(KeyboardSensor, {}),
 	);
 
+	// Render header section
+	const renderHeader = () => {
+		if (!showHeader) return null;
+
+		return (
+			<div className="flex items-center justify-between mb-4">
+				<div className="flex items-center gap-2">
+					{props.title && (
+						<h2 className="text-lg font-semibold">{props.title}</h2>
+					)}
+				</div>
+				<div className="flex items-center gap-2">
+					{columnVisibilityToggle && (
+						<Popover>
+							<PopoverTrigger asChild>
+								<Button variant="outline" size="sm">
+									<Settings className="h-4 w-4" />
+								</Button>
+							</PopoverTrigger>
+							<PopoverContent className="w-64" align="end">
+								<div className="space-y-4">
+									<div>
+										<h4 className="font-medium mb-3">
+											Property visibility
+										</h4>
+										<div className="relative mb-3">
+											<Input
+												placeholder="Search for a property..."
+												className="h-9"
+											/>
+										</div>
+									</div>
+									<Separator />
+									<div>
+										<p className="text-sm text-muted-foreground mb-2">
+											Shown in table
+										</p>
+										<ScrollArea className="h-48">
+											<div className="space-y-2">
+												{table
+													.getAllLeafColumns()
+													.filter((column) =>
+														column.getIsVisible(),
+													)
+													.map((column) => (
+														<div
+															key={column.id}
+															className="flex items-center space-x-2"
+														>
+															<button
+																type="button"
+																className="flex items-center gap-2 w-full text-left hover:bg-accent px-2 py-1 rounded-sm"
+															>
+																<Checkbox
+																	checked={column.getIsVisible()}
+																	onCheckedChange={(
+																		value,
+																	) =>
+																		column.toggleVisibility(
+																			!!value,
+																		)
+																	}
+																/>
+																<Label className="text-sm font-normal cursor-pointer flex-1">
+																	{typeof column
+																		.columnDef
+																		.header ===
+																	"string"
+																		? column
+																				.columnDef
+																				.header
+																		: column.id}
+																</Label>
+															</button>
+														</div>
+													))}
+											</div>
+										</ScrollArea>
+									</div>
+									{table
+										.getAllLeafColumns()
+										.some(
+											(column) => !column.getIsVisible(),
+										) && (
+										<>
+											<Separator />
+											<div>
+												<p className="text-sm text-muted-foreground mb-2">
+													Hidden
+												</p>
+												<div className="space-y-2">
+													{table
+														.getAllLeafColumns()
+														.filter(
+															(column) =>
+																!column.getIsVisible(),
+														)
+														.map((column) => (
+															<div
+																key={column.id}
+																className="flex items-center space-x-2"
+															>
+																<button
+																	type="button"
+																	className="flex items-center gap-2 w-full text-left hover:bg-accent px-2 py-1 rounded-sm"
+																>
+																	<Checkbox
+																		checked={column.getIsVisible()}
+																		onCheckedChange={(
+																			value,
+																		) =>
+																			column.toggleVisibility(
+																				!!value,
+																			)
+																		}
+																	/>
+																	<Label className="text-sm font-normal cursor-pointer flex-1">
+																		{typeof column
+																			.columnDef
+																			.header ===
+																		"string"
+																			? column
+																					.columnDef
+																					.header
+																			: column.id}
+																	</Label>
+																</button>
+															</div>
+														))}
+												</div>
+											</div>
+										</>
+									)}
+								</div>
+							</PopoverContent>
+						</Popover>
+					)}
+					{props.headerActions ? (
+						props.headerActions
+					) : (
+						<Button size="sm">New</Button>
+					)}
+				</div>
+			</div>
+		);
+	};
+
 	// Render orderable table
 	if (props.columnOrderable) {
 		return (
-			<DndContext
-				collisionDetection={closestCenter}
-				modifiers={[restrictToHorizontalAxis]}
-				onDragEnd={handleDragEnd}
-				sensors={sensors}
-			>
-				<div>
-					<table className="border-collapse" style={columnSizeVars}>
-						<thead>
-							{table.getHeaderGroups().map((headerGroup) => (
-								<tr key={headerGroup.id}>
-									<SortableContext
-										items={columnOrder}
-										strategy={horizontalListSortingStrategy}
-									>
-										{headerGroup.headers.map((header) => (
-											<DraggableTableHeader
-												key={header.id}
-												header={header}
-												columnResizable={
-													props.columnResizable
-												}
-												columnVisibilityToggle={
-													columnVisibilityToggle
-												}
-												table={table}
-											/>
-										))}
-									</SortableContext>
-								</tr>
-							))}
-						</thead>
-						<tbody>
-							{table.getRowModel().rows.map((row) => (
-								<tr key={row.id}>
-									{row.getVisibleCells().map((cell) => (
+			<div>
+				{renderHeader()}
+				<DndContext
+					collisionDetection={closestCenter}
+					modifiers={[restrictToHorizontalAxis]}
+					onDragEnd={handleDragEnd}
+					sensors={sensors}
+				>
+					<div>
+						<table
+							className="border-collapse"
+							style={columnSizeVars}
+						>
+							<thead>
+								{table.getHeaderGroups().map((headerGroup) => (
+									<tr key={headerGroup.id}>
 										<SortableContext
-											key={cell.id}
 											items={columnOrder}
 											strategy={
 												horizontalListSortingStrategy
 											}
 										>
-											<DragAlongCell
-												key={cell.id}
-												cell={cell}
-												columnResizable={
-													props.columnResizable
-												}
-											/>
+											{headerGroup.headers.map(
+												(header) => (
+													<DraggableTableHeader
+														key={header.id}
+														header={header}
+														columnResizable={
+															props.columnResizable
+														}
+														columnVisibilityToggle={
+															columnVisibilityToggle
+														}
+														table={table}
+													/>
+												),
+											)}
 										</SortableContext>
-									))}
-								</tr>
-							))}
-						</tbody>
-					</table>
-				</div>
-			</DndContext>
+									</tr>
+								))}
+							</thead>
+							<tbody>
+								{table.getRowModel().rows.map((row) => (
+									<tr key={row.id}>
+										{row.getVisibleCells().map((cell) => (
+											<SortableContext
+												key={cell.id}
+												items={columnOrder}
+												strategy={
+													horizontalListSortingStrategy
+												}
+											>
+												<DragAlongCell
+													key={cell.id}
+													cell={cell}
+													columnResizable={
+														props.columnResizable
+													}
+												/>
+											</SortableContext>
+										))}
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+				</DndContext>
+			</div>
 		);
 	}
 
 	// Render regular table
 	return (
 		<div>
+			{renderHeader()}
 			<table className="border-collapse" style={columnSizeVars}>
 				<thead>
 					{table.getHeaderGroups().map((headerGroup) => (
