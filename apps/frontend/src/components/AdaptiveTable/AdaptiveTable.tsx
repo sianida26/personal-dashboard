@@ -44,7 +44,9 @@ import {
 	type ColumnDef,
 	flexRender,
 	getCoreRowModel,
+	getSortedRowModel,
 	type Header,
+	type SortingState,
 	useReactTable,
 } from "@tanstack/react-table";
 import { ChevronDown, ChevronLeft, ChevronRight, Settings } from "lucide-react";
@@ -79,6 +81,7 @@ export type AdaptiveColumnDef<T> = ColumnDef<T> & {
 	orderable?: boolean; // Override columnOrderable for this column
 	resizable?: boolean; // Override columnResizable for this column
 	visibilityToggle?: boolean; // Override columnVisibilityToggle for this column
+	sortable?: boolean; // Override sortable for this column
 };
 
 type AdaptiveTableProps<T> = {
@@ -89,6 +92,8 @@ type AdaptiveTableProps<T> = {
 	columnVisibilityToggle?: boolean; // Default: true
 	groupable?: boolean; // Default: true
 	saveState?: string; // Unique key to save/load table state
+	sortable?: boolean; // Default: true
+	onSortingChange?: (sorting: SortingState) => void;
 	// Header section props
 	title?: string;
 	headerActions?: ReactNode;
@@ -138,6 +143,7 @@ interface TableState {
 	groupBy?: string | null;
 	expandedGroups?: Record<string, boolean>;
 	perPage?: number;
+	sorting?: SortingState;
 }
 
 // IndeterminateCheckbox component for row selection
@@ -196,6 +202,7 @@ const DraggableTableHeader = <T,>({
 	groupBy,
 	onGroupByChange,
 	paginationType,
+	sortable,
 }: {
 	header: Header<T, unknown>;
 	columnResizable?: boolean;
@@ -205,6 +212,7 @@ const DraggableTableHeader = <T,>({
 	groupBy?: string | null;
 	onGroupByChange?: (columnId: string | null) => void;
 	paginationType?: "client" | "server";
+	sortable?: boolean;
 }) => {
 	const columnDef = header.column.columnDef as AdaptiveColumnDef<T>;
 	const isActionsColumn = header.column.id === "_actions";
@@ -219,6 +227,7 @@ const DraggableTableHeader = <T,>({
 	const hasVisibilityToggle =
 		(columnDef.visibilityToggle ?? columnVisibilityToggle) &&
 		!isActionsColumn;
+	const isSortable = (columnDef.sortable ?? sortable) && !isActionsColumn;
 
 	const { attributes, isDragging, listeners, setNodeRef, transform } =
 		useSortable({
@@ -237,6 +246,8 @@ const DraggableTableHeader = <T,>({
 			: header.column.getSize(),
 		zIndex: isDragging ? 1 : 0,
 	};
+
+	const sortedState = header.column.getIsSorted();
 
 	return (
 		<ContextMenu>
@@ -263,6 +274,11 @@ const DraggableTableHeader = <T,>({
 							>
 								🟰
 							</button>
+						)}
+						{isSortable && sortedState && (
+							<span className="ml-1">
+								{sortedState === "asc" ? "🔼" : "🔽"}
+							</span>
 						)}
 					</div>
 					{isResizable && (
@@ -299,9 +315,31 @@ const DraggableTableHeader = <T,>({
 						Hide column
 					</ContextMenuItem>
 				)}
-				{canGroup && !isActionsColumn && (
+				{isSortable && (
 					<>
 						{hasVisibilityToggle && <Separator />}
+						<ContextMenuItem
+							onSelect={() => header.column.toggleSorting(false)}
+						>
+							Sort Ascending
+						</ContextMenuItem>
+						<ContextMenuItem
+							onSelect={() => header.column.toggleSorting(true)}
+						>
+							Sort Descending
+						</ContextMenuItem>
+						{sortedState && (
+							<ContextMenuItem
+								onSelect={() => header.column.clearSorting()}
+							>
+								Clear Sort
+							</ContextMenuItem>
+						)}
+					</>
+				)}
+				{canGroup && !isActionsColumn && (
+					<>
+						{(hasVisibilityToggle || isSortable) && <Separator />}
 						<ContextMenuItem
 							onSelect={() => {
 								if (onGroupByChange) {
@@ -707,6 +745,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	const paginationType = props.paginationType ?? "client";
 	const loading = props.loading ?? false;
 	const rowSelectable = props.rowSelectable ?? false;
+	const sortable = props.sortable ?? true;
 
 	// State for detail view
 	const [detailRowIndex, setDetailRowIndex] = useState<number | null>(null);
@@ -919,7 +958,22 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		return {};
 	});
 
-	// Save state whenever columnOrder, columnSizing, columnVisibility, grouping, or pagination changes
+	// Initialize sorting state from saved state
+	const [sorting, setSorting] = useState<SortingState>(() => {
+		if (props.saveState && sortable) {
+			try {
+				const savedState = loadTableState(props.saveState);
+				if (savedState?.sorting) {
+					return savedState.sorting;
+				}
+			} catch (error) {
+				console.error("Error loading sorting state:", error);
+			}
+		}
+		return [];
+	});
+
+	// Save state whenever columnOrder, columnSizing, columnVisibility, grouping, pagination, or sorting changes
 	useEffect(() => {
 		if (props.saveState) {
 			const state: TableState = {};
@@ -939,6 +993,9 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 			if (pagination) {
 				state.perPage = perPage;
 			}
+			if (sortable) {
+				state.sorting = sorting;
+			}
 			saveTableState(props.saveState, state);
 		}
 	}, [
@@ -948,12 +1005,14 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		groupBy,
 		expandedGroups,
 		perPage,
+		sorting,
 		props.saveState,
 		props.columnOrderable,
 		props.columnResizable,
 		columnVisibilityToggle,
 		groupable,
 		pagination,
+		sortable,
 	]);
 
 	// Group data if groupBy is set
@@ -1048,11 +1107,13 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		data: tableData,
 		columns: columnsWithDetail,
 		getCoreRowModel: getCoreRowModel(),
+		getSortedRowModel: getSortedRowModel(),
 		state: {
 			columnOrder: props.columnOrderable ? columnOrder : undefined,
 			...(props.columnResizable && { columnSizing }),
 			...(columnVisibilityToggle && { columnVisibility }),
 			...(rowSelectable && { rowSelection }),
+			...(sortable && { sorting }),
 		},
 		...(props.columnOrderable && { onColumnOrderChange: setColumnOrder }),
 		...(props.columnResizable && {
@@ -1070,6 +1131,10 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 			enableRowSelection: true,
 			onRowSelectionChange: setRowSelection,
 		}),
+		...(sortable && {
+			onSortingChange: setSorting,
+			enableSorting: true,
+		}),
 	});
 
 	// Handle row selection callback
@@ -1084,6 +1149,13 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 			}
 		}
 	}, [rowSelection, rowSelectable, props, table]);
+
+	// Handle sorting callback
+	useEffect(() => {
+		if (props.onSortingChange) {
+			props.onSortingChange(sorting);
+		}
+	}, [sorting, props]);
 
 	// Toggle group expansion
 	const toggleGroup = (groupValue: string) => {
@@ -1590,15 +1662,144 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 												</PopoverContent>
 											</Popover>
 										)}
-									{!groupable && (
+									{sortable && (
+										<Popover>
+											<PopoverTrigger asChild>
+												<button
+													type="button"
+													className="flex items-center justify-between w-full text-left hover:bg-accent px-3 py-2 rounded-sm text-sm transition-colors"
+												>
+													<span>Sort</span>
+													<ChevronRight className="h-4 w-4 text-muted-foreground" />
+												</button>
+											</PopoverTrigger>
+											<PopoverContent
+												className="w-64"
+												align="start"
+												side="right"
+												sideOffset={4}
+											>
+												<div className="space-y-3">
+													<div className="flex items-center justify-between">
+														<h4 className="font-medium">
+															Sort
+														</h4>
+														{sorting.length > 0 && (
+															<Button
+																variant="ghost"
+																size="sm"
+																onClick={() =>
+																	setSorting(
+																		[],
+																	)
+																}
+																className="h-6 px-2"
+															>
+																Clear
+															</Button>
+														)}
+													</div>
+													<Separator />
+													<ScrollArea className="h-48">
+														<div className="space-y-2">
+															{table
+																.getAllLeafColumns()
+																.filter(
+																	(
+																		column,
+																	) => {
+																		const columnDef =
+																			column.columnDef as AdaptiveColumnDef<T>;
+																		const isSortable =
+																			columnDef.sortable ??
+																			sortable;
+																		return (
+																			column.id !==
+																				"_actions" &&
+																			isSortable
+																		);
+																	},
+																)
+																.map(
+																	(
+																		column,
+																	) => {
+																		const sortedState =
+																			column.getIsSorted();
+																		return (
+																			<div
+																				key={
+																					column.id
+																				}
+																				className="space-y-1"
+																			>
+																				<div className="text-sm font-medium">
+																					{typeof column
+																						.columnDef
+																						.header ===
+																					"string"
+																						? column
+																								.columnDef
+																								.header
+																						: column.id}
+																				</div>
+																				<div className="flex gap-1">
+																					<Button
+																						variant={
+																							sortedState ===
+																							"asc"
+																								? "default"
+																								: "outline"
+																						}
+																						size="sm"
+																						onClick={() =>
+																							column.toggleSorting(
+																								false,
+																							)
+																						}
+																						className="flex-1 h-7 text-xs"
+																					>
+																						🔼
+																						Asc
+																					</Button>
+																					<Button
+																						variant={
+																							sortedState ===
+																							"desc"
+																								? "default"
+																								: "outline"
+																						}
+																						size="sm"
+																						onClick={() =>
+																							column.toggleSorting(
+																								true,
+																							)
+																						}
+																						className="flex-1 h-7 text-xs"
+																					>
+																						🔽
+																						Desc
+																					</Button>
+																				</div>
+																			</div>
+																		);
+																	},
+																)}
+														</div>
+													</ScrollArea>
+												</div>
+											</PopoverContent>
+										</Popover>
+									)}
+									{!groupable && !sortable && (
 										<button
 											type="button"
 											className="flex items-center justify-between w-full text-left hover:bg-accent px-3 py-2 rounded-sm text-sm transition-colors"
 											onClick={() => {
-												// TODO: Implement group by functionality
+												// TODO: Implement additional functionality
 											}}
 										>
-											<span>Group By</span>
+											<span>More Options</span>
 											<ChevronRight className="h-4 w-4 text-muted-foreground" />
 										</button>
 									)}
@@ -1661,6 +1862,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 														paginationType={
 															paginationType
 														}
+														sortable={sortable}
 													/>
 												),
 											)}
@@ -1948,104 +2150,168 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 				<thead>
 					{table.getHeaderGroups().map((headerGroup) => (
 						<tr key={headerGroup.id}>
-							{headerGroup.headers.map((header) => (
-								<ContextMenu key={header.id}>
-									<ContextMenuTrigger asChild>
-										<th
-											className="border relative"
-											style={{
-												width: props.columnResizable
-													? `calc(var(--header-${header.id}-size) * 1px)`
-													: undefined,
-											}}
-										>
-											{header.isPlaceholder
-												? null
-												: flexRender(
-														header.column.columnDef
-															.header,
-														header.getContext(),
-													)}
-											{props.columnResizable && (
-												<button
-													type="button"
-													onDoubleClick={() =>
-														header.column.resetSize()
-													}
-													onMouseDown={header.getResizeHandler()}
-													onTouchStart={header.getResizeHandler()}
-													className={`absolute right-0 top-0 h-full w-2 cursor-col-resize select-none touch-none hover:bg-blue-500 border-0 p-0 ${
-														header.column.getIsResizing()
-															? "bg-blue-500"
-															: "bg-transparent"
-													}`}
-													style={{
-														transform:
-															header.column.getIsResizing()
-																? `translateX(${
-																		table.getState()
-																			.columnSizingInfo
-																			.deltaOffset ??
-																		0
-																	}px)`
-																: "",
-													}}
-													aria-label="Resize column"
-												>
-													<div className="w-px h-full bg-gray-300 mx-auto pointer-events-none" />
-												</button>
-											)}
-										</th>
-									</ContextMenuTrigger>
-									<ContextMenuContent>
-										{columnVisibilityToggle && (
-											<ContextMenuItem
-												onSelect={() =>
-													header.column.toggleVisibility(
-														false,
-													)
-												}
+							{headerGroup.headers.map((header) => {
+								const columnDef = header.column
+									.columnDef as AdaptiveColumnDef<T>;
+								const isActionsColumn =
+									header.column.id === "_actions";
+								const hasVisibilityToggle =
+									(columnDef.visibilityToggle ??
+										columnVisibilityToggle) &&
+									!isActionsColumn;
+								const isSortable =
+									(columnDef.sortable ?? sortable) &&
+									!isActionsColumn;
+								const sortedState = header.column.getIsSorted();
+
+								return (
+									<ContextMenu key={header.id}>
+										<ContextMenuTrigger asChild>
+											<th
+												className="border relative"
+												style={{
+													width: props.columnResizable
+														? `calc(var(--header-${header.id}-size) * 1px)`
+														: undefined,
+												}}
 											>
-												Hide column
-											</ContextMenuItem>
-										)}
-										{groupable &&
-											paginationType !== "server" &&
-											header.column.id !== "_actions" && (
+												<div className="flex items-center">
+													{header.isPlaceholder
+														? null
+														: flexRender(
+																header.column
+																	.columnDef
+																	.header,
+																header.getContext(),
+															)}
+													{isSortable &&
+														sortedState && (
+															<span className="ml-1">
+																{sortedState ===
+																"asc"
+																	? "🔼"
+																	: "🔽"}
+															</span>
+														)}
+												</div>
+												{props.columnResizable && (
+													<button
+														type="button"
+														onDoubleClick={() =>
+															header.column.resetSize()
+														}
+														onMouseDown={header.getResizeHandler()}
+														onTouchStart={header.getResizeHandler()}
+														className={`absolute right-0 top-0 h-full w-2 cursor-col-resize select-none touch-none hover:bg-blue-500 border-0 p-0 ${
+															header.column.getIsResizing()
+																? "bg-blue-500"
+																: "bg-transparent"
+														}`}
+														style={{
+															transform:
+																header.column.getIsResizing()
+																	? `translateX(${
+																			table.getState()
+																				.columnSizingInfo
+																				.deltaOffset ??
+																			0
+																		}px)`
+																	: "",
+														}}
+														aria-label="Resize column"
+													>
+														<div className="w-px h-full bg-gray-300 mx-auto pointer-events-none" />
+													</button>
+												)}
+											</th>
+										</ContextMenuTrigger>
+										<ContextMenuContent>
+											{hasVisibilityToggle && (
+												<ContextMenuItem
+													onSelect={() =>
+														header.column.toggleVisibility(
+															false,
+														)
+													}
+												>
+													Hide column
+												</ContextMenuItem>
+											)}
+											{isSortable && (
 												<>
-													{columnVisibilityToggle && (
+													{hasVisibilityToggle && (
 														<Separator />
 													)}
 													<ContextMenuItem
-														onSelect={() => {
-															setGroupBy(
-																groupBy ===
-																	header
-																		.column
-																		.id
-																	? null
-																	: header
-																			.column
-																			.id,
-															);
-														}}
+														onSelect={() =>
+															header.column.toggleSorting(
+																false,
+															)
+														}
 													>
-														{groupBy ===
-														header.column.id
-															? "Ungroup"
-															: "Group by this column"}
+														Sort Ascending
 													</ContextMenuItem>
+													<ContextMenuItem
+														onSelect={() =>
+															header.column.toggleSorting(
+																true,
+															)
+														}
+													>
+														Sort Descending
+													</ContextMenuItem>
+													{sortedState && (
+														<ContextMenuItem
+															onSelect={() =>
+																header.column.clearSorting()
+															}
+														>
+															Clear Sort
+														</ContextMenuItem>
+													)}
 												</>
 											)}
-										{!columnVisibilityToggle &&
-											!groupable && (
-												<ContextMenuItem>
-													Dummy Menu Item
-												</ContextMenuItem>
-											)}
-									</ContextMenuContent>
-								</ContextMenu>
-							))}
+											{groupable &&
+												paginationType !== "server" &&
+												header.column.id !==
+													"_actions" && (
+													<>
+														{(hasVisibilityToggle ||
+															isSortable) && (
+															<Separator />
+														)}
+														<ContextMenuItem
+															onSelect={() => {
+																setGroupBy(
+																	groupBy ===
+																		header
+																			.column
+																			.id
+																		? null
+																		: header
+																				.column
+																				.id,
+																);
+															}}
+														>
+															{groupBy ===
+															header.column.id
+																? "Ungroup"
+																: "Group by this column"}
+														</ContextMenuItem>
+													</>
+												)}
+											{!columnVisibilityToggle &&
+												!groupable &&
+												!isSortable && (
+													<ContextMenuItem>
+														Dummy Menu Item
+													</ContextMenuItem>
+												)}
+										</ContextMenuContent>
+									</ContextMenu>
+								);
+							})}
 						</tr>
 					))}
 				</thead>
