@@ -38,6 +38,7 @@ type AdaptiveTableProps<T> = {
 	data: T[];
 	columnOrderable?: boolean;
 	columnResizable?: boolean;
+	columnVisibilityToggle?: boolean; // Default: true
 	saveState?: string; // Unique key to save/load table state
 };
 
@@ -62,6 +63,7 @@ const STORAGE_PREFIX = "adaptive-table-";
 interface TableState {
 	columnOrder?: string[];
 	columnSizing?: Record<string, number>;
+	columnVisibility?: Record<string, boolean>;
 }
 
 function getStorageKey(saveKey: string): string {
@@ -90,10 +92,12 @@ function saveTableState(saveKey: string, state: TableState): void {
 const DraggableTableHeader = <T,>({
 	header,
 	columnResizable,
+	columnVisibilityToggle,
 	table,
 }: {
 	header: Header<T, unknown>;
 	columnResizable?: boolean;
+	columnVisibilityToggle?: boolean;
 	table: ReturnType<typeof useReactTable<T>>;
 }) => {
 	const { attributes, isDragging, listeners, setNodeRef, transform } =
@@ -165,7 +169,16 @@ const DraggableTableHeader = <T,>({
 				</th>
 			</ContextMenuTrigger>
 			<ContextMenuContent>
-				<ContextMenuItem>Dummy Menu Item</ContextMenuItem>
+				{columnVisibilityToggle && (
+					<ContextMenuItem
+						onSelect={() => header.column.toggleVisibility(false)}
+					>
+						Hide column
+					</ContextMenuItem>
+				)}
+				{!columnVisibilityToggle && (
+					<ContextMenuItem>Dummy Menu Item</ContextMenuItem>
+				)}
 			</ContextMenuContent>
 		</ContextMenu>
 	);
@@ -202,6 +215,9 @@ const DragAlongCell = <T,>({
 };
 
 export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
+	// Set default values
+	const columnVisibilityToggle = props.columnVisibilityToggle ?? true;
+
 	// Ensure all columns have IDs
 	const columnsWithIds = useMemo(
 		() => ensureColumnIds(props.columns),
@@ -278,7 +294,24 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		},
 	);
 
-	// Save state whenever columnOrder or columnSizing changes
+	// Initialize column visibility from saved state
+	const [columnVisibility, setColumnVisibility] = useState<
+		Record<string, boolean>
+	>(() => {
+		if (props.saveState && columnVisibilityToggle) {
+			try {
+				const savedState = loadTableState(props.saveState);
+				if (savedState?.columnVisibility) {
+					return savedState.columnVisibility;
+				}
+			} catch (error) {
+				console.error("Error loading column visibility:", error);
+			}
+		}
+		return {};
+	});
+
+	// Save state whenever columnOrder, columnSizing, or columnVisibility changes
 	useEffect(() => {
 		if (props.saveState) {
 			const state: TableState = {};
@@ -288,14 +321,19 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 			if (props.columnResizable) {
 				state.columnSizing = columnSizing;
 			}
+			if (columnVisibilityToggle) {
+				state.columnVisibility = columnVisibility;
+			}
 			saveTableState(props.saveState, state);
 		}
 	}, [
 		columnOrder,
 		columnSizing,
+		columnVisibility,
 		props.saveState,
 		props.columnOrderable,
 		props.columnResizable,
+		columnVisibilityToggle,
 	]);
 
 	const table = useReactTable({
@@ -305,6 +343,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		state: {
 			columnOrder: props.columnOrderable ? columnOrder : undefined,
 			...(props.columnResizable && { columnSizing }),
+			...(columnVisibilityToggle && { columnVisibility }),
 		},
 		...(props.columnOrderable && { onColumnOrderChange: setColumnOrder }),
 		...(props.columnResizable && {
@@ -314,6 +353,9 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 				minSize: 60,
 				maxSize: 800,
 			},
+		}),
+		...(columnVisibilityToggle && {
+			onColumnVisibilityChange: setColumnVisibility,
 		}),
 	});
 
@@ -387,6 +429,9 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 												header={header}
 												columnResizable={
 													props.columnResizable
+												}
+												columnVisibilityToggle={
+													columnVisibilityToggle
 												}
 												table={table}
 											/>
@@ -481,9 +526,22 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 										</th>
 									</ContextMenuTrigger>
 									<ContextMenuContent>
-										<ContextMenuItem>
-											Dummy Menu Item
-										</ContextMenuItem>
+										{columnVisibilityToggle && (
+											<ContextMenuItem
+												onSelect={() =>
+													header.column.toggleVisibility(
+														false,
+													)
+												}
+											>
+												Hide column
+											</ContextMenuItem>
+										)}
+										{!columnVisibilityToggle && (
+											<ContextMenuItem>
+												Dummy Menu Item
+											</ContextMenuItem>
+										)}
 									</ContextMenuContent>
 								</ContextMenu>
 							))}
