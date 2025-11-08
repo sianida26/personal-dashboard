@@ -11,10 +11,10 @@ export type JobPriority = "critical" | "high" | "normal" | "low";
 
 export type RetryStrategy = "exponential" | "linear" | "fixed" | "custom";
 
-export interface CreateJobOptions {
+export interface CreateJobOptions<T = Record<string, unknown>> {
 	type: string;
-	payload: Record<string, unknown>;
-	priority?: number;
+	payload: T;
+	priority: JobPriority;
 	scheduledAt?: Date;
 	maxRetries?: number;
 	timeoutSeconds?: number;
@@ -22,9 +22,11 @@ export interface CreateJobOptions {
 	createdBy?: string;
 }
 
-export interface JobContext {
+export interface JobContext<T = Record<string, unknown>> {
 	jobId: string;
 	attempt: number;
+	payload: T;
+	priority: JobPriority;
 	createdBy?: string;
 	logger: typeof appLogger;
 	signal: AbortSignal;
@@ -42,10 +44,10 @@ export interface JobHandler<T = Record<string, unknown>> {
 	description: string;
 	defaultMaxRetries: number;
 	defaultTimeoutSeconds: number;
-	execute(payload: T, context: JobContext): Promise<JobResult>;
+	execute(payload: T, context: JobContext<T>): Promise<JobResult>;
 	validate?(payload: unknown): T;
-	onFailure?(error: Error, context: JobContext): Promise<void>;
-	onSuccess?(result: JobResult, context: JobContext): Promise<void>;
+	onFailure?(error: Error, context: JobContext<T>): Promise<void>;
+	onSuccess?(result: JobResult, context: JobContext<T>): Promise<void>;
 }
 
 export interface WorkerPoolConfig {

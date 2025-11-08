@@ -1,21 +1,20 @@
 import { createId } from "@paralleldrive/cuid2";
+import { and, desc, eq, gt, inArray, lt, sql } from "drizzle-orm";
+import db from "../../drizzle";
 import type {
 	NotificationStatusEnum,
 	NotificationTypeEnum,
 } from "@repo/validation";
-import { and, desc, eq, gt, inArray, lt, sql } from "drizzle-orm";
-import db from "../../drizzle";
 import {
+	notifications,
+	notificationActions,
+	notificationActionLogs,
+	type NotificationInsert,
 	type NotificationActionInsert,
 	type NotificationActionLogInsert,
-	type NotificationInsert,
-	notificationActionLogs,
-	notificationActions,
-	notifications,
 } from "../../drizzle/schema/notifications";
 import { rolesSchema } from "../../drizzle/schema/roles";
 import { rolesToUsers } from "../../drizzle/schema/rolesToUsers";
-import { withDbTransaction } from "../../utils/db-tracing";
 
 export type DatabaseClient = typeof db;
 
@@ -59,6 +58,7 @@ export interface NotificationRepository {
 	markNotifications: (
 		ids: string[],
 		status: NotificationStatusEnum,
+		userId: string,
 	) => Promise<number>;
 	recordActionLog: (
 		data: NotificationActionLogInsert,
@@ -120,52 +120,71 @@ export const createNotificationRepository = (
 
 	const createNotification: NotificationRepository["createNotification"] =
 		async ({ actions, ...notification }) => {
-			return withDbTransaction(
-				"create_notification",
-				async () => {
-					return database.transaction(async (tx) => {
-						const [created] = await tx
-							.insert(notifications)
-							.values(notification)
-							.returning();
+			return database.transaction(async (tx) => {
+				const insertQuery = tx
+					.insert(notifications)
+					.values(notification);
 
-						if (!created) {
-							throw new Error(
-								"Failed to insert notification record for unknown reasons",
-							);
-						}
-
-						let insertedActions: (typeof notificationActions.$inferSelect)[] =
-							[];
-
-						if (actions?.length) {
-							insertedActions = await tx
-								.insert(notificationActions)
-								.values(
-									actions.map(
-										(action) =>
-											({
-												id: action.id ?? createId(),
-												notificationId: created.id,
-												...action,
-											}) satisfies NotificationActionInsert,
-									),
-								)
-								.returning();
-						}
-
-						return {
-							...created,
-							actions: insertedActions,
-							actionLogs: [],
-						};
+				if (notification.id) {
+					insertQuery.onConflictDoNothing({
+						target: notifications.id,
 					});
-				},
-				{
-					"notification.type": notification.type,
-					"notification.category": notification.category || "unknown",
-				},
-			);
+				}
+
+				const [created] = await insertQuery.returning();
+
+				if (!created) {
+					if (!notification.id) {
+						throw new Error(
+							"Failed to insert notification record for unknown reasons",
+						);
+					}
+
+					const existing = await tx.query.notifications.findFirst({
+						where: eq(notifications.id, notification.id),
+						with: {
+							actions: true,
+							actionLogs: true,
+						},
+					});
+
+					if (!existing) {
+						throw new Error(
+							"Failed to load existing notification after conflict",
+						);
+					}
+
+					return existing;
+				}
+
+				let insertedActions: (typeof notificationActions.$inferSelect)[] =
+					[];
+
+				if (actions?.length) {
+					insertedActions = await tx
+						.insert(notificationActions)
+						.values(
+							actions.map(
+								(action) =>
+									({
+										id: action.id ?? createId(),
+										notificationId: created.id,
+										...action,
+									}) satisfies NotificationActionInsert,
+							),
+						)
+						.onConflictDoNothing({
+							target: notificationActions.id,
+						})
+						.returning();
+				}
+
+				return {
+					...created,
+					actions: insertedActions,
+					actionLogs: [],
+				};
+			});
 		};
 
 	const getNotificationById: NotificationRepository["getNotificationById"] =
@@ -180,18 +199,24 @@ export const createNotificationRepository = (
 		};
 
 	const markNotifications: NotificationRepository["markNotifications"] =
-		async (ids, status) => {
+		async (ids, status, userId) => {
 			if (!ids.length) {
 				return 0;
 			}
 
+			const uniqueIds = Array.from(new Set(ids));
 			const result = await database
 				.update(notifications)
 				.set({
 					status,
 					readAt: status === "read" ? new Date() : null,
 				})
-				.where(inArray(notifications.id, ids))
+				.where(
+					and(
+						inArray(notifications.id, uniqueIds),
+						eq(notifications.userId, userId),
+					),
+				)
 				.returning({ id: notifications.id });
 
 			return result.length;

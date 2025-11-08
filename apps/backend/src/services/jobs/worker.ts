@@ -6,18 +6,42 @@
  */
 
 import { createId } from "@paralleldrive/cuid2";
-import { and, eq, isNull, lte, or } from "drizzle-orm";
+import { and, eq, isNull, lte, or, sql } from "drizzle-orm";
 import db from "../../drizzle";
 import { jobExecutions, jobs } from "../../drizzle/schema/job-queue";
 import jobHandlerRegistry from "../../jobs/registry";
 import { jobMetrics } from "../../utils/custom-metrics";
 import appLogger from "../../utils/logger";
 import { defaultJobQueueConfig, retryDelayCalculators } from "./config";
-import type { JobContext, JobHandler, JobResult, WorkerInfo } from "./types";
+import type {
+	JobContext,
+	JobHandler,
+	JobPriority,
+	JobResult,
+	WorkerInfo,
+} from "./types";
 
 // Type for database job record
 type DbJob = typeof jobs.$inferSelect;
 type DbJobExecution = typeof jobExecutions.$inferSelect;
+
+/**
+ * Maps numeric priority to JobPriority string
+ */
+function mapNumericPriorityToJobPriority(priority: number): JobPriority {
+	switch (priority) {
+		case 0:
+			return "critical";
+		case 1:
+			return "high";
+		case 2:
+			return "normal";
+		case 3:
+			return "low";
+		default:
+			return "normal";
+	}
+}
 
 export class JobWorker {
 	private id: string;
@@ -126,25 +150,8 @@ export class JobWorker {
 				);
 			}
 
-			// Update job status to processing
-			await db
-				.update(jobs)
-				.set({
-					status: "processing",
-					startedAt: new Date(),
-					workerId: this.id,
-					updatedAt: new Date(),
-				})
-				.where(eq(jobs.id, job.id));
-
-			// Create job context
-			const context: JobContext = {
-				jobId: job.id,
-				attempt: job.retryCount + 1,
-				createdBy: job.createdBy || undefined,
-				logger: appLogger,
-				signal: this.abortController.signal,
-			};
+			// Note: Job status is already updated to "processing" in getNextJob()
+			// within the same transaction that claimed the job
 
 			// Validate payload if handler has validation
 			let validatedPayload: Record<string, unknown> =
@@ -153,6 +160,17 @@ export class JobWorker {
 				const validated = handler.validate(job.payload);
 				validatedPayload = validated as Record<string, unknown>;
 			}
+
+			// Create job context with all required fields
+			const context: JobContext = {
+				jobId: job.id,
+				attempt: job.retryCount + 1,
+				payload: validatedPayload,
+				priority: mapNumericPriorityToJobPriority(job.priority),
+				createdBy: job.createdBy || undefined,
+				logger: appLogger,
+				signal: this.abortController.signal,
+			};
 
 			// Execute job with timeout
 			const timeoutMs =
@@ -194,22 +212,47 @@ export class JobWorker {
 
 	/**
 	 * Get next job from queue
+	 * Uses FOR UPDATE SKIP LOCKED to prevent multiple workers from picking the same job
 	 */
 	private async getNextJob() {
 		const now = new Date();
-		const [job] = await db
-			.select()
-			.from(jobs)
-			.where(
-				and(
-					eq(jobs.status, "pending"),
-					or(isNull(jobs.scheduledAt), lte(jobs.scheduledAt, now)),
-				),
-			)
-			.orderBy(jobs.priority, jobs.createdAt)
-			.limit(1);
 
-		return job;
+		// Use a transaction with FOR UPDATE SKIP LOCKED to atomically claim a job
+		// This prevents race conditions where multiple workers pick the same job
+		const result = await db.transaction(async (tx) => {
+			const [job] = await tx
+				.select()
+				.from(jobs)
+				.where(
+					and(
+						eq(jobs.status, "pending"),
+						or(isNull(jobs.scheduledAt), lte(jobs.scheduledAt, now)),
+					),
+				)
+				.orderBy(jobs.priority, jobs.createdAt)
+				.limit(1)
+				.for("update", { skipLocked: true });
+
+			if (!job) {
+				return null;
+			}
+
+			// Immediately update the job to processing within the same transaction
+			// This ensures no other worker can pick it up
+			await tx
+				.update(jobs)
+				.set({
+					status: "processing",
+					startedAt: new Date(),
+					workerId: this.id,
+					updatedAt: new Date(),
+				})
+				.where(eq(jobs.id, job.id));
+
+			return job;
+		});
+
+		return result;
 	}
 
 	/**

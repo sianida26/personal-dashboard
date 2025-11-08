@@ -76,10 +76,7 @@ export class NotificationEventHub {
 		return () => this.offCreatedForUser(userId, listener);
 	}
 
-	private offCreatedForUser(
-		userId: string,
-		listener: Listener<"created">,
-	) {
+	private offCreatedForUser(userId: string, listener: Listener<"created">) {
 		const listeners = this.createdListenersByUser.get(userId);
 		if (!listeners) return;
 

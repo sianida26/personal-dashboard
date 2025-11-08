@@ -82,6 +82,7 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
 			url.searchParams.set("token", auth.accessToken);
 
 			source = new EventSource(url.toString());
+			console.log(source)
 
 			source.addEventListener("connected", () => {
 				console.debug("Notification stream connected");

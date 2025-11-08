@@ -1,0 +1,36 @@
+{
+	admin off
+	persist_config off
+	auto_https off
+
+	log {
+		format json
+	}
+}
+
+:80 {
+	# Root directory for your static Vite build files
+	root * /srv
+
+	# Compression with more formats
+	encode {
+		gzip
+		zstd
+	}
+
+	# Serve static files
+	file_server
+
+	# Try files with HTML extension and handle SPA routing
+	try_files {path} {path}.html {path}/index.html /index.html
+
+	# Security Headers
+	header {
+		# Prevent MIME sniffing
+		X-Content-Type-Options nosniff
+		# Prevent clickjacking
+		X-Frame-Options DENY
+		# Enable XSS protection
+		X-XSS-Protection "1; mode=block"
+	}
+}

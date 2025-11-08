@@ -7,6 +7,7 @@
 		"./types": "./src/types/index.ts"
 	},
 	"devDependencies": {
-		"@repo/typescript-config": "workspace:*"
+		"@repo/typescript-config": "workspace:*",
+		"@turbo/gen": "^2.6.0"
 	}
 }

@@ -14,13 +14,11 @@ import { users } from "../../drizzle/schema/users";
 import DashboardError from "../../errors/DashboardError";
 import authInfo from "../../middlewares/authInfo";
 import checkPermission from "../../middlewares/checkPermission";
-import NotificationOrchestrator from "../../modules/notifications/notification-orchestrator";
 import type HonoEnv from "../../types/HonoEnv";
 import appLogger from "../../utils/logger";
+import { sendToRoles } from "../../utils/notifications/notification-helpers";
 import { hashPassword } from "../../utils/passwordUtils";
 import requestValidator from "../../utils/requestValidator";
-
-const notificationOrchestrator = new NotificationOrchestrator();
 
 export interface DateRange {
 	from?: Date;
@@ -400,26 +398,32 @@ const usersRoute = new Hono<HonoEnv>()
 			// Type assertion after null check
 			const userRecord = createdUser as typeof users.$inferSelect;
 
-			try {
-				await notificationOrchestrator.createNotification({
-					roleCodes: ["super-admin"],
-					type: "informational",
-					title: "New user created",
-					message: `${userRecord.name} just joined the platform`,
-					category: "users",
-					status: "unread",
-					expiresAt: null,
-					metadata: {
-						userId: userRecord.id,
-						username: userRecord.username,
-						email: userRecord.email,
-					},
-				});
-			} catch (_error) {
-				appLogger.error(
-					new Error("Failed to broadcast new user notification"),
+		try {
+			const dispatchResult = await sendToRoles(["super-admin"], {
+				type: "informational",
+				title: "New user created",
+				message: `${userRecord.name} just joined the platform`,
+				category: "general",
+				metadata: {
+					userId: userRecord.id,
+					username: userRecord.username,
+					email: userRecord.email,
+				},
+			});
+
+			const failedChannels = dispatchResult.results.filter(
+				(result) => result.status !== "sent" && result.status !== "scheduled",
+			);
+			if (failedChannels.length) {
+				appLogger.info(
+					"New user notification encountered channel issues"
 				);
 			}
+		} catch (_error) {
+			appLogger.error(
+				new Error("Failed to broadcast new user notification"),
+			);
+		}
 
 			return c.json(
 				{

@@ -1,2 +1,3 @@
-[test]
-preload=["./src/test-preload.ts"]
+preload = [
+  "./src/utils/telemetry.ts",
+]

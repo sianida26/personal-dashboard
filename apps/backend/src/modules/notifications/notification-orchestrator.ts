@@ -1,21 +1,21 @@
 import { createId } from "@paralleldrive/cuid2";
 import type {
 	CreateNotificationInput,
-	NotificationStatusEnum,
 	NotificationActionExecutionInput,
+	NotificationStatusEnum,
 } from "@repo/validation";
+import type {
+	NotificationActionLogRecord,
+	NotificationActionRecord,
+	NotificationRecord,
+} from "../../drizzle/schema/notifications";
 import notificationEventHub, {
-	NotificationEventHub,
+	type NotificationEventHub,
 } from "../../lib/event-bus/notification-event-hub";
 import createNotificationRepository, {
 	type ListNotificationsParams,
 	type NotificationRepository,
 } from "./notification-repository";
-import type {
-	NotificationRecord,
-	NotificationActionRecord,
-	NotificationActionLogRecord,
-} from "../../drizzle/schema/notifications";
 
 export type NotificationViewModel = NotificationRecord & {
 	actions: NotificationActionRecord[];
@@ -89,76 +89,8 @@ export class NotificationOrchestrator {
 	private eventHub: NotificationEventHub;
 
 	constructor(options: NotificationOrchestratorOptions = {}) {
-		this.repository =
-			options.repository ?? createNotificationRepository();
+		this.repository = options.repository ?? createNotificationRepository();
 		this.eventHub = options.eventHub ?? notificationEventHub;
-	}
-
-	async createNotification(
-		input: CreateNotificationInput,
-	): Promise<NotificationViewModel[]> {
-		const recipients = new Set<string>();
-		const {
-			userId,
-			userIds,
-			roleCodes,
-			id,
-			expiresAt,
-			metadata,
-			actions,
-			...rest
-		} = input;
-
-		if (userId) {
-			recipients.add(userId);
-		}
-
-		userIds?.forEach((recipient) => {
-			if (recipient) {
-				recipients.add(recipient);
-			}
-		});
-
-		if (roleCodes?.length) {
-			const idsFromRoles = await this.repository.findUserIdsByRoleCodes(
-				roleCodes,
-			);
-			idsFromRoles.forEach((recipient) => recipients.add(recipient));
-		}
-
-		if (recipients.size === 0) {
-			throw new Error("No recipients resolved for notification");
-		}
-
-		const normalizedMetadata = normalizeMetadata(metadata);
-
-		const notifications: NotificationViewModel[] = [];
-
-		for (const recipientId of recipients) {
-			const record = await this.repository.createNotification({
-				...rest,
-				userId: recipientId,
-				id: recipients.size === 1 && id ? id : createId(),
-				metadata: normalizedMetadata,
-				actions: actions?.map((action) => ({
-					id: createId(),
-					actionKey: action.actionKey,
-					label: action.label,
-					requiresComment: action.requiresComment ?? false,
-				})),
-				expiresAt: expiresAt ?? null,
-			});
-
-			const view: NotificationViewModel = {
-				...record,
-				metadata: normalizeMetadata(record.metadata),
-			};
-
-			notifications.push(view);
-			this.eventHub.emit("created", view);
-		}
-
-		return notifications;
 	}
 
 	async listNotifications(
@@ -171,7 +103,10 @@ export class NotificationOrchestrator {
 			metadata: normalizeMetadata(record.metadata),
 		}));
 
-		const groupsMap = new Map<NotificationGroup["key"], NotificationGroup>();
+		const groupsMap = new Map<
+			NotificationGroup["key"],
+			NotificationGroup
+		>();
 
 		for (const item of items) {
 			const { key, title } = resolveGroupTitle(item.createdAt);
@@ -206,7 +141,18 @@ export class NotificationOrchestrator {
 		status: NotificationStatusEnum,
 		userId: string,
 	): Promise<number> {
-		const updated = await this.repository.markNotifications(ids, status);
+		const updated = await this.repository.markNotifications(
+			ids,
+			status,
+			userId,
+		);
+		const uniqueRequestedIds = new Set(ids);
+
+		if (updated !== uniqueRequestedIds.size) {
+			throw new Error(
+				"Some notifications could not be updated. They may not exist or may belong to another user.",
+			);
+		}
 
 		if (updated) {
 			this.eventHub.emit("read", {
@@ -228,6 +174,12 @@ export class NotificationOrchestrator {
 
 		if (!notification) {
 			throw new Error("Notification not found");
+		}
+
+		if (notification.userId !== input.actedBy) {
+			throw new Error(
+				"You can only act on notifications assigned to you.",
+			);
 		}
 
 		if (notification.type !== "approval") {
@@ -259,6 +211,7 @@ export class NotificationOrchestrator {
 		await this.repository.markNotifications(
 			[notification.id],
 			"read" satisfies NotificationStatusEnum,
+			notification.userId,
 		);
 
 		this.eventHub.emit("actioned", log);

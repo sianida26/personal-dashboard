@@ -1,4 +1,5 @@
 import appSettingsSeeder from "./seeds/appSettingsSeed";
+import notificationPreferencesSeeder from "./seeds/notificationPreferences";
 import notificationsSeeder from "./seeds/notifications";
 import permissionSeeder from "./seeds/permissionSeeder";
 import roleSeeder from "./seeds/rolesSeeder";
@@ -11,7 +12,10 @@ const seeder = async () => {
 	await userSeeder();
 	await appSettingsSeeder();
 	await notificationsSeeder();
+	await notificationPreferencesSeeder();
 	console.timeEnd("Done seeding");
 };
 
-export default seeder;
+await seeder().then(() => {
+	process.exit(0);
+});

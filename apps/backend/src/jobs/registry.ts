@@ -1,6 +1,8 @@
 import type { JobHandler } from "../services/jobs/types";
 import dataProcessingHandler from "./handlers/data-processing";
 import emailNotificationHandler from "./handlers/email-notification";
+import inAppNotificationHandler from "./handlers/in-app-notification";
+import whatsappNotificationHandler from "./handlers/whatsapp-notification";
 
 export class JobHandlerRegistry {
 	private handlers = new Map<string, JobHandler>();
@@ -72,8 +74,10 @@ export class JobHandlerRegistry {
 // Global registry instance
 const jobHandlerRegistry = new JobHandlerRegistry();
 
-// Register built-in handlers
+// All handlers now properly extend Record<string, unknown>
+jobHandlerRegistry.register(inAppNotificationHandler);
 jobHandlerRegistry.register(emailNotificationHandler);
+jobHandlerRegistry.register(whatsappNotificationHandler);
 jobHandlerRegistry.register(dataProcessingHandler);
 
 export default jobHandlerRegistry;

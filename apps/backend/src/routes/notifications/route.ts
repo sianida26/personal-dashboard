@@ -13,6 +13,7 @@ import notificationEventHub from "../../lib/event-bus/notification-event-hub";
 import authInfo from "../../middlewares/authInfo";
 import NotificationOrchestrator from "../../modules/notifications/notification-orchestrator";
 import type HonoEnv from "../../types/HonoEnv";
+import { sendToUsersAndRoles } from "../../utils/notifications/notification-helpers";
 import requestValidator from "../../utils/requestValidator";
 
 const orchestrator = new NotificationOrchestrator();
@@ -69,22 +70,40 @@ const notificationsRoute = new Hono<HonoEnv>()
 		const userId = requireUserId(c);
 
 		return streamSSE(c, async (stream) => {
+			let aborted = false;
+
+			// Subscribe to notification events
 			const unsubscribeCreated = notificationEventHub.onCreatedForUser(
 				userId,
 				async (payload) => {
-					await stream.writeSSE({
-						event: "notification",
-						data: JSON.stringify(payload),
-					});
+					if (!aborted) {
+						await stream.writeSSE({
+							event: "notification",
+							data: JSON.stringify(payload),
+						});
+					}
 				},
 			);
 
-			await new Promise<void>((resolve) => {
-				stream.onAbort(async () => {
-					unsubscribeCreated();
-					resolve();
-				});
+			// Handle client disconnect
+			stream.onAbort(() => {
+				aborted = true;
+				unsubscribeCreated();
 			});
+
+			// Keep connection alive with periodic heartbeat
+			// This is REQUIRED for Bun 1.3+ to prevent connection timeout
+			while (!aborted) {
+				await stream.sleep(15000); // 15 second heartbeat
+				if (!aborted) {
+					await stream.writeSSE({
+						event: "heartbeat",
+						data: JSON.stringify({ timestamp: new Date().toISOString() }),
+					});
+				}
+			}
+
+			unsubscribeCreated();
 		});
 	})
 	.post(
@@ -94,16 +113,25 @@ const notificationsRoute = new Hono<HonoEnv>()
 			const userId = requireUserId(c);
 			const { ids, markAs } = c.req.valid("json");
 
-			const updated = await orchestrator.markNotifications(
-				ids,
-				markAs,
-				userId,
-			);
+			try {
+				const updated = await orchestrator.markNotifications(
+					ids,
+					markAs,
+					userId,
+				);
 
-			return c.json({
-				updated,
-				status: markAs,
-			});
+				return c.json({
+					updated,
+					status: markAs,
+				});
+			} catch (error) {
+				if (error instanceof Error) {
+					forbidden({
+						message: error.message,
+					});
+				}
+				throw error;
+			}
 		},
 	)
 	.post(
@@ -115,16 +143,25 @@ const notificationsRoute = new Hono<HonoEnv>()
 			const { id } = c.req.valid("param");
 			const { markAs } = c.req.valid("json");
 
-			const updated = await orchestrator.markNotifications(
-				[id],
-				markAs,
-				userId,
-			);
+			try {
+				const updated = await orchestrator.markNotifications(
+					[id],
+					markAs,
+					userId,
+				);
 
-			return c.json({
-				updated,
-				status: markAs,
-			});
+				return c.json({
+					updated,
+					status: markAs,
+				});
+			} catch (error) {
+				if (error instanceof Error) {
+					forbidden({
+						message: error.message,
+					});
+				}
+				throw error;
+			}
 		},
 	)
 	.post(
@@ -136,14 +173,23 @@ const notificationsRoute = new Hono<HonoEnv>()
 			const { id, actionKey } = c.req.valid("param");
 			const { comment } = c.req.valid("json");
 
-			const log = await orchestrator.executeAction({
-				notificationId: id,
-				actionKey,
-				actedBy: actingUserId,
-				comment,
-			});
+			try {
+				const log = await orchestrator.executeAction({
+					notificationId: id,
+					actionKey,
+					actedBy: actingUserId,
+					comment,
+				});
 
-			return c.json(log);
+				return c.json(log);
+			} catch (error) {
+				if (error instanceof Error) {
+					forbidden({
+						message: error.message,
+					});
+				}
+				throw error;
+			}
 		},
 	)
 	.post(
@@ -160,17 +206,30 @@ const notificationsRoute = new Hono<HonoEnv>()
 			}
 
 			const payload = c.req.valid("json");
-			const notifications =
-				await orchestrator.createNotification(payload);
 
-			return c.json(
-				{
-					notifications,
-					recipients: notifications.map((item) => item.userId),
-				},
-				201,
-			);
-		},
+			// Use the new unified notification service
+		const result = await sendToUsersAndRoles({
+			userIds: payload.userId ? [payload.userId] : payload.userIds,
+			roleCodes: payload.roleCodes,
+			category: payload.category,
+			type: payload.type,
+			title: payload.title,
+				message: payload.message,
+				channels: payload.channels,
+				channelOverrides: payload.channelOverrides,
+				metadata: payload.metadata || {},
+				respectPreferences:
+					payload.respectPreferences ?? true,
+			});
+
+		return c.json(
+			{
+				message: "Notification dispatched",
+				results: result.results,
+			},
+			201,
+		);
+	},
 	);
 
 export default notificationsRoute;

@@ -1,10 +1,4 @@
-import {
-	afterEach,
-	beforeAll,
-	describe,
-	expect,
-	it,
-} from "bun:test";
+import { afterEach, beforeAll, describe, expect, it } from "bun:test";
 import { eq } from "drizzle-orm";
 import db from "../../src/drizzle";
 import {
@@ -145,6 +139,7 @@ describe("NotificationRepository", () => {
 		const updatedToRead = await repository.markNotifications(
 			[record.id],
 			"read",
+			userId,
 		);
 
 		expect(updatedToRead).toBe(1);
@@ -159,6 +154,7 @@ describe("NotificationRepository", () => {
 		const updatedToUnread = await repository.markNotifications(
 			[record.id],
 			"unread",
+			userId,
 		);
 
 		expect(updatedToUnread).toBe(1);
@@ -246,9 +242,46 @@ describe("NotificationRepository", () => {
 				)[0]?.id ?? "",
 			].filter(Boolean),
 			"read",
+			userId,
 		);
 
 		const afterMark = await repository.countUnread(userId);
 		expect(afterMark).toBe(1);
+	});
+
+	it("does not mark notifications owned by other users", async () => {
+		const [otherUser] = await db
+			.insert(users)
+			.values({
+				name: "Test Reviewer",
+				username: `reviewer_${Date.now()}`,
+			})
+			.returning();
+
+		if (!otherUser) {
+			throw new Error("Failed to create secondary user");
+		}
+
+		const foreignNotification = await repository.createNotification({
+			userId: otherUser.id,
+			type: "informational",
+			title: "External",
+			message: "Should not toggle",
+			metadata: {},
+		});
+
+		const updated = await repository.markNotifications(
+			[foreignNotification.id],
+			"read",
+			userId,
+		);
+
+		expect(updated).toBe(0);
+
+		const persisted = await db.query.notifications.findFirst({
+			where: eq(notifications.id, foreignNotification.id),
+		});
+
+		expect(persisted?.status).toBe("unread");
 	});
 });

@@ -1,8 +1,4 @@
-import { isIP } from "node:net";
-import dotenv from "dotenv";
 import { z } from "zod";
-
-dotenv.config();
 
 /**
  * Creates a Zod schema for logging options with a default value.
@@ -26,12 +22,7 @@ const logSchema = (defaultValue: "true" | "false") =>
 const envSchema = z.object({
 	//Application
 	APP_ENV: z.enum(["development", "production"]),
-	APP_HOST: z
-		.string()
-		.default("127.0.0.1")
-		.refine((val) => isIP(val) !== 0, {
-			message: "Invalid IP address",
-		}),
+	APP_HOST: z.ipv4().default("0.0.0.0"),
 	APP_PORT: z.coerce.number().int(),
 	BASE_URL: z.string(),
 	FRONTEND_URL: z.string(),
@@ -45,10 +36,10 @@ const envSchema = z.object({
 
 	//Logging
 	LOG_ERROR: logSchema("true"),
-	LOG_INFO: logSchema("true"),
+	LOG_INFO: logSchema("false"),
 	LOG_DEBUG: logSchema("false"),
 	LOG_REQUEST: logSchema("true"),
-	LOG_SQL: logSchema("true"),
+	LOG_SQL: logSchema("false"),
 
 	OPENAI_API_KEY: z.string().optional(),
 
@@ -57,6 +48,11 @@ const envSchema = z.object({
 	OTEL_SERVICE_NAME: z.string().default("dashboard-backend"),
 	OTEL_EXPORTER_OTLP_ENDPOINT: z.string().default("http://localhost:4318"),
 	OTEL_EXPORTER_OTLP_HEADERS: z.string().optional(),
+
+	// Notification Override Recipients
+	// When set, these override all notification recipients (useful for testing/development)
+	NOTIFICATION_OVERRIDE_EMAIL: z.string().email().optional(),
+	NOTIFICATION_OVERRIDE_PHONE: z.string().optional(),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);

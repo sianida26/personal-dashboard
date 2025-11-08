@@ -1,6 +1,3 @@
-// MUST be first import to ensure instrumentation is loaded before any other modules
-import "./utils/telemetry";
-import { configDotenv } from "dotenv";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
@@ -14,6 +11,7 @@ import microsoftAdminRouter from "./routes/auth/microsoft/admin";
 import authRouter from "./routes/auth/route";
 import dashboardRoutes from "./routes/dashboard/routes";
 import devRoutes from "./routes/dev/route";
+import notificationPreferencesRoute from "./routes/notificationPreferences/route";
 import notificationsRoute from "./routes/notifications/route";
 import permissionRoutes from "./routes/permissions/route";
 import rolesRoute from "./routes/roles/route";
@@ -22,8 +20,6 @@ import { jobQueueManager } from "./services/jobs";
 import type HonoEnv from "./types/HonoEnv";
 import { recordError } from "./utils/error-tracking";
 import appLogger from "./utils/logger";
-
-configDotenv();
 
 const app = new Hono<HonoEnv>();
 
@@ -62,6 +58,7 @@ export const appRoutes = app
 	.route("/dev", devRoutes)
 	.route("/app-settings", appSettingsRoutes)
 	.route("/notifications", notificationsRoute)
+	.route("/notification-preferences", notificationPreferencesRoute)
 	.get("/test", (c) => {
 		return c.json({
 			message: "Server is up",

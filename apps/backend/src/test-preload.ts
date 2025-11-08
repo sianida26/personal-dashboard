@@ -1,11 +1,7 @@
-import { configDotenv } from "dotenv";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
 import postgres from "postgres";
 import seeder from "./drizzle/seed";
-
-// Load environment variables
-configDotenv({ path: ".env.test.local" });
 
 // Override DATABASE_URL for tests
 process.env.DATABASE_URL =

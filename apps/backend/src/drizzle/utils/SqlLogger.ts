@@ -1,8 +1,18 @@
 import { context, SpanStatusCode, trace } from "@opentelemetry/api";
 import type { Logger } from "drizzle-orm/logger";
 import appEnv from "../../appEnv";
+import { dbMetrics } from "../../utils/custom-metrics";
 import appLogger from "../../utils/logger";
 
+/**
+ * Custom SQL logger for Drizzle ORM that integrates with OpenTelemetry
+ *
+ * This logger:
+ * - Logs SQL queries to console (if LOG_SQL is enabled)
+ * - Creates OpenTelemetry spans for each database query
+ * - Records database query duration as metrics
+ * - Enriches spans with query details (operation, table, parameters)
+ */
 class SqlLogger implements Logger {
 	logQuery(query: string, params: unknown[]) {
 		// Log the SQL query
@@ -28,31 +38,51 @@ class SqlLogger implements Logger {
 					// Create span name as "DB: OPERATION table" (e.g., "DB: SELECT users", "DB: UPDATE notifications")
 					const spanName = `DB: ${operation} ${tableName}`;
 
-					// Create a child span for this database query
-					const span = tracer.startSpan(
-						spanName,
-						{},
-						context.active(),
-					);
+					// Track start time for duration metric
+					const startTime = performance.now();
 
-					// Set span attributes
+					// Create a child span for this database query
+					const span = tracer.startSpan(spanName, {}, context.active());
+
+					// Set span attributes (OpenTelemetry semantic conventions for databases)
 					span.setAttribute("db.system", "postgresql");
 					span.setAttribute("db.operation", operation);
 					span.setAttribute("db.sql.table", tableName);
 					span.setAttribute("db.statement", query);
+					span.setAttribute("db.name", process.env.DATABASE_NAME || "unknown");
 
 					// Add parameters as JSON (be careful with sensitive data)
 					if (params && params.length > 0) {
+						// Sanitize parameters to avoid logging passwords, tokens, etc.
+						const sanitizedParams = params.map((param) => {
+							if (typeof param === "string" && param.length > 100) {
+								return `${param.substring(0, 100)}... (truncated)`;
+							}
+							return param;
+						});
 						span.setAttribute(
 							"db.statement.parameters",
-							JSON.stringify(params),
+							JSON.stringify(sanitizedParams),
 						);
+						span.setAttribute("db.statement.parameter_count", params.length);
 					}
+
+					// Calculate duration
+					const duration = performance.now() - startTime;
+
+					// Record duration as span attribute
+					span.setAttribute("db.query.duration_ms", duration);
+
+					// Record duration as metric
+					dbMetrics.queryDuration.record(duration, {
+						operation,
+						table: tableName,
+					});
 
 					// Mark span as successful
 					span.setStatus({ code: SpanStatusCode.OK });
 
-					// End the span immediately since this is a synchronous log
+					// End the span
 					span.end();
 				} catch (error) {
 					// If there's an error, just log it but don't fail the query
