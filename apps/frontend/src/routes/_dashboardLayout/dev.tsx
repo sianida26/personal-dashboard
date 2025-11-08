@@ -139,7 +139,10 @@ function RouteComponent() {
 				columnOrderable
 				columnResizable
 				title="Chemical Elements"
-				// saveState="chemical-elements-table"
+				pagination={true}
+				paginationType="client"
+				maxPage={Math.ceil(data.length / 10)}
+				saveState="chemical-elements-table"
 			/>
 		</div>
 	);
