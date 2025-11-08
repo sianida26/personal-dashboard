@@ -150,11 +150,17 @@ const DraggableTableHeader = <T,>({
 	columnResizable,
 	columnVisibilityToggle,
 	table,
+	groupable,
+	groupBy,
+	onGroupByChange,
 }: {
 	header: Header<T, unknown>;
 	columnResizable?: boolean;
 	columnVisibilityToggle?: boolean;
 	table: ReturnType<typeof useReactTable<T>>;
+	groupable?: boolean;
+	groupBy?: string | null;
+	onGroupByChange?: (columnId: string | null) => void;
 }) => {
 	const columnDef = header.column.columnDef as AdaptiveColumnDef<T>;
 	const isDetailColumn = header.column.id === "_detail";
@@ -245,6 +251,26 @@ const DraggableTableHeader = <T,>({
 					>
 						Hide column
 					</ContextMenuItem>
+				)}
+				{groupable && !isDetailColumn && (
+					<>
+						{hasVisibilityToggle && <Separator />}
+						<ContextMenuItem
+							onSelect={() => {
+								if (onGroupByChange) {
+									onGroupByChange(
+										groupBy === header.column.id
+											? null
+											: header.column.id,
+									);
+								}
+							}}
+						>
+							{groupBy === header.column.id
+								? "Ungroup"
+								: "Group by this column"}
+						</ContextMenuItem>
+					</>
 				)}
 			</ContextMenuContent>
 		</ContextMenu>
@@ -1294,6 +1320,11 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 															columnVisibilityToggle
 														}
 														table={table}
+														groupable={groupable}
+														groupBy={groupBy}
+														onGroupByChange={
+															setGroupBy
+														}
 													/>
 												),
 											)}
@@ -1624,11 +1655,39 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 												Hide column
 											</ContextMenuItem>
 										)}
-										{!columnVisibilityToggle && (
-											<ContextMenuItem>
-												Dummy Menu Item
-											</ContextMenuItem>
-										)}
+										{groupable &&
+											header.column.id !== "_detail" && (
+												<>
+													{columnVisibilityToggle && (
+														<Separator />
+													)}
+													<ContextMenuItem
+														onSelect={() => {
+															setGroupBy(
+																groupBy ===
+																	header
+																		.column
+																		.id
+																	? null
+																	: header
+																			.column
+																			.id,
+															);
+														}}
+													>
+														{groupBy ===
+														header.column.id
+															? "Ungroup"
+															: "Group by this column"}
+													</ContextMenuItem>
+												</>
+											)}
+										{!columnVisibilityToggle &&
+											!groupable && (
+												<ContextMenuItem>
+													Dummy Menu Item
+												</ContextMenuItem>
+											)}
 									</ContextMenuContent>
 								</ContextMenu>
 							))}
