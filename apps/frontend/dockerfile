@@ -10,7 +10,7 @@ FROM base AS builder
 
 COPY . .
 
-RUN echo 'packages:\n  - "packages/*"\n  - "apps/*"' > pnpm-workspace.yaml
+RUN printf 'packages:\n  - "packages/*"\n  - "apps/*"\n' > pnpm-workspace.yaml
 RUN pnpm install
 RUN pnpm install -g turbo
 RUN turbo prune frontend --docker
