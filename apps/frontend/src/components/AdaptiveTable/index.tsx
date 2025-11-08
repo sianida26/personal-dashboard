@@ -71,6 +71,10 @@ export type AdaptiveColumnDef<T> = ColumnDef<T> & {
 	}) => ReactNode;
 	cellClassName?: string;
 	getCellColor?: (value: unknown) => string | undefined;
+	// Column-level overrides for table settings
+	orderable?: boolean; // Override columnOrderable for this column
+	resizable?: boolean; // Override columnResizable for this column
+	visibilityToggle?: boolean; // Override columnVisibilityToggle for this column
 };
 
 type AdaptiveTableProps<T> = {
@@ -79,6 +83,7 @@ type AdaptiveTableProps<T> = {
 	columnOrderable?: boolean;
 	columnResizable?: boolean;
 	columnVisibilityToggle?: boolean; // Default: true
+	groupable?: boolean; // Default: false - to be implemented
 	saveState?: string; // Unique key to save/load table state
 	// Header section props
 	title?: string;
@@ -149,9 +154,21 @@ const DraggableTableHeader = <T,>({
 	columnVisibilityToggle?: boolean;
 	table: ReturnType<typeof useReactTable<T>>;
 }) => {
+	const columnDef = header.column.columnDef as AdaptiveColumnDef<T>;
+	const isDetailColumn = header.column.id === "_detail";
+
+	// Check column-level overrides
+	const isOrderable = columnDef.orderable ?? true; // Default to true if not specified
+	const isResizable =
+		(columnDef.resizable ?? columnResizable) && !isDetailColumn;
+	const hasVisibilityToggle =
+		(columnDef.visibilityToggle ?? columnVisibilityToggle) &&
+		!isDetailColumn;
+
 	const { attributes, isDragging, listeners, setNodeRef, transform } =
 		useSortable({
 			id: header.column.id,
+			disabled: isDetailColumn || !isOrderable,
 		});
 
 	const style: CSSProperties = {
@@ -182,16 +199,18 @@ const DraggableTableHeader = <T,>({
 									header.column.columnDef.header,
 									header.getContext(),
 								)}
-						<button
-							type="button"
-							{...attributes}
-							{...listeners}
-							className="ml-2 cursor-grab active:cursor-grabbing"
-						>
-							🟰
-						</button>
+						{!isDetailColumn && isOrderable && (
+							<button
+								type="button"
+								{...attributes}
+								{...listeners}
+								className="ml-2 cursor-grab active:cursor-grabbing"
+							>
+								🟰
+							</button>
+						)}
 					</div>
-					{columnResizable && (
+					{isResizable && (
 						<button
 							type="button"
 							onDoubleClick={() => header.column.resetSize()}
@@ -218,7 +237,7 @@ const DraggableTableHeader = <T,>({
 				</th>
 			</ContextMenuTrigger>
 			<ContextMenuContent>
-				{columnVisibilityToggle && (
+				{hasVisibilityToggle && (
 					<ContextMenuItem
 						onSelect={() => header.column.toggleVisibility(false)}
 					>
@@ -574,8 +593,15 @@ const DragAlongCell = <T,>({
 	columnResizable?: boolean;
 	rowIndex: number;
 }) => {
+	const columnDef = cell.column.columnDef as AdaptiveColumnDef<T>;
+	const isDetailColumn = cell.column.id === "_detail";
+
+	// Check column-level override for orderable
+	const isOrderable = columnDef.orderable ?? true; // Default to true if not specified
+
 	const { isDragging, setNodeRef, transform } = useSortable({
 		id: cell.column.id,
+		disabled: isDetailColumn || !isOrderable,
 	});
 
 	const style: CSSProperties = {
@@ -637,6 +663,12 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 			),
 			size: 50,
 			enableResizing: false,
+			enableHiding: false,
+			enableSorting: false,
+			// Column-level overrides
+			orderable: false,
+			resizable: false,
+			visibilityToggle: false,
 		};
 
 		return [detailColumn, ...columnsWithIds];
@@ -882,8 +914,22 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 															{table
 																.getAllLeafColumns()
 																.filter(
-																	(column) =>
-																		column.getIsVisible(),
+																	(
+																		column,
+																	) => {
+																		const columnDef =
+																			column.columnDef as AdaptiveColumnDef<T>;
+																		const hasVisibilityToggle =
+																			columnDef.visibilityToggle ??
+																			columnVisibilityToggle;
+																		return (
+																			column.getIsVisible() &&
+																			column.id !==
+																				"_detail" &&
+																			hasVisibilityToggle !==
+																				false
+																		);
+																	},
 																)
 																.map(
 																	(
@@ -928,10 +974,20 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 												</div>
 												{table
 													.getAllLeafColumns()
-													.some(
-														(column) =>
-															!column.getIsVisible(),
-													) && (
+													.some((column) => {
+														const columnDef =
+															column.columnDef as AdaptiveColumnDef<T>;
+														const hasVisibilityToggle =
+															columnDef.visibilityToggle ??
+															columnVisibilityToggle;
+														return (
+															!column.getIsVisible() &&
+															column.id !==
+																"_detail" &&
+															hasVisibilityToggle !==
+																false
+														);
+													}) && (
 													<>
 														<Separator />
 														<div>
@@ -944,8 +1000,20 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 																	.filter(
 																		(
 																			column,
-																		) =>
-																			!column.getIsVisible(),
+																		) => {
+																			const columnDef =
+																				column.columnDef as AdaptiveColumnDef<T>;
+																			const hasVisibilityToggle =
+																				columnDef.visibilityToggle ??
+																				columnVisibilityToggle;
+																			return (
+																				!column.getIsVisible() &&
+																				column.id !==
+																					"_detail" &&
+																				hasVisibilityToggle !==
+																					false
+																			);
+																		},
 																	)
 																	.map(
 																		(
