@@ -140,6 +140,11 @@ function RouteComponent() {
 				columnResizable
 				title="Chemical Elements"
 				rowSelectable
+				onSelectAction={(row, action) => {
+					alert(
+						`Action: ${action} on row with Atomic #${row.length}`,
+					);
+				}}
 				saveState="chemical-elements-table"
 			/>
 		</div>
