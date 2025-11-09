@@ -12,9 +12,10 @@ RUN if [ -d patches ]; then mkdir -p out/json/patches && cp -R patches/. out/jso
 
 FROM base AS installer
 
-COPY --from=builder /node/out/full/ .
+COPY --from=builder /node/out/json/ .
 RUN bun install --frozen-lockfile --production
 
+COPY --from=builder /node/out/full/ .
 WORKDIR /node/apps/frontend
 
 ARG VITE_BACKEND_BASE_URL
