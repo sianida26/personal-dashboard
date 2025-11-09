@@ -12,9 +12,8 @@ RUN if [ -d patches ]; then mkdir -p out/json/patches && cp -R patches/. out/jso
 
 FROM base AS installer
 
-COPY --from=builder /node/out/json/ ./
-RUN bun install
 COPY --from=builder /node/out/full/ .
+RUN bun install --frozen-lockfile --production
 
 WORKDIR /node/apps/frontend
 
