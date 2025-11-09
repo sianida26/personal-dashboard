@@ -16,17 +16,11 @@ import {
 	SortableContext,
 } from "@dnd-kit/sortable";
 import {
-	Badge,
-	Button,
 	ContextMenu,
 	ContextMenuContent,
 	ContextMenuItem,
 	ContextMenuTrigger,
 	Separator,
-	Sheet,
-	SheetContent,
-	SheetHeader,
-	SheetTitle,
 	Skeleton,
 } from "@repo/ui";
 import {
@@ -37,13 +31,13 @@ import {
 } from "@tanstack/react-table";
 import { ChevronRight } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import DetailCell from "./DetailCell";
+import { DetailSheet } from "./DetailSheet";
 import DragAlongCell from "./DragAlongCell";
 import DraggableTableHeader from "./DraggableTableHeader";
 import EditableCell from "./EditableCell";
 import IndeterminateCheckbox from "./IndeterminateCheckbox";
+import { TableHeader } from "./TableHeader";
 import { TablePagination } from "./TablePagination";
-import { TableSettingsMenu } from "./TableSettingsMenu";
 import type { AdaptiveColumnDef, AdaptiveTableProps } from "./types";
 import { useTableState } from "./useTableState";
 import { ensureColumnIds } from "./utils";
@@ -380,76 +374,28 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		));
 	};
 
-	// Render header section
-	const renderHeader = () => {
-		if (!showHeader) return null;
-
-		const selectedRowsCount = rowSelectable
-			? Object.keys(rowSelection).length
-			: 0;
-		const selectedRows = rowSelectable
-			? table.getSelectedRowModel().rows.map((row) => row.original)
-			: [];
-
-		return (
-			<div className="flex items-center justify-between mb-4">
-				<div className="flex items-center gap-2">
-					{props.title && (
-						<h2 className="text-lg font-semibold">{props.title}</h2>
-					)}
-					{rowSelectable && selectedRowsCount > 0 && (
-						<>
-							<Badge variant="secondary">
-								{selectedRowsCount} selected
-							</Badge>
-							{props.selectActions?.map((action) => (
-								<button
-									key={action.name}
-									type="button"
-									onClick={() => {
-										if (props.onSelectAction) {
-											props.onSelectAction(
-												selectedRows,
-												action.name,
-											);
-										}
-									}}
-								>
-									{action.button}
-								</button>
-							))}
-						</>
-					)}
-				</div>
-				<div className="flex items-center gap-2">
-					{columnVisibilityToggle && (
-						<TableSettingsMenu
-							table={table}
-							columnVisibilityToggle={columnVisibilityToggle}
-							groupable={groupable}
-							groupBy={groupBy}
-							onGroupByChange={setGroupBy}
-							paginationType={paginationType}
-							sortable={sortable}
-							sorting={sorting}
-							onSortingChange={setSorting}
-						/>
-					)}
-					{props.headerActions ? (
-						props.headerActions
-					) : (
-						<Button size="sm">New</Button>
-					)}
-				</div>
-			</div>
-		);
-	};
-
 	// Render orderable table
 	if (props.columnOrderable) {
 		return (
 			<div>
-				{renderHeader()}
+				<TableHeader
+					title={props.title}
+					showHeader={showHeader}
+					rowSelectable={rowSelectable}
+					rowSelection={rowSelection}
+					table={table}
+					selectActions={props.selectActions}
+					onSelectAction={props.onSelectAction}
+					columnVisibilityToggle={columnVisibilityToggle}
+					groupable={groupable}
+					groupBy={groupBy}
+					onGroupByChange={setGroupBy}
+					paginationType={paginationType}
+					sortable={sortable}
+					sorting={sorting}
+					onSortingChange={setSorting}
+					headerActions={props.headerActions}
+				/>
 				<DndContext
 					collisionDetection={closestCenter}
 					modifiers={[restrictToHorizontalAxis]}
@@ -692,94 +638,15 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 
 				{/* Detail Sheet */}
 				{showDetail && !props.onDetailClick && (
-					<Sheet
+					<DetailSheet
 						open={detailRowIndex !== null}
 						onOpenChange={(open) => {
 							if (!open) setDetailRowIndex(null);
 						}}
-					>
-						<SheetContent
-							side="right"
-							className="w-[400px] sm:w-[540px] p-4"
-						>
-							<SheetHeader className="mb-4">
-								<SheetTitle>Row Details</SheetTitle>
-							</SheetHeader>
-							<div>
-								{detailRowIndex !== null && (
-									<table className="w-full">
-										<tbody>
-											{columnsWithIds.map((column) => {
-												const columnId =
-													column.id as string;
-												const row =
-													props.data[detailRowIndex];
-												if (!row) return null;
-
-												// Get the value using accessorKey if available
-												let value: unknown;
-												if (
-													"accessorKey" in column &&
-													column.accessorKey
-												) {
-													value = (
-														row as Record<
-															string,
-															unknown
-														>
-													)[
-														column.accessorKey as string
-													];
-												} else if (
-													"accessorFn" in column &&
-													column.accessorFn
-												) {
-													value = column.accessorFn(
-														row,
-														detailRowIndex,
-													);
-												} else {
-													value = (
-														row as Record<
-															string,
-															unknown
-														>
-													)[columnId];
-												}
-
-												const header =
-													typeof column.header ===
-													"string"
-														? column.header
-														: columnId;
-
-												return (
-													<tr
-														key={columnId}
-														className="border-b last:border-b-0"
-													>
-														<td className="py-2 px-2 font-medium text-sm text-muted-foreground w-1/3">
-															{header}
-														</td>
-														<td className="py-2 px-2 text-sm">
-															<DetailCell
-																column={column}
-																value={value}
-																rowIndex={
-																	detailRowIndex
-																}
-																row={row}
-															/>
-														</td>
-													</tr>
-												);
-											})}
-										</tbody>
-									</table>
-								)}
-							</div>
-						</SheetContent>
-					</Sheet>
+						columns={columnsWithIds}
+						data={props.data}
+						detailRowIndex={detailRowIndex}
+					/>
 				)}
 			</div>
 		);
@@ -788,7 +655,24 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	// Render regular table
 	return (
 		<div>
-			{renderHeader()}
+			<TableHeader
+				title={props.title}
+				showHeader={showHeader}
+				rowSelectable={rowSelectable}
+				rowSelection={rowSelection}
+				table={table}
+				selectActions={props.selectActions}
+				onSelectAction={props.onSelectAction}
+				columnVisibilityToggle={columnVisibilityToggle}
+				groupable={groupable}
+				groupBy={groupBy}
+				onGroupByChange={setGroupBy}
+				paginationType={paginationType}
+				sortable={sortable}
+				sorting={sorting}
+				onSortingChange={setSorting}
+				headerActions={props.headerActions}
+			/>
 			<table className="border-collapse" style={columnSizeVars}>
 				<thead>
 					{table.getHeaderGroups().map((headerGroup) => (
@@ -1109,92 +993,15 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 
 			{/* Detail Sheet */}
 			{showDetail && !props.onDetailClick && (
-				<Sheet
+				<DetailSheet
 					open={detailRowIndex !== null}
 					onOpenChange={(open) => {
 						if (!open) setDetailRowIndex(null);
 					}}
-				>
-					<SheetContent
-						side="right"
-						className="w-[400px] sm:w-[540px] p-4"
-					>
-						<SheetHeader className="mb-4">
-							<SheetTitle>Row Details</SheetTitle>
-						</SheetHeader>
-						<div>
-							{detailRowIndex !== null && (
-								<table className="w-full">
-									<tbody>
-										{columnsWithIds.map((column) => {
-											const columnId =
-												column.id as string;
-											const row =
-												props.data[detailRowIndex];
-											if (!row) return null;
-
-											// Get the value using accessorKey if available
-											let value: unknown;
-											if (
-												"accessorKey" in column &&
-												column.accessorKey
-											) {
-												value = (
-													row as Record<
-														string,
-														unknown
-													>
-												)[column.accessorKey as string];
-											} else if (
-												"accessorFn" in column &&
-												column.accessorFn
-											) {
-												value = column.accessorFn(
-													row,
-													detailRowIndex,
-												);
-											} else {
-												value = (
-													row as Record<
-														string,
-														unknown
-													>
-												)[columnId];
-											}
-
-											const header =
-												typeof column.header ===
-												"string"
-													? column.header
-													: columnId;
-
-											return (
-												<tr
-													key={columnId}
-													className="border-b last:border-b-0"
-												>
-													<td className="py-2 px-2 font-medium text-sm text-muted-foreground w-1/3">
-														{header}
-													</td>
-													<td className="py-2 px-2 text-sm">
-														<DetailCell
-															column={column}
-															value={value}
-															rowIndex={
-																detailRowIndex
-															}
-															row={row}
-														/>
-													</td>
-												</tr>
-											);
-										})}
-									</tbody>
-								</table>
-							)}
-						</div>
-					</SheetContent>
-				</Sheet>
+					columns={columnsWithIds}
+					data={props.data}
+					detailRowIndex={detailRowIndex}
+				/>
 			)}
 		</div>
 	);
