@@ -18,18 +18,10 @@ import {
 import {
 	Badge,
 	Button,
-	Checkbox,
 	ContextMenu,
 	ContextMenuContent,
 	ContextMenuItem,
 	ContextMenuTrigger,
-	Input,
-	Label,
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-	ScrollArea,
-	Select,
 	Separator,
 	Sheet,
 	SheetContent,
@@ -41,22 +33,20 @@ import {
 	flexRender,
 	getCoreRowModel,
 	getSortedRowModel,
-	type SortingState,
 	useReactTable,
 } from "@tanstack/react-table";
-import { ChevronLeft, ChevronRight, Settings } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import DetailCell from "./DetailCell";
 import DragAlongCell from "./DragAlongCell";
 import DraggableTableHeader from "./DraggableTableHeader";
 import EditableCell from "./EditableCell";
 import IndeterminateCheckbox from "./IndeterminateCheckbox";
-import type {
-	AdaptiveColumnDef,
-	AdaptiveTableProps,
-	TableState,
-} from "./types";
-import { ensureColumnIds, loadTableState, saveTableState } from "./utils";
+import { TablePagination } from "./TablePagination";
+import { TableSettingsMenu } from "./TableSettingsMenu";
+import type { AdaptiveColumnDef, AdaptiveTableProps } from "./types";
+import { useTableState } from "./useTableState";
+import { ensureColumnIds } from "./utils";
 
 export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	// Set default values
@@ -80,19 +70,6 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 
 	// Pagination state
 	const [internalCurrentPage, setInternalCurrentPage] = useState(1);
-	const [perPage, setPerPage] = useState<number>(() => {
-		if (props.saveState && pagination) {
-			try {
-				const savedState = loadTableState(props.saveState);
-				if (savedState?.perPage) {
-					return savedState.perPage;
-				}
-			} catch (error) {
-				console.error("Error loading perPage state:", error);
-			}
-		}
-		return 10; // Default per page
-	});
 
 	const currentPage = props.currentPage ?? internalCurrentPage;
 
@@ -162,181 +139,32 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	// Alias for backward compatibility
 	const columnsWithDetail = columnsWithActions;
 
-	// Initialize column order from saved state or default order
-	const [columnOrder, setColumnOrder] = useState<string[]>(() => {
-		const defaultOrder = columnsWithDetail.map((c) => c.id as string);
-
-		// Load saved state if saveState key is provided
-		if (props.saveState) {
-			try {
-				const savedState = loadTableState(props.saveState);
-				if (
-					savedState?.columnOrder &&
-					Array.isArray(savedState.columnOrder)
-				) {
-					// Validate that saved columns still exist
-					const validColumns = savedState.columnOrder.filter((id) =>
-						defaultOrder.includes(id),
-					);
-
-					// Check if all saved columns are valid and count matches
-					// If there's a mismatch, reset to default
-					if (
-						validColumns.length === savedState.columnOrder.length &&
-						validColumns.length === defaultOrder.length
-					) {
-						return validColumns;
-					}
-
-					// Reset to default if there's any mismatch
-					console.warn(
-						`Table state mismatch for "${props.saveState}". Resetting to default.`,
-					);
-					saveTableState(props.saveState, {
-						columnOrder: defaultOrder,
-					});
-				}
-			} catch (error) {
-				console.error(
-					`Error loading table state for "${props.saveState}". Resetting to default.`,
-					error,
-				);
-				// Reset saved state to default on error
-				try {
-					saveTableState(props.saveState, {
-						columnOrder: defaultOrder,
-					});
-				} catch (saveError) {
-					console.error("Failed to reset table state:", saveError);
-				}
-			}
-		}
-
-		return defaultOrder;
-	});
-
-	// Initialize column sizing from saved state
-	const [columnSizing, setColumnSizing] = useState<Record<string, number>>(
-		() => {
-			if (props.saveState && props.columnResizable) {
-				try {
-					const savedState = loadTableState(props.saveState);
-					if (savedState?.columnSizing) {
-						return savedState.columnSizing;
-					}
-				} catch (error) {
-					console.error("Error loading column sizing:", error);
-				}
-			}
-			return {};
-		},
-	);
-
-	// Initialize column visibility from saved state
-	const [columnVisibility, setColumnVisibility] = useState<
-		Record<string, boolean>
-	>(() => {
-		if (props.saveState && columnVisibilityToggle) {
-			try {
-				const savedState = loadTableState(props.saveState);
-				if (savedState?.columnVisibility) {
-					return savedState.columnVisibility;
-				}
-			} catch (error) {
-				console.error("Error loading column visibility:", error);
-			}
-		}
-		return {};
-	});
-
-	// Initialize grouping state from saved state
-	const [groupBy, setGroupBy] = useState<string | null>(() => {
-		if (props.saveState && groupable) {
-			try {
-				const savedState = loadTableState(props.saveState);
-				if (savedState?.groupBy !== undefined) {
-					return savedState.groupBy;
-				}
-			} catch (error) {
-				console.error("Error loading groupBy state:", error);
-			}
-		}
-		return null;
-	});
-
-	// Initialize expanded groups state
-	const [expandedGroups, setExpandedGroups] = useState<
-		Record<string, boolean>
-	>(() => {
-		if (props.saveState && groupable) {
-			try {
-				const savedState = loadTableState(props.saveState);
-				if (savedState?.expandedGroups) {
-					return savedState.expandedGroups;
-				}
-			} catch (error) {
-				console.error("Error loading expanded groups:", error);
-			}
-		}
-		return {};
-	});
-
-	// Initialize sorting state from saved state
-	const [sorting, setSorting] = useState<SortingState>(() => {
-		if (props.saveState && sortable) {
-			try {
-				const savedState = loadTableState(props.saveState);
-				if (savedState?.sorting) {
-					return savedState.sorting;
-				}
-			} catch (error) {
-				console.error("Error loading sorting state:", error);
-			}
-		}
-		return [];
-	});
-
-	// Save state whenever columnOrder, columnSizing, columnVisibility, grouping, pagination, or sorting changes
-	useEffect(() => {
-		if (props.saveState) {
-			const state: TableState = {};
-			if (props.columnOrderable) {
-				state.columnOrder = columnOrder;
-			}
-			if (props.columnResizable) {
-				state.columnSizing = columnSizing;
-			}
-			if (columnVisibilityToggle) {
-				state.columnVisibility = columnVisibility;
-			}
-			if (groupable) {
-				state.groupBy = groupBy;
-				state.expandedGroups = expandedGroups;
-			}
-			if (pagination) {
-				state.perPage = perPage;
-			}
-			if (sortable) {
-				state.sorting = sorting;
-			}
-			saveTableState(props.saveState, state);
-		}
-	}, [
+	// Use custom hook for table state persistence
+	const {
 		columnOrder,
+		setColumnOrder,
 		columnSizing,
+		setColumnSizing,
 		columnVisibility,
+		setColumnVisibility,
 		groupBy,
+		setGroupBy,
 		expandedGroups,
+		setExpandedGroups,
 		perPage,
+		setPerPage,
 		sorting,
-		props.saveState,
-		props.columnOrderable,
-		props.columnResizable,
-		columnVisibilityToggle,
-		groupable,
-		pagination,
-		sortable,
-	]);
+		setSorting,
+	} = useTableState({
+		saveStateKey: props.saveState,
+		defaultColumnOrder: columnsWithDetail.map((c) => c.id as string),
+		enableColumnOrderable: props.columnOrderable,
+		enableColumnResizable: props.columnResizable,
+		enableColumnVisibilityToggle: columnVisibilityToggle,
+		enableGroupable: groupable,
+		enablePagination: pagination,
+		enableSortable: sortable,
+	});
 
 	// Group data if groupBy is set
 	const groupedData = useMemo(() => {
@@ -552,98 +380,6 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		));
 	};
 
-	// Render pagination controls
-	const renderPagination = () => {
-		if (!shouldShowPagination) return null;
-
-		const startRecord = (currentPage - 1) * perPage + 1;
-		const endRecord = Math.min(
-			currentPage * perPage,
-			paginationType === "server"
-				? (props.recordsTotal ?? 0)
-				: props.data.length,
-		);
-		const totalRecords =
-			paginationType === "server"
-				? props.recordsTotal
-				: props.data.length;
-
-		return (
-			<div className="flex items-center justify-between mt-4 px-2">
-				<div className="flex items-center gap-2">
-					<span className="text-sm text-muted-foreground">
-						Rows per page:
-					</span>
-					<Select
-						value={String(perPage)}
-						onChange={(value) => {
-							const newPerPage = Number.parseInt(value, 10);
-							handlePaginationChange(newPerPage, 1);
-						}}
-						options={[
-							{ value: "10", label: "10" },
-							{ value: "20", label: "20" },
-							{ value: "50", label: "50" },
-							{ value: "100", label: "100" },
-						]}
-						classNames={{
-							root: "w-[70px]",
-							trigger: "h-8",
-						}}
-					/>
-					{props.recordsTotal !== undefined && (
-						<span className="text-sm text-muted-foreground ml-4">
-							{startRecord}-{endRecord} of {totalRecords} records
-						</span>
-					)}
-				</div>
-				<div className="flex items-center gap-1">
-					<Button
-						variant="outline"
-						size="icon"
-						className="h-8 w-8"
-						onClick={() => handlePageChange(1)}
-						disabled={currentPage === 1 || loading}
-					>
-						<ChevronLeft className="h-4 w-4" />
-						<ChevronLeft className="h-4 w-4 -ml-3" />
-					</Button>
-					<Button
-						variant="outline"
-						size="icon"
-						className="h-8 w-8"
-						onClick={() => handlePageChange(currentPage - 1)}
-						disabled={currentPage === 1 || loading}
-					>
-						<ChevronLeft className="h-4 w-4" />
-					</Button>
-					<span className="text-sm px-4">
-						Page {currentPage} of {calculatedMaxPage}
-					</span>
-					<Button
-						variant="outline"
-						size="icon"
-						className="h-8 w-8"
-						onClick={() => handlePageChange(currentPage + 1)}
-						disabled={currentPage >= calculatedMaxPage || loading}
-					>
-						<ChevronRight className="h-4 w-4" />
-					</Button>
-					<Button
-						variant="outline"
-						size="icon"
-						className="h-8 w-8"
-						onClick={() => handlePageChange(calculatedMaxPage)}
-						disabled={currentPage >= calculatedMaxPage || loading}
-					>
-						<ChevronRight className="h-4 w-4" />
-						<ChevronRight className="h-4 w-4 -ml-3" />
-					</Button>
-				</div>
-			</div>
-		);
-	};
-
 	// Render header section
 	const renderHeader = () => {
 		if (!showHeader) return null;
@@ -687,448 +423,17 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 				</div>
 				<div className="flex items-center gap-2">
 					{columnVisibilityToggle && (
-						<Popover>
-							<PopoverTrigger asChild>
-								<Button variant="outline" size="sm">
-									<Settings className="h-4 w-4" />
-								</Button>
-							</PopoverTrigger>
-							<PopoverContent className="w-48 p-1" align="end">
-								<div className="space-y-0.5">
-									<Popover>
-										<PopoverTrigger asChild>
-											<button
-												type="button"
-												className="flex items-center justify-between w-full text-left hover:bg-accent px-3 py-2 rounded-sm text-sm transition-colors"
-											>
-												<span>Column Visibility</span>
-												<ChevronRight className="h-4 w-4 text-muted-foreground" />
-											</button>
-										</PopoverTrigger>
-										<PopoverContent
-											className="w-64"
-											align="start"
-											side="right"
-											sideOffset={4}
-										>
-											<div className="space-y-4">
-												<div>
-													<h4 className="font-medium mb-3">
-														Property visibility
-													</h4>
-													<div className="relative mb-3">
-														<Input
-															placeholder="Search for a property..."
-															className="h-9"
-														/>
-													</div>
-												</div>
-												<Separator />
-												<div>
-													<p className="text-sm text-muted-foreground mb-2">
-														Shown in table
-													</p>
-													<ScrollArea className="h-48">
-														<div className="space-y-1">
-															{table
-																.getAllLeafColumns()
-																.filter(
-																	(
-																		column,
-																	) => {
-																		const columnDef =
-																			column.columnDef as AdaptiveColumnDef<T>;
-																		const hasVisibilityToggle =
-																			columnDef.visibilityToggle ??
-																			columnVisibilityToggle;
-																		return (
-																			column.getIsVisible() &&
-																			column.id !==
-																				"_actions" &&
-																			hasVisibilityToggle !==
-																				false
-																		);
-																	},
-																)
-																.map(
-																	(
-																		column,
-																	) => (
-																		<div
-																			key={
-																				column.id
-																			}
-																			className="flex items-center"
-																		>
-																			<button
-																				type="button"
-																				className="flex items-center gap-2 w-full text-left hover:bg-accent px-2 py-1 rounded-sm"
-																			>
-																				<Checkbox
-																					checked={column.getIsVisible()}
-																					onCheckedChange={(
-																						value,
-																					) =>
-																						column.toggleVisibility(
-																							!!value,
-																						)
-																					}
-																				/>
-																				<Label className="text-sm font-normal cursor-pointer flex-1">
-																					{typeof column
-																						.columnDef
-																						.header ===
-																					"string"
-																						? column
-																								.columnDef
-																								.header
-																						: column.id}
-																				</Label>
-																			</button>
-																		</div>
-																	),
-																)}
-														</div>
-													</ScrollArea>
-												</div>
-												{table
-													.getAllLeafColumns()
-													.some((column) => {
-														const columnDef =
-															column.columnDef as AdaptiveColumnDef<T>;
-														const hasVisibilityToggle =
-															columnDef.visibilityToggle ??
-															columnVisibilityToggle;
-														return (
-															!column.getIsVisible() &&
-															column.id !==
-																"_actions" &&
-															hasVisibilityToggle !==
-																false
-														);
-													}) && (
-													<>
-														<Separator />
-														<div>
-															<p className="text-sm text-muted-foreground mb-2">
-																Hidden
-															</p>
-															<div className="space-y-1">
-																{table
-																	.getAllLeafColumns()
-																	.filter(
-																		(
-																			column,
-																		) => {
-																			const columnDef =
-																				column.columnDef as AdaptiveColumnDef<T>;
-																			const hasVisibilityToggle =
-																				columnDef.visibilityToggle ??
-																				columnVisibilityToggle;
-																			return (
-																				!column.getIsVisible() &&
-																				column.id !==
-																					"_actions" &&
-																				hasVisibilityToggle !==
-																					false
-																			);
-																		},
-																	)
-																	.map(
-																		(
-																			column,
-																		) => (
-																			<div
-																				key={
-																					column.id
-																				}
-																				className="flex items-center"
-																			>
-																				<button
-																					type="button"
-																					className="flex items-center gap-2 w-full text-left hover:bg-accent px-2 py-1 rounded-sm"
-																				>
-																					<Checkbox
-																						checked={column.getIsVisible()}
-																						onCheckedChange={(
-																							value,
-																						) =>
-																							column.toggleVisibility(
-																								!!value,
-																							)
-																						}
-																					/>
-																					<Label className="text-sm font-normal cursor-pointer flex-1">
-																						{typeof column
-																							.columnDef
-																							.header ===
-																						"string"
-																							? column
-																									.columnDef
-																									.header
-																							: column.id}
-																					</Label>
-																				</button>
-																			</div>
-																		),
-																	)}
-															</div>
-														</div>
-													</>
-												)}
-											</div>
-										</PopoverContent>
-									</Popover>
-									{groupable &&
-										paginationType !== "server" && (
-											<Popover>
-												<PopoverTrigger asChild>
-													<button
-														type="button"
-														className="flex items-center justify-between w-full text-left hover:bg-accent px-3 py-2 rounded-sm text-sm transition-colors"
-													>
-														<span>Group By</span>
-														<ChevronRight className="h-4 w-4 text-muted-foreground" />
-													</button>
-												</PopoverTrigger>
-												<PopoverContent
-													className="w-64"
-													align="start"
-													side="right"
-													sideOffset={4}
-												>
-													<div className="space-y-3">
-														<div className="flex items-center justify-between">
-															<h4 className="font-medium">
-																Group by
-																property
-															</h4>
-															{groupBy && (
-																<Button
-																	variant="ghost"
-																	size="sm"
-																	onClick={() =>
-																		setGroupBy(
-																			null,
-																		)
-																	}
-																	className="h-6 px-2"
-																>
-																	Clear
-																</Button>
-															)}
-														</div>
-														<Separator />
-														<ScrollArea className="h-48">
-															<div className="space-y-1">
-																{table
-																	.getAllLeafColumns()
-																	.filter(
-																		(
-																			column,
-																		) =>
-																			column.id !==
-																			"_actions",
-																	)
-																	.map(
-																		(
-																			column,
-																		) => {
-																			const isSelected =
-																				groupBy ===
-																				column.id;
-																			return (
-																				<button
-																					key={
-																						column.id
-																					}
-																					type="button"
-																					onClick={() =>
-																						setGroupBy(
-																							column.id,
-																						)
-																					}
-																					className={`flex items-center gap-2 w-full text-left hover:bg-accent px-2 py-1.5 rounded-sm text-sm transition-colors ${
-																						isSelected
-																							? "bg-accent"
-																							: ""
-																					}`}
-																				>
-																					<div
-																						className={`w-4 h-4 rounded-sm border flex items-center justify-center ${
-																							isSelected
-																								? "bg-primary border-primary"
-																								: "border-input"
-																						}`}
-																					>
-																						{isSelected && (
-																							<div className="w-2 h-2 bg-primary-foreground rounded-sm" />
-																						)}
-																					</div>
-																					<span>
-																						{typeof column
-																							.columnDef
-																							.header ===
-																						"string"
-																							? column
-																									.columnDef
-																									.header
-																							: column.id}
-																					</span>
-																				</button>
-																			);
-																		},
-																	)}
-															</div>
-														</ScrollArea>
-													</div>
-												</PopoverContent>
-											</Popover>
-										)}
-									{sortable && (
-										<Popover>
-											<PopoverTrigger asChild>
-												<button
-													type="button"
-													className="flex items-center justify-between w-full text-left hover:bg-accent px-3 py-2 rounded-sm text-sm transition-colors"
-												>
-													<span>Sort</span>
-													<ChevronRight className="h-4 w-4 text-muted-foreground" />
-												</button>
-											</PopoverTrigger>
-											<PopoverContent
-												className="w-64"
-												align="start"
-												side="right"
-												sideOffset={4}
-											>
-												<div className="space-y-3">
-													<div className="flex items-center justify-between">
-														<h4 className="font-medium">
-															Sort
-														</h4>
-														{sorting.length > 0 && (
-															<Button
-																variant="ghost"
-																size="sm"
-																onClick={() =>
-																	setSorting(
-																		[],
-																	)
-																}
-																className="h-6 px-2"
-															>
-																Clear
-															</Button>
-														)}
-													</div>
-													<Separator />
-													<ScrollArea className="h-48">
-														<div className="space-y-2">
-															{table
-																.getAllLeafColumns()
-																.filter(
-																	(
-																		column,
-																	) => {
-																		const columnDef =
-																			column.columnDef as AdaptiveColumnDef<T>;
-																		const isSortable =
-																			columnDef.sortable ??
-																			sortable;
-																		return (
-																			column.id !==
-																				"_actions" &&
-																			isSortable
-																		);
-																	},
-																)
-																.map(
-																	(
-																		column,
-																	) => {
-																		const sortedState =
-																			column.getIsSorted();
-																		return (
-																			<div
-																				key={
-																					column.id
-																				}
-																				className="space-y-1"
-																			>
-																				<div className="text-sm font-medium">
-																					{typeof column
-																						.columnDef
-																						.header ===
-																					"string"
-																						? column
-																								.columnDef
-																								.header
-																						: column.id}
-																				</div>
-																				<div className="flex gap-1">
-																					<Button
-																						variant={
-																							sortedState ===
-																							"asc"
-																								? "default"
-																								: "outline"
-																						}
-																						size="sm"
-																						onClick={() =>
-																							column.toggleSorting(
-																								false,
-																							)
-																						}
-																						className="flex-1 h-7 text-xs"
-																					>
-																						🔼
-																						Asc
-																					</Button>
-																					<Button
-																						variant={
-																							sortedState ===
-																							"desc"
-																								? "default"
-																								: "outline"
-																						}
-																						size="sm"
-																						onClick={() =>
-																							column.toggleSorting(
-																								true,
-																							)
-																						}
-																						className="flex-1 h-7 text-xs"
-																					>
-																						🔽
-																						Desc
-																					</Button>
-																				</div>
-																			</div>
-																		);
-																	},
-																)}
-														</div>
-													</ScrollArea>
-												</div>
-											</PopoverContent>
-										</Popover>
-									)}
-									{!groupable && !sortable && (
-										<button
-											type="button"
-											className="flex items-center justify-between w-full text-left hover:bg-accent px-3 py-2 rounded-sm text-sm transition-colors"
-											onClick={() => {
-												// TODO: Implement additional functionality
-											}}
-										>
-											<span>More Options</span>
-											<ChevronRight className="h-4 w-4 text-muted-foreground" />
-										</button>
-									)}
-								</div>
-							</PopoverContent>
-						</Popover>
+						<TableSettingsMenu
+							table={table}
+							columnVisibilityToggle={columnVisibilityToggle}
+							groupable={groupable}
+							groupBy={groupBy}
+							onGroupByChange={setGroupBy}
+							paginationType={paginationType}
+							sortable={sortable}
+							sorting={sorting}
+							onSortingChange={setSorting}
+						/>
 					)}
 					{props.headerActions ? (
 						props.headerActions
@@ -1368,7 +673,22 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 				</DndContext>
 
 				{/* Pagination */}
-				{renderPagination()}
+				{shouldShowPagination && (
+					<TablePagination
+						currentPage={currentPage}
+						perPage={perPage}
+						maxPage={calculatedMaxPage}
+						recordsTotal={props.recordsTotal}
+						totalRecords={
+							paginationType === "server"
+								? (props.recordsTotal ?? 0)
+								: props.data.length
+						}
+						loading={loading}
+						onPageChange={handlePageChange}
+						onPerPageChange={handlePaginationChange}
+					/>
+				)}
 
 				{/* Detail Sheet */}
 				{showDetail && !props.onDetailClick && (
@@ -1770,7 +1090,22 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 			</table>
 
 			{/* Pagination */}
-			{renderPagination()}
+			{shouldShowPagination && (
+				<TablePagination
+					currentPage={currentPage}
+					perPage={perPage}
+					maxPage={calculatedMaxPage}
+					recordsTotal={props.recordsTotal}
+					totalRecords={
+						paginationType === "server"
+							? (props.recordsTotal ?? 0)
+							: props.data.length
+					}
+					loading={loading}
+					onPageChange={handlePageChange}
+					onPerPageChange={handlePaginationChange}
+				/>
+			)}
 
 			{/* Detail Sheet */}
 			{showDetail && !props.onDetailClick && (
