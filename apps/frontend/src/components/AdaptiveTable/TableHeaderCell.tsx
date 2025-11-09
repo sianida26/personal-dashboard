@@ -15,9 +15,13 @@ import {
 import type { CSSProperties } from "react";
 import type { AdaptiveColumnDef } from "./types";
 
-// Draggable header component
-export const DraggableTableHeader = <T,>({
+/**
+ * Unified table header cell component
+ * Supports both draggable (orderable) and static headers
+ */
+export const TableHeaderCell = <T,>({
 	header,
+	draggable = false,
 	columnResizable,
 	columnVisibilityToggle,
 	table,
@@ -28,6 +32,7 @@ export const DraggableTableHeader = <T,>({
 	sortable,
 }: {
 	header: Header<T, unknown>;
+	draggable?: boolean;
 	columnResizable?: boolean;
 	columnVisibilityToggle?: boolean;
 	table: ReturnType<typeof useReactTable<T>>;
@@ -44,7 +49,7 @@ export const DraggableTableHeader = <T,>({
 	const canGroup = groupable && paginationType !== "server";
 
 	// Check column-level overrides
-	const isOrderable = columnDef.orderable ?? true; // Default to true if not specified
+	const isOrderable = columnDef.orderable ?? true;
 	const isResizable =
 		(columnDef.resizable ?? columnResizable) && !isActionsColumn;
 	const hasVisibilityToggle =
@@ -52,32 +57,43 @@ export const DraggableTableHeader = <T,>({
 		!isActionsColumn;
 	const isSortable = (columnDef.sortable ?? sortable) && !isActionsColumn;
 
-	const { attributes, isDragging, listeners, setNodeRef, transform } =
-		useSortable({
-			id: header.column.id,
-			disabled: isActionsColumn || !isOrderable,
-		});
-
-	const style: CSSProperties = {
-		opacity: isDragging ? 0.8 : 1,
-		position: "relative",
-		transform: CSS.Translate.toString(transform),
-		transition: "width transform 0.2s ease-in-out",
-		whiteSpace: "nowrap",
-		width: columnResizable
-			? `calc(var(--header-${header.id}-size) * 1px)`
-			: header.column.getSize(),
-		zIndex: isDragging ? 1 : 0,
-	};
+	// Only use sortable hook if draggable is enabled
+	const sortableHook = draggable
+		? // eslint-disable-next-line react-hooks/rules-of-hooks
+			useSortable({
+				id: header.column.id,
+				disabled: isActionsColumn || !isOrderable,
+			})
+		: null;
 
 	const sortedState = header.column.getIsSorted();
+
+	// Build style based on whether draggable or not
+	const style: CSSProperties =
+		draggable && sortableHook
+			? {
+					opacity: sortableHook.isDragging ? 0.8 : 1,
+					position: "relative",
+					transform: CSS.Translate.toString(sortableHook.transform),
+					transition: "width transform 0.2s ease-in-out",
+					whiteSpace: "nowrap",
+					width: columnResizable
+						? `calc(var(--header-${header.id}-size) * 1px)`
+						: header.column.getSize(),
+					zIndex: sortableHook.isDragging ? 1 : 0,
+				}
+			: {
+					width: columnResizable
+						? `calc(var(--header-${header.id}-size) * 1px)`
+						: undefined,
+				};
 
 	return (
 		<ContextMenu>
 			<ContextMenuTrigger asChild>
 				<th
 					colSpan={header.colSpan}
-					ref={setNodeRef}
+					ref={sortableHook?.setNodeRef}
 					style={style}
 					className="border relative"
 				>
@@ -88,16 +104,19 @@ export const DraggableTableHeader = <T,>({
 									header.column.columnDef.header,
 									header.getContext(),
 								)}
-						{!isActionsColumn && isOrderable && (
-							<button
-								type="button"
-								{...attributes}
-								{...listeners}
-								className="ml-2 cursor-grab active:cursor-grabbing"
-							>
-								🟰
-							</button>
-						)}
+						{draggable &&
+							!isActionsColumn &&
+							isOrderable &&
+							sortableHook && (
+								<button
+									type="button"
+									{...sortableHook.attributes}
+									{...sortableHook.listeners}
+									className="ml-2 cursor-grab active:cursor-grabbing"
+								>
+									🟰
+								</button>
+							)}
 						{isSortable && sortedState && (
 							<span className="ml-1">
 								{sortedState === "asc" ? "🔼" : "🔽"}
@@ -180,9 +199,12 @@ export const DraggableTableHeader = <T,>({
 						</ContextMenuItem>
 					</>
 				)}
+				{!columnVisibilityToggle && !canGroup && !isSortable && (
+					<ContextMenuItem>Dummy Menu Item</ContextMenuItem>
+				)}
 			</ContextMenuContent>
 		</ContextMenu>
 	);
 };
 
-export default DraggableTableHeader;
+export default TableHeaderCell;

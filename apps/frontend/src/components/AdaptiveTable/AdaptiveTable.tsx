@@ -15,16 +15,8 @@ import {
 	horizontalListSortingStrategy,
 	SortableContext,
 } from "@dnd-kit/sortable";
+import { Skeleton } from "@repo/ui";
 import {
-	ContextMenu,
-	ContextMenuContent,
-	ContextMenuItem,
-	ContextMenuTrigger,
-	Separator,
-	Skeleton,
-} from "@repo/ui";
-import {
-	flexRender,
 	getCoreRowModel,
 	getSortedRowModel,
 	useReactTable,
@@ -33,10 +25,10 @@ import { ChevronRight } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { DetailSheet } from "./DetailSheet";
 import DragAlongCell from "./DragAlongCell";
-import DraggableTableHeader from "./DraggableTableHeader";
 import EditableCell from "./EditableCell";
 import IndeterminateCheckbox from "./IndeterminateCheckbox";
 import { TableHeader } from "./TableHeader";
+import TableHeaderCell from "./TableHeaderCell";
 import { TablePagination } from "./TablePagination";
 import type { AdaptiveColumnDef, AdaptiveTableProps } from "./types";
 import { useTableGrouping } from "./useTableGrouping";
@@ -338,9 +330,10 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 								strategy={horizontalListSortingStrategy}
 							>
 								{headerGroup.headers.map((header) => (
-									<DraggableTableHeader
+									<TableHeaderCell
 										key={header.id}
 										header={header}
+										draggable={true}
 										columnResizable={props.columnResizable}
 										columnVisibilityToggle={
 											columnVisibilityToggle
@@ -355,168 +348,23 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 								))}
 							</SortableContext>
 						) : (
-							headerGroup.headers.map((header) => {
-								const columnDef = header.column
-									.columnDef as AdaptiveColumnDef<T>;
-								const isActionsColumn =
-									header.column.id === "_actions";
-								const hasVisibilityToggle =
-									(columnDef.visibilityToggle ??
-										columnVisibilityToggle) &&
-									!isActionsColumn;
-								const isSortable =
-									(columnDef.sortable ?? sortable) &&
-									!isActionsColumn;
-								const sortedState = header.column.getIsSorted();
-
-								return (
-									<ContextMenu key={header.id}>
-										<ContextMenuTrigger asChild>
-											<th
-												className="border relative"
-												style={{
-													width: props.columnResizable
-														? `calc(var(--header-${header.id}-size) * 1px)`
-														: undefined,
-												}}
-											>
-												<div className="flex items-center">
-													{header.isPlaceholder
-														? null
-														: flexRender(
-																header.column
-																	.columnDef
-																	.header,
-																header.getContext(),
-															)}
-													{isSortable &&
-														sortedState && (
-															<span className="ml-1">
-																{sortedState ===
-																"asc"
-																	? "🔼"
-																	: "🔽"}
-															</span>
-														)}
-												</div>
-												{props.columnResizable && (
-													<button
-														type="button"
-														onDoubleClick={() =>
-															header.column.resetSize()
-														}
-														onMouseDown={header.getResizeHandler()}
-														onTouchStart={header.getResizeHandler()}
-														className={`absolute right-0 top-0 h-full w-2 cursor-col-resize select-none touch-none hover:bg-blue-500 border-0 p-0 ${
-															header.column.getIsResizing()
-																? "bg-blue-500"
-																: "bg-transparent"
-														}`}
-														style={{
-															transform:
-																header.column.getIsResizing()
-																	? `translateX(${
-																			table.getState()
-																				.columnSizingInfo
-																				.deltaOffset ??
-																			0
-																		}px)`
-																	: "",
-														}}
-														aria-label="Resize column"
-													>
-														<div className="w-px h-full bg-gray-300 mx-auto pointer-events-none" />
-													</button>
-												)}
-											</th>
-										</ContextMenuTrigger>
-										<ContextMenuContent>
-											{hasVisibilityToggle && (
-												<ContextMenuItem
-													onSelect={() =>
-														header.column.toggleVisibility(
-															false,
-														)
-													}
-												>
-													Hide column
-												</ContextMenuItem>
-											)}
-											{isSortable && (
-												<>
-													{hasVisibilityToggle && (
-														<Separator />
-													)}
-													<ContextMenuItem
-														onSelect={() =>
-															header.column.toggleSorting(
-																false,
-															)
-														}
-													>
-														Sort Ascending
-													</ContextMenuItem>
-													<ContextMenuItem
-														onSelect={() =>
-															header.column.toggleSorting(
-																true,
-															)
-														}
-													>
-														Sort Descending
-													</ContextMenuItem>
-													{sortedState && (
-														<ContextMenuItem
-															onSelect={() =>
-																header.column.clearSorting()
-															}
-														>
-															Clear Sort
-														</ContextMenuItem>
-													)}
-												</>
-											)}
-											{groupable &&
-												paginationType !== "server" &&
-												header.column.id !==
-													"_actions" && (
-													<>
-														{(hasVisibilityToggle ||
-															isSortable) && (
-															<Separator />
-														)}
-														<ContextMenuItem
-															onSelect={() => {
-																setGroupBy(
-																	groupBy ===
-																		header
-																			.column
-																			.id
-																		? null
-																		: header
-																				.column
-																				.id,
-																);
-															}}
-														>
-															{groupBy ===
-															header.column.id
-																? "Ungroup"
-																: "Group by this column"}
-														</ContextMenuItem>
-													</>
-												)}
-											{!columnVisibilityToggle &&
-												!groupable &&
-												!isSortable && (
-													<ContextMenuItem>
-														Dummy Menu Item
-													</ContextMenuItem>
-												)}
-										</ContextMenuContent>
-									</ContextMenu>
-								);
-							})
+							headerGroup.headers.map((header) => (
+								<TableHeaderCell
+									key={header.id}
+									header={header}
+									draggable={false}
+									columnResizable={props.columnResizable}
+									columnVisibilityToggle={
+										columnVisibilityToggle
+									}
+									table={table}
+									groupable={groupable}
+									groupBy={groupBy}
+									onGroupByChange={setGroupBy}
+									paginationType={paginationType}
+									sortable={sortable}
+								/>
+							))
 						)}
 					</tr>
 				))}
