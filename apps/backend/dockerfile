@@ -26,4 +26,4 @@ RUN mkdir -p /node/logs /node/keys /node/uploads \
 
 EXPOSE 81
 
-CMD ["sh", "-c", "bun run db:migrate && bun run db:seed && bun run start || true"]
+CMD ["sh", "-c", "bun run db:migrate && bun run db:seed && bun run start || tail -f /dev/null"]
