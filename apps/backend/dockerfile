@@ -17,12 +17,14 @@ RUN bun install
 
 FROM base AS production
 
-COPY --from=builder /node/apps/backend/ /node/packages/ ./
-COPY --from=installer /node/node_modules /node/bun.lock ./
+COPY --from=builder /node/apps/backend/ ./
+COPY --from=builder /node/packages/ ./packages
+COPY --from=installer /node/node_modules ./node_modules
+COPY --from=installer /node/bun.lock ./
 
 RUN mkdir -p /node/logs /node/keys /node/uploads \
   && chmod 777 /node/logs /node/keys /node/uploads
 
 EXPOSE 81
 
-CMD ["sh", "-c", "bun run db:prepare && bun run start"]
+CMD ["sh", "-c", "bun run db:prepare && bun run start || tail -f /dev/null"]
