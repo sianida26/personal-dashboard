@@ -19,7 +19,6 @@ FROM base AS production
 
 COPY --from=installer /node/apps/backend/ ./
 COPY --from=installer /node/node_modules ./node_modules
-COPY --from=installer /node/package.json ./package.json
 COPY --from=installer /node/bun.lock ./bun.lock
 
 RUN mkdir -p /node/logs /node/keys /node/uploads \
@@ -27,4 +26,4 @@ RUN mkdir -p /node/logs /node/keys /node/uploads \
 
 EXPOSE 81
 
-CMD ["sh", "-c", "bun run db:migrate || true; bun run db:seed || true; bun run start || true"]
+CMD ["sh", "-c", "bun run db:migrate && bun run db:seed && bun run start || true"]
