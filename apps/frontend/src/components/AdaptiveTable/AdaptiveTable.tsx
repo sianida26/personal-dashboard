@@ -326,310 +326,36 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		));
 	};
 
-	// Render orderable table
-	if (props.columnOrderable) {
-		return (
-			<div>
-				<TableHeader
-					title={props.title}
-					showHeader={showHeader}
-					rowSelectable={rowSelectable}
-					rowSelection={rowSelection}
-					table={table}
-					selectActions={props.selectActions}
-					onSelectAction={props.onSelectAction}
-					columnVisibilityToggle={columnVisibilityToggle}
-					groupable={groupable}
-					groupBy={groupBy}
-					onGroupByChange={setGroupBy}
-					paginationType={paginationType}
-					sortable={sortable}
-					sorting={sorting}
-					onSortingChange={setSorting}
-					headerActions={props.headerActions}
-				/>
-				<DndContext
-					collisionDetection={closestCenter}
-					modifiers={[restrictToHorizontalAxis]}
-					onDragEnd={handleDragEnd}
-					sensors={sensors}
-				>
-					<div>
-						<table
-							className="border-collapse"
-							style={columnSizeVars}
-						>
-							<thead>
-								{table.getHeaderGroups().map((headerGroup) => (
-									<tr key={headerGroup.id}>
-										<SortableContext
-											items={columnOrder}
-											strategy={
-												horizontalListSortingStrategy
-											}
-										>
-											{headerGroup.headers.map(
-												(header) => (
-													<DraggableTableHeader
-														key={header.id}
-														header={header}
-														columnResizable={
-															props.columnResizable
-														}
-														columnVisibilityToggle={
-															columnVisibilityToggle
-														}
-														table={table}
-														groupable={groupable}
-														groupBy={groupBy}
-														onGroupByChange={
-															setGroupBy
-														}
-														paginationType={
-															paginationType
-														}
-														sortable={sortable}
-													/>
-												),
-											)}
-										</SortableContext>
-									</tr>
+	// Render table content (unified for both orderable and regular tables)
+	const renderTableContent = () => (
+		<table className="border-collapse" style={columnSizeVars}>
+			<thead>
+				{table.getHeaderGroups().map((headerGroup) => (
+					<tr key={headerGroup.id}>
+						{props.columnOrderable ? (
+							<SortableContext
+								items={columnOrder}
+								strategy={horizontalListSortingStrategy}
+							>
+								{headerGroup.headers.map((header) => (
+									<DraggableTableHeader
+										key={header.id}
+										header={header}
+										columnResizable={props.columnResizable}
+										columnVisibilityToggle={
+											columnVisibilityToggle
+										}
+										table={table}
+										groupable={groupable}
+										groupBy={groupBy}
+										onGroupByChange={setGroupBy}
+										paginationType={paginationType}
+										sortable={sortable}
+									/>
 								))}
-							</thead>
-							<tbody>
-								{loading
-									? // Render skeleton loader
-										renderSkeletonRows(
-											table.getHeaderGroups()[0]?.headers
-												.length ?? 1,
-										)
-									: groupedData && groupBy
-										? // Render grouped rows
-											Array.from(
-												groupedData.entries(),
-											).map(
-												([groupValue, groupItems]) => {
-													const isExpanded =
-														expandedGroups[
-															groupValue
-														] ?? true;
-													const columnCount =
-														table.getHeaderGroups()[0]
-															?.headers.length ??
-														1;
-
-													return (
-														<>
-															<tr
-																key={`group-${groupValue}`}
-																className="bg-muted/50 hover:bg-muted/70 transition-colors"
-															>
-																<td
-																	colSpan={
-																		columnCount
-																	}
-																	className="border px-3 py-2"
-																>
-																	<button
-																		type="button"
-																		onClick={() =>
-																			toggleGroup(
-																				groupValue,
-																			)
-																		}
-																		className="flex items-center gap-2 w-full text-left font-medium"
-																	>
-																		<ChevronRight
-																			className={`h-4 w-4 transition-transform ${
-																				isExpanded
-																					? "rotate-90"
-																					: ""
-																			}`}
-																		/>
-																		<span>
-																			{
-																				groupValue
-																			}{" "}
-																			(
-																			{
-																				groupItems.length
-																			}
-																			)
-																		</span>
-																	</button>
-																</td>
-															</tr>
-															{isExpanded &&
-																groupItems.map(
-																	(item) => {
-																		// Find the original index in props.data
-																		const originalIndex =
-																			props.data.indexOf(
-																				item,
-																			);
-																		// Create a temporary row for this item
-																		const rows =
-																			table.getRowModel()
-																				.rows;
-																		const row =
-																			rows[
-																				originalIndex
-																			];
-																		if (
-																			!row
-																		)
-																			return null;
-
-																		return (
-																			<tr
-																				key={
-																					row.id
-																				}
-																			>
-																				{row
-																					.getVisibleCells()
-																					.map(
-																						(
-																							cell,
-																						) => (
-																							<SortableContext
-																								key={
-																									cell.id
-																								}
-																								items={
-																									columnOrder
-																								}
-																								strategy={
-																									horizontalListSortingStrategy
-																								}
-																							>
-																								<DragAlongCell
-																									key={
-																										cell.id
-																									}
-																									cell={
-																										cell
-																									}
-																									columnResizable={
-																										props.columnResizable
-																									}
-																									rowIndex={
-																										originalIndex
-																									}
-																								/>
-																							</SortableContext>
-																						),
-																					)}
-																			</tr>
-																		);
-																	},
-																)}
-														</>
-													);
-												},
-											)
-										: // Render ungrouped rows
-											table
-												.getRowModel()
-												.rows.map((row, rowIndex) => (
-													<tr key={row.id}>
-														{row
-															.getVisibleCells()
-															.map((cell) => (
-																<SortableContext
-																	key={
-																		cell.id
-																	}
-																	items={
-																		columnOrder
-																	}
-																	strategy={
-																		horizontalListSortingStrategy
-																	}
-																>
-																	<DragAlongCell
-																		key={
-																			cell.id
-																		}
-																		cell={
-																			cell
-																		}
-																		columnResizable={
-																			props.columnResizable
-																		}
-																		rowIndex={
-																			rowIndex
-																		}
-																	/>
-																</SortableContext>
-															))}
-													</tr>
-												))}
-							</tbody>
-						</table>
-					</div>
-				</DndContext>
-
-				{/* Pagination */}
-				{shouldShowPagination && (
-					<TablePagination
-						currentPage={currentPage}
-						perPage={perPage}
-						maxPage={calculatedMaxPage}
-						recordsTotal={props.recordsTotal}
-						totalRecords={
-							paginationType === "server"
-								? (props.recordsTotal ?? 0)
-								: props.data.length
-						}
-						loading={loading}
-						onPageChange={handlePageChange}
-						onPerPageChange={handlePaginationChange}
-					/>
-				)}
-
-				{/* Detail Sheet */}
-				{showDetail && !props.onDetailClick && (
-					<DetailSheet
-						open={detailRowIndex !== null}
-						onOpenChange={(open) => {
-							if (!open) setDetailRowIndex(null);
-						}}
-						columns={columnsWithIds}
-						data={props.data}
-						detailRowIndex={detailRowIndex}
-					/>
-				)}
-			</div>
-		);
-	}
-
-	// Render regular table
-	return (
-		<div>
-			<TableHeader
-				title={props.title}
-				showHeader={showHeader}
-				rowSelectable={rowSelectable}
-				rowSelection={rowSelection}
-				table={table}
-				selectActions={props.selectActions}
-				onSelectAction={props.onSelectAction}
-				columnVisibilityToggle={columnVisibilityToggle}
-				groupable={groupable}
-				groupBy={groupBy}
-				onGroupByChange={setGroupBy}
-				paginationType={paginationType}
-				sortable={sortable}
-				sorting={sorting}
-				onSortingChange={setSorting}
-				headerActions={props.headerActions}
-			/>
-			<table className="border-collapse" style={columnSizeVars}>
-				<thead>
-					{table.getHeaderGroups().map((headerGroup) => (
-						<tr key={headerGroup.id}>
-							{headerGroup.headers.map((header) => {
+							</SortableContext>
+						) : (
+							headerGroup.headers.map((header) => {
 								const columnDef = header.column
 									.columnDef as AdaptiveColumnDef<T>;
 								const isActionsColumn =
@@ -790,140 +516,216 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 										</ContextMenuContent>
 									</ContextMenu>
 								);
-							})}
-						</tr>
-					))}
-				</thead>
-				<tbody>
-					{loading
-						? // Render skeleton loader
-							renderSkeletonRows(
-								table.getHeaderGroups()[0]?.headers.length ?? 1,
-							)
-						: groupedData && groupBy
-							? // Render grouped rows
-								Array.from(groupedData.entries()).map(
-									([groupValue, groupItems]) => {
-										const isExpanded =
-											expandedGroups[groupValue] ?? true;
-										const columnCount =
-											table.getHeaderGroups()[0]?.headers
-												.length ?? 1;
+							})
+						)}
+					</tr>
+				))}
+			</thead>
+			<tbody>
+				{loading
+					? // Render skeleton loader
+						renderSkeletonRows(
+							table.getHeaderGroups()[0]?.headers.length ?? 1,
+						)
+					: groupedData && groupBy
+						? // Render grouped rows
+							Array.from(groupedData.entries()).map(
+								([groupValue, groupItems]) => {
+									const isExpanded =
+										expandedGroups[groupValue] ?? true;
+									const columnCount =
+										table.getHeaderGroups()[0]?.headers
+											.length ?? 1;
 
-										return (
-											<>
-												<tr
-													key={`group-${groupValue}`}
-													className="bg-muted/50 hover:bg-muted/70 transition-colors"
+									return (
+										<>
+											<tr
+												key={`group-${groupValue}`}
+												className="bg-muted/50 hover:bg-muted/70 transition-colors"
+											>
+												<td
+													colSpan={columnCount}
+													className="border px-3 py-2"
 												>
-													<td
-														colSpan={columnCount}
-														className="border px-3 py-2"
+													<button
+														type="button"
+														onClick={() =>
+															toggleGroup(
+																groupValue,
+															)
+														}
+														className="flex items-center gap-2 w-full text-left font-medium"
 													>
-														<button
-															type="button"
-															onClick={() =>
-																toggleGroup(
-																	groupValue,
-																)
-															}
-															className="flex items-center gap-2 w-full text-left font-medium"
-														>
-															<ChevronRight
-																className={`h-4 w-4 transition-transform ${
-																	isExpanded
-																		? "rotate-90"
-																		: ""
-																}`}
-															/>
-															<span>
-																{groupValue} (
-																{
-																	groupItems.length
-																}
-																)
-															</span>
-														</button>
-													</td>
-												</tr>
-												{isExpanded &&
-													groupItems.map((item) => {
-														// Find the original index in props.data
-														const originalIndex =
-															props.data.indexOf(
-																item,
-															);
-														const rows =
-															table.getRowModel()
-																.rows;
-														const row =
-															rows[originalIndex];
-														if (!row) return null;
+														<ChevronRight
+															className={`h-4 w-4 transition-transform ${
+																isExpanded
+																	? "rotate-90"
+																	: ""
+															}`}
+														/>
+														<span>
+															{groupValue} (
+															{groupItems.length})
+														</span>
+													</button>
+												</td>
+											</tr>
+											{isExpanded &&
+												groupItems.map((item) => {
+													// Find the original index in props.data
+													const originalIndex =
+														props.data.indexOf(
+															item,
+														);
+													const rows =
+														table.getRowModel()
+															.rows;
+													const row =
+														rows[originalIndex];
+													if (!row) return null;
 
-														return (
-															<tr key={row.id}>
-																{row
-																	.getVisibleCells()
-																	.map(
-																		(
-																			cell,
-																		) => (
-																			<td
+													return (
+														<tr key={row.id}>
+															{row
+																.getVisibleCells()
+																.map((cell) =>
+																	props.columnOrderable ? (
+																		<SortableContext
+																			key={
+																				cell.id
+																			}
+																			items={
+																				columnOrder
+																			}
+																			strategy={
+																				horizontalListSortingStrategy
+																			}
+																		>
+																			<DragAlongCell
 																				key={
 																					cell.id
 																				}
-																				className="border"
-																				style={{
-																					width: props.columnResizable
-																						? `calc(var(--col-${cell.column.id}-size) * 1px)`
-																						: undefined,
-																				}}
-																			>
-																				<EditableCell
-																					cell={
-																						cell
-																					}
-																					rowIndex={
-																						originalIndex
-																					}
-																				/>
-																			</td>
-																		),
-																	)}
-															</tr>
-														);
-													})}
-											</>
-										);
-									},
-								)
-							: // Render ungrouped rows
-								table
-									.getRowModel()
-									.rows.map((row, rowIndex) => (
-										<tr key={row.id}>
-											{row
-												.getVisibleCells()
-												.map((cell) => (
-													<td
+																				cell={
+																					cell
+																				}
+																				columnResizable={
+																					props.columnResizable
+																				}
+																				rowIndex={
+																					originalIndex
+																				}
+																			/>
+																		</SortableContext>
+																	) : (
+																		<td
+																			key={
+																				cell.id
+																			}
+																			className="border"
+																			style={{
+																				width: props.columnResizable
+																					? `calc(var(--col-${cell.column.id}-size) * 1px)`
+																					: undefined,
+																			}}
+																		>
+																			<EditableCell
+																				cell={
+																					cell
+																				}
+																				rowIndex={
+																					originalIndex
+																				}
+																			/>
+																		</td>
+																	),
+																)}
+														</tr>
+													);
+												})}
+										</>
+									);
+								},
+							)
+						: // Render ungrouped rows
+							table
+								.getRowModel()
+								.rows.map((row, rowIndex) => (
+									<tr key={row.id}>
+										{row.getVisibleCells().map((cell) =>
+											props.columnOrderable ? (
+												<SortableContext
+													key={cell.id}
+													items={columnOrder}
+													strategy={
+														horizontalListSortingStrategy
+													}
+												>
+													<DragAlongCell
 														key={cell.id}
-														className="border"
-														style={{
-															width: props.columnResizable
-																? `calc(var(--col-${cell.column.id}-size) * 1px)`
-																: undefined,
-														}}
-													>
-														<EditableCell
-															cell={cell}
-															rowIndex={rowIndex}
-														/>
-													</td>
-												))}
-										</tr>
-									))}
-				</tbody>
-			</table>
+														cell={cell}
+														columnResizable={
+															props.columnResizable
+														}
+														rowIndex={rowIndex}
+													/>
+												</SortableContext>
+											) : (
+												<td
+													key={cell.id}
+													className="border"
+													style={{
+														width: props.columnResizable
+															? `calc(var(--col-${cell.column.id}-size) * 1px)`
+															: undefined,
+													}}
+												>
+													<EditableCell
+														cell={cell}
+														rowIndex={rowIndex}
+													/>
+												</td>
+											),
+										)}
+									</tr>
+								))}
+			</tbody>
+		</table>
+	);
+
+	// Unified render
+	return (
+		<div>
+			<TableHeader
+				title={props.title}
+				showHeader={showHeader}
+				rowSelectable={rowSelectable}
+				rowSelection={rowSelection}
+				table={table}
+				selectActions={props.selectActions}
+				onSelectAction={props.onSelectAction}
+				columnVisibilityToggle={columnVisibilityToggle}
+				groupable={groupable}
+				groupBy={groupBy}
+				onGroupByChange={setGroupBy}
+				paginationType={paginationType}
+				sortable={sortable}
+				sorting={sorting}
+				onSortingChange={setSorting}
+				headerActions={props.headerActions}
+			/>
+
+			{props.columnOrderable ? (
+				<DndContext
+					collisionDetection={closestCenter}
+					modifiers={[restrictToHorizontalAxis]}
+					onDragEnd={handleDragEnd}
+					sensors={sensors}
+				>
+					<div>{renderTableContent()}</div>
+				</DndContext>
+			) : (
+				renderTableContent()
+			)}
 
 			{/* Pagination */}
 			{shouldShowPagination && (
