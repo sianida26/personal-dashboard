@@ -39,6 +39,9 @@ import IndeterminateCheckbox from "./IndeterminateCheckbox";
 import { TableHeader } from "./TableHeader";
 import { TablePagination } from "./TablePagination";
 import type { AdaptiveColumnDef, AdaptiveTableProps } from "./types";
+import { useTableGrouping } from "./useTableGrouping";
+import { useTablePagination } from "./useTablePagination";
+import { useTableSorting } from "./useTableSorting";
 import { useTableState } from "./useTableState";
 import { ensureColumnIds } from "./utils";
 
@@ -61,11 +64,6 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	const [rowSelection, setRowSelection] = useState<Record<string, boolean>>(
 		{},
 	);
-
-	// Pagination state
-	const [internalCurrentPage, setInternalCurrentPage] = useState(1);
-
-	const currentPage = props.currentPage ?? internalCurrentPage;
 
 	// Ensure all columns have IDs
 	const columnsWithIds = useMemo(
@@ -160,78 +158,40 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		enableSortable: sortable,
 	});
 
-	// Group data if groupBy is set
-	const groupedData = useMemo(() => {
-		if (!groupBy) return null;
+	// Use custom hooks for pagination
+	const {
+		currentPage,
+		maxPage: calculatedMaxPage,
+		paginatedData,
+		shouldShowPagination,
+		handlePaginationChange,
+		handlePageChange,
+	} = useTablePagination({
+		enabled: pagination,
+		type: paginationType,
+		currentPage: props.currentPage,
+		maxPage: props.maxPage,
+		perPage,
+		data: props.data,
+		loading,
+		isGrouped: groupBy !== null,
+		onPaginationChange: props.onPaginationChange,
+		onPerPageChange: setPerPage,
+	});
 
-		const groups = new Map<string, T[]>();
+	// Use custom hook for grouping
+	const { groupedData, toggleGroup } = useTableGrouping({
+		groupBy,
+		data: props.data,
+		expandedGroups,
+		setExpandedGroups,
+	});
 
-		for (const item of props.data) {
-			const groupValue = String(
-				(item as Record<string, unknown>)[groupBy] ?? "",
-			);
-			if (!groups.has(groupValue)) {
-				groups.set(groupValue, []);
-			}
-			groups.get(groupValue)?.push(item);
-		}
-
-		return groups;
-	}, [props.data, groupBy]);
-
-	// Handle client-side pagination
-	const paginatedData = useMemo(() => {
-		if (!pagination || paginationType === "server") {
-			return props.data;
-		}
-
-		const startIndex = (currentPage - 1) * perPage;
-		const endIndex = startIndex + perPage;
-		return props.data.slice(startIndex, endIndex);
-	}, [props.data, pagination, paginationType, currentPage, perPage]);
-
-	// Calculate max page for client-side pagination
-	const calculatedMaxPage = useMemo(() => {
-		if (!pagination) return 1;
-		if (paginationType === "server") {
-			return props.maxPage ?? 1;
-		}
-		return Math.ceil(props.data.length / perPage);
-	}, [pagination, paginationType, props.maxPage, props.data.length, perPage]);
-
-	// Handle pagination change
-	const handlePaginationChange = (
-		newPerPage: number,
-		newCurrentPage: number,
-	) => {
-		if (paginationType === "server" && props.onPaginationChange) {
-			props.onPaginationChange(newPerPage, newCurrentPage);
-		} else {
-			setInternalCurrentPage(newCurrentPage);
-		}
-		setPerPage(newPerPage);
-	};
-
-	// Handle page navigation
-	const handlePageChange = (newPage: number) => {
-		if (newPage < 1 || newPage > calculatedMaxPage) return;
-
-		if (paginationType === "server" && props.onPaginationChange) {
-			props.onPaginationChange(perPage, newPage);
-		} else {
-			setInternalCurrentPage(newPage);
-		}
-	};
-
-	// Determine if we should show pagination
-	// Hide pagination when: grouped (client-side only) or loading
-	const shouldShowPagination = useMemo(() => {
-		if (!pagination) return false;
-		if (loading) return false;
-		// For client-side pagination, hide when grouped
-		if (paginationType === "client" && groupBy) return false;
-		return true;
-	}, [pagination, loading, paginationType, groupBy]);
+	// Use custom hook for sorting
+	useTableSorting({
+		sorting,
+		onSortingChange: props.onSortingChange,
+	});
 
 	// Determine which data to use
 	// When grouped (client-side), always use full data regardless of pagination
@@ -301,14 +261,6 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 			props.onSortingChange(sorting);
 		}
 	}, [sorting, props]);
-
-	// Toggle group expansion
-	const toggleGroup = (groupValue: string) => {
-		setExpandedGroups((prev) => ({
-			...prev,
-			[groupValue]: !prev[groupValue],
-		}));
-	};
 
 	/**
 	 * Calculate all column sizes at once at the root table level in a useMemo
