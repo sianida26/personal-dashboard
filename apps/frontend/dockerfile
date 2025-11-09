@@ -3,7 +3,7 @@ FROM oven/bun:1-alpine AS base
 ENV NODE_ENV=production
 WORKDIR /node
 
-FROM base AS builder
+FROM base AS pruner
 
 COPY . .
 
@@ -12,11 +12,17 @@ RUN if [ -d patches ]; then mkdir -p out/json/patches && cp -R patches/. out/jso
 
 FROM base AS installer
 
-COPY --from=builder /node/out/json/ .
+COPY --from=pruner /node/out/json/ ./
 RUN bun install --frozen-lockfile --production
 
-COPY --from=builder /node/out/full/ .
-WORKDIR /node/apps/frontend
+COPY --from=pruner /node/out/full/ ./
+
+FROM base AS builder
+
+COPY --from=installer /node/apps/frontend ./
+COPY --from=installer /node/packages ./packages
+COPY --from=installer /node/node_modules ./node_modules
+COPY --from=installer /node/bun.lock ./bun.lock
 
 ARG VITE_BACKEND_BASE_URL
 RUN echo "VITE_BACKEND_BASE_URL=${VITE_BACKEND_BASE_URL}" > .env
@@ -25,8 +31,8 @@ RUN NODE_OPTIONS="--max-old-space-size=768" bun run build
 
 FROM caddy:2-alpine AS production
 
-COPY --from=installer /node/apps/frontend/caddyfile /etc/caddy/caddyfile
-COPY --from=installer /node/apps/frontend/dist /srv
+COPY --from=builder /node/caddyfile /etc/caddy/caddyfile
+COPY --from=builder /node/dist /srv
 
 EXPOSE 80
 

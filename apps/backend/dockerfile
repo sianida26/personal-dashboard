@@ -3,7 +3,7 @@ FROM oven/bun:1-alpine AS base
 ENV NODE_ENV=production
 WORKDIR /node
 
-FROM base AS builder
+FROM base AS pruner
 
 COPY . .
 
@@ -12,15 +12,15 @@ RUN if [ -d patches ]; then mkdir -p out/json/patches && cp -R patches/. out/jso
 
 FROM base AS installer
 
-COPY --from=builder /node/out/json/ .
+COPY --from=pruner /node/out/json/ ./
 RUN bun install --frozen-lockfile --production
 
 FROM base AS production
 
-COPY --from=builder /node/apps/backend/ ./
-COPY --from=builder /node/packages/ ./packages
+COPY --from=installer /node/apps/backend ./
+COPY --from=installer /node/packages ./packages
 COPY --from=installer /node/node_modules ./node_modules
-COPY --from=installer /node/bun.lock ./
+COPY --from=installer /node/bun.lock ./bun.lock
 
 RUN mkdir -p /node/logs /node/keys /node/uploads \
   && chmod 777 /node/logs /node/keys /node/uploads
