@@ -17,6 +17,7 @@ import {
 } from "@dnd-kit/sortable";
 import { Skeleton } from "@repo/ui";
 import {
+	type Cell,
 	getCoreRowModel,
 	getSortedRowModel,
 	useReactTable,
@@ -318,6 +319,40 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		));
 	};
 
+	// Helper function to render table cells (unified for grouped and ungrouped rows)
+	const renderCell = (cell: Cell<T, unknown>, rowIndex: number) => {
+		if (props.columnOrderable) {
+			return (
+				<SortableContext
+					key={cell.id}
+					items={columnOrder}
+					strategy={horizontalListSortingStrategy}
+				>
+					<DragAlongCell
+						key={cell.id}
+						cell={cell}
+						columnResizable={props.columnResizable}
+						rowIndex={rowIndex}
+					/>
+				</SortableContext>
+			);
+		}
+
+		return (
+			<td
+				key={cell.id}
+				className="border"
+				style={{
+					width: props.columnResizable
+						? `calc(var(--col-${cell.column.id}-size) * 1px)`
+						: undefined,
+				}}
+			>
+				<EditableCell cell={cell} rowIndex={rowIndex} />
+			</td>
+		);
+	};
+
 	// Render table content (unified for both orderable and regular tables)
 	const renderTableContent = () => (
 		<table className="border-collapse" style={columnSizeVars}>
@@ -437,54 +472,9 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 															{row
 																.getVisibleCells()
 																.map((cell) =>
-																	props.columnOrderable ? (
-																		<SortableContext
-																			key={
-																				cell.id
-																			}
-																			items={
-																				columnOrder
-																			}
-																			strategy={
-																				horizontalListSortingStrategy
-																			}
-																		>
-																			<DragAlongCell
-																				key={
-																					cell.id
-																				}
-																				cell={
-																					cell
-																				}
-																				columnResizable={
-																					props.columnResizable
-																				}
-																				rowIndex={
-																					originalIndex
-																				}
-																			/>
-																		</SortableContext>
-																	) : (
-																		<td
-																			key={
-																				cell.id
-																			}
-																			className="border"
-																			style={{
-																				width: props.columnResizable
-																					? `calc(var(--col-${cell.column.id}-size) * 1px)`
-																					: undefined,
-																			}}
-																		>
-																			<EditableCell
-																				cell={
-																					cell
-																				}
-																				rowIndex={
-																					originalIndex
-																				}
-																			/>
-																		</td>
+																	renderCell(
+																		cell,
+																		originalIndex,
 																	),
 																)}
 														</tr>
@@ -499,41 +489,11 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 								.getRowModel()
 								.rows.map((row, rowIndex) => (
 									<tr key={row.id}>
-										{row.getVisibleCells().map((cell) =>
-											props.columnOrderable ? (
-												<SortableContext
-													key={cell.id}
-													items={columnOrder}
-													strategy={
-														horizontalListSortingStrategy
-													}
-												>
-													<DragAlongCell
-														key={cell.id}
-														cell={cell}
-														columnResizable={
-															props.columnResizable
-														}
-														rowIndex={rowIndex}
-													/>
-												</SortableContext>
-											) : (
-												<td
-													key={cell.id}
-													className="border"
-													style={{
-														width: props.columnResizable
-															? `calc(var(--col-${cell.column.id}-size) * 1px)`
-															: undefined,
-													}}
-												>
-													<EditableCell
-														cell={cell}
-														rowIndex={rowIndex}
-													/>
-												</td>
-											),
-										)}
+										{row
+											.getVisibleCells()
+											.map((cell) =>
+												renderCell(cell, rowIndex),
+											)}
 									</tr>
 								))}
 			</tbody>
