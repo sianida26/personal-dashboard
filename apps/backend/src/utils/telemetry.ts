@@ -38,7 +38,6 @@ if (process.env.OTEL_ENABLED === "true") {
 		// Service identification
 		"service.name": process.env.OTEL_SERVICE_NAME || "dashboard-backend",
 		"service.version": process.env.npm_package_version || "1.0.0",
-		"service.namespace": "dasbort",
 
 		// Deployment environment
 		"deployment.environment": process.env.APP_ENV || "development",
