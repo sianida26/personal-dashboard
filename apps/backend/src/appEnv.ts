@@ -21,9 +21,9 @@ const logSchema = (defaultValue: "true" | "false") =>
 
 const envSchema = z.object({
 	//Application
-	APP_ENV: z.enum(["development", "production"]),
+	APP_ENV: z.enum(["development", "production"]).default("development"),
 	APP_HOST: z.ipv4().default("0.0.0.0"),
-	APP_PORT: z.coerce.number().int(),
+	APP_PORT: z.coerce.number().int().default(3000),
 	BASE_URL: z.string(),
 	FRONTEND_URL: z.string(),
 
