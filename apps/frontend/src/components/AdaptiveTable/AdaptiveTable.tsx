@@ -522,18 +522,20 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 				headerActions={props.headerActions}
 			/>
 
-			{props.columnOrderable ? (
-				<DndContext
-					collisionDetection={closestCenter}
-					modifiers={[restrictToHorizontalAxis]}
-					onDragEnd={handleDragEnd}
-					sensors={sensors}
-				>
-					<div>{renderTableContent()}</div>
-				</DndContext>
-			) : (
-				renderTableContent()
-			)}
+			<div className="overflow-x-auto">
+				{props.columnOrderable ? (
+					<DndContext
+						collisionDetection={closestCenter}
+						modifiers={[restrictToHorizontalAxis]}
+						onDragEnd={handleDragEnd}
+						sensors={sensors}
+					>
+						{renderTableContent()}
+					</DndContext>
+				) : (
+					renderTableContent()
+				)}
+			</div>
 
 			{/* Pagination */}
 			{shouldShowPagination && (

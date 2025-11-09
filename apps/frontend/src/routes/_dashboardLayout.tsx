@@ -40,9 +40,9 @@ function DashboardLayout() {
 
 	return isAuthenticated ? (
 		// App Shell
-		<SidebarProvider className="flex min-h-screen w-screen">
+		<SidebarProvider className="flex min-h-screen w-full">
 			<AppSidebar />
-			<SidebarInset className="relative flex flex-1 flex-col">
+			<SidebarInset className="relative flex flex-1 flex-col min-w-0">
 				<AppHeader />
 				<div className="flex-1 overflow-auto">
 					<Outlet />
