@@ -1,0 +1,13 @@
+diff --git a/src/config.ts b/src/config.ts
+index 5c663a5593c0bd26b1c086b2c400193bf3f1c7e1..db15d7045030d045437fc8910c72e0272bd92228 100644
+--- a/src/config.ts
++++ b/src/config.ts
+@@ -40,7 +40,7 @@ export const configSchema = baseConfigSchema.extend({
+   routeTreeFileFooter: z
+     .union([
+       z.array(z.string()).optional().default([]),
+-      z.function().returns(z.array(z.string())),
++      z.function().output(z.array(z.string())),
+     ])
+     .optional(),
+   autoCodeSplitting: z.boolean().optional(),

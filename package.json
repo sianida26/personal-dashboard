@@ -42,13 +42,7 @@
     "react-icons": "^5.5.0",
     "zod": "^4.1.12"
   },
-  "pnpm": {
-    "overrides": {
-      "@tanstack/router-generator>zod": "^3.25.76",
-      "@tanstack/router-plugin>zod": "^3.25.76"
-    }
-  },
   "patchedDependencies": {
-    "@tanstack/router-generator@1.134.15": "patches/@tanstack%2Frouter-generator@1.134.15.patch"
+    "@tanstack/router-generator@1.134.18": "patches/@tanstack%2Frouter-generator@1.134.18.patch"
   }
 }
