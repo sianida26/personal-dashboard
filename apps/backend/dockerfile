@@ -17,7 +17,7 @@ RUN bun install
 
 FROM base AS production
 
-COPY --from=installer /node/apps/backend/ ./
+COPY --from=builder /node/apps/backend/ ./
 COPY --from=installer /node/node_modules ./node_modules
 COPY --from=installer /node/bun.lock ./bun.lock
 
