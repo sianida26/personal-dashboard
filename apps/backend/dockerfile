@@ -29,4 +29,4 @@ RUN mkdir -p /node/logs /node/keys /node/uploads \
 
 EXPOSE 81
 
-CMD ["sh", "-c", "bun run db:prepare && bun run start || tail -f /dev/null"]
+CMD ["sh", "-c", "bun run db:prepare && bun run start"]
