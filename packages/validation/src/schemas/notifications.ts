@@ -232,6 +232,7 @@ export const listNotificationsQuerySchema = z
 		after: z.iso.datetime().optional(),
 		cursor: z.iso.datetime().optional(),
 		limit: z.coerce.number().int().min(1).max(50).optional(),
+		includeRead: z.coerce.boolean().optional(),
 	})
 	.strict();
 
