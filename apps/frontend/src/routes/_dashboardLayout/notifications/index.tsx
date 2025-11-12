@@ -57,7 +57,7 @@ type FilterDefinition = {
 };
 
 const filters: FilterDefinition[] = [
-	{ label: "All", key: "all", query: {} },
+	{ label: "All", key: "all", query: { includeRead: true } },
 	{
 		label: "Unread",
 		key: "status:unread",

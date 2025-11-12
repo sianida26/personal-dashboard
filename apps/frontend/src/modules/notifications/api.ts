@@ -1,7 +1,7 @@
 import client from "@/honoClient";
 import type {
-	NotificationStatus,
 	Notification,
+	NotificationStatus,
 	PaginatedNotificationsResponse,
 } from "./types";
 
@@ -11,6 +11,7 @@ export interface NotificationListQuery {
 	category?: string;
 	cursor?: string;
 	limit?: number;
+	includeRead?: boolean;
 }
 
 const ensureOk = async (response: Response) => {
@@ -32,7 +33,11 @@ const serializeQuery = (query: NotificationListQuery) =>
 			)
 			.map(([key, value]) => [
 				key,
-				typeof value === "number" ? value.toString() : value,
+				typeof value === "number"
+					? value.toString()
+					: typeof value === "boolean"
+						? String(value)
+						: value,
 			]),
 	);
 
