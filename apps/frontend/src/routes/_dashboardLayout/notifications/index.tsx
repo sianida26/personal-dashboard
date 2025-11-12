@@ -12,11 +12,22 @@ import {
 } from "@repo/ui";
 import { useToast } from "@repo/ui/hooks";
 import { cn } from "@repo/ui/utils";
-import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+	useInfiniteQuery,
+	useMutation,
+	useQueryClient,
+	type InfiniteData,
+} from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { type ReactNode, useEffect, useMemo, useState } from "react";
+import {
+	type ReactNode,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
 import {
 	executeNotificationAction,
 	fetchNotifications,
@@ -218,6 +229,84 @@ function NotificationsPage() {
 		) ?? null;
 	const selectedActionRequiresComment =
 		selectedAction?.requiresComment ?? false;
+	const optimisticallyMarkNotificationAsRead = useCallback(
+		(notificationId: string) => {
+			const readTimestamp = new Date().toISOString();
+			queryClient.setQueryData<
+				InfiniteData<
+					PaginatedNotificationsResponse,
+					string | undefined
+				>
+			>(notificationQueryKeys.list(activeFilterKey), (current) => {
+				if (!current) return current;
+				let didUpdate = false;
+
+				const updateCollection = (items: Notification[]) => {
+					let collectionUpdated = false;
+					const nextItems = items.map((item) => {
+						if (
+							item.id !== notificationId ||
+							item.status === "read"
+						) {
+							return item;
+						}
+						collectionUpdated = true;
+						didUpdate = true;
+						return {
+							...item,
+							status: "read" as const,
+							readAt: item.readAt ?? readTimestamp,
+						};
+					});
+					return collectionUpdated ? nextItems : items;
+				};
+
+				const pages = current.pages.map((page) => {
+					const updatedItems = page.items
+						? updateCollection(page.items)
+						: page.items;
+					const updatedGroups = page.groups?.map((group) => {
+						const updatedGroupNotifications = updateCollection(
+							group.notifications,
+						);
+						if (
+							updatedGroupNotifications === group.notifications
+						) {
+							return group;
+						}
+						return {
+							...group,
+							notifications: updatedGroupNotifications,
+						};
+					});
+
+					if (
+						updatedItems === page.items &&
+						updatedGroups === page.groups
+					) {
+						return page;
+					}
+
+					return {
+						...page,
+						items: updatedItems,
+						groups: updatedGroups ?? page.groups,
+					};
+				});
+
+				return didUpdate ? { ...current, pages } : current;
+			});
+
+			queryClient.setQueryData<number>(
+				notificationQueryKeys.unreadCount,
+				(current) => {
+					if (typeof current !== "number") return current;
+					return current > 0 ? current - 1 : 0;
+				},
+			);
+		},
+		[activeFilterKey, queryClient],
+	);
 	const friendlyMetadata = useMemo(() => {
 		const friendlyMappings: Record<string, string> = {
 			resourceType: "Kind of update",
@@ -435,6 +524,28 @@ function NotificationsPage() {
 		},
 	});
 
+	const autoMarkReadMutation = useMutation({
+		mutationFn: (id: string) => markNotification(id, "read"),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: notificationQueryKeys.all,
+				exact: false,
+			});
+			queryClient.invalidateQueries({
+				queryKey: notificationQueryKeys.list(activeFilterKey),
+			});
+			queryClient.invalidateQueries({
+				queryKey: notificationQueryKeys.unreadCount,
+			});
+		},
+		onError: (mutationError: unknown) => {
+			console.error(
+				"Failed to auto mark notification as read",
+				mutationError,
+			);
+		},
+	});
+
 	const actionMutation = useMutation({
 		mutationFn: ({
 			notificationId,
@@ -476,10 +587,38 @@ function NotificationsPage() {
 		},
 	});
 
+	const handleNotificationSelect = (index: number) => {
+		if (index < 0 || index >= notificationsList.length) {
+			return;
+		}
+		setActiveIndex(index);
+		const notification = notificationsList[index];
+		if (!notification || notification.status === "read") {
+			return;
+		}
+		optimisticallyMarkNotificationAsRead(notification.id);
+		autoMarkReadMutation.mutate(notification.id);
+	};
+
 	const markCurrent = (status: "read" | "unread") => {
 		const current = notificationsList[activeIndex];
 		if (!current) return;
 		singleMutation.mutate({ id: current.id, status });
+	};
+
+	const selectPreviousNotification = () => {
+		const previousIndex = Math.max(activeIndex - 1, 0);
+		if (previousIndex === activeIndex) return;
+		handleNotificationSelect(previousIndex);
+	};
+
+	const selectNextNotification = () => {
+		const nextIndex = Math.min(
+			activeIndex + 1,
+			notificationsList.length - 1,
+		);
+		if (nextIndex === activeIndex) return;
+		handleNotificationSelect(nextIndex);
 	};
 
 	const hasUnreadSelection = selectedNotification?.status === "unread";
@@ -587,7 +726,7 @@ function NotificationsPage() {
 																notification.id
 															}
 															onClick={() =>
-																setActiveIndex(
+																handleNotificationSelect(
 																	index,
 																)
 															}
@@ -706,11 +845,7 @@ function NotificationsPage() {
 							<Button
 								variant="ghost"
 								size="sm"
-								onClick={() =>
-									setActiveIndex((prev) =>
-										Math.max(prev - 1, 0),
-									)
-								}
+								onClick={selectPreviousNotification}
 								disabled={activeIndex === 0}
 							>
 								Previous
@@ -718,14 +853,7 @@ function NotificationsPage() {
 							<Button
 								variant="ghost"
 								size="sm"
-								onClick={() =>
-									setActiveIndex((prev) =>
-										Math.min(
-											prev + 1,
-											notificationsList.length - 1,
-										),
-									)
-								}
+								onClick={selectNextNotification}
 								disabled={
 									activeIndex >= notificationsList.length - 1
 								}
