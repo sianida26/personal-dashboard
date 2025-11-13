@@ -86,7 +86,7 @@ const authFetch = Object.assign(authFetchImpl, {
 	preconnect:
 		typeof rawFetch.preconnect === "function"
 			? rawFetch.preconnect.bind(rawFetch)
-			: (async () => {}) as typeof rawFetch.preconnect,
+			: ((async () => {}) as typeof rawFetch.preconnect),
 });
 
 const client = hc<AppType>(backendUrl, {
