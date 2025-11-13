@@ -4,6 +4,7 @@ import AuthContext, { type AuthContextType } from "./AuthContext";
 import { authDB } from "@/indexedDB/authDB";
 import { decodeJwt } from "@/utils/jwt";
 import { backendUrl } from "@/honoClient";
+import { setAuthBridge } from "@/utils/authBridge";
 
 /**
  * AuthProvider component that wraps your app and provides authentication context.
@@ -153,6 +154,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			clearRefreshTimer();
 		};
 	}, [accessTokenExpiresAt, refreshToken, refreshSession]);
+
+	useEffect(() => {
+		setAuthBridge({
+			getAccessToken: () => accessToken,
+			refreshSession,
+			clearAuthData,
+		});
+
+		return () => {
+			setAuthBridge(null);
+		};
+	}, [accessToken, refreshSession, clearAuthData]);
 
 	if (loading) {
 		return <div>Loading...</div>;

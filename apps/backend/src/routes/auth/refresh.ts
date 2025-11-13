@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
 import db from "../../drizzle";
@@ -28,7 +28,11 @@ const refreshRoute = createHonoRoute().post(
 		await markRefreshTokenAsRevoked(record.id);
 
 		const user = await db.query.users.findFirst({
-			where: eq(users.id, record.userId),
+			where: and(
+				eq(users.id, record.userId),
+				eq(users.isEnabled, true),
+				isNull(users.deletedAt),
+			),
 			with: {
 				permissionsToUsers: {
 					with: {
