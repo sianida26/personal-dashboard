@@ -35,6 +35,16 @@ export interface AuthData {
 	accessToken: string | null;
 
 	/**
+	 * The refresh token used to obtain new access tokens.
+	 */
+	refreshToken?: string | null;
+
+	/**
+	 * Cached expiry timestamp (ms) for the current access token.
+	 */
+	accessTokenExpiresAt?: number | null;
+
+	/**
 	 * Whether the user is authenticated as admin.
 	 */
 	isAdmin?: boolean;
@@ -58,6 +68,21 @@ class AuthDB extends Dexie {
 		this.version(1).stores({
 			auth: "key",
 		});
+
+		this.version(2)
+			.stores({
+				auth: "key",
+			})
+			.upgrade(async (transaction) => {
+				const records = await transaction.table("auth").toArray();
+				for (const record of records) {
+					await transaction.table("auth").put({
+						...record,
+						refreshToken: record.refreshToken ?? null,
+						accessTokenExpiresAt: record.accessTokenExpiresAt ?? null,
+					});
+				}
+			});
 	}
 }
 

@@ -9,16 +9,19 @@ import { getPrivateKey, getPublicKey } from "./secretManager";
 // Algorithm to be used for JWT encoding.
 const algorithm: jwt.Algorithm = "RS256";
 
-export const accessTokenExpiry: jwt.SignOptions["expiresIn"] | null = null;
-export const refreshTokenExpiry: jwt.SignOptions["expiresIn"] | null = null;
+export const accessTokenExpiry: jwt.SignOptions["expiresIn"] | null = "5m";
+export const refreshTokenExpiry: jwt.SignOptions["expiresIn"] | null = "60d";
 
 // Interfaces to describe the payload structure for access and refresh tokens.
-interface AccessTokenPayload {
+export interface AccessTokenPayload {
 	uid: string;
+	permissions?: string[];
+	roles?: string[];
 }
 
-interface RefreshTokenPayload {
+export interface RefreshTokenPayload {
 	uid: string;
+	tokenId: string;
 }
 
 /**

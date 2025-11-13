@@ -48,13 +48,18 @@ function MicrosoftAdminCallback() {
 					permissions: authData.user.permissions,
 					roles: authData.user.roles,
 					accessToken: authData.accessToken,
+					refreshToken: authData.refreshToken ?? null,
+					accessTokenExpiresAt: null,
 					isAdmin: true,
 				})
 
 				// Update auth context
-				saveAuthData(
+				await saveAuthData(
 					{ ...authData.user, isAdmin: true },
-					authData.accessToken,
+					{
+						accessToken: authData.accessToken,
+						refreshToken: authData.refreshToken,
+					},
 				)
 
 				// Redirect to admin dashboard

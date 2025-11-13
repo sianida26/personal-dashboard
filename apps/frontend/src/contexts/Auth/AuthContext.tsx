@@ -12,13 +12,19 @@ export interface AuthContextType {
 		isAdmin?: boolean;
 	} | null;
 	accessToken: string | null;
+	refreshToken: string | null;
+	accessTokenExpiresAt: number | null;
 	saveAuthData: (
 		userData: NonNullable<AuthContextType["user"]>,
-		accessToken?: NonNullable<AuthContextType["accessToken"]>,
-	) => void;
-	clearAuthData: () => void;
+		tokens?: {
+			accessToken?: string | null;
+			refreshToken?: string | null;
+		},
+	) => Promise<void>;
+	clearAuthData: () => Promise<void>;
 	checkPermission: (permission: string) => boolean;
 	isAuthenticated: boolean;
+	refreshSession: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);

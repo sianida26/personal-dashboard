@@ -11,6 +11,7 @@ import { permissionsToUsers } from "./permissionsToUsers";
 import { rolesToUsers } from "./rolesToUsers";
 import { oauthGoogle } from "./oauthGoogle";
 import { oauthMicrosoft } from "./oauthMicrosoft";
+import { refreshTokens } from "./refreshTokens";
 
 export const users = pgTable("users", {
 	id: text("id")
@@ -37,4 +38,5 @@ export const usersRelations = relations(users, ({ many, one }) => ({
 		fields: [users.id],
 		references: [oauthMicrosoft.userId],
 	}),
+	refreshTokens: many(refreshTokens),
 }));

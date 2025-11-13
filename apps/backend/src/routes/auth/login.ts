@@ -1,5 +1,4 @@
 import { zValidator } from "@hono/zod-validator";
-import type { PermissionCode } from "@repo/data";
 import { and, eq, isNull, ne, or, sql } from "drizzle-orm";
 import { loginSchema } from "@repo/validation";
 import db from "../../drizzle";
@@ -8,7 +7,8 @@ import DashboardError from "../../errors/DashboardError";
 import checkPermission from "../../middlewares/checkPermission";
 import rateLimit from "../../middlewares/rateLimiter";
 import { getAppSettingValue } from "../../services/appSettings/appSettingServices";
-import { generateAccessToken } from "../../utils/authUtils";
+import { buildAuthPayload } from "../../services/auth/authResponseService";
+import type { UserWithAuthorization } from "../../services/auth/authResponseService";
 import { createHonoRoute } from "../../utils/createHonoRoute";
 import { authMetrics } from "../../utils/custom-metrics";
 import { checkPassword } from "../../utils/passwordUtils";
@@ -159,39 +159,10 @@ const loginRoute = createHonoRoute()
 			});
 			authMetrics.activeUsers.add(1);
 
-			const accessToken = await generateAccessToken({
-				uid: user.id,
-			});
+			const authPayload = await buildAuthPayload(user as UserWithAuthorization);
 
-			// Collect all permissions the user has, both user-specific and role-specific
-			const permissions = new Set<PermissionCode>();
-
-			// Add user-specific permissions to the set
-			for (const userPermission of user.permissionsToUsers) {
-				permissions.add(
-					userPermission.permission.code as PermissionCode,
-				);
-			}
-
-			// Add role-specific permissions to the set
-			for (const userRole of user.rolesToUsers) {
-				for (const rolePermission of userRole.role.permissionsToRoles) {
-					permissions.add(
-						rolePermission.permission.code as PermissionCode,
-					);
-				}
-			}
-
-			return c.json({
-				accessToken,
-				user: {
-					id: user.id,
-					name: user.name,
-					permissions: Array.from(permissions),
-					roles: user.rolesToUsers.map((role) => role.role.name),
-				},
-			});
+			return c.json(authPayload);
 		},
-	);
+);
 
 export default loginRoute;

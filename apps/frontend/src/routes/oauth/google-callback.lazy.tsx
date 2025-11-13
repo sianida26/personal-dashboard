@@ -1,7 +1,6 @@
 import { useNavigate, createLazyFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
-import { authDB } from "../../indexedDB/authDB";
 import { handleGoogleCallback } from "../../utils/googleAuth";
 
 export const Route = createLazyFileRoute("/oauth/google-callback")({
@@ -40,18 +39,10 @@ function GoogleCallback() {
 					return
 				}
 
-				// Store auth data in IndexedDB
-				await authDB.auth.put({
-					key: "auth",
-					userId: authData.user.id,
-					userName: authData.user.name,
-					permissions: authData.user.permissions,
-					roles: authData.user.roles,
+				await saveAuthData(authData.user, {
 					accessToken: authData.accessToken,
-				})
-
-				// Update auth context
-				saveAuthData(authData.user, authData.accessToken);
+					refreshToken: authData.refreshToken,
+				});
 
 				// Redirect to dashboard or home page
 				navigate({ to: "/" });
