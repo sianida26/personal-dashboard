@@ -70,9 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	const saveAuthData = useCallback<
 		AuthContextType["saveAuthData"]
 	>(
-		userData: NonNullable<AuthContextType["user"]>,
-		tokens,
-	) => {
+		async (userData, tokens) => {
 		setUserId(userData.id);
 		setUserName(userData.name);
 		setPermissions(userData.permissions);
@@ -96,7 +94,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			refreshToken: resolvedRefreshToken ?? null,
 			accessTokenExpiresAt: expiresAt,
 		});
-	}, [accessToken, refreshToken, decodeExpiry]);
+	},
+		[accessToken, refreshToken, decodeExpiry],
+	);
 
 	const refreshSession = useCallback(async () => {
 		if (!refreshToken || isRefreshingRef.current) return;
