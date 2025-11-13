@@ -12,7 +12,10 @@ import { getAppSettingValue } from "../../../services/appSettings/appSettingServ
 import { createGraphClientForUser } from "../../../services/microsoft/graphClient";
 import { getMsalClient } from "../../../services/microsoft/msalClient";
 import type HonoEnv from "../../../types/HonoEnv";
-import { generateAccessToken } from "../../../utils/authUtils";
+import {
+	buildAuthPayload,
+	type UserWithAuthorization,
+} from "../../../services/auth/authResponseService";
 import { authMetrics, userMetrics } from "../../../utils/custom-metrics";
 import microsoftAdminRouter from "./admin";
 
@@ -40,6 +43,9 @@ const tempAuthSessions = new Map<
 	string,
 	{
 		accessToken: string;
+		refreshToken: string;
+		accessTokenExpiresIn: number;
+		refreshTokenExpiresIn: number;
 		user: {
 			id: string;
 			name: string;
@@ -54,6 +60,9 @@ const adminAuthSessions = new Map<
 	string,
 	{
 		accessToken: string;
+		refreshToken: string;
+		accessTokenExpiresIn: number;
+		refreshTokenExpiresIn: number;
 		user: {
 			id: string;
 			name: string;
@@ -278,12 +287,18 @@ const microsoftRouter = new Hono<HonoEnv>()
 			// Get roles
 			const roles = userRecord.rolesToUsers.map((r) => r.role.name);
 
+			const authPayload = await buildAuthPayload(
+				userRecord as UserWithAuthorization,
+			);
+
 			// Store session
 			adminAuthSessions.set(sessionId, {
-				accessToken: tokenResponse.accessToken,
+				accessToken: authPayload.accessToken,
+				refreshToken: authPayload.refreshToken,
+				accessTokenExpiresIn: authPayload.accessTokenExpiresIn,
+				refreshTokenExpiresIn: authPayload.refreshTokenExpiresIn,
 				user: {
-					id: userRecord.id,
-					name: userRecord.name,
+					...authPayload.user,
 					permissions: allPermissions,
 					roles,
 					isAdmin: true,
@@ -475,46 +490,13 @@ const microsoftRouter = new Hono<HonoEnv>()
 					.where(eq(oauthMicrosoft.id, existingMicrosoftAccount.id));
 			}
 
-			// Generate JWT token for our app
-			const accessToken = await generateAccessToken({
-				uid: user.id,
-			});
-
 			// Track successful login
 			authMetrics.loginSuccesses.add(1, {
 				method: "microsoft_oauth",
 			});
 			authMetrics.activeUsers.add(1);
 
-			// Collect all permissions the user has, both user-specific and role-specific
-			const permissions = new Set<PermissionCode>();
-
-			// Add user-specific permissions to the set
-			for (const userPermission of user.permissionsToUsers) {
-				permissions.add(
-					userPermission.permission.code as PermissionCode,
-				);
-			}
-
-			// Add role-specific permissions to the set
-			for (const userRole of user.rolesToUsers) {
-				for (const rolePermission of userRole.role.permissionsToRoles) {
-					permissions.add(
-						rolePermission.permission.code as PermissionCode,
-					);
-				}
-			}
-
-			// Create auth data
-			const authData = {
-				accessToken,
-				user: {
-					id: user.id,
-					name: user.name,
-					permissions: Array.from(permissions),
-					roles: user.rolesToUsers.map((role) => role.role.name),
-				},
-			};
+			const authData = await buildAuthPayload(user as UserWithAuthorization);
 
 			// Generate a temp session ID
 			const sessionId = createId();

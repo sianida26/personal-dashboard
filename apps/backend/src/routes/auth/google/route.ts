@@ -10,7 +10,10 @@ import { users } from "../../../drizzle/schema/users";
 import DashboardError, { notFound } from "../../../errors/DashboardError";
 import { getAppSettingValue } from "../../../services/appSettings/appSettingServices";
 import type HonoEnv from "../../../types/HonoEnv";
-import { generateAccessToken } from "../../../utils/authUtils";
+import {
+	buildAuthPayload,
+	type UserWithAuthorization,
+} from "../../../services/auth/authResponseService";
 import { authMetrics, userMetrics } from "../../../utils/custom-metrics";
 
 const FRONTEND_CALLBACK_ROUTE = "/oauth/google-callback";
@@ -20,6 +23,9 @@ const tempAuthSessions = new Map<
 	string,
 	{
 		accessToken: string;
+		refreshToken: string;
+		accessTokenExpiresIn: number;
+		refreshTokenExpiresIn: number;
 		user: {
 			id: string;
 			name: string;
@@ -208,44 +214,15 @@ const googleOAuthRoutes = new Hono<HonoEnv>()
 				.where(eq(oauthGoogle.id, existingGoogleAccount.id));
 		}
 
-		// Generate JWT token for our app
-		const accessToken = await generateAccessToken({
-			uid: userRecord.id,
-		});
-
 		// Track successful login
 		authMetrics.loginSuccesses.add(1, {
 			method: "google_oauth",
 		});
 		authMetrics.activeUsers.add(1);
 
-		// Collect all permissions the user has, both user-specific and role-specific
-		const permissions = new Set<PermissionCode>();
-
-		// Add user-specific permissions to the set
-		for (const userPermission of userRecord.permissionsToUsers) {
-			permissions.add(userPermission.permission.code as PermissionCode);
-		}
-
-		// Add role-specific permissions to the set
-		for (const userRole of userRecord.rolesToUsers) {
-			for (const rolePermission of userRole.role.permissionsToRoles) {
-				permissions.add(
-					rolePermission.permission.code as PermissionCode,
-				);
-			}
-		}
-
-		// Create auth data
-		const authData = {
-			accessToken,
-			user: {
-				id: userRecord.id,
-				name: userRecord.name,
-				permissions: Array.from(permissions),
-				roles: userRecord.rolesToUsers.map((role) => role.role.name),
-			},
-		};
+		const authData = await buildAuthPayload(
+			userRecord as UserWithAuthorization,
+		);
 
 		// Generate a temp session ID
 		const sessionId = createId();

@@ -134,11 +134,6 @@ describe("Google OAuth Routes - Integration Tests", () => {
 			}));
 
 			// Mock JWT token generation
-			mock.module("../../../utils/authUtils", () => ({
-				generateAccessToken: mock(async (payload: { uid: string }) => {
-					return `mock-jwt-token-${payload.uid}`;
-				}),
-			}));
 
 			// First, create the user through OAuth
 			const authRes = await client.auth.google.$get();
@@ -280,11 +275,6 @@ describe("Google OAuth Routes - Integration Tests", () => {
 				},
 			}));
 
-			mock.module("../../../utils/authUtils", () => ({
-				generateAccessToken: mock(async (payload: { uid: string }) => {
-					return `mock-jwt-token-${payload.uid}`;
-				}),
-			}));
 
 			// Should successfully update existing Google account
 			const res = await client.auth.google.$get();
@@ -354,11 +344,6 @@ describe("Google OAuth Routes - Integration Tests", () => {
 				},
 			}));
 
-			mock.module("../../../utils/authUtils", () => ({
-				generateAccessToken: mock(async (payload: { uid: string }) => {
-					return `mock-jwt-token-${payload.uid}`;
-				}),
-			}));
 
 			// Create a session
 			const authRes = await client.auth.google.$get();
@@ -439,11 +424,6 @@ describe("Google OAuth Routes - Integration Tests", () => {
 				},
 			}));
 
-			mock.module("../../../utils/authUtils", () => ({
-				generateAccessToken: mock(async (payload: { uid: string }) => {
-					return `mock-jwt-token-${payload.uid}`;
-				}),
-			}));
 
 			const res = await client.auth.google.$get();
 
@@ -499,11 +479,6 @@ describe("Google OAuth Routes - Integration Tests", () => {
 				},
 			}));
 
-			mock.module("../../../utils/authUtils", () => ({
-				generateAccessToken: mock(async (payload: { uid: string }) => {
-					return `mock-jwt-token-${payload.uid}`;
-				}),
-			}));
 
 			const res = await client.auth.google.$get();
 			expect(res.status).toBe(302);

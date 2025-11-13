@@ -5,12 +5,14 @@ import loginRoute from "./login";
 import myProfileRoute from "./my-profile";
 import logoutRoute from "./logout";
 import loginSettingsRoute from "./login-settings";
+import refreshRoute from "./refresh";
 
 const authRoutes = createHonoRoute()
 	.route("/", loginRoute) // POST /login
 	.route("/", myProfileRoute) // GET /my-profile
 	.route("/", logoutRoute) // GET /logout
 	.route("/", loginSettingsRoute) // GET /login-settings
+	.route("/", refreshRoute)
 	//Google OAuth Routes
 	.route("/google", googleOAuthRoutes)
 	//Microsoft OAuth Routes

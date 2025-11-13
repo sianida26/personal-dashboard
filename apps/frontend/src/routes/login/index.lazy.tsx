@@ -64,15 +64,18 @@ export default function LoginPage() {
 			throw res;
 		},
 
-		onSuccess: (data) => {
-			saveAuthData(
+		onSuccess: async (data) => {
+			await saveAuthData(
 				{
 					id: data.user.id,
 					name: data.user.name,
 					permissions: data.user.permissions,
 					roles: data.user.roles,
 				},
-				data.accessToken,
+				{
+					accessToken: data.accessToken,
+					refreshToken: data.refreshToken,
+				},
 			)
 		},
 
