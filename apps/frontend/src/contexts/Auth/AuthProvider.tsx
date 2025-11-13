@@ -1,10 +1,11 @@
+import { LoadingSpinner } from "@repo/ui";
 import type { ReactNode } from "react";
-import { useState, useEffect, useRef, useCallback } from "react";
-import AuthContext, { type AuthContextType } from "./AuthContext";
-import { authDB } from "@/indexedDB/authDB";
-import { decodeJwt } from "@/utils/jwt";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { backendUrl } from "@/honoClient";
+import { authDB } from "@/indexedDB/authDB";
 import { setAuthBridge } from "@/utils/authBridge";
+import { decodeJwt } from "@/utils/jwt";
+import AuthContext, { type AuthContextType } from "./AuthContext";
 
 /**
  * AuthProvider component that wraps your app and provides authentication context.
@@ -68,34 +69,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		await authDB.auth.delete("auth");
 	}, []);
 
-	const saveAuthData = useCallback<
-		AuthContextType["saveAuthData"]
-	>(
+	const saveAuthData = useCallback<AuthContextType["saveAuthData"]>(
 		async (userData, tokens) => {
-		setUserId(userData.id);
-		setUserName(userData.name);
-		setPermissions(userData.permissions);
-		setRoles(userData.roles);
+			setUserId(userData.id);
+			setUserName(userData.name);
+			setPermissions(userData.permissions);
+			setRoles(userData.roles);
 
-		const resolvedAccessToken = tokens?.accessToken ?? accessToken;
-		const resolvedRefreshToken = tokens?.refreshToken ?? refreshToken;
-		setAccessToken(resolvedAccessToken ?? null);
-		setRefreshToken(resolvedRefreshToken ?? null);
+			const resolvedAccessToken = tokens?.accessToken ?? accessToken;
+			const resolvedRefreshToken = tokens?.refreshToken ?? refreshToken;
+			setAccessToken(resolvedAccessToken ?? null);
+			setRefreshToken(resolvedRefreshToken ?? null);
 
-		const expiresAt = decodeExpiry(resolvedAccessToken);
-		setAccessTokenExpiresAt(expiresAt);
+			const expiresAt = decodeExpiry(resolvedAccessToken);
+			setAccessTokenExpiresAt(expiresAt);
 
-		await authDB.auth.put({
-			key: "auth",
-			userId: userData.id,
-			userName: userData.name,
-			permissions: userData.permissions,
-			roles: userData.roles,
-			accessToken: resolvedAccessToken ?? null,
-			refreshToken: resolvedRefreshToken ?? null,
-			accessTokenExpiresAt: expiresAt,
-		});
-	},
+			await authDB.auth.put({
+				key: "auth",
+				userId: userData.id,
+				userName: userData.name,
+				permissions: userData.permissions,
+				roles: userData.roles,
+				accessToken: resolvedAccessToken ?? null,
+				refreshToken: resolvedRefreshToken ?? null,
+				accessTokenExpiresAt: expiresAt,
+			});
+		},
 		[accessToken, refreshToken, decodeExpiry],
 	);
 
@@ -168,7 +167,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	}, [accessToken, refreshSession, clearAuthData]);
 
 	if (loading) {
-		return <div>Loading...</div>;
+		return (
+			<div className="flex h-screen w-screen items-center justify-center rounded-lg border bg-card">
+				<LoadingSpinner />
+			</div>
+		);
 	}
 
 	const checkPermission = (permission: string) =>
@@ -182,11 +185,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 				user:
 					userId && userName && permissions
 						? {
-							id: userId,
-							name: userName,
-							permissions,
-							roles: roles ?? [],
-						}
+								id: userId,
+								name: userName,
+								permissions,
+								roles: roles ?? [],
+							}
 						: null,
 				accessToken,
 				refreshToken,

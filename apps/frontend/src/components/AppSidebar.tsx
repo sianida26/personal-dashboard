@@ -1,19 +1,9 @@
-import client from "@/honoClient";
-import { getTablerIcon } from "@/utils/getTablerIcon";
-import { useQuery } from "@tanstack/react-query";
-import type { SidebarMenu as SidebarMenuType } from "backend/types";
-import type { IconType } from "react-icons";
-
-import defaultProfilePicture from "@/assets/images/default-picture.jpg";
-import logo from "@/assets/logos/logo.png";
-import useAuth from "@/hooks/useAuth";
-import { Link, useMatchRoute } from "@tanstack/react-router";
-import { TbChevronUp, TbDoorExit, TbUser, TbBell } from "react-icons/tb";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
+	LoadingSpinner,
 	Sidebar,
 	SidebarContent,
 	SidebarFooter,
@@ -25,6 +15,16 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "@repo/ui";
+import { useQuery } from "@tanstack/react-query";
+import { Link, useMatchRoute } from "@tanstack/react-router";
+import type { SidebarMenu as SidebarMenuType } from "backend/types";
+import type { IconType } from "react-icons";
+import { TbBell, TbChevronUp, TbDoorExit, TbUser } from "react-icons/tb";
+import defaultProfilePicture from "@/assets/images/default-picture.jpg";
+import logo from "@/assets/logos/logo.png";
+import client from "@/honoClient";
+import useAuth from "@/hooks/useAuth";
+import { getTablerIcon } from "@/utils/getTablerIcon";
 
 export default function AppSidebar() {
 	const { user } = useAuth();
@@ -51,7 +51,9 @@ export default function AppSidebar() {
 			<Sidebar>
 				<SidebarHeader />
 				<SidebarContent>
-					<p>Loading...</p>
+					<div className="flex h-screen w-screen items-center justify-center rounded-lg border bg-card">
+						<LoadingSpinner />
+					</div>
 				</SidebarContent>
 				<SidebarFooter />
 			</Sidebar>
