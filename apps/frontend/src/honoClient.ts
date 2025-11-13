@@ -8,9 +8,25 @@ const backendUrl = import.meta.env.VITE_BACKEND_BASE_URL as string | undefined;
 if (!backendUrl) throw new Error("Backend URL not set");
 
 const rawFetch = globalThis.fetch.bind(globalThis);
+const backendBaseUrl = new URL(backendUrl);
+
+const resolveAgainstBackend = (url: string) => {
+	try {
+		return new URL(url, backendBaseUrl);
+	} catch {
+		return null;
+	}
+};
+
+const isBackendRequest = (url: string) => {
+	const parsed = resolveAgainstBackend(url);
+	return parsed?.origin === backendBaseUrl.origin;
+};
 
 const shouldSkipRetry = (url: string) => {
-	const pathname = new URL(url).pathname;
+	const parsed = resolveAgainstBackend(url);
+	if (!parsed) return true;
+	const pathname = parsed.pathname;
 	return (
 		pathname.endsWith("/auth/login") ||
 		pathname.endsWith("/auth/refresh") ||
@@ -18,11 +34,15 @@ const shouldSkipRetry = (url: string) => {
 	);
 };
 
-const authFetch: typeof fetch = async (input, init) => {
+const authFetchImpl = async (input: RequestInfo | URL, init?: RequestInit) => {
 	const baseRequest = new Request(input, init);
 	const initialResponse = await rawFetch(baseRequest.clone());
 
-	if (initialResponse.status !== 401 || shouldSkipRetry(baseRequest.url)) {
+	if (
+		initialResponse.status !== 401 ||
+		!isBackendRequest(baseRequest.url) ||
+		shouldSkipRetry(baseRequest.url)
+	) {
 		return initialResponse;
 	}
 
@@ -61,6 +81,13 @@ const authFetch: typeof fetch = async (input, init) => {
 
 	return retryResponse;
 };
+
+const authFetch = Object.assign(authFetchImpl, {
+	preconnect:
+		typeof rawFetch.preconnect === "function"
+			? rawFetch.preconnect.bind(rawFetch)
+			: (async () => {}) as typeof rawFetch.preconnect,
+});
 
 const client = hc<AppType>(backendUrl, {
 	headers: async () => {
