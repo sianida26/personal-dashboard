@@ -1,6 +1,8 @@
-import { describe, expect, test, beforeEach, afterEach } from "bun:test";
+import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import { eq } from "drizzle-orm";
 import db from "..";
+import { oauthGoogle } from "../schema/oauthGoogle";
+import { oauthMicrosoft } from "../schema/oauthMicrosoft";
 import { rolesSchema } from "../schema/roles";
 import { rolesToUsers } from "../schema/rolesToUsers";
 import { users } from "../schema/users";
@@ -9,6 +11,9 @@ import userSeeder from "./userSeeder";
 describe("User Seeder", () => {
 	beforeEach(async () => {
 		// Clean up test data before each test
+		// Delete OAuth records first due to foreign key constraints
+		await db.delete(oauthGoogle);
+		await db.delete(oauthMicrosoft);
 		await db.delete(rolesToUsers);
 		await db.delete(users);
 		await db.delete(rolesSchema);
@@ -16,6 +21,9 @@ describe("User Seeder", () => {
 
 	afterEach(async () => {
 		// Clean up test data after each test
+		// Delete OAuth records first due to foreign key constraints
+		await db.delete(oauthGoogle);
+		await db.delete(oauthMicrosoft);
 		await db.delete(rolesToUsers);
 		await db.delete(users);
 		await db.delete(rolesSchema);
