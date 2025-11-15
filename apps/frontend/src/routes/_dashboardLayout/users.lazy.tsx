@@ -64,7 +64,7 @@ export default function UsersPage() {
 						>
 							Name
 						</Button>
-					)
+					);
 				},
 			}),
 			helper.accessor("username", {
@@ -118,7 +118,7 @@ export default function UsersPage() {
 								month: "short",
 								day: "numeric",
 							})
-						: "-"
+						: "-";
 				},
 				header: "Created At",
 			}),
@@ -161,5 +161,5 @@ export default function UsersPage() {
 				),
 			}),
 		],
-	})
+	});
 }

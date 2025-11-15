@@ -53,7 +53,7 @@ export default function RolesPage() {
 						>
 							Name
 						</Button>
-					)
+					);
 				},
 			}),
 			helper.accessor("description", {
@@ -128,5 +128,5 @@ export default function RolesPage() {
 				),
 			}),
 		],
-	})
+	});
 }

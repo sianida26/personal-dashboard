@@ -31,7 +31,7 @@ function MicrosoftCallback() {
 
 				if (!sessionId) {
 					setError("No session ID found in the URL");
-					return
+					return;
 				}
 
 				// Fetch auth data using the session ID
@@ -39,7 +39,7 @@ function MicrosoftCallback() {
 
 				if (!authData || !authData.accessToken) {
 					setError("Invalid authentication data received");
-					return
+					return;
 				}
 
 				await saveAuthData(authData.user, {
@@ -53,9 +53,9 @@ function MicrosoftCallback() {
 				console.error("Error in Microsoft callback:", err);
 				setError(
 					"Failed to complete authentication. Please try again.",
-				)
+				);
 			}
-		}
+		};
 
 		processCallback();
 	}, [navigate, saveAuthData]);
@@ -78,7 +78,7 @@ function MicrosoftCallback() {
 					Return to Login
 				</button>
 			</div>
-		)
+		);
 	}
 
 	return (
@@ -91,5 +91,5 @@ function MicrosoftCallback() {
 				</p>
 			</div>
 		</div>
-	)
+	);
 }

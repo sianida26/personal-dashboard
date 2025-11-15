@@ -79,7 +79,8 @@ class AuthDB extends Dexie {
 					await transaction.table("auth").put({
 						...record,
 						refreshToken: record.refreshToken ?? null,
-						accessTokenExpiresAt: record.accessTokenExpiresAt ?? null,
+						accessTokenExpiresAt:
+							record.accessTokenExpiresAt ?? null,
 					});
 				}
 			});

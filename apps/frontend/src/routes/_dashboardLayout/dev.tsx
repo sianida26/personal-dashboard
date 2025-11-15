@@ -15,7 +15,7 @@ function RouteComponent() {
 	const [selectedRangeValue, setSelectedRangeValue] = useState<DateRange>({
 		from: new Date(),
 		to: null,
-	})
+	});
 
 	return (
 		<DatePickerInput
@@ -26,5 +26,5 @@ function RouteComponent() {
 				setSelectedRangeValue(value);
 			}}
 		/>
-	)
+	);
 }

@@ -28,7 +28,7 @@ function GoogleCallback() {
 
 				if (!sessionId) {
 					setError("No session ID found in the URL");
-					return
+					return;
 				}
 
 				// Fetch auth data using the session ID
@@ -36,7 +36,7 @@ function GoogleCallback() {
 
 				if (!authData || !authData.accessToken) {
 					setError("Invalid authentication data received");
-					return
+					return;
 				}
 
 				await saveAuthData(authData.user, {
@@ -50,9 +50,9 @@ function GoogleCallback() {
 				console.error("Error in Google callback:", err);
 				setError(
 					"Failed to complete authentication. Please try again.",
-				)
+				);
 			}
-		}
+		};
 
 		processCallback();
 	}, [navigate, saveAuthData]);
@@ -75,7 +75,7 @@ function GoogleCallback() {
 					Return to Login
 				</button>
 			</div>
-		)
+		);
 	}
 
 	return (
@@ -88,5 +88,5 @@ function GoogleCallback() {
 				</p>
 			</div>
 		</div>
-	)
+	);
 }
