@@ -15,7 +15,6 @@ export const appSettingCreateSchema = appSettingSchema.omit({
 });
 
 export const appSettingUpdateSchema = z.object({
-	id: z.string(),
 	value: z.string().optional(),
 });
 
@@ -23,4 +22,4 @@ export const appSettingDeleteSchema = z.object({ id: z.string() });
 
 export type AppSetting = z.infer<typeof appSettingSchema>;
 export type AppSettingCreate = z.infer<typeof appSettingCreateSchema>;
-export type AppSettingUpdate = z.infer<typeof appSettingUpdateSchema>; 
+export type AppSettingUpdate = z.infer<typeof appSettingUpdateSchema>;
