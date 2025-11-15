@@ -1,5 +1,7 @@
 import { isLocalhost } from "./utils/isLocalhost";
 
+process.env.NODE_ENV = "test";
+
 // Check if test environment file exists to prevent accidental production runs
 const testEnvLocalPath = `${process.cwd()}/.env.test.local`;
 const testEnvPath = `${process.cwd()}/.env.test`;
@@ -43,6 +45,23 @@ try {
 		);
 		console.error(
 			"   Please use a local database in your .env.test.local or .env.test file.",
+		);
+		process.exit(1);
+	}
+
+	// Check if database name ends with _test
+	const dbName = dbUrl.pathname.slice(1); // Remove leading slash
+	if (!dbName.endsWith("_test")) {
+		console.error("❌ ERROR: Database name must end with '_test'.");
+		console.error(`   Current database: ${dbName}`);
+		console.error(
+			"   Tests must only run against test databases to prevent accidental production data modification.",
+		);
+		console.error(
+			"   Please use a database ending with '_test' in your .env.test.local or .env.test file.",
+		);
+		console.error(
+			"   Example: postgresql://user:password@localhost:5432/myapp_test",
 		);
 		process.exit(1);
 	}
