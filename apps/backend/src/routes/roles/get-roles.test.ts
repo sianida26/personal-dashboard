@@ -1,10 +1,10 @@
-import { describe, test, expect, beforeAll, afterAll } from "bun:test";
+import { afterAll, beforeAll, describe, expect, test } from "bun:test";
+import type { TestUserData } from "../../utils/test-utils/create-user-for-testing";
 import {
-	createUserForTesting,
 	cleanupTestUser,
+	createUserForTesting,
 } from "../../utils/test-utils/create-user-for-testing";
 import client from "../../utils/test-utils/hono-test-client";
-import type { TestUserData } from "../../utils/test-utils/create-user-for-testing";
 
 describe("GET /roles", () => {
 	let testUser: TestUserData;
@@ -12,7 +12,7 @@ describe("GET /roles", () => {
 	beforeAll(async () => {
 		testUser = await createUserForTesting({
 			name: "Test User - GET Roles",
-			username: "test-user-get-roles",
+			username: `test-user-get-roles-${Date.now()}`,
 			permissions: ["roles.read"],
 		});
 	});
