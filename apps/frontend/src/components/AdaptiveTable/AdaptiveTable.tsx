@@ -22,8 +22,9 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import { ChevronRight } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { DetailSheet } from "./DetailSheet";
 import DragAlongCell from "./DragAlongCell";
 import EditableCell from "./EditableCell";
@@ -49,6 +50,11 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	const loading = props.loading ?? false;
 	const rowSelectable = props.rowSelectable ?? false;
 	const sortable = props.sortable ?? true;
+	const rowVirtualization = props.rowVirtualization ?? true;
+	const tableHeight = props.tableHeight ?? "600px";
+
+	// Reference for the scrollable container
+	const tableContainerRef = useRef<HTMLDivElement>(null);
 
 	// State for detail view
 	const [detailRowIndex, setDetailRowIndex] = useState<number | null>(null);
@@ -301,6 +307,16 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		useSensor(KeyboardSensor, {}),
 	);
 
+	// Setup row virtualizer
+	const rows = table.getRowModel().rows;
+	const rowVirtualizer = useVirtualizer({
+		count: rows.length,
+		getScrollElement: () => tableContainerRef.current,
+		estimateSize: () => 53, // Estimate row height
+		overscan: 10,
+		enabled: rowVirtualization && !loading && !groupBy,
+	});
+
 	// Render skeleton loader
 	const renderSkeletonRows = (columnCount: number) => {
 		return Array.from({ length: 6 }).map((_, rowIndex) => (
@@ -320,7 +336,11 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	};
 
 	// Helper function to render table cells (unified for grouped and ungrouped rows)
-	const renderCell = (cell: Cell<T, unknown>, rowIndex: number) => {
+	const renderCell = (
+		cell: Cell<T, unknown>,
+		rowIndex: number,
+		isVirtualized: boolean,
+	) => {
 		if (props.columnOrderable) {
 			return (
 				<SortableContext
@@ -343,9 +363,13 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 				key={cell.id}
 				className="border"
 				style={{
-					width: props.columnResizable
-						? `calc(var(--col-${cell.column.id}-size) * 1px)`
-						: undefined,
+					...(isVirtualized
+						? { display: "flex", width: cell.column.getSize() }
+						: {
+								width: props.columnResizable
+									? `calc(var(--col-${cell.column.id}-size) * 1px)`
+									: undefined,
+							}),
 				}}
 			>
 				<EditableCell cell={cell} rowIndex={rowIndex} />
@@ -355,10 +379,37 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 
 	// Render table content (unified for both orderable and regular tables)
 	const renderTableContent = () => (
-		<table className="border-collapse" style={columnSizeVars}>
-			<thead>
+		<table
+			className="border-collapse w-full"
+			style={{
+				...columnSizeVars,
+				...(rowVirtualization && !loading && !groupBy
+					? { display: "grid" }
+					: {}),
+			}}
+		>
+			<thead
+				style={
+					rowVirtualization && !loading && !groupBy
+						? {
+								display: "grid",
+								position: "sticky",
+								top: 0,
+								zIndex: 1,
+								backgroundColor: "white",
+							}
+						: undefined
+				}
+			>
 				{table.getHeaderGroups().map((headerGroup) => (
-					<tr key={headerGroup.id}>
+					<tr
+						key={headerGroup.id}
+						style={
+							rowVirtualization && !loading && !groupBy
+								? { display: "flex", width: "100%" }
+								: undefined
+						}
+					>
 						{props.columnOrderable ? (
 							<SortableContext
 								items={columnOrder}
@@ -379,6 +430,9 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 										onGroupByChange={setGroupBy}
 										paginationType={paginationType}
 										sortable={sortable}
+										virtualized={
+											rowVirtualization && !groupBy
+										}
 									/>
 								))}
 							</SortableContext>
@@ -398,111 +452,164 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 									onGroupByChange={setGroupBy}
 									paginationType={paginationType}
 									sortable={sortable}
+									virtualized={rowVirtualization && !groupBy}
 								/>
 							))
 						)}
 					</tr>
 				))}
 			</thead>
-			<tbody>
+			<tbody
+				style={
+					rowVirtualization && !loading && !groupBy
+						? {
+								display: "grid",
+								height: `${rowVirtualizer.getTotalSize()}px`,
+								position: "relative",
+							}
+						: undefined
+				}
+			>
 				{loading
 					? // Render skeleton loader
 						renderSkeletonRows(
 							table.getHeaderGroups()[0]?.headers.length ?? 1,
 						)
-					: groupedData && groupBy
-						? // Render grouped rows
-							Array.from(groupedData.entries()).map(
-								([groupValue, groupItems]) => {
-									const isExpanded =
-										expandedGroups[groupValue] ?? true;
-									const columnCount =
-										table.getHeaderGroups()[0]?.headers
-											.length ?? 1;
+					: rowVirtualization && !groupBy
+						? // Render virtualized rows
+							rowVirtualizer
+								.getVirtualItems()
+								.map((virtualRow) => {
+									const row = rows[virtualRow.index];
+									if (!row) return null;
 
 									return (
-										<>
-											<tr
-												key={`group-${groupValue}`}
-												className="bg-muted/50 hover:bg-muted/70 transition-colors"
-											>
-												<td
-													colSpan={columnCount}
-													className="border px-3 py-2"
-												>
-													<button
-														type="button"
-														onClick={() =>
-															toggleGroup(
-																groupValue,
-															)
-														}
-														className="flex items-center gap-2 w-full text-left font-medium"
-													>
-														<ChevronRight
-															className={`h-4 w-4 transition-transform ${
-																isExpanded
-																	? "rotate-90"
-																	: ""
-															}`}
-														/>
-														<span>
-															{groupValue} (
-															{groupItems.length})
-														</span>
-													</button>
-												</td>
-											</tr>
-											{isExpanded &&
-												groupItems.map((item) => {
-													// Find the original index in props.data
-													const originalIndex =
-														props.data.indexOf(
-															item,
-														);
-													const rows =
-														table.getRowModel()
-															.rows;
-													const row =
-														rows[originalIndex];
-													if (!row) return null;
-
-													return (
-														<tr key={row.id}>
-															{row
-																.getVisibleCells()
-																.map((cell) =>
-																	renderCell(
-																		cell,
-																		originalIndex,
-																	),
-																)}
-														</tr>
-													);
-												})}
-										</>
+										<tr
+											key={row.id}
+											data-index={virtualRow.index}
+											style={{
+												display: "flex",
+												position: "absolute",
+												transform: `translateY(${virtualRow.start}px)`,
+												width: "100%",
+											}}
+										>
+											{row
+												.getVisibleCells()
+												.map((cell) =>
+													renderCell(
+														cell,
+														virtualRow.index,
+														true,
+													),
+												)}
+										</tr>
 									);
-								},
-							)
-						: // Render ungrouped rows
-							table
-								.getRowModel()
-								.rows.map((row, rowIndex) => (
-									<tr key={row.id}>
-										{row
-											.getVisibleCells()
-											.map((cell) =>
-												renderCell(cell, rowIndex),
-											)}
-									</tr>
-								))}
+								})
+						: groupedData && groupBy
+							? // Render grouped rows
+								Array.from(groupedData.entries()).map(
+									([groupValue, groupItems]) => {
+										const isExpanded =
+											expandedGroups[groupValue] ?? true;
+										const columnCount =
+											table.getHeaderGroups()[0]?.headers
+												.length ?? 1;
+
+										return (
+											<>
+												<tr
+													key={`group-${groupValue}`}
+													className="bg-muted/50 hover:bg-muted/70 transition-colors"
+												>
+													<td
+														colSpan={columnCount}
+														className="border px-3 py-2"
+													>
+														<button
+															type="button"
+															onClick={() =>
+																toggleGroup(
+																	groupValue,
+																)
+															}
+															className="flex items-center gap-2 w-full text-left font-medium"
+														>
+															<ChevronRight
+																className={`h-4 w-4 transition-transform ${
+																	isExpanded
+																		? "rotate-90"
+																		: ""
+																}`}
+															/>
+															<span>
+																{groupValue} (
+																{
+																	groupItems.length
+																}
+																)
+															</span>
+														</button>
+													</td>
+												</tr>
+												{isExpanded &&
+													groupItems.map((item) => {
+														// Find the original index in props.data
+														const originalIndex =
+															props.data.indexOf(
+																item,
+															);
+														const rows =
+															table.getRowModel()
+																.rows;
+														const row =
+															rows[originalIndex];
+														if (!row) return null;
+
+														return (
+															<tr key={row.id}>
+																{row
+																	.getVisibleCells()
+																	.map(
+																		(
+																			cell,
+																		) =>
+																			renderCell(
+																				cell,
+																				originalIndex,
+																				false,
+																			),
+																	)}
+															</tr>
+														);
+													})}
+											</>
+										);
+									},
+								)
+							: // Render ungrouped rows
+								table
+									.getRowModel()
+									.rows.map((row, rowIndex) => (
+										<tr key={row.id}>
+											{row
+												.getVisibleCells()
+												.map((cell) =>
+													renderCell(
+														cell,
+														rowIndex,
+														false,
+													),
+												)}
+										</tr>
+									))}
 			</tbody>
 		</table>
 	);
 
 	// Unified render
 	return (
-		<div>
+		<div className="flex flex-col h-full">
 			<TableHeader
 				title={props.title}
 				showHeader={showHeader}
@@ -522,7 +629,18 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 				headerActions={props.headerActions}
 			/>
 
-			<div className="overflow-x-auto">
+			<div
+				ref={tableContainerRef}
+				className="overflow-auto"
+				style={{
+					...(rowVirtualization && !groupBy
+						? {
+								position: "relative",
+								height: tableHeight,
+							}
+						: {}),
+				}}
+			>
 				{props.columnOrderable ? (
 					<DndContext
 						collisionDetection={closestCenter}

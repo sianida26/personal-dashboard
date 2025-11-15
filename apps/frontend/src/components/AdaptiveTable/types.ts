@@ -54,6 +54,9 @@ export type AdaptiveTableProps<T> = {
 	selectActions?: Array<{ name: string; button: ReactNode }>;
 	onSelect?: (row: T) => void;
 	onSelectAction?: (rows: T[], actionName: string) => void;
+	// Row virtualization props
+	rowVirtualization?: boolean; // Default: true, enables row virtualization for better performance
+	tableHeight?: string; // Default: "600px", height of the table container
 };
 
 export interface TableState {

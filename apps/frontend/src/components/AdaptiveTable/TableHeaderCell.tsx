@@ -30,6 +30,7 @@ export const TableHeaderCell = <T,>({
 	onGroupByChange,
 	paginationType,
 	sortable,
+	virtualized = false,
 }: {
 	header: Header<T, unknown>;
 	draggable?: boolean;
@@ -41,6 +42,7 @@ export const TableHeaderCell = <T,>({
 	onGroupByChange?: (columnId: string | null) => void;
 	paginationType?: "client" | "server";
 	sortable?: boolean;
+	virtualized?: boolean;
 }) => {
 	const columnDef = header.column.columnDef as AdaptiveColumnDef<T>;
 	const isActionsColumn = header.column.id === "_actions";
@@ -77,15 +79,21 @@ export const TableHeaderCell = <T,>({
 					transform: CSS.Translate.toString(sortableHook.transform),
 					transition: "width transform 0.2s ease-in-out",
 					whiteSpace: "nowrap",
-					width: columnResizable
-						? `calc(var(--header-${header.id}-size) * 1px)`
-						: header.column.getSize(),
+					width: virtualized
+						? header.getSize()
+						: columnResizable
+							? `calc(var(--header-${header.id}-size) * 1px)`
+							: header.column.getSize(),
 					zIndex: sortableHook.isDragging ? 1 : 0,
+					...(virtualized ? { display: "flex" } : {}),
 				}
 			: {
-					width: columnResizable
-						? `calc(var(--header-${header.id}-size) * 1px)`
-						: undefined,
+					width: virtualized
+						? header.getSize()
+						: columnResizable
+							? `calc(var(--header-${header.id}-size) * 1px)`
+							: undefined,
+					...(virtualized ? { display: "flex" } : {}),
 				};
 
 	return (
