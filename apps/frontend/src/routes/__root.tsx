@@ -1,7 +1,7 @@
 import type { QueryClient } from "@tanstack/react-query";
-import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
+import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 
-interface RouteContext {
+export interface RouteContext {
 	queryClient: QueryClient;
 	pageTitle?: string;
 }

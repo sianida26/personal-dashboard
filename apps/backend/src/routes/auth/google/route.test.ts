@@ -544,14 +544,11 @@ describe("Google OAuth Routes", () => {
 	describe("Error handling", () => {
 		test("should handle JWT generation errors", async () => {
 			// Mock auth payload generation to fail
-			mock.module(
-				"../../../services/auth/authResponseService",
-				() => ({
-					buildAuthPayload: mock(async () => {
-						throw new Error("JWT generation failed");
-					}),
+			mock.module("../../../services/auth/authResponseService", () => ({
+				buildAuthPayload: mock(async () => {
+					throw new Error("JWT generation failed");
 				}),
-			);
+			}));
 
 			// This test would depend on how the route handles JWT generation errors
 			// Since the current implementation doesn't have explicit error handling for this,

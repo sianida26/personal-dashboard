@@ -496,7 +496,9 @@ const microsoftRouter = new Hono<HonoEnv>()
 			});
 			authMetrics.activeUsers.add(1);
 
-			const authData = await buildAuthPayload(user as UserWithAuthorization);
+			const authData = await buildAuthPayload(
+				user as UserWithAuthorization,
+			);
 
 			// Generate a temp session ID
 			const sessionId = createId();

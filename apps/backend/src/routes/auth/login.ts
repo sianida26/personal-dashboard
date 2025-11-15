@@ -159,10 +159,12 @@ const loginRoute = createHonoRoute()
 			});
 			authMetrics.activeUsers.add(1);
 
-			const authPayload = await buildAuthPayload(user as UserWithAuthorization);
+			const authPayload = await buildAuthPayload(
+				user as UserWithAuthorization,
+			);
 
 			return c.json(authPayload);
 		},
-);
+	);
 
 export default loginRoute;

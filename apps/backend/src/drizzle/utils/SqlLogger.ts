@@ -42,20 +42,30 @@ class SqlLogger implements Logger {
 					const startTime = performance.now();
 
 					// Create a child span for this database query
-					const span = tracer.startSpan(spanName, {}, context.active());
+					const span = tracer.startSpan(
+						spanName,
+						{},
+						context.active(),
+					);
 
 					// Set span attributes (OpenTelemetry semantic conventions for databases)
 					span.setAttribute("db.system", "postgresql");
 					span.setAttribute("db.operation", operation);
 					span.setAttribute("db.sql.table", tableName);
 					span.setAttribute("db.statement", query);
-					span.setAttribute("db.name", process.env.DATABASE_NAME || "unknown");
+					span.setAttribute(
+						"db.name",
+						process.env.DATABASE_NAME || "unknown",
+					);
 
 					// Add parameters as JSON (be careful with sensitive data)
 					if (params && params.length > 0) {
 						// Sanitize parameters to avoid logging passwords, tokens, etc.
 						const sanitizedParams = params.map((param) => {
-							if (typeof param === "string" && param.length > 100) {
+							if (
+								typeof param === "string" &&
+								param.length > 100
+							) {
 								return `${param.substring(0, 100)}... (truncated)`;
 							}
 							return param;
@@ -64,7 +74,10 @@ class SqlLogger implements Logger {
 							"db.statement.parameters",
 							JSON.stringify(sanitizedParams),
 						);
-						span.setAttribute("db.statement.parameter_count", params.length);
+						span.setAttribute(
+							"db.statement.parameter_count",
+							params.length,
+						);
 					}
 
 					// Calculate duration
