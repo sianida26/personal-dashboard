@@ -1,9 +1,9 @@
-import { describe, test, expect, beforeAll, afterAll } from "bun:test";
-import client from "../../utils/honoTestClient";
-import db from "../../drizzle";
+import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import { eq } from "drizzle-orm";
-import { hashPassword } from "../../utils/passwordUtils";
+import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
+import client from "../../utils/honoTestClient";
+import { hashPassword } from "../../utils/passwordUtils";
 
 describe("Logout Route", () => {
 	let testUser: typeof users.$inferSelect;
@@ -70,5 +70,7 @@ describe("Logout Route", () => {
 		expect(res.status).toBe(401);
 	});
 
-	test.todo("Should invalidate the access token");
+	test("Should invalidate the access token", async () => {
+		// TODO: Implement this test
+	});
 });

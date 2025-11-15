@@ -13,10 +13,10 @@ import {
 import { useToast } from "@repo/ui/hooks";
 import { cn } from "@repo/ui/utils";
 import {
+	type InfiniteData,
 	useInfiniteQuery,
 	useMutation,
 	useQueryClient,
-	type InfiniteData,
 } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import dayjs from "dayjs";
@@ -28,6 +28,8 @@ import {
 	useMemo,
 	useState,
 } from "react";
+import { backendUrl } from "@/honoClient";
+import { authDB } from "@/indexedDB/authDB";
 import {
 	executeNotificationAction,
 	fetchNotifications,
@@ -36,9 +38,11 @@ import {
 	type NotificationListQuery,
 } from "@/modules/notifications/api";
 import { notificationQueryKeys } from "@/modules/notifications/queryKeys";
-import type { Notification, NotificationGroup } from "@/modules/notifications/types";
-import { authDB } from "@/indexedDB/authDB";
-import { backendUrl } from "@/honoClient";
+import type {
+	Notification,
+	NotificationGroup,
+	PaginatedNotificationsResponse,
+} from "@/modules/notifications/types";
 
 dayjs.extend(relativeTime);
 
@@ -192,8 +196,7 @@ function NotificationsPage() {
 		queryFn: ({ pageParam }) =>
 			fetchNotifications({
 				...activeFilter.query,
-				cursor:
-					typeof pageParam === "string" ? pageParam : undefined,
+				cursor: typeof pageParam === "string" ? pageParam : undefined,
 				limit: PAGE_SIZE,
 			}),
 		getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
@@ -233,10 +236,7 @@ function NotificationsPage() {
 		(notificationId: string) => {
 			const readTimestamp = new Date().toISOString();
 			queryClient.setQueryData<
-				InfiniteData<
-					PaginatedNotificationsResponse,
-					string | undefined
-				>
+				InfiniteData<PaginatedNotificationsResponse, string | undefined>
 			>(notificationQueryKeys.list(activeFilterKey), (current) => {
 				if (!current) return current;
 				let didUpdate = false;
@@ -265,20 +265,23 @@ function NotificationsPage() {
 					const updatedItems = page.items
 						? updateCollection(page.items)
 						: page.items;
-					const updatedGroups = page.groups?.map((group) => {
-						const updatedGroupNotifications = updateCollection(
-							group.notifications,
-						);
-						if (
-							updatedGroupNotifications === group.notifications
-						) {
-							return group;
-						}
-						return {
-							...group,
-							notifications: updatedGroupNotifications,
-						};
-					});
+					const updatedGroups = page.groups?.map(
+						(group: NotificationGroup) => {
+							const updatedGroupNotifications = updateCollection(
+								group.notifications,
+							);
+							if (
+								updatedGroupNotifications ===
+								group.notifications
+							) {
+								return group;
+							}
+							return {
+								...group,
+								notifications: updatedGroupNotifications,
+							};
+						},
+					);
 
 					if (
 						updatedItems === page.items &&
@@ -419,8 +422,7 @@ function NotificationsPage() {
 				} catch {
 					toast({
 						title: "New notification",
-						description:
-							"A new update just landed in your inbox.",
+						description: "A new update just landed in your inbox.",
 					});
 				}
 
@@ -465,17 +467,17 @@ function NotificationsPage() {
 		}: {
 			ids: string[];
 			markAs: "read" | "unread";
-	}) => markNotifications(ids, markAs),
-	onSuccess: () => {
-		queryClient.invalidateQueries({
-			queryKey: notificationQueryKeys.all,
-			exact: false,
-		});
-		queryClient.invalidateQueries({
-			queryKey: notificationQueryKeys.list(activeFilterKey),
-		});
-		queryClient.invalidateQueries({
-			queryKey: notificationQueryKeys.unreadCount,
+		}) => markNotifications(ids, markAs),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: notificationQueryKeys.all,
+				exact: false,
+			});
+			queryClient.invalidateQueries({
+				queryKey: notificationQueryKeys.list(activeFilterKey),
+			});
+			queryClient.invalidateQueries({
+				queryKey: notificationQueryKeys.unreadCount,
 			});
 		},
 		onError: (mutationError: unknown) => {
@@ -498,17 +500,17 @@ function NotificationsPage() {
 		}: {
 			id: string;
 			status: "read" | "unread";
-	}) => markNotification(id, status),
-	onSuccess: () => {
-		queryClient.invalidateQueries({
-			queryKey: notificationQueryKeys.all,
-			exact: false,
-		});
-		queryClient.invalidateQueries({
-			queryKey: notificationQueryKeys.list(activeFilterKey),
-		});
-		queryClient.invalidateQueries({
-			queryKey: notificationQueryKeys.unreadCount,
+		}) => markNotification(id, status),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: notificationQueryKeys.all,
+				exact: false,
+			});
+			queryClient.invalidateQueries({
+				queryKey: notificationQueryKeys.list(activeFilterKey),
+			});
+			queryClient.invalidateQueries({
+				queryKey: notificationQueryKeys.unreadCount,
 			});
 		},
 		onError: (mutationError: unknown) => {
@@ -555,15 +557,15 @@ function NotificationsPage() {
 			notificationId: string;
 			actionKey: string;
 			comment?: string;
-	}) => executeNotificationAction(notificationId, actionKey, comment),
-	onSuccess: () => {
-		queryClient.invalidateQueries({
-			queryKey: notificationQueryKeys.all,
-			exact: false,
-		});
-		queryClient.invalidateQueries({
-			queryKey: notificationQueryKeys.list(activeFilterKey),
-		});
+		}) => executeNotificationAction(notificationId, actionKey, comment),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: notificationQueryKeys.all,
+				exact: false,
+			});
+			queryClient.invalidateQueries({
+				queryKey: notificationQueryKeys.list(activeFilterKey),
+			});
 			queryClient.invalidateQueries({
 				queryKey: notificationQueryKeys.unreadCount,
 			});
@@ -661,8 +663,11 @@ function NotificationsPage() {
 
 	if (isLoading) {
 		mainContent = (
-			<div className="flex h-56 items-center justify-center rounded-lg border bg-card">
-				<LoadingSpinner label="Gathering your updates…" />
+			<div className="flex flex-col h-56 items-center justify-center rounded-lg border bg-card gap-3">
+				<LoadingSpinner />
+				<p className="text-sm text-muted-foreground">
+					Gathering your updates…
+				</p>
 			</div>
 		);
 	} else if (isError) {
@@ -825,7 +830,9 @@ function NotificationsPage() {
 									"MMM D, YYYY h:mm A",
 								)}
 							</span>
-							{isFetching && <LoadingSpinner size="sm" />}
+							{isFetching && (
+								<LoadingSpinner className="h-4 w-4" />
+							)}
 						</div>
 						<div className="flex flex-wrap items-center gap-2">
 							<Button
@@ -999,7 +1006,7 @@ function NotificationsPage() {
 													{developerMetadataJson && (
 														<Button
 															variant="ghost"
-															size="xs"
+															size="sm"
 															onClick={() =>
 																setShowTechnicalDetails(
 																	(prev) =>
@@ -1187,8 +1194,7 @@ function NotificationsPage() {
 						if (!hasUnread) {
 							toast({
 								title: "Nothing to mark",
-								description:
-									"Everything here is already read.",
+								description: "Everything here is already read.",
 							});
 							return;
 						}

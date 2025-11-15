@@ -1,6 +1,4 @@
-import { createId } from "@paralleldrive/cuid2";
 import type {
-	CreateNotificationInput,
 	NotificationActionExecutionInput,
 	NotificationStatusEnum,
 } from "@repo/validation";

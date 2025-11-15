@@ -1,4 +1,3 @@
-import type { CreateNotificationInput } from "@repo/validation";
 import notificationEventHub from "../../lib/event-bus/notification-event-hub";
 import createNotificationRepository from "../../modules/notifications/notification-repository";
 import type { JobHandler } from "../../services/jobs/types";
