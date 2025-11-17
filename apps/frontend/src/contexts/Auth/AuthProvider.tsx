@@ -50,12 +50,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		})();
 	}, []);
 
-	const clearRefreshTimer = () => {
+	const clearRefreshTimer = useCallback(() => {
 		if (refreshTimerRef.current) {
 			window.clearTimeout(refreshTimerRef.current);
 			refreshTimerRef.current = null;
 		}
-	};
+	}, []);
 
 	const clearAuthData = useCallback(async () => {
 		clearRefreshTimer();
@@ -67,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		setRefreshToken(null);
 		setAccessTokenExpiresAt(null);
 		await authDB.auth.delete("auth");
-	}, []);
+	}, [clearRefreshTimer]);
 
 	const saveAuthData = useCallback<AuthContextType["saveAuthData"]>(
 		async (userData, tokens) => {
@@ -111,7 +111,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			});
 
 			if (!response.ok) {
-				throw new Error("Failed to refresh session");
+				const errorText = await response.text();
+				throw new Error(
+					`Refresh failed: ${response.status} - ${errorText}`,
+				);
 			}
 
 			const data = await response.json();
@@ -127,8 +130,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 					refreshToken: data.refreshToken,
 				},
 			);
-		} catch (error) {
-			console.error(error);
+		} catch {
+			// Token refresh failed - will be handled by request interceptor on 401
 			await clearAuthData();
 		} finally {
 			isRefreshingRef.current = false;
@@ -152,7 +155,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		return () => {
 			clearRefreshTimer();
 		};
-	}, [accessTokenExpiresAt, refreshToken, refreshSession]);
+	}, [accessTokenExpiresAt, refreshToken, refreshSession, clearRefreshTimer]);
+
+	// Refresh token when user returns to the tab (focus event)
+	// This ensures token is fresh even if setTimeout was throttled by browser
+	useEffect(() => {
+		const handleWindowFocus = () => {
+			if (!accessToken || !accessTokenExpiresAt) {
+				return;
+			}
+
+			const now = Date.now();
+			const timeUntilExpiry = accessTokenExpiresAt - now;
+			const FIVE_MINUTES_MS = 5 * 60 * 1000;
+
+			// If token expires within 5 minutes, refresh it proactively
+			if (timeUntilExpiry < FIVE_MINUTES_MS && timeUntilExpiry > 0) {
+				void refreshSession();
+			}
+		};
+
+		window.addEventListener("focus", handleWindowFocus);
+		return () => {
+			window.removeEventListener("focus", handleWindowFocus);
+		};
+	}, [accessToken, accessTokenExpiresAt, refreshSession]);
 
 	useEffect(() => {
 		setAuthBridge({
