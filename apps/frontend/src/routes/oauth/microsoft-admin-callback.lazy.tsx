@@ -29,7 +29,7 @@ function MicrosoftAdminCallback() {
 
 				if (!sessionId) {
 					setError("No session ID found in the URL");
-					return
+					return;
 				}
 
 				// Fetch admin auth data using the session ID
@@ -37,7 +37,7 @@ function MicrosoftAdminCallback() {
 
 				if (!authData || !authData.accessToken) {
 					setError("Invalid authentication data received");
-					return
+					return;
 				}
 
 				// Store admin auth data in IndexedDB with admin flag
@@ -48,14 +48,19 @@ function MicrosoftAdminCallback() {
 					permissions: authData.user.permissions,
 					roles: authData.user.roles,
 					accessToken: authData.accessToken,
+					refreshToken: authData.refreshToken ?? null,
+					accessTokenExpiresAt: null,
 					isAdmin: true,
-				})
+				});
 
 				// Update auth context
-				saveAuthData(
+				await saveAuthData(
 					{ ...authData.user, isAdmin: true },
-					authData.accessToken,
-				)
+					{
+						accessToken: authData.accessToken,
+						refreshToken: authData.refreshToken,
+					},
+				);
 
 				// Redirect to admin dashboard
 				navigate({ to: "/graph-admin" });
@@ -63,9 +68,9 @@ function MicrosoftAdminCallback() {
 				console.error("Error in Microsoft admin callback:", err);
 				setError(
 					"Failed to complete admin authentication. Please try again.",
-				)
+				);
 			}
-		}
+		};
 
 		processAdminCallback();
 	}, [navigate, saveAuthData]);
@@ -90,7 +95,7 @@ function MicrosoftAdminCallback() {
 					Return to Dashboard
 				</button>
 			</div>
-		)
+		);
 	}
 
 	return (
@@ -105,5 +110,5 @@ function MicrosoftAdminCallback() {
 				</p>
 			</div>
 		</div>
-	)
+	);
 }

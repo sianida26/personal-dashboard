@@ -1,4 +1,5 @@
-import { useNavigate, createLazyFileRoute } from "@tanstack/react-router";
+import { LoadingSpinner } from "@repo/ui";
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 
 export const Route = createLazyFileRoute("/")({
@@ -12,8 +13,12 @@ export default function HomePage() {
 		navigate({
 			to: "/dashboard",
 			replace: true,
-		})
+		});
 	}, [navigate]);
 
-	return <div>index.lazy</div>;
+	return (
+		<div className="flex h-screen w-screen items-center justify-center rounded-lg border bg-card">
+			<LoadingSpinner />
+		</div>
+	);
 }

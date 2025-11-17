@@ -40,14 +40,14 @@ export default function LoginPage() {
 			password: "",
 		},
 		validate: zodResolver(formSchema),
-	})
+	});
 
 	useEffect(() => {
 		if (isAuthenticated) {
 			navigate({
 				to: "/dashboard",
 				replace: true,
-			})
+			});
 		}
 	}, [navigate, isAuthenticated]);
 
@@ -55,7 +55,7 @@ export default function LoginPage() {
 		mutationFn: async (values: FormSchema) => {
 			const res = await client.auth.login.$post({
 				json: values,
-			})
+			});
 
 			if (res.ok) {
 				return await res.json();
@@ -64,30 +64,33 @@ export default function LoginPage() {
 			throw res;
 		},
 
-		onSuccess: (data) => {
-			saveAuthData(
+		onSuccess: async (data) => {
+			await saveAuthData(
 				{
 					id: data.user.id,
 					name: data.user.name,
 					permissions: data.user.permissions,
 					roles: data.user.roles,
 				},
-				data.accessToken,
-			)
+				{
+					accessToken: data.accessToken,
+					refreshToken: data.refreshToken,
+				},
+			);
 		},
 
 		onError: async (error) => {
 			if (error instanceof Response) {
 				const body = await error.json();
 				setErrorMessage(body.message as string);
-				return
+				return;
 			}
 		},
-	})
+	});
 
 	const handleSubmit = (values: FormSchema) => {
 		loginMutation.mutate(values);
-	}
+	};
 
 	return (
 		<div className="w-screen h-screen flex">
@@ -202,5 +205,5 @@ export default function LoginPage() {
 				</div>
 			</div>
 		</div>
-	)
+	);
 }

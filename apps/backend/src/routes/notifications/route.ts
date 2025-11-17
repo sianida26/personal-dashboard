@@ -46,10 +46,11 @@ const notificationsRoute = new Hono<HonoEnv>()
 		async (c) => {
 			const userId = requireUserId(c);
 			const query = c.req.valid("query");
+			const includeRead = query.includeRead ?? false;
 
 			const result = await orchestrator.listNotifications({
 				userId,
-				status: query.status,
+				status: includeRead ? undefined : query.status,
 				type: query.type,
 				category: query.category,
 				before: query.before ? new Date(query.before) : undefined,
@@ -98,7 +99,9 @@ const notificationsRoute = new Hono<HonoEnv>()
 				if (!aborted) {
 					await stream.writeSSE({
 						event: "heartbeat",
-						data: JSON.stringify({ timestamp: new Date().toISOString() }),
+						data: JSON.stringify({
+							timestamp: new Date().toISOString(),
+						}),
 					});
 				}
 			}
@@ -208,28 +211,27 @@ const notificationsRoute = new Hono<HonoEnv>()
 			const payload = c.req.valid("json");
 
 			// Use the new unified notification service
-		const result = await sendToUsersAndRoles({
-			userIds: payload.userId ? [payload.userId] : payload.userIds,
-			roleCodes: payload.roleCodes,
-			category: payload.category,
-			type: payload.type,
-			title: payload.title,
+			const result = await sendToUsersAndRoles({
+				userIds: payload.userId ? [payload.userId] : payload.userIds,
+				roleCodes: payload.roleCodes,
+				category: payload.category,
+				type: payload.type,
+				title: payload.title,
 				message: payload.message,
 				channels: payload.channels,
 				channelOverrides: payload.channelOverrides,
 				metadata: payload.metadata || {},
-				respectPreferences:
-					payload.respectPreferences ?? true,
+				respectPreferences: payload.respectPreferences ?? true,
 			});
 
-		return c.json(
-			{
-				message: "Notification dispatched",
-				results: result.results,
-			},
-			201,
-		);
-	},
+			return c.json(
+				{
+					message: "Notification dispatched",
+					results: result.results,
+				},
+				201,
+			);
+		},
 	);
 
 export default notificationsRoute;

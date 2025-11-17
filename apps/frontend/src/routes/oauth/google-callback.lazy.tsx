@@ -1,7 +1,6 @@
 import { useNavigate, createLazyFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
-import { authDB } from "../../indexedDB/authDB";
 import { handleGoogleCallback } from "../../utils/googleAuth";
 
 export const Route = createLazyFileRoute("/oauth/google-callback")({
@@ -29,7 +28,7 @@ function GoogleCallback() {
 
 				if (!sessionId) {
 					setError("No session ID found in the URL");
-					return
+					return;
 				}
 
 				// Fetch auth data using the session ID
@@ -37,21 +36,13 @@ function GoogleCallback() {
 
 				if (!authData || !authData.accessToken) {
 					setError("Invalid authentication data received");
-					return
+					return;
 				}
 
-				// Store auth data in IndexedDB
-				await authDB.auth.put({
-					key: "auth",
-					userId: authData.user.id,
-					userName: authData.user.name,
-					permissions: authData.user.permissions,
-					roles: authData.user.roles,
+				await saveAuthData(authData.user, {
 					accessToken: authData.accessToken,
-				})
-
-				// Update auth context
-				saveAuthData(authData.user, authData.accessToken);
+					refreshToken: authData.refreshToken,
+				});
 
 				// Redirect to dashboard or home page
 				navigate({ to: "/" });
@@ -59,9 +50,9 @@ function GoogleCallback() {
 				console.error("Error in Google callback:", err);
 				setError(
 					"Failed to complete authentication. Please try again.",
-				)
+				);
 			}
-		}
+		};
 
 		processCallback();
 	}, [navigate, saveAuthData]);
@@ -84,7 +75,7 @@ function GoogleCallback() {
 					Return to Login
 				</button>
 			</div>
-		)
+		);
 	}
 
 	return (
@@ -97,5 +88,5 @@ function GoogleCallback() {
 				</p>
 			</div>
 		</div>
-	)
+	);
 }

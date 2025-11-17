@@ -6,7 +6,7 @@ export const Route = createFileRoute("/login/")({
 	loader: async () => {
 		const loginSettings = await fetchRPC(
 			client.auth["login-settings"].$get(),
-		)
+		);
 		return loginSettings;
 	},
 });

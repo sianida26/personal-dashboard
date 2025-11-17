@@ -20,7 +20,7 @@ function DashboardLayout() {
 		queryFn: async () => {
 			const response = await fetchRPC(client.auth["my-profile"].$get());
 
-			saveAuthData({
+			await saveAuthData({
 				id: response.id,
 				name: response.name,
 				permissions: response.permissions,

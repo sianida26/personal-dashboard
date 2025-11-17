@@ -1,46 +1,46 @@
 {
-  "name": "frontend",
-  "version": "0.0.0",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "lint": "biome lint --write --diagnostic-level warn",
-    "format": "biome format --write --diagnostic-level warn",
-    "check": "bunx tsc --noEmit && bun lint && bun format"
-  },
-  "dependencies": {
-    "@dnd-kit/core": "^6.3.1",
-    "@dnd-kit/modifiers": "^9.0.0",
-    "@dnd-kit/sortable": "^10.0.0",
-    "@dnd-kit/utilities": "^3.2.2",
-    "@mantine/form": "^8.3.6",
-    "@mantine/hooks": "^8.3.6",
-    "@repo/data": "workspace:*",
-    "@repo/hooks": "workspace:*",
-    "@repo/ui": "workspace:*",
-    "@repo/validation": "workspace:*",
-    "@tailwindcss/vite": "^4.1.17",
-    "@tanstack/react-query": "^5.90.7",
-    "@tanstack/react-router": "^1.134.13",
-    "@tanstack/react-table": "^8.21.3",
-    "@tanstack/react-virtual": "^3.13.12",
-    "@tanstack/router-plugin": "^1.134.14",
-    "@types/uuid": "^10.0.0",
-    "@vitejs/plugin-react": "^5.1.0",
-    "backend": "workspace:*",
-    "mantine-form-zod-resolver": "^1.3.0",
-    "recharts": "^3.3.0",
-    "sonner": "^2.0.7",
-    "tailwindcss-animate": "^1.0.7",
-    "uuid": "^13.0.0",
-    "vite": "^7.2.2"
-  },
-  "devDependencies": {
-    "@tanstack/router-devtools": "^1.134.13"
-  },
-  "resolutions": {
-    "@tanstack/router-generator>zod": "^3.25.76",
-    "@tanstack/router-plugin>zod": "^3.25.76"
-  }
+	"name": "frontend",
+	"version": "0.0.0",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview",
+		"lint": "biome lint --write --diagnostic-level warn",
+		"format": "biome format --write --diagnostic-level warn",
+		"check": "bunx tsc --noEmit && bun lint && bun format"
+	},
+	"dependencies": {
+		"@dnd-kit/core": "^6.3.1",
+		"@dnd-kit/modifiers": "^9.0.0",
+		"@dnd-kit/sortable": "^10.0.0",
+		"@dnd-kit/utilities": "^3.2.2",
+		"@mantine/form": "^8.3.6",
+		"@mantine/hooks": "^8.3.6",
+		"@repo/data": "workspace:*",
+		"@repo/hooks": "workspace:*",
+		"@repo/ui": "workspace:*",
+		"@repo/validation": "workspace:*",
+		"@tailwindcss/vite": "^4.1.17",
+		"@tanstack/react-query": "^5.90.7",
+		"@tanstack/react-router": "^1.134.13",
+		"@tanstack/react-table": "^8.21.3",
+		"@tanstack/react-virtual": "^3.13.12",
+		"@tanstack/router-plugin": "^1.134.14",
+		"@types/uuid": "^10.0.0",
+		"@vitejs/plugin-react": "^5.1.0",
+		"backend": "workspace:*",
+		"mantine-form-zod-resolver": "^1.3.0",
+		"recharts": "^3.3.0",
+		"sonner": "^2.0.7",
+		"tailwindcss-animate": "^1.0.7",
+		"uuid": "^13.0.0",
+		"vite": "^7.2.2"
+	},
+	"devDependencies": {
+		"@tanstack/router-devtools": "^1.134.13"
+	},
+	"resolutions": {
+		"@tanstack/router-generator>zod": "^3.25.76",
+		"@tanstack/router-plugin>zod": "^3.25.76"
+	}
 }

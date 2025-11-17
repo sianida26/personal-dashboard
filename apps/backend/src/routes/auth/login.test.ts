@@ -59,6 +59,11 @@ describe("Auth Routes", () => {
 		expect(res.status).toBe(200);
 		const body = await res.json();
 		expect(body).toHaveProperty("accessToken");
+		expect(body).toHaveProperty("refreshToken");
+		expect(body.accessTokenExpiresIn).toBeGreaterThan(0);
+		expect(body.refreshTokenExpiresIn).toBeGreaterThan(
+			body.accessTokenExpiresIn,
+		);
 		expect(body.user.id).toBe(testUser.id);
 		expect(body.user.name).toBe(testUser.name);
 		expect(body.user.permissions).toBeArray();
@@ -76,6 +81,7 @@ describe("Auth Routes", () => {
 		expect(res.status).toBe(200);
 		const body = await res.json();
 		expect(body).toHaveProperty("accessToken");
+		expect(body).toHaveProperty("refreshToken");
 		expect(body.user.id).toBe(testUser.id);
 	});
 
@@ -96,6 +102,7 @@ describe("Auth Routes", () => {
 		expect(res.status).toBe(200);
 		const body = await res.json();
 		expect(body).toHaveProperty("accessToken");
+		expect(body).toHaveProperty("refreshToken");
 		expect(body.user.id).toBe(testUser.id);
 	});
 

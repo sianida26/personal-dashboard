@@ -16,6 +16,11 @@ const seeder = async () => {
 	console.timeEnd("Done seeding");
 };
 
-await seeder().then(() => {
-	process.exit(0);
-});
+export default seeder;
+
+// Run seeder if test environment
+if (process.env.NODE_ENV !== "test") {
+	await seeder().then(() => {
+		process.exit(0);
+	});
+}

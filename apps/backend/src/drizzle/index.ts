@@ -10,6 +10,7 @@ import * as oauthMicrosoftSchema from "./schema/oauthMicrosoft";
 import * as permissionsSchema from "./schema/permissions";
 import * as permissionsToRolesSchema from "./schema/permissionsToRoles";
 import * as permissionsToUsersSchema from "./schema/permissionsToUsers";
+import * as refreshTokensSchema from "./schema/refreshTokens";
 import * as rolesSchema from "./schema/roles";
 import * as rolesToUsersSchema from "./schema/rolesToUsers";
 import * as usersSchema from "./schema/users";
@@ -31,6 +32,7 @@ const db = drizzle({
 		...kvStore,
 		...jobQueueSchema,
 		...notificationsSchema,
+		...refreshTokensSchema,
 	},
 	logger: new SqlLogger(),
 });

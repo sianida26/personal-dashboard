@@ -28,14 +28,14 @@ function RouteComponent() {
 					},
 				}),
 			),
-	})
+	});
 
 	const detailEndpoint = client.users[":id"].$get;
 
 	const { data: userData } = useQuery({
 		queryKey: ["users", { id }],
 		queryFn: () => fetchRPC(detailEndpoint({ param: { id }, query: {} })),
-	})
+	});
 
 	const form = useForm<Partial<InferResponseType<typeof detailEndpoint>>>({
 		initialValues: {
@@ -46,7 +46,7 @@ function RouteComponent() {
 			roles: [],
 			username: "",
 		},
-	})
+	});
 
 	useEffect(() => {
 		userData && form.setValues(userData);
@@ -106,5 +106,5 @@ function RouteComponent() {
 				],
 			})}
 		</ModalFormTemplate>
-	)
+	);
 }

@@ -66,7 +66,9 @@ class Logger {
 
 		// Add trace context if available
 		const traceInfo =
-			traceId && spanId ? `[TraceID: ${traceId}] [SpanID: ${spanId}] ` : "";
+			traceId && spanId
+				? `[TraceID: ${traceId}] [SpanID: ${spanId}] `
+				: "";
 
 		return `[${timestamp}] [${level}] ${traceInfo}${contextInfo}${message}`;
 	}
@@ -105,14 +107,12 @@ class Logger {
 		}
 
 		// Get logger directly from logs API (NodeSDK handles the provider setup)
-		logs
-			.getLogger(appEnv.OTEL_SERVICE_NAME || "dashboard-backend")
-			.emit({
-				severityNumber,
-				severityText,
-				body,
-				attributes,
-			});
+		logs.getLogger(appEnv.OTEL_SERVICE_NAME || "dashboard-backend").emit({
+			severityNumber,
+			severityText,
+			body,
+			attributes,
+		});
 	}
 
 	/**

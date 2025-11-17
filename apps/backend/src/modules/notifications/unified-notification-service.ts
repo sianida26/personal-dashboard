@@ -7,10 +7,7 @@ import {
 	DEFAULT_NOTIFICATION_PREFERENCE_MATRIX,
 	NOTIFICATION_CHANNELS,
 } from "../notification-preferences/constants";
-import type {
-	NotificationPreferenceSummary,
-	NotificationPreferenceView,
-} from "../notification-preferences/notification-preferences-service";
+import type { NotificationPreferenceSummary } from "../notification-preferences/notification-preferences-service";
 import notificationPreferenceService, {
 	type NotificationPreferenceService,
 } from "../notification-preferences/notification-preferences-service";
@@ -63,8 +60,10 @@ export class UnifiedNotificationService {
 				// Add span attributes for the notification request
 				addSpanAttributes({
 					"notification.category": request.category,
-					"notification.channels.requested": request.channels?.join(",") || "default",
-					"notification.respect_preferences": request.respectPreferences ?? true,
+					"notification.channels.requested":
+						request.channels?.join(",") || "default",
+					"notification.respect_preferences":
+						request.respectPreferences ?? true,
 				});
 
 				const channels = this.resolveChannels(request.channels);
@@ -76,7 +75,9 @@ export class UnifiedNotificationService {
 				const userIds = await this.resolveAudience(request);
 				if (!userIds.length) {
 					addSpanEvent("notification.no_recipients");
-					throw new Error("No recipients resolved for unified notification");
+					throw new Error(
+						"No recipients resolved for unified notification",
+					);
 				}
 
 				addSpanAttributes({
@@ -148,10 +149,10 @@ export class UnifiedNotificationService {
 
 					// Count success/failure for this channel
 					const successes = channelResults.filter(
-						(r) => r.status === "success",
+						(r) => r.status === "sent",
 					).length;
 					const failures = channelResults.filter(
-						(r) => r.status === "failure",
+						(r) => r.status === "failed",
 					).length;
 
 					addSpanEvent("notification.channel_completed", {
@@ -162,12 +163,15 @@ export class UnifiedNotificationService {
 				}
 
 				// Add final result summary
-				const totalSuccess = results.filter((r) => r.status === "success")
-					.length;
-				const totalFailure = results.filter((r) => r.status === "failure")
-					.length;
-				const totalSkipped = results.filter((r) => r.status === "skipped")
-					.length;
+				const totalSuccess = results.filter(
+					(r) => r.status === "sent",
+				).length;
+				const totalFailure = results.filter(
+					(r) => r.status === "failed",
+				).length;
+				const totalSkipped = results.filter(
+					(r) => r.status === "skipped",
+				).length;
 
 				addSpanAttributes({
 					"notification.results.success": totalSuccess,

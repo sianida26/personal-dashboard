@@ -398,32 +398,34 @@ const usersRoute = new Hono<HonoEnv>()
 			// Type assertion after null check
 			const userRecord = createdUser as typeof users.$inferSelect;
 
-		try {
-			const dispatchResult = await sendToRoles(["super-admin"], {
-				type: "informational",
-				title: "New user created",
-				message: `${userRecord.name} just joined the platform`,
-				category: "general",
-				metadata: {
-					userId: userRecord.id,
-					username: userRecord.username,
-					email: userRecord.email,
-				},
-			});
+			try {
+				const dispatchResult = await sendToRoles(["super-admin"], {
+					type: "informational",
+					title: "New user created",
+					message: `${userRecord.name} just joined the platform`,
+					category: "general",
+					metadata: {
+						userId: userRecord.id,
+						username: userRecord.username,
+						email: userRecord.email,
+					},
+				});
 
-			const failedChannels = dispatchResult.results.filter(
-				(result) => result.status !== "sent" && result.status !== "scheduled",
-			);
-			if (failedChannels.length) {
-				appLogger.info(
-					"New user notification encountered channel issues"
+				const failedChannels = dispatchResult.results.filter(
+					(result) =>
+						result.status !== "sent" &&
+						result.status !== "scheduled",
+				);
+				if (failedChannels.length) {
+					appLogger.info(
+						"New user notification encountered channel issues",
+					);
+				}
+			} catch (_error) {
+				appLogger.error(
+					new Error("Failed to broadcast new user notification"),
 				);
 			}
-		} catch (_error) {
-			appLogger.error(
-				new Error("Failed to broadcast new user notification"),
-			);
-		}
 
 			return c.json(
 				{

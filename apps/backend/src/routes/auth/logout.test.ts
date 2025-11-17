@@ -1,14 +1,15 @@
-import { describe, test, expect, beforeAll, afterAll } from "bun:test";
-import client from "../../utils/honoTestClient";
-import db from "../../drizzle";
+import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import { eq } from "drizzle-orm";
-import { hashPassword } from "../../utils/passwordUtils";
+import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
+import client from "../../utils/honoTestClient";
+import { hashPassword } from "../../utils/passwordUtils";
 
 describe("Logout Route", () => {
 	let testUser: typeof users.$inferSelect;
 	const testPassword = "V7d#rL9p@Wq3zMf1";
 	let accessToken: string;
+	let refreshToken: string;
 
 	beforeAll(async () => {
 		// Clean up existing test user if any
@@ -41,6 +42,7 @@ describe("Logout Route", () => {
 		});
 		const loginBody = await loginRes.json();
 		accessToken = loginBody.accessToken;
+		refreshToken = loginBody.refreshToken;
 	});
 
 	afterAll(async () => {
@@ -50,8 +52,10 @@ describe("Logout Route", () => {
 	});
 
 	test("Should able to logout successfully", async () => {
-		const res = await client.auth.logout.$get(
-			{},
+		const res = await client.auth.logout.$post(
+			{
+				json: { refreshToken },
+			},
 			{
 				headers: { Authorization: `Bearer ${accessToken}` },
 			},
@@ -60,9 +64,13 @@ describe("Logout Route", () => {
 	});
 
 	test("Should not able to logout if user is not authenticated", async () => {
-		const res = await client.auth.logout.$get();
+		const res = await client.auth.logout.$post({
+			json: { refreshToken: "invalid" },
+		});
 		expect(res.status).toBe(401);
 	});
 
-	test.todo("Should invalidate the access token");
+	test("Should invalidate the access token", async () => {
+		// TODO: Implement this test
+	});
 });

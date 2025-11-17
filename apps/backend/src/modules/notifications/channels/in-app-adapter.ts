@@ -1,5 +1,9 @@
 import { createId } from "@paralleldrive/cuid2";
-import type { CreateNotificationInput } from "@repo/validation";
+import type {
+	CreateNotificationInput,
+	NotificationCategoryEnum,
+	NotificationTypeEnum,
+} from "@repo/validation";
 import type { InAppNotificationJobPayload } from "../../../jobs/handlers/types";
 import jobQueueManager from "../../../services/jobs/queue-manager";
 import type { JobPriority } from "../../../services/jobs/types";
@@ -28,6 +32,16 @@ function mapNumericPriorityToJobPriority(priority?: number): JobPriority {
 	}
 }
 
+function isValidNotificationType(
+	value: unknown,
+): value is NotificationTypeEnum {
+	return value === "informational" || value === "approval";
+}
+
+function isValidCategory(value: unknown): value is NotificationCategoryEnum {
+	return value === "global" || value === "general" || value === "system";
+}
+
 export class InAppChannelAdapter implements NotificationChannelAdapter {
 	readonly channel = "inApp" as const;
 
@@ -37,9 +51,11 @@ export class InAppChannelAdapter implements NotificationChannelAdapter {
 		}
 
 		const override = request.channelOverrides?.inApp ?? {};
-		const metadata = {
+		const metadata: Record<string, unknown> = {
 			...(request.metadata ?? {}),
-			...(override.metadata ?? {}),
+			...(typeof override.metadata === "object" && override.metadata
+				? override.metadata
+				: {}),
 		};
 
 		if (request.eventType) {
@@ -56,25 +72,40 @@ export class InAppChannelAdapter implements NotificationChannelAdapter {
 		);
 
 		for (const recipient of uniqueRecipients) {
-			const baseId = typeof override.id === "string" ? override.id : undefined;
+			const baseId =
+				typeof override.id === "string" ? override.id : undefined;
 			const notificationId = baseId
 				? `${baseId}_${recipient.userId}`
 				: createId();
 
 			const payload: CreateNotificationInput = {
 				id: notificationId,
-				type:
-					override.type ??
-					request.notificationType ??
-					"informational",
-				title: override.title ?? request.title,
-				message: override.message ?? request.message,
+				type: isValidNotificationType(override.type)
+					? override.type
+					: (request.notificationType ?? "informational"),
+				title:
+					typeof override.title === "string"
+						? override.title
+						: request.title,
+				message:
+					typeof override.message === "string"
+						? override.message
+						: request.message,
 				metadata,
-				status: override.status ?? "unread",
-				category: override.category ?? request.category,
+				status: (typeof override.status === "string"
+					? override.status
+					: "unread") as "unread" | "read",
+				category: isValidCategory(override.category)
+					? override.category
+					: request.category,
 				userId: recipient.userId, // Pass single user ID, not array
-				actions: override.actions,
-				expiresAt: override.expiresAt ?? null,
+				actions: Array.isArray(override.actions)
+					? override.actions
+					: undefined,
+				expiresAt:
+					override.expiresAt instanceof Date
+						? override.expiresAt
+						: null,
 			};
 
 			if (request.priority) {
@@ -89,9 +120,9 @@ export class InAppChannelAdapter implements NotificationChannelAdapter {
 			}
 
 			try {
-			const jobPayload: InAppNotificationJobPayload = {
-				notification: payload,
-			};
+				const jobPayload: InAppNotificationJobPayload = {
+					notification: payload,
+				};
 
 				const jobOptions = {
 					type: request.jobOptions?.jobType ?? JOB_TYPE,

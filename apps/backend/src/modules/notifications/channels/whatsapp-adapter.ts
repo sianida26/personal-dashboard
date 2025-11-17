@@ -1,4 +1,3 @@
-import type { WhatsAppNotificationPayload } from "../../../types/notifications";
 import jobQueueManager from "../../../services/jobs/queue-manager";
 import type { JobPriority } from "../../../services/jobs/types";
 import whatsappService from "../../../services/whatsapp/whatsapp-service";
@@ -45,8 +44,10 @@ export class WhatsAppChannelAdapter implements NotificationChannelAdapter {
 		}
 
 		const override = request.channelOverrides?.whatsapp ?? {};
-		const overrideMetadata = (override.metadata ??
-			{}) as Record<string, unknown>;
+		const overrideMetadata = (override.metadata ?? {}) as Record<
+			string,
+			unknown
+		>;
 		const results = [];
 
 		const uniqueRecipients = Array.from(
@@ -56,8 +57,10 @@ export class WhatsAppChannelAdapter implements NotificationChannelAdapter {
 		);
 
 		for (const recipient of uniqueRecipients) {
-			const metadataRecord = (request.metadata ??
-				{}) as Record<string, unknown>;
+			const metadataRecord = (request.metadata ?? {}) as Record<
+				string,
+				unknown
+			>;
 			const metadataPhone =
 				typeof metadataRecord.phoneNumber === "string"
 					? metadataRecord.phoneNumber.trim()
@@ -94,13 +97,19 @@ export class WhatsAppChannelAdapter implements NotificationChannelAdapter {
 			}
 
 			let message: string | undefined;
+			let hasOverrideMessage = false;
 			if (typeof override.message === "string") {
+				hasOverrideMessage = true;
 				const trimmed = override.message.trim();
 				if (trimmed.length > 0) {
 					message = trimmed;
 				}
 			}
-			if (!message && typeof request.message === "string") {
+			if (
+				!message &&
+				!hasOverrideMessage &&
+				typeof request.message === "string"
+			) {
 				message = request.message;
 			}
 			if (!message) {
@@ -132,7 +141,7 @@ export class WhatsAppChannelAdapter implements NotificationChannelAdapter {
 				...(override.metadata ?? {}),
 			};
 
-			const payload: WhatsAppNotificationPayload = {
+			const payload = {
 				phoneNumber,
 				message,
 				metadata,

@@ -1,13 +1,13 @@
-import { describe, test, expect, beforeAll, afterAll } from "bun:test";
-import {
-	createUserForTesting,
-	cleanupTestUser,
-} from "../../utils/test-utils/create-user-for-testing";
-import client from "../../utils/test-utils/hono-test-client";
-import type { TestUserData } from "../../utils/test-utils/create-user-for-testing";
+import { afterAll, beforeAll, describe, expect, test } from "bun:test";
+import { eq } from "drizzle-orm";
 import db from "../../drizzle";
 import { rolesSchema } from "../../drizzle/schema/roles";
-import { eq } from "drizzle-orm";
+import type { TestUserData } from "../../utils/test-utils/create-user-for-testing";
+import {
+	cleanupTestUser,
+	createUserForTesting,
+} from "../../utils/test-utils/create-user-for-testing";
+import client from "../../utils/test-utils/hono-test-client";
 
 describe("POST /roles", () => {
 	let testUser: TestUserData;
@@ -16,7 +16,7 @@ describe("POST /roles", () => {
 	beforeAll(async () => {
 		testUser = await createUserForTesting({
 			name: "Test User - POST Roles",
-			username: "test-user-post-roles",
+			username: `test-user-post-roles-${Date.now()}`,
 			permissions: ["roles.create"],
 		});
 	});

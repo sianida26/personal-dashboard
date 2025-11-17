@@ -1,7 +1,7 @@
 import client from "@/honoClient";
 import type {
-	NotificationStatus,
 	Notification,
+	NotificationStatus,
 	PaginatedNotificationsResponse,
 } from "./types";
 
@@ -11,6 +11,7 @@ export interface NotificationListQuery {
 	category?: string;
 	cursor?: string;
 	limit?: number;
+	includeRead?: boolean;
 }
 
 const ensureOk = async (response: Response) => {
@@ -26,13 +27,15 @@ const serializeQuery = (query: NotificationListQuery) =>
 		Object.entries(query)
 			.filter(
 				([, value]) =>
-					value !== undefined &&
-					value !== "" &&
-					value !== null,
+					value !== undefined && value !== "" && value !== null,
 			)
 			.map(([key, value]) => [
 				key,
-				typeof value === "number" ? value.toString() : value,
+				typeof value === "number"
+					? value.toString()
+					: typeof value === "boolean"
+						? String(value)
+						: value,
 			]),
 	);
 
@@ -77,11 +80,12 @@ export const executeNotificationAction = async (
 	actionKey: string,
 	comment?: string,
 ) => {
-	const response =
-		await client.notifications[":id"].actions[":actionKey"].$post({
-			param: { id: notificationId, actionKey },
-			json: comment ? { comment } : {},
-		});
+	const response = await client.notifications[":id"].actions[
+		":actionKey"
+	].$post({
+		param: { id: notificationId, actionKey },
+		json: comment ? { comment } : {},
+	});
 
 	await ensureOk(response);
 	return response.json();

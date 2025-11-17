@@ -109,12 +109,8 @@ export async function sendToUsersAndRoles(
 					email: envOverrides.email
 						? {
 								...envOverrides.email,
-								to: normalizeRecipients(
-									envOverrides.email.to,
-								),
-								cc: normalizeRecipients(
-									envOverrides.email.cc,
-								),
+								to: normalizeRecipients(envOverrides.email.to),
+								cc: normalizeRecipients(envOverrides.email.cc),
 								bcc: normalizeRecipients(
 									envOverrides.email.bcc,
 								),

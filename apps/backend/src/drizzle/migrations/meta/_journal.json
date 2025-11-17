@@ -106,6 +106,13 @@
       "when": 1762164220753,
       "tag": "0014_long_magma",
       "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1763017420977,
+      "tag": "0015_cool_maverick",
+      "breakpoints": true
     }
   ]
 }

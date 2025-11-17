@@ -60,12 +60,26 @@ mock.module("../../../appEnv", () => ({
 	},
 }));
 
-// Mock JWT token generation
-mock.module("../../../utils/authUtils", () => ({
-	generateAccessToken: mock(async (payload: { uid: string }) => {
-		return `mock-jwt-token-${payload.uid}`;
-	}),
-}));
+const mockAuthResponseModule = () => ({
+	buildAuthPayload: mock(async () => ({
+		accessToken: "mock-jwt-token",
+		refreshToken: "mock-refresh-token",
+		accessTokenExpiresIn: 300,
+		refreshTokenExpiresIn: 5_184_000,
+		user: {
+			id: mockGoogleUser.id,
+			name: mockGoogleUser.name ?? "",
+			permissions: [],
+			roles: [],
+		},
+	})),
+});
+
+// Mock auth response builder
+mock.module(
+	"../../../services/auth/authResponseService",
+	mockAuthResponseModule,
+);
 
 describe("Google OAuth Routes", () => {
 	let testUser: typeof users.$inferSelect | undefined;
@@ -390,11 +404,10 @@ describe("Google OAuth Routes", () => {
 				},
 			}));
 
-			mock.module("../../../utils/authUtils", () => ({
-				generateAccessToken: mock(async (payload: { uid: string }) => {
-					return `mock-jwt-token-${payload.uid}`;
-				}),
-			}));
+			mock.module(
+				"../../../services/auth/authResponseService",
+				mockAuthResponseModule,
+			);
 
 			// First, create a session by authenticating
 			const authRes = await client.auth.google.$get();
@@ -497,11 +510,10 @@ describe("Google OAuth Routes", () => {
 				},
 			}));
 
-			mock.module("../../../utils/authUtils", () => ({
-				generateAccessToken: mock(async (payload: { uid: string }) => {
-					return `mock-jwt-token-${payload.uid}`;
-				}),
-			}));
+			mock.module(
+				"../../../services/auth/authResponseService",
+				mockAuthResponseModule,
+			);
 
 			// This test would require setting up permissions and roles
 			// For now, we'll verify the structure is correct
@@ -531,9 +543,9 @@ describe("Google OAuth Routes", () => {
 
 	describe("Error handling", () => {
 		test("should handle JWT generation errors", async () => {
-			// Mock JWT generation to fail
-			mock.module("../../../utils/authUtils", () => ({
-				generateAccessToken: mock(async () => {
+			// Mock auth payload generation to fail
+			mock.module("../../../services/auth/authResponseService", () => ({
+				buildAuthPayload: mock(async () => {
 					throw new Error("JWT generation failed");
 				}),
 			}));

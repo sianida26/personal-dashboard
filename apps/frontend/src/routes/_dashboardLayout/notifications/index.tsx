@@ -12,11 +12,24 @@ import {
 } from "@repo/ui";
 import { useToast } from "@repo/ui/hooks";
 import { cn } from "@repo/ui/utils";
-import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+	type InfiniteData,
+	useInfiniteQuery,
+	useMutation,
+	useQueryClient,
+} from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { type ReactNode, useEffect, useMemo, useState } from "react";
+import {
+	type ReactNode,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
+import { backendUrl } from "@/honoClient";
+import { authDB } from "@/indexedDB/authDB";
 import {
 	executeNotificationAction,
 	fetchNotifications,
@@ -25,9 +38,11 @@ import {
 	type NotificationListQuery,
 } from "@/modules/notifications/api";
 import { notificationQueryKeys } from "@/modules/notifications/queryKeys";
-import type { Notification, NotificationGroup } from "@/modules/notifications/types";
-import { authDB } from "@/indexedDB/authDB";
-import { backendUrl } from "@/honoClient";
+import type {
+	Notification,
+	NotificationGroup,
+	PaginatedNotificationsResponse,
+} from "@/modules/notifications/types";
 
 dayjs.extend(relativeTime);
 
@@ -46,7 +61,7 @@ type FilterDefinition = {
 };
 
 const filters: FilterDefinition[] = [
-	{ label: "All", key: "all", query: {} },
+	{ label: "All", key: "all", query: { includeRead: true } },
 	{
 		label: "Unread",
 		key: "status:unread",
@@ -181,8 +196,7 @@ function NotificationsPage() {
 		queryFn: ({ pageParam }) =>
 			fetchNotifications({
 				...activeFilter.query,
-				cursor:
-					typeof pageParam === "string" ? pageParam : undefined,
+				cursor: typeof pageParam === "string" ? pageParam : undefined,
 				limit: PAGE_SIZE,
 			}),
 		getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
@@ -218,6 +232,84 @@ function NotificationsPage() {
 		) ?? null;
 	const selectedActionRequiresComment =
 		selectedAction?.requiresComment ?? false;
+	const optimisticallyMarkNotificationAsRead = useCallback(
+		(notificationId: string) => {
+			const readTimestamp = new Date().toISOString();
+			queryClient.setQueryData<
+				InfiniteData<PaginatedNotificationsResponse, string | undefined>
+			>(notificationQueryKeys.list(activeFilterKey), (current) => {
+				if (!current) return current;
+				let didUpdate = false;
+
+				const updateCollection = (items: Notification[]) => {
+					let collectionUpdated = false;
+					const nextItems = items.map((item) => {
+						if (
+							item.id !== notificationId ||
+							item.status === "read"
+						) {
+							return item;
+						}
+						collectionUpdated = true;
+						didUpdate = true;
+						return {
+							...item,
+							status: "read" as const,
+							readAt: item.readAt ?? readTimestamp,
+						};
+					});
+					return collectionUpdated ? nextItems : items;
+				};
+
+				const pages = current.pages.map((page) => {
+					const updatedItems = page.items
+						? updateCollection(page.items)
+						: page.items;
+					const updatedGroups = page.groups?.map(
+						(group: NotificationGroup) => {
+							const updatedGroupNotifications = updateCollection(
+								group.notifications,
+							);
+							if (
+								updatedGroupNotifications ===
+								group.notifications
+							) {
+								return group;
+							}
+							return {
+								...group,
+								notifications: updatedGroupNotifications,
+							};
+						},
+					);
+
+					if (
+						updatedItems === page.items &&
+						updatedGroups === page.groups
+					) {
+						return page;
+					}
+
+					return {
+						...page,
+						items: updatedItems,
+						groups: updatedGroups ?? page.groups,
+					};
+				});
+
+				return didUpdate ? { ...current, pages } : current;
+			});
+
+			queryClient.setQueryData<number>(
+				notificationQueryKeys.unreadCount,
+				(current) => {
+					if (typeof current !== "number") return current;
+					return current > 0 ? current - 1 : 0;
+				},
+			);
+		},
+		[activeFilterKey, queryClient],
+	);
 	const friendlyMetadata = useMemo(() => {
 		const friendlyMappings: Record<string, string> = {
 			resourceType: "Kind of update",
@@ -330,8 +422,7 @@ function NotificationsPage() {
 				} catch {
 					toast({
 						title: "New notification",
-						description:
-							"A new update just landed in your inbox.",
+						description: "A new update just landed in your inbox.",
 					});
 				}
 
@@ -376,17 +467,17 @@ function NotificationsPage() {
 		}: {
 			ids: string[];
 			markAs: "read" | "unread";
-	}) => markNotifications(ids, markAs),
-	onSuccess: () => {
-		queryClient.invalidateQueries({
-			queryKey: notificationQueryKeys.all,
-			exact: false,
-		});
-		queryClient.invalidateQueries({
-			queryKey: notificationQueryKeys.list(activeFilterKey),
-		});
-		queryClient.invalidateQueries({
-			queryKey: notificationQueryKeys.unreadCount,
+		}) => markNotifications(ids, markAs),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: notificationQueryKeys.all,
+				exact: false,
+			});
+			queryClient.invalidateQueries({
+				queryKey: notificationQueryKeys.list(activeFilterKey),
+			});
+			queryClient.invalidateQueries({
+				queryKey: notificationQueryKeys.unreadCount,
 			});
 		},
 		onError: (mutationError: unknown) => {
@@ -409,17 +500,17 @@ function NotificationsPage() {
 		}: {
 			id: string;
 			status: "read" | "unread";
-	}) => markNotification(id, status),
-	onSuccess: () => {
-		queryClient.invalidateQueries({
-			queryKey: notificationQueryKeys.all,
-			exact: false,
-		});
-		queryClient.invalidateQueries({
-			queryKey: notificationQueryKeys.list(activeFilterKey),
-		});
-		queryClient.invalidateQueries({
-			queryKey: notificationQueryKeys.unreadCount,
+		}) => markNotification(id, status),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: notificationQueryKeys.all,
+				exact: false,
+			});
+			queryClient.invalidateQueries({
+				queryKey: notificationQueryKeys.list(activeFilterKey),
+			});
+			queryClient.invalidateQueries({
+				queryKey: notificationQueryKeys.unreadCount,
 			});
 		},
 		onError: (mutationError: unknown) => {
@@ -435,6 +526,28 @@ function NotificationsPage() {
 		},
 	});
 
+	const autoMarkReadMutation = useMutation({
+		mutationFn: (id: string) => markNotification(id, "read"),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: notificationQueryKeys.all,
+				exact: false,
+			});
+			queryClient.invalidateQueries({
+				queryKey: notificationQueryKeys.list(activeFilterKey),
+			});
+			queryClient.invalidateQueries({
+				queryKey: notificationQueryKeys.unreadCount,
+			});
+		},
+		onError: (mutationError: unknown) => {
+			console.error(
+				"Failed to auto mark notification as read",
+				mutationError,
+			);
+		},
+	});
+
 	const actionMutation = useMutation({
 		mutationFn: ({
 			notificationId,
@@ -444,15 +557,15 @@ function NotificationsPage() {
 			notificationId: string;
 			actionKey: string;
 			comment?: string;
-	}) => executeNotificationAction(notificationId, actionKey, comment),
-	onSuccess: () => {
-		queryClient.invalidateQueries({
-			queryKey: notificationQueryKeys.all,
-			exact: false,
-		});
-		queryClient.invalidateQueries({
-			queryKey: notificationQueryKeys.list(activeFilterKey),
-		});
+		}) => executeNotificationAction(notificationId, actionKey, comment),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: notificationQueryKeys.all,
+				exact: false,
+			});
+			queryClient.invalidateQueries({
+				queryKey: notificationQueryKeys.list(activeFilterKey),
+			});
 			queryClient.invalidateQueries({
 				queryKey: notificationQueryKeys.unreadCount,
 			});
@@ -476,10 +589,38 @@ function NotificationsPage() {
 		},
 	});
 
+	const handleNotificationSelect = (index: number) => {
+		if (index < 0 || index >= notificationsList.length) {
+			return;
+		}
+		setActiveIndex(index);
+		const notification = notificationsList[index];
+		if (!notification || notification.status === "read") {
+			return;
+		}
+		optimisticallyMarkNotificationAsRead(notification.id);
+		autoMarkReadMutation.mutate(notification.id);
+	};
+
 	const markCurrent = (status: "read" | "unread") => {
 		const current = notificationsList[activeIndex];
 		if (!current) return;
 		singleMutation.mutate({ id: current.id, status });
+	};
+
+	const selectPreviousNotification = () => {
+		const previousIndex = Math.max(activeIndex - 1, 0);
+		if (previousIndex === activeIndex) return;
+		handleNotificationSelect(previousIndex);
+	};
+
+	const selectNextNotification = () => {
+		const nextIndex = Math.min(
+			activeIndex + 1,
+			notificationsList.length - 1,
+		);
+		if (nextIndex === activeIndex) return;
+		handleNotificationSelect(nextIndex);
 	};
 
 	const hasUnreadSelection = selectedNotification?.status === "unread";
@@ -522,8 +663,11 @@ function NotificationsPage() {
 
 	if (isLoading) {
 		mainContent = (
-			<div className="flex h-56 items-center justify-center rounded-lg border bg-card">
-				<LoadingSpinner label="Gathering your updates…" />
+			<div className="flex flex-col h-56 items-center justify-center rounded-lg border bg-card gap-3">
+				<LoadingSpinner />
+				<p className="text-sm text-muted-foreground">
+					Gathering your updates…
+				</p>
 			</div>
 		);
 	} else if (isError) {
@@ -587,7 +731,7 @@ function NotificationsPage() {
 																notification.id
 															}
 															onClick={() =>
-																setActiveIndex(
+																handleNotificationSelect(
 																	index,
 																)
 															}
@@ -686,7 +830,9 @@ function NotificationsPage() {
 									"MMM D, YYYY h:mm A",
 								)}
 							</span>
-							{isFetching && <LoadingSpinner size="sm" />}
+							{isFetching && (
+								<LoadingSpinner className="h-4 w-4" />
+							)}
 						</div>
 						<div className="flex flex-wrap items-center gap-2">
 							<Button
@@ -706,11 +852,7 @@ function NotificationsPage() {
 							<Button
 								variant="ghost"
 								size="sm"
-								onClick={() =>
-									setActiveIndex((prev) =>
-										Math.max(prev - 1, 0),
-									)
-								}
+								onClick={selectPreviousNotification}
 								disabled={activeIndex === 0}
 							>
 								Previous
@@ -718,14 +860,7 @@ function NotificationsPage() {
 							<Button
 								variant="ghost"
 								size="sm"
-								onClick={() =>
-									setActiveIndex((prev) =>
-										Math.min(
-											prev + 1,
-											notificationsList.length - 1,
-										),
-									)
-								}
+								onClick={selectNextNotification}
 								disabled={
 									activeIndex >= notificationsList.length - 1
 								}
@@ -871,7 +1006,7 @@ function NotificationsPage() {
 													{developerMetadataJson && (
 														<Button
 															variant="ghost"
-															size="xs"
+															size="sm"
 															onClick={() =>
 																setShowTechnicalDetails(
 																	(prev) =>
@@ -1059,8 +1194,7 @@ function NotificationsPage() {
 						if (!hasUnread) {
 							toast({
 								title: "Nothing to mark",
-								description:
-									"Everything here is already read.",
+								description: "Everything here is already read.",
 							});
 							return;
 						}

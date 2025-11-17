@@ -1,29 +1,27 @@
-FROM oven/bun:1.2-alpine AS base
+FROM oven/bun:1-alpine AS base
 
 ENV NODE_ENV=production
 WORKDIR /node
 
-# =========================================================================== #
-FROM base AS builder
+FROM base AS pruner
 
 COPY . .
 
-RUN bun install -g turbo
-RUN turbo prune backend --docker
+RUN bunx turbo prune backend --docker
+RUN if [ -d patches ]; then mkdir -p out/json/patches && cp -R patches/. out/json/patches/; fi
 
-# =========================================================================== #
 FROM base AS installer
 
-COPY --from=builder /node/out/json/ ./
+COPY --from=pruner /node/out/json/ ./
 RUN bun install --frozen-lockfile --production
-COPY --from=builder /node/out/full/ .
 
-# =========================================================================== #
+COPY --from=pruner /node/out/full/ ./
+
 FROM base AS production
 
-COPY --from=installer /node/apps/backend/ ./
+COPY --from=installer /node/apps/backend ./
+COPY --from=installer /node/packages ./packages
 COPY --from=installer /node/node_modules ./node_modules
-COPY --from=installer /node/package.json ./package.json
 COPY --from=installer /node/bun.lock ./bun.lock
 
 RUN mkdir -p /node/logs /node/keys /node/uploads \
@@ -31,4 +29,4 @@ RUN mkdir -p /node/logs /node/keys /node/uploads \
 
 EXPOSE 81
 
-CMD ["sh", "-c", "bun run db:migrate && bun run db:seed && bun run start"]
+CMD ["sh", "-c", "bun run db:prepare && bun run start"]

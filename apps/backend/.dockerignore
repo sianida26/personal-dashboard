@@ -1,15 +1,35 @@
-node_modules
-dist
-build
-.next
-.turbo
-.git
-logs
+# Node modules
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+build/
+out/
+.turbo/
+
+# Development files
+.git/
+.gitignore
+*.md
+!README.md
+
+# IDE
+.vscode/
+.idea/
+.claude/
+
+# Logs
 *.log
-.vscode
-.idea
-.DS_Store
+logs/
+keys/
+uploads/
+
+# Environment
 .env
-.env.*
-tmp
-keys
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db

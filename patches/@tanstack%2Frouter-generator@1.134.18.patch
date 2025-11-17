@@ -1,0 +1,39 @@
+diff --git a/dist/cjs/config.cjs b/dist/cjs/config.cjs
+index 4f3e9627d87a57e45533007ca0e2efd7a333e61d..1ac9266f9da79f504b86ff302cc0ebf0c6547ba1 100644
+--- a/dist/cjs/config.cjs
++++ b/dist/cjs/config.cjs
+@@ -31,7 +31,7 @@ const configSchema = baseConfigSchema.extend({
+   enableRouteTreeFormatting: zod.z.boolean().optional().default(true),
+   routeTreeFileFooter: zod.z.union([
+     zod.z.array(zod.z.string()).optional().default([]),
+-    zod.z.function().returns(zod.z.array(zod.z.string()))
++    zod.z.function().output(zod.z.array(zod.z.string()))
+   ]).optional(),
+   autoCodeSplitting: zod.z.boolean().optional(),
+   customScaffolding: zod.z.object({
+diff --git a/dist/esm/config.js b/dist/esm/config.js
+index bf2c02a0a3cc7a8983e312999f4b3ff1e0678ec3..df8da30764897ebd1a4b4b3c66c53cfd5030a058 100644
+--- a/dist/esm/config.js
++++ b/dist/esm/config.js
+@@ -29,7 +29,7 @@ const configSchema = baseConfigSchema.extend({
+   enableRouteTreeFormatting: z.boolean().optional().default(true),
+   routeTreeFileFooter: z.union([
+     z.array(z.string()).optional().default([]),
+-    z.function().returns(z.array(z.string()))
++    z.function().output(z.array(z.string()))
+   ]).optional(),
+   autoCodeSplitting: z.boolean().optional(),
+   customScaffolding: z.object({
+diff --git a/src/config.ts b/src/config.ts
+index 5c663a5593c0bd26b1c086b2c400193bf3f1c7e1..db15d7045030d045437fc8910c72e0272bd92228 100644
+--- a/src/config.ts
++++ b/src/config.ts
+@@ -40,7 +40,7 @@ export const configSchema = baseConfigSchema.extend({
+   routeTreeFileFooter: z
+     .union([
+       z.array(z.string()).optional().default([]),
+-      z.function().returns(z.array(z.string())),
++      z.function().output(z.array(z.string())),
+     ])
+     .optional(),
+   autoCodeSplitting: z.boolean().optional(),

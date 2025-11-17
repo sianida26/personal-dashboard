@@ -1,0 +1,35 @@
+name: TypeScript Type Check
+
+on:
+    pull_request:
+        paths:
+            - "apps/backend/**"
+            - "apps/frontend/**"
+            - "packages/**"
+            - "tsconfig.json"
+            - ".github/workflows/type-check.yml"
+
+jobs:
+    type-check:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                include:
+                    - name: Backend
+                      working-directory: apps/backend
+                    - name: Frontend
+                      working-directory: apps/frontend
+
+        name: Type Check - ${{ matrix.name }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v1
+
+            - name: Install dependencies
+              run: bun install
+
+            - name: Type check ${{ matrix.name }}
+              run: bun run tsc --noEmit
+              working-directory: ${{ matrix.working-directory }}

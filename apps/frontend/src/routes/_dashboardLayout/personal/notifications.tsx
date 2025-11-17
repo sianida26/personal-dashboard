@@ -9,7 +9,6 @@ import {
 	CardHeader,
 	CardTitle,
 	LoadingSpinner,
-	Separator,
 	Switch,
 } from "@repo/ui";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -102,7 +101,19 @@ export function NotificationPreferencesPage() {
 		mutationFn: async (preferences: NotificationPreference[]) => {
 			const response = await fetchRPC(
 				client["notification-preferences"].$put({
-					json: { preferences },
+					json: {
+						preferences: preferences.map((p) => ({
+							category: p.category as
+								| "global"
+								| "system"
+								| "general",
+							channel: p.channel as
+								| "email"
+								| "inApp"
+								| "whatsapp",
+							enabled: p.enabled,
+						})),
+					},
 				}),
 			);
 			return response;

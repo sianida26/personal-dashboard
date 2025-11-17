@@ -6,7 +6,7 @@
  */
 
 import { createId } from "@paralleldrive/cuid2";
-import { and, eq, isNull, lte, or, sql } from "drizzle-orm";
+import { and, eq, isNull, lte, or } from "drizzle-orm";
 import db from "../../drizzle";
 import { jobExecutions, jobs } from "../../drizzle/schema/job-queue";
 import jobHandlerRegistry from "../../jobs/registry";
@@ -226,7 +226,10 @@ export class JobWorker {
 				.where(
 					and(
 						eq(jobs.status, "pending"),
-						or(isNull(jobs.scheduledAt), lte(jobs.scheduledAt, now)),
+						or(
+							isNull(jobs.scheduledAt),
+							lte(jobs.scheduledAt, now),
+						),
 					),
 				)
 				.orderBy(jobs.priority, jobs.createdAt)

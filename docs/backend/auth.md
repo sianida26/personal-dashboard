@@ -10,6 +10,14 @@ The authentication system follows this flow:
 3. **User Loading**: `authInfo` middleware loads user data, roles, permissions
 4. **Permission Checking**: `checkPermission()` or `protect()` middleware
 
+### Token Lifetimes & Rotation
+- **Access Tokens** expire after **5 minutes** and embed the user id, permissions, and roles. They are meant to be stored in memory and attached to every protected request.
+- **Refresh Tokens** expire after **60 days**. They are persisted as hashed rows inside the `refresh_tokens` table so they can be revoked per device.
+- Every call to `POST /auth/refresh` both issues a brand new access token and rotates the refresh token (the previous one is revoked immediately).
+- `POST /auth/logout` now requires the refresh token in the request body and revokes it server-side before clearing the session client-side.
+
+All authentication responses now include both tokens plus their respective `accessTokenExpiresIn` and `refreshTokenExpiresIn` values so clients can schedule proactive refreshes (the frontend refreshes at the 4-minute mark by default).
+
 ## Middleware Stack
 
 ### 1. authTokenMiddleware

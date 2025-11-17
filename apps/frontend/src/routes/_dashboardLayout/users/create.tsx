@@ -20,7 +20,7 @@ function RouteComponent() {
 	const navigate = useNavigate();
 	const isMutating = useIsMutating({
 		mutationKey: ["create-user"],
-	})
+	});
 
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -33,7 +33,7 @@ function RouteComponent() {
 			isEnabled: true,
 			roles: [] as string[],
 		},
-	})
+	});
 
 	const { data: roles } = useQuery({
 		queryKey: ["roles"],
@@ -46,7 +46,7 @@ function RouteComponent() {
 					},
 				}),
 			),
-	})
+	});
 
 	return (
 		<ModalFormTemplate
@@ -118,8 +118,8 @@ function RouteComponent() {
 										form.setFieldValue(
 											"password",
 											generateRandomPassword(),
-										)
-										setIsPasswordVisible(true)
+										);
+										setIsPasswordVisible(true);
 									}}
 								>
 									<TbRefresh />
@@ -144,5 +144,5 @@ function RouteComponent() {
 				],
 			})}
 		</ModalFormTemplate>
-	)
+	);
 }
