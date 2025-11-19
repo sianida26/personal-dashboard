@@ -26,6 +26,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	>(null);
 	const refreshTimerRef = useRef<number | null>(null);
 	const isRefreshingRef = useRef(false);
+	const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
 
 	const decodeExpiry = useCallback((token: string | null | undefined) => {
 		if (!token) return null;
@@ -50,6 +51,67 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		})();
 	}, []);
 
+	// Cross-tab communication: sync logout across all tabs using BroadcastChannel
+	useEffect(() => {
+		if (typeof BroadcastChannel === "undefined") {
+			return; // BroadcastChannel not supported in this browser
+		}
+
+		const channel = new BroadcastChannel("auth-sync");
+		broadcastChannelRef.current = channel;
+
+		const handleMessage = (event: MessageEvent) => {
+			if (event.data?.type === "logout") {
+				// Another tab logged out, clear local auth data
+				void (async () => {
+					clearRefreshTimer();
+					setUserId(null);
+					setUserName(null);
+					setPermissions(null);
+					setRoles(null);
+					setAccessToken(null);
+					setRefreshToken(null);
+					setAccessTokenExpiresAt(null);
+					await authDB.auth.delete("auth");
+				})();
+			}
+		};
+
+		channel.addEventListener("message", handleMessage);
+
+		return () => {
+			channel.removeEventListener("message", handleMessage);
+			channel.close();
+			broadcastChannelRef.current = null;
+		};
+	}, [clearRefreshTimer]);
+
+	// Fallback: Listen for storage events (for browsers without BroadcastChannel)
+	useEffect(() => {
+		const handleStorageChange = (event: StorageEvent) => {
+			if (event.key === "auth-logout-event") {
+				// Another tab logged out, clear local auth data
+				void (async () => {
+					clearRefreshTimer();
+					setUserId(null);
+					setUserName(null);
+					setPermissions(null);
+					setRoles(null);
+					setAccessToken(null);
+					setRefreshToken(null);
+					setAccessTokenExpiresAt(null);
+					await authDB.auth.delete("auth");
+				})();
+			}
+		};
+
+		window.addEventListener("storage", handleStorageChange);
+
+		return () => {
+			window.removeEventListener("storage", handleStorageChange);
+		};
+	}, [clearRefreshTimer]);
+
 	const clearRefreshTimer = useCallback(() => {
 		if (refreshTimerRef.current) {
 			window.clearTimeout(refreshTimerRef.current);
@@ -67,6 +129,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		setRefreshToken(null);
 		setAccessTokenExpiresAt(null);
 		await authDB.auth.delete("auth");
+
+		// Notify other tabs about the logout via BroadcastChannel
+		if (broadcastChannelRef.current) {
+			broadcastChannelRef.current.postMessage({ type: "logout" });
+		}
+
+		// Fallback: Use localStorage to trigger storage event in other tabs
+		try {
+			localStorage.setItem("auth-logout-event", Date.now().toString());
+			localStorage.removeItem("auth-logout-event");
+		} catch {
+			// localStorage might be unavailable (private browsing, etc.)
+		}
 	}, [clearRefreshTimer]);
 
 	const saveAuthData = useCallback<AuthContextType["saveAuthData"]>(
