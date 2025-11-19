@@ -26,12 +26,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	>(null);
 	const refreshTimerRef = useRef<number | null>(null);
 	const isRefreshingRef = useRef(false);
+	const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
 
 	const decodeExpiry = useCallback((token: string | null | undefined) => {
 		if (!token) return null;
 		const payload = decodeJwt(token);
 		if (!payload?.exp) return null;
 		return payload.exp * 1000;
+	}, []);
+
+	const clearRefreshTimer = useCallback(() => {
+		if (refreshTimerRef.current) {
+			window.clearTimeout(refreshTimerRef.current);
+			refreshTimerRef.current = null;
+		}
 	}, []);
 
 	useEffect(() => {
@@ -50,24 +58,131 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		})();
 	}, []);
 
-	const clearRefreshTimer = useCallback(() => {
-		if (refreshTimerRef.current) {
-			window.clearTimeout(refreshTimerRef.current);
-			refreshTimerRef.current = null;
+	// Cross-tab communication: sync auth state across all tabs
+	useEffect(() => {
+		if (typeof BroadcastChannel === "undefined") {
+			return; // BroadcastChannel not supported in this browser
 		}
-	}, []);
 
-	const clearAuthData = useCallback(async () => {
-		clearRefreshTimer();
-		setUserId(null);
-		setUserName(null);
-		setPermissions(null);
-		setRoles(null);
-		setAccessToken(null);
-		setRefreshToken(null);
-		setAccessTokenExpiresAt(null);
-		await authDB.auth.delete("auth");
+		const channel = new BroadcastChannel("auth-sync");
+		broadcastChannelRef.current = channel;
+
+		const handleMessage = (event: MessageEvent) => {
+			// Intentional logout from another tab
+			if (event.data?.type === "logout") {
+				void (async () => {
+					clearRefreshTimer();
+					setUserId(null);
+					setUserName(null);
+					setPermissions(null);
+					setRoles(null);
+					setAccessToken(null);
+					setRefreshToken(null);
+					setAccessTokenExpiresAt(null);
+					await authDB.auth.delete("auth");
+				})();
+			}
+
+			// Token refresh from another tab - sync the new tokens
+			if (event.data?.type === "token-refreshed") {
+				void (async () => {
+					const stored = await authDB.auth.get("auth");
+					if (stored) {
+						setUserId(stored.userId);
+						setUserName(stored.userName);
+						setPermissions(stored.permissions);
+						setRoles(stored.roles);
+						setAccessToken(stored.accessToken ?? null);
+						setRefreshToken(stored.refreshToken ?? null);
+						setAccessTokenExpiresAt(stored.accessTokenExpiresAt ?? null);
+					}
+				})();
+			}
+		};
+
+		channel.addEventListener("message", handleMessage);
+
+		return () => {
+			channel.removeEventListener("message", handleMessage);
+			channel.close();
+			broadcastChannelRef.current = null;
+		};
 	}, [clearRefreshTimer]);
+
+	// Fallback: Listen for storage events (for browsers without BroadcastChannel)
+	useEffect(() => {
+		const handleStorageChange = (event: StorageEvent) => {
+			// Intentional logout from another tab
+			if (event.key === "auth-logout-event") {
+				void (async () => {
+					clearRefreshTimer();
+					setUserId(null);
+					setUserName(null);
+					setPermissions(null);
+					setRoles(null);
+					setAccessToken(null);
+					setRefreshToken(null);
+					setAccessTokenExpiresAt(null);
+					await authDB.auth.delete("auth");
+				})();
+			}
+
+			// Token refresh from another tab - sync the new tokens
+			if (event.key === "auth-token-refreshed") {
+				void (async () => {
+					const stored = await authDB.auth.get("auth");
+					if (stored) {
+						setUserId(stored.userId);
+						setUserName(stored.userName);
+						setPermissions(stored.permissions);
+						setRoles(stored.roles);
+						setAccessToken(stored.accessToken ?? null);
+						setRefreshToken(stored.refreshToken ?? null);
+						setAccessTokenExpiresAt(stored.accessTokenExpiresAt ?? null);
+					}
+				})();
+			}
+		};
+
+		window.addEventListener("storage", handleStorageChange);
+
+		return () => {
+			window.removeEventListener("storage", handleStorageChange);
+		};
+	}, [clearRefreshTimer]);
+
+	const clearAuthData = useCallback(
+		async (options?: { broadcastLogout?: boolean }) => {
+			const shouldBroadcast = options?.broadcastLogout ?? false;
+
+			clearRefreshTimer();
+			setUserId(null);
+			setUserName(null);
+			setPermissions(null);
+			setRoles(null);
+			setAccessToken(null);
+			setRefreshToken(null);
+			setAccessTokenExpiresAt(null);
+			await authDB.auth.delete("auth");
+
+			// Only broadcast logout if this is an intentional user action
+			if (shouldBroadcast) {
+				// Notify other tabs about the logout via BroadcastChannel
+				if (broadcastChannelRef.current) {
+					broadcastChannelRef.current.postMessage({ type: "logout" });
+				}
+
+				// Fallback: Use localStorage to trigger storage event in other tabs
+				try {
+					localStorage.setItem("auth-logout-event", Date.now().toString());
+					localStorage.removeItem("auth-logout-event");
+				} catch {
+					// localStorage might be unavailable (private browsing, etc.)
+				}
+			}
+		},
+		[clearRefreshTimer],
+	);
 
 	const saveAuthData = useCallback<AuthContextType["saveAuthData"]>(
 		async (userData, tokens) => {
@@ -100,6 +215,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 	const refreshSession = useCallback(async () => {
 		if (!refreshToken || isRefreshingRef.current) return;
+
+		// Try to acquire refresh lock to prevent multiple tabs from refreshing simultaneously
+		const lockKey = "auth-refresh-lock";
+		const lockTimeout = 10000; // 10 seconds
+		const lockValue = Date.now().toString();
+
+		try {
+			const existingLock = localStorage.getItem(lockKey);
+			const existingLockTime = existingLock ? Number.parseInt(existingLock) : 0;
+
+			// If another tab holds a recent lock, wait and read updated tokens instead
+			if (existingLock && Date.now() - existingLockTime < lockTimeout) {
+				// Another tab is refreshing, wait a bit then read the new tokens
+				await new Promise((resolve) => setTimeout(resolve, 1000));
+				const stored = await authDB.auth.get("auth");
+				if (stored && stored.refreshToken !== refreshToken) {
+					// Tokens were updated by another tab, use them
+					setUserId(stored.userId);
+					setUserName(stored.userName);
+					setPermissions(stored.permissions);
+					setRoles(stored.roles);
+					setAccessToken(stored.accessToken ?? null);
+					setRefreshToken(stored.refreshToken ?? null);
+					setAccessTokenExpiresAt(stored.accessTokenExpiresAt ?? null);
+				}
+				return;
+			}
+
+			// Acquire lock
+			localStorage.setItem(lockKey, lockValue);
+		} catch {
+			// localStorage unavailable, proceed anyway
+		}
+
 		isRefreshingRef.current = true;
 		try {
 			const response = await fetch(`${backendUrl}/auth/refresh`, {
@@ -130,11 +279,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 					refreshToken: data.refreshToken,
 				},
 			);
-		} catch {
-			// Token refresh failed - will be handled by request interceptor on 401
-			await clearAuthData();
+
+			// Notify other tabs that tokens were refreshed
+			if (broadcastChannelRef.current) {
+				broadcastChannelRef.current.postMessage({
+					type: "token-refreshed",
+				});
+			}
+
+			// Fallback notification
+			try {
+				localStorage.setItem(
+					"auth-token-refreshed",
+					Date.now().toString(),
+				);
+				localStorage.removeItem("auth-token-refreshed");
+			} catch {
+				// localStorage might be unavailable
+			}
+		} catch (error) {
+			// Token refresh failed - clear local state but DON'T broadcast logout
+			// This prevents logging out other tabs when one tab has a stale token
+			await clearAuthData({ broadcastLogout: false });
 		} finally {
 			isRefreshingRef.current = false;
+
+			// Release lock
+			try {
+				const currentLock = localStorage.getItem(lockKey);
+				if (currentLock === lockValue) {
+					localStorage.removeItem(lockKey);
+				}
+			} catch {
+				// localStorage unavailable
+			}
 		}
 	}, [refreshToken, saveAuthData, clearAuthData]);
 
@@ -185,7 +363,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		setAuthBridge({
 			getAccessToken: () => accessToken,
 			refreshSession,
-			clearAuthData,
+			clearAuthData: async () => clearAuthData({ broadcastLogout: false }),
 		});
 
 		return () => {
@@ -222,7 +400,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 				refreshToken,
 				accessTokenExpiresAt,
 				saveAuthData,
-				clearAuthData,
+				clearAuthData: async () => clearAuthData({ broadcastLogout: true }),
 				isAuthenticated,
 				checkPermission,
 				refreshSession,
