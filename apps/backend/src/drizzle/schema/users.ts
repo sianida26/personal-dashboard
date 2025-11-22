@@ -20,6 +20,7 @@ export const users = pgTable("users", {
 	name: varchar("name", { length: 255 }).notNull(),
 	username: varchar("username").notNull().unique(),
 	email: varchar("email"),
+	phoneNumber: varchar("phone_number", { length: 20 }),
 	password: text("password"),
 	isEnabled: boolean("is_enable").default(true),
 	createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
