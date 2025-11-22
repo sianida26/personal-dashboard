@@ -55,11 +55,12 @@ export const usePermissions = (
 		| ExtendedPermissionCodeWithAll[]
 		| ExtendedPermissionCodeWithAll,
 ) => {
-	const { user, isAuthenticated } = useAuth();
+	const { user, isAuthenticated, isRefreshing } = useAuth();
 	const navigate = useNavigate();
 
 	//the user is authenticated but the user object is not yet loaded
-	if (isAuthenticated && !user) {
+	// or if we're refreshing, wait before making permission checks
+	if ((isAuthenticated && !user) || isRefreshing) {
 		return false;
 	}
 

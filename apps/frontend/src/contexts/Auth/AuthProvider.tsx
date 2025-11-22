@@ -24,6 +24,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	const [accessTokenExpiresAt, setAccessTokenExpiresAt] = useState<
 		number | null
 	>(null);
+	const [isRefreshing, setIsRefreshing] = useState(false);
 	const refreshTimerRef = useRef<number | null>(null);
 	const isRefreshingRef = useRef(false);
 	const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
@@ -227,6 +228,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 			// If another tab holds a recent lock, wait and read updated tokens instead
 			if (existingLock && Date.now() - existingLockTime < lockTimeout) {
+				// Set refreshing state to prevent flicker
+				setIsRefreshing(true);
+
 				// Another tab is refreshing, wait a bit then read the new tokens
 				await new Promise((resolve) => setTimeout(resolve, 1000));
 				const stored = await authDB.auth.get("auth");
@@ -240,6 +244,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 					setRefreshToken(stored.refreshToken ?? null);
 					setAccessTokenExpiresAt(stored.accessTokenExpiresAt ?? null);
 				}
+
+				setIsRefreshing(false);
 				return;
 			}
 
@@ -250,6 +256,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		}
 
 		isRefreshingRef.current = true;
+		setIsRefreshing(true);
+
 		try {
 			const response = await fetch(`${backendUrl}/auth/refresh`, {
 				method: "POST",
@@ -303,6 +311,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			await clearAuthData({ broadcastLogout: false });
 		} finally {
 			isRefreshingRef.current = false;
+			setIsRefreshing(false);
 
 			// Release lock
 			try {
@@ -404,6 +413,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 				isAuthenticated,
 				checkPermission,
 				refreshSession,
+				isRefreshing,
 			}}
 		>
 			{children}
