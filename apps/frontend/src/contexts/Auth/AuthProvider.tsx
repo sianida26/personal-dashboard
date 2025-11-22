@@ -268,10 +268,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			});
 
 			if (!response.ok) {
-				const errorText = await response.text();
-				throw new Error(
-					`Refresh failed: ${response.status} - ${errorText}`,
+				// Only clear auth data on 401 (invalid/expired token)
+				// For other errors (500, 429, network issues), keep the session active
+				if (response.status === 401) {
+					const errorText = await response.text();
+					throw new Error(
+						`Refresh failed: ${response.status} - ${errorText}`,
+					);
+				}
+
+				// For non-401 errors, log but don't logout
+				console.warn(
+					`Token refresh failed with status ${response.status}, will retry on next attempt`,
 				);
+				return;
 			}
 
 			const data = await response.json();
@@ -306,8 +316,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 				// localStorage might be unavailable
 			}
 		} catch (error) {
-			// Token refresh failed - clear local state but DON'T broadcast logout
-			// This prevents logging out other tabs when one tab has a stale token
+			// Only clear auth data on authentication errors (401)
+			// For network errors or other issues, keep the session active
 			await clearAuthData({ broadcastLogout: false });
 		} finally {
 			isRefreshingRef.current = false;
