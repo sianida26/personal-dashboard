@@ -3,30 +3,30 @@ import * as React from "react";
 import { Label } from "./label";
 
 export interface TextareaProps
-		extends Omit<
-			React.TextareaHTMLAttributes<HTMLTextAreaElement>,
-			"value" | "onChange"
-		> {
-		/** The value of the textarea */
-		value?: string;
-		/** Callback fired when the value changes */
-		onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
-		/** Callback fired when the textarea receives focus */
-		onFocus?: (event: React.FocusEvent<HTMLTextAreaElement>) => void;
-		/** Callback fired when the textarea loses focus */
-		onBlur?: (event: React.FocusEvent<HTMLTextAreaElement>) => void;
-		/** The label text for the textarea */
-		label?: React.ReactNode;
-		/** Error message to display below the textarea */
-		error?: React.ReactNode;
-		/** Whether to show an asterisk (*) next to the label */
-		withAsterisk?: boolean;
-		/** Custom class names for styling */
-		classNames?: {
-			textarea?: string;
-			label?: string;
-		};
-	}
+	extends Omit<
+		React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+		"value" | "onChange"
+	> {
+	/** The value of the textarea */
+	value?: string;
+	/** Callback fired when the value changes */
+	onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+	/** Callback fired when the textarea receives focus */
+	onFocus?: (event: React.FocusEvent<HTMLTextAreaElement>) => void;
+	/** Callback fired when the textarea loses focus */
+	onBlur?: (event: React.FocusEvent<HTMLTextAreaElement>) => void;
+	/** The label text for the textarea */
+	label?: React.ReactNode;
+	/** Error message to display below the textarea */
+	error?: React.ReactNode;
+	/** Whether to show an asterisk (*) next to the label */
+	withAsterisk?: boolean;
+	/** Custom class names for styling */
+	classNames?: {
+		textarea?: string;
+		label?: string;
+	};
+}
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 	({ className, label, error, withAsterisk, classNames, ...props }, ref) => {

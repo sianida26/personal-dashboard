@@ -201,7 +201,8 @@ const ChartTooltipContent = React.forwardRef<
 							item,
 							key,
 						);
-						const indicatorColor = color || item.payload?.fill || item.color;
+						const indicatorColor =
+							color || item.payload?.fill || item.color;
 
 						return (
 							<div

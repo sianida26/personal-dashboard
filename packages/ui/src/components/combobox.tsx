@@ -435,7 +435,6 @@ const Options = React.forwardRef<
 		<div
 			ref={ref}
 			id={store.listId || undefined}
-			// biome-ignore lint/a11y/useSemanticElements: This is a listbox
 			role="listbox"
 			tabIndex={0}
 			aria-orientation="vertical"
@@ -498,6 +497,7 @@ const Option = React.forwardRef<HTMLDivElement, ComboboxOptionProps>(
 		};
 
 		return (
+			// biome-ignore lint/a11y/useKeyWithClickEvents: Keyboard selection is handled by the combobox store (arrows/enter)
 			<div
 				ref={(node) => {
 					if (ref) {
@@ -506,7 +506,6 @@ const Option = React.forwardRef<HTMLDivElement, ComboboxOptionProps>(
 					}
 					optionRef.current = node;
 				}}
-				// biome-ignore lint/a11y/useSemanticElements: This is a listbox
 				role="option"
 				aria-selected={isSelected}
 				aria-disabled={disabled}
@@ -780,4 +779,4 @@ export type {
 	ComboboxClassNames,
 	UseComboboxOptions,
 	ComboboxGroupProps,
-}; 
+};

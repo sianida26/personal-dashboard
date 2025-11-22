@@ -158,45 +158,45 @@ const SelectSeparator = React.forwardRef<
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
 
 export type SelectProps = {
-		disabled?: boolean;
-		id?: string;
-		label?: React.ReactNode;
-		placeholder?: string;
-		readOnly?: boolean;
-		/**
-		 * @deprecated Use `options` instead. This prop will be removed in a future version.
-		 */
-		data?: ({ value: string; label: React.ReactNode } | string)[];
-		/** The options to display in the select dropdown. */
-		options?: ({ value: string; label: React.ReactNode } | string)[];
-		defaultValue?: string;
-		/**
-		 * @deprecated Use onChange instead
-		 * TODO: Remove this prop in the next major version
-		 */
-		onValueChange?: (value: string) => void;
-		onChange?: (value: string) => void;
-		value?: string;
-		withAsterisk?: boolean;
-		required?: boolean;
-		error?: React.ReactNode;
-		/** Class name for the root element */
-		className?: string;
-		/** Class names for different parts of the select */
-		classNames?: Partial<{
-			root: string;
-			label: string;
-			trigger: string;
-			content: string;
-			item: string;
-		}>;
-		/** Focus event handler */
-		onFocus?: React.FocusEventHandler<HTMLButtonElement>;
-		/** Blur event handler */
-		onBlur?: React.FocusEventHandler<HTMLButtonElement>;
-		/** If true, shows a search input to filter options */
-		searchable?: boolean;
-	};
+	disabled?: boolean;
+	id?: string;
+	label?: React.ReactNode;
+	placeholder?: string;
+	readOnly?: boolean;
+	/**
+	 * @deprecated Use `options` instead. This prop will be removed in a future version.
+	 */
+	data?: ({ value: string; label: React.ReactNode } | string)[];
+	/** The options to display in the select dropdown. */
+	options?: ({ value: string; label: React.ReactNode } | string)[];
+	defaultValue?: string;
+	/**
+	 * @deprecated Use onChange instead
+	 * TODO: Remove this prop in the next major version
+	 */
+	onValueChange?: (value: string) => void;
+	onChange?: (value: string) => void;
+	value?: string;
+	withAsterisk?: boolean;
+	required?: boolean;
+	error?: React.ReactNode;
+	/** Class name for the root element */
+	className?: string;
+	/** Class names for different parts of the select */
+	classNames?: Partial<{
+		root: string;
+		label: string;
+		trigger: string;
+		content: string;
+		item: string;
+	}>;
+	/** Focus event handler */
+	onFocus?: React.FocusEventHandler<HTMLButtonElement>;
+	/** Blur event handler */
+	onBlur?: React.FocusEventHandler<HTMLButtonElement>;
+	/** If true, shows a search input to filter options */
+	searchable?: boolean;
+};
 
 const Select = ({
 	defaultValue,

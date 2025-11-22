@@ -484,6 +484,17 @@ const DropzoneComponent = React.forwardRef<HTMLDivElement, DropzoneProps>(
 
 		const isDisabled = disabled || loading;
 
+		const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+			if (
+				activateOnClick &&
+				!isDisabled &&
+				(event.key === "Enter" || event.key === " ")
+			) {
+				event.preventDefault();
+				openFileBrowser();
+			}
+		};
+
 		return (
 			<div className="w-full flex flex-col gap-2">
 				{label && (
@@ -496,6 +507,7 @@ const DropzoneComponent = React.forwardRef<HTMLDivElement, DropzoneProps>(
 					</Label>
 				)}
 				<DropzoneContext.Provider value={{ status }}>
+					{/* biome-ignore lint/a11y/useSemanticElements: <button> might break styling for this large dropzone area */}
 					<div
 						ref={ref}
 						id={dropzoneId}
@@ -513,6 +525,9 @@ const DropzoneComponent = React.forwardRef<HTMLDivElement, DropzoneProps>(
 						data-accept={status === "accept" || undefined}
 						data-reject={status === "reject" || undefined}
 						data-idle={status === "idle" || undefined}
+						role="button"
+						tabIndex={isDisabled ? -1 : 0}
+						onKeyDown={handleKeyDown}
 						onClick={
 							activateOnClick && !isDisabled
 								? openFileBrowser
