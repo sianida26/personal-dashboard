@@ -13,7 +13,7 @@
 		"test:coverage": "NODE_ENV=test bun test --coverage --env-file .env.test.local --preload ./src/test-preload.ts",
 		"lint": "biome lint --write --diagnostic-level warn",
 		"format": "biome format --write --diagnostic-level warn",
-		"check": "bunx tsc --noEmit && bun lint && bun format"
+		"check": "tsc --noEmit && bun lint && bun format"
 	},
 	"dependencies": {
 		"@ai-sdk/openai": "^2.0.64",

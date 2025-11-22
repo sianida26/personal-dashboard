@@ -1,6 +1,5 @@
 FROM oven/bun:1-alpine AS base
 
-ENV NODE_ENV=production
 WORKDIR /node
 
 FROM base AS pruner
@@ -13,9 +12,15 @@ RUN if [ -d patches ]; then mkdir -p out/json/patches && cp -R patches/. out/jso
 FROM base AS installer
 
 COPY --from=pruner /node/out/json/ ./
-RUN bun install --frozen-lockfile --production
+RUN bun install --frozen-lockfile
 
 COPY --from=pruner /node/out/full/ ./
+
+FROM base AS checker
+
+COPY --from=installer /node/ ./
+
+RUN bunx turbo check --filter=backend
 
 FROM base AS production
 

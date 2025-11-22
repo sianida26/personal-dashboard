@@ -35,4 +35,4 @@ function getMatches(query: string): boolean {
 		return window.matchMedia(query).matches;
 	}
 	return false;
-} 
+}

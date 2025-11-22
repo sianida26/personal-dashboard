@@ -1,9 +1,8 @@
+import { zValidator } from "@hono/zod-validator";
 import { and, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
-import { zValidator } from "@hono/zod-validator";
 import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
-import { createHonoRoute } from "../../utils/createHonoRoute";
 import DashboardError from "../../errors/DashboardError";
 import rateLimit from "../../middlewares/rateLimiter";
 import {
@@ -14,6 +13,7 @@ import {
 	markRefreshTokenAsRevoked,
 	validateRefreshTokenOrThrow,
 } from "../../services/auth/tokenService";
+import { createHonoRoute } from "../../utils/createHonoRoute";
 
 const refreshSchema = z.object({
 	refreshToken: z.string().min(1),
@@ -73,7 +73,6 @@ const refreshRoute = createHonoRoute()
 		);
 
 		return c.json(authPayload);
-	},
-);
+	});
 
 export default refreshRoute;

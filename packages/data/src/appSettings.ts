@@ -1,11 +1,11 @@
 // base definition, NOT used for typing the array
 export type AppSetting = {
-		key: string;
-		name: string;
-		description: string;
-		defaultValue: string;
-		secret?: boolean;
-	};
+	key: string;
+	name: string;
+	description: string;
+	defaultValue: string;
+	secret?: boolean;
+};
 
 export const appSettings = [
 	/**
