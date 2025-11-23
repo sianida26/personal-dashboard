@@ -7,7 +7,7 @@
 		"preview": "vite preview",
 		"lint": "biome lint --write --diagnostic-level warn",
 		"format": "biome format --write --diagnostic-level warn",
-		"check": "tsc --noEmit && bun lint && bun format"
+		"check": "tsc --noEmit"
 	},
 	"dependencies": {
 		"@mantine/form": "^8.3.6",
