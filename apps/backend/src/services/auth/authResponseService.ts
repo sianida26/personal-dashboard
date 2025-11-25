@@ -1,11 +1,11 @@
 import type { PermissionCode } from "@repo/data";
+import type { users } from "../../drizzle/schema/users";
 import { generateAccessToken } from "../../utils/authUtils";
 import {
 	ACCESS_TOKEN_TTL_SECONDS,
-	REFRESH_TOKEN_TTL_SECONDS,
 	createPersistedRefreshToken,
+	REFRESH_TOKEN_TTL_SECONDS,
 } from "./tokenService";
-import type { users } from "../../drizzle/schema/users";
 
 export type UserWithAuthorization = typeof users.$inferSelect & {
 	permissionsToUsers: {
@@ -15,7 +15,7 @@ export type UserWithAuthorization = typeof users.$inferSelect & {
 	}[];
 	rolesToUsers: {
 		role: {
-			name: string;
+			code: string;
 			permissionsToRoles: {
 				permission: {
 					code: string;
@@ -34,7 +34,7 @@ export const extractUserAuthorization = (user: UserWithAuthorization) => {
 	}
 
 	for (const userRole of user.rolesToUsers) {
-		roles.add(userRole.role.name);
+		roles.add(userRole.role.code);
 		for (const rolePermission of userRole.role.permissionsToRoles) {
 			permissions.add(rolePermission.permission.code as PermissionCode);
 		}
@@ -62,6 +62,43 @@ export const buildAuthPayload = async (user: UserWithAuthorization) => {
 		refreshToken,
 		accessTokenExpiresIn: ACCESS_TOKEN_TTL_SECONDS,
 		refreshTokenExpiresIn: REFRESH_TOKEN_TTL_SECONDS,
+		user: {
+			id: user.id,
+			name: user.name,
+			permissions,
+			roles,
+		},
+	};
+};
+
+/**
+ * Build auth payload reusing an existing refresh token.
+ * Used for token refresh to support multiple tabs/devices.
+ */
+export const buildAuthPayloadWithExistingRefreshToken = async (
+	user: UserWithAuthorization,
+	existingRefreshToken: string,
+	refreshTokenExpiresAt: Date,
+) => {
+	const { permissions, roles } = extractUserAuthorization(user);
+
+	const accessToken = await generateAccessToken({
+		uid: user.id,
+		permissions,
+		roles,
+	});
+
+	// Calculate remaining TTL for the existing refresh token
+	const remainingTtlSeconds = Math.max(
+		0,
+		Math.floor((refreshTokenExpiresAt.getTime() - Date.now()) / 1000),
+	);
+
+	return {
+		accessToken,
+		refreshToken: existingRefreshToken,
+		accessTokenExpiresIn: ACCESS_TOKEN_TTL_SECONDS,
+		refreshTokenExpiresIn: remainingTtlSeconds,
 		user: {
 			id: user.id,
 			name: user.name,

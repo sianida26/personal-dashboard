@@ -1,9 +1,9 @@
-import { beforeAll, afterAll, describe, expect, test } from "bun:test";
+import { afterAll, beforeAll, describe, expect, test } from "bun:test";
+import { eq } from "drizzle-orm";
 import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
-import { hashPassword } from "../../utils/passwordUtils";
-import { eq } from "drizzle-orm";
 import client from "../../utils/honoTestClient";
+import { hashPassword } from "../../utils/passwordUtils";
 
 const testPassword = "V7d#rL9p@Wq3zMf1";
 
@@ -45,7 +45,7 @@ describe("Refresh Route", () => {
 		await db.delete(users).where(eq(users.id, userId));
 	});
 
-	test("should rotate refresh token and return a new access token", async () => {
+	test("should return same refresh token and a new access token (supports multiple tabs/devices)", async () => {
 		const res = await client.auth.refresh.$post({
 			json: {
 				refreshToken,
@@ -56,14 +56,19 @@ describe("Refresh Route", () => {
 		const body = await res.json();
 		expect(body).toHaveProperty("accessToken");
 		expect(body).toHaveProperty("refreshToken");
-		expect(body.refreshToken).not.toBe(refreshToken);
+		// Same refresh token is returned (no rotation)
+		expect(body.refreshToken).toBe(refreshToken);
 
+		// Second attempt with same token should also work (multiple tabs/devices support)
 		const secondAttempt = await client.auth.refresh.$post({
 			json: {
 				refreshToken,
 			},
 		});
 
-		expect(secondAttempt.status).toBe(401);
+		expect(secondAttempt.status).toBe(200);
+		const secondBody = await secondAttempt.json();
+		expect(secondBody).toHaveProperty("accessToken");
+		expect(secondBody.refreshToken).toBe(refreshToken);
 	});
 });
