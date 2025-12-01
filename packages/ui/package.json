@@ -8,7 +8,11 @@
 		"./hooks": "./src/hooks/index.ts",
 		"./tailwind.css": "./src/tailwind.css"
 	},
-	"scripts": {},
+	"scripts": {
+		"lint": "biome lint --write --diagnostic-level warn",
+		"format": "biome format --write --diagnostic-level warn",
+		"check": "tsc --noEmit"
+	},
 	"dependencies": {
 		"@radix-ui/react-accordion": "^1.2.12",
 		"@radix-ui/react-alert-dialog": "^1.1.15",

@@ -1,17 +1,17 @@
 import { createId } from "@paralleldrive/cuid2";
-import { eq, sql } from "drizzle-orm";
-import db from "../../drizzle";
-import {
-	notificationChannelOverrides,
-	userNotificationPreferences,
-	type NotificationChannelOverrideRecord,
-	type UserNotificationPreferenceRecord,
-} from "../../drizzle/schema/notificationPreferences";
 import type {
 	NotificationCategoryEnum,
 	NotificationChannelEnum,
 	NotificationPreferenceSourceEnum,
 } from "@repo/validation";
+import { eq, sql } from "drizzle-orm";
+import db from "../../drizzle";
+import {
+	type NotificationChannelOverrideRecord,
+	notificationChannelOverrides,
+	type UserNotificationPreferenceRecord,
+	userNotificationPreferences,
+} from "../../drizzle/schema/notificationPreferences";
 import {
 	DEFAULT_NOTIFICATION_PREFERENCE_MATRIX,
 	DEFAULT_SOURCE,

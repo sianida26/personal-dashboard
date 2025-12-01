@@ -13,7 +13,7 @@ export const Route = createFileRoute("/_dashboardLayout")({
 });
 
 function DashboardLayout() {
-	const { isAuthenticated, saveAuthData } = useAuth();
+	const { isAuthenticated, saveAuthData, isRefreshing } = useAuth();
 
 	const { error } = useQuery({
 		queryKey: ["my-profile"],
@@ -38,7 +38,8 @@ function DashboardLayout() {
 		return <Navigate to="/logout" />;
 	}
 
-	return isAuthenticated ? (
+	// During token refresh, maintain current state to prevent flicker
+	return isAuthenticated || isRefreshing ? (
 		// App Shell
 		<SidebarProvider className="flex min-h-screen w-full">
 			<AppSidebar />

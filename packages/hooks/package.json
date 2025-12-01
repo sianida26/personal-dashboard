@@ -1,14 +1,18 @@
 {
-    "name": "@repo/hooks",
-    "private": true,
-    "scripts": {},
-    "exports": {
-        ".": "./src/index.ts"
-    },
-    "peerDependencies": {
-        "react": "^19.1.1"
-    },
-    "devDependencies": {
-        "@repo/typescript-config": "workspace:*"
-    }
+	"name": "@repo/hooks",
+	"private": true,
+	"scripts": {
+		"lint": "biome lint --write --diagnostic-level warn",
+		"format": "biome format --write --diagnostic-level warn",
+		"check": "tsc --noEmit"
+	},
+	"exports": {
+		".": "./src/index.ts"
+	},
+	"peerDependencies": {
+		"react": "^19.1.1"
+	},
+	"devDependencies": {
+		"@repo/typescript-config": "workspace:*"
+	}
 }

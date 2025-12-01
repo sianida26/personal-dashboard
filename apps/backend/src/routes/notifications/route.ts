@@ -73,6 +73,15 @@ const notificationsRoute = new Hono<HonoEnv>()
 		return streamSSE(c, async (stream) => {
 			let aborted = false;
 
+			// Send initial connected event to establish connection immediately
+			await stream.writeSSE({
+				event: "connected",
+				data: JSON.stringify({
+					userId,
+					timestamp: new Date().toISOString(),
+				}),
+			});
+
 			// Subscribe to notification events
 			const unsubscribeCreated = notificationEventHub.onCreatedForUser(
 				userId,

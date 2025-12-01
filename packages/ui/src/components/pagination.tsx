@@ -147,14 +147,14 @@ export type PaginationClassNames = {
 };
 
 export type PaginationProps = {
-		boundaries?: number;
-		className?: string;
-		classNames?: Partial<PaginationClassNames>;
-		onChange?: (value: number) => void;
-		siblings?: number;
-		total: number;
-		value?: number;
-	};
+	boundaries?: number;
+	className?: string;
+	classNames?: Partial<PaginationClassNames>;
+	onChange?: (value: number) => void;
+	siblings?: number;
+	total: number;
+	value?: number;
+};
 
 const Pagination = ({
 	boundaries = 1,

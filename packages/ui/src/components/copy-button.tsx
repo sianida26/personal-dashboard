@@ -19,10 +19,7 @@ export interface CopyButtonProps
 	/**
 	 * Function that receives current status and copy function
 	 */
-	children: (data: {
-		copied: boolean;
-		copy: () => void;
-	}) => React.ReactNode;
+	children: (data: { copied: boolean; copy: () => void }) => React.ReactNode;
 }
 
 /**
@@ -116,4 +113,4 @@ function CopyButtonWithIcon({
 	);
 }
 
-export { CopyButton, CopyButtonWithIcon }; 
+export { CopyButton, CopyButtonWithIcon };

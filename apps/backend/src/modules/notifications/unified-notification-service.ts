@@ -226,6 +226,7 @@ export class UnifiedNotificationService {
 				id: users.id,
 				name: users.name,
 				email: users.email,
+				phoneNumber: users.phoneNumber,
 			})
 			.from(users)
 			.where(inArray(users.id, userIds));
@@ -234,7 +235,7 @@ export class UnifiedNotificationService {
 			userId: row.id,
 			name: row.name,
 			email: row.email ?? "",
-			phoneNumber: null, // Phone number not available in minimal template
+			phoneNumber: row.phoneNumber ?? null,
 		}));
 	}
 

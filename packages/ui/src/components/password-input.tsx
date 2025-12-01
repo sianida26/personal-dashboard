@@ -5,12 +5,12 @@ import { TbEye, TbEyeClosed } from "react-icons/tb";
 import { Input, type InputProps } from "./input";
 
 export interface PasswordInputProps extends InputProps {
-		isPasswordVisible?: boolean;
-		onPasswordVisibilityChange?: (isVisible: boolean) => void;
-		classNames?: Partial<{
-			input: string;
-		}>;
-	}
+	isPasswordVisible?: boolean;
+	onPasswordVisibilityChange?: (isVisible: boolean) => void;
+	classNames?: Partial<{
+		input: string;
+	}>;
+}
 
 const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
 	(

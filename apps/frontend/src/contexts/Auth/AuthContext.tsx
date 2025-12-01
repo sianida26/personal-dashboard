@@ -25,6 +25,7 @@ export interface AuthContextType {
 	checkPermission: (permission: string) => boolean;
 	isAuthenticated: boolean;
 	refreshSession: () => Promise<void>;
+	isRefreshing: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
