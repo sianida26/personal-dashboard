@@ -316,7 +316,10 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	 * This ensures columns are scaled to fit the container without overflow
 	 */
 	const getProportionalWidth = useCallback(
-		(_columnId: string, originalSize: number): string | number | undefined => {
+		(
+			_columnId: string,
+			originalSize: number,
+		): string | number | undefined => {
 			if (!fitToParentWidth || containerWidth <= 0) {
 				return undefined;
 			}
@@ -421,11 +424,17 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 				className="border"
 				style={{
 					...(isVirtualized
-						? { display: "flex", width: proportionalWidth ?? cell.column.getSize() }
+						? {
+								display: "flex",
+								width:
+									proportionalWidth ?? cell.column.getSize(),
+							}
 						: {
-								width: proportionalWidth ?? (props.columnResizable
-									? `calc(var(--col-${cell.column.id}-size) * 1px)`
-									: undefined),
+								width:
+									proportionalWidth ??
+									(props.columnResizable
+										? `calc(var(--col-${cell.column.id}-size) * 1px)`
+										: undefined),
 							}),
 				}}
 			>
@@ -699,7 +708,11 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 
 			<div
 				ref={tableContainerRef}
-				className={fitToParentWidth ? "overflow-y-auto overflow-x-hidden" : "overflow-auto"}
+				className={
+					fitToParentWidth
+						? "overflow-y-auto overflow-x-hidden"
+						: "overflow-auto"
+				}
 				style={{
 					...(rowVirtualization && !groupBy
 						? {

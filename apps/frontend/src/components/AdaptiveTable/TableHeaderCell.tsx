@@ -83,23 +83,31 @@ export const TableHeaderCell = <T,>({
 					transform: CSS.Translate.toString(sortableHook.transform),
 					transition: "width transform 0.2s ease-in-out",
 					whiteSpace: "nowrap",
-					width: proportionalWidth ?? (virtualized
-						? header.getSize()
-						: columnResizable
-							? `calc(var(--header-${header.id}-size) * 1px)`
-							: header.column.getSize()),
+					width:
+						proportionalWidth ??
+						(virtualized
+							? header.getSize()
+							: columnResizable
+								? `calc(var(--header-${header.id}-size) * 1px)`
+								: header.column.getSize()),
 					zIndex: sortableHook.isDragging ? 1 : 0,
 					...(virtualized ? { display: "flex" } : {}),
-					...(fitToParentWidth ? { overflow: "hidden", textOverflow: "ellipsis" } : {}),
+					...(fitToParentWidth
+						? { overflow: "hidden", textOverflow: "ellipsis" }
+						: {}),
 				}
 			: {
-					width: proportionalWidth ?? (virtualized
-						? header.getSize()
-						: columnResizable
-							? `calc(var(--header-${header.id}-size) * 1px)`
-							: undefined),
+					width:
+						proportionalWidth ??
+						(virtualized
+							? header.getSize()
+							: columnResizable
+								? `calc(var(--header-${header.id}-size) * 1px)`
+								: undefined),
 					...(virtualized ? { display: "flex" } : {}),
-					...(fitToParentWidth ? { overflow: "hidden", textOverflow: "ellipsis" } : {}),
+					...(fitToParentWidth
+						? { overflow: "hidden", textOverflow: "ellipsis" }
+						: {}),
 				};
 
 	return (

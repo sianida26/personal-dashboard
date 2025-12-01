@@ -34,11 +34,15 @@ const DragAlongCell = <T,>({
 		position: "relative",
 		transform: CSS.Translate.toString(transform),
 		transition: "width transform 0.2s ease-in-out",
-		width: proportionalWidth ?? (columnResizable
-			? `calc(var(--col-${cell.column.id}-size) * 1px)`
-			: cell.column.getSize()),
+		width:
+			proportionalWidth ??
+			(columnResizable
+				? `calc(var(--col-${cell.column.id}-size) * 1px)`
+				: cell.column.getSize()),
 		zIndex: isDragging ? 1 : 0,
-		...(fitToParentWidth ? { overflow: "hidden", textOverflow: "ellipsis" } : {}),
+		...(fitToParentWidth
+			? { overflow: "hidden", textOverflow: "ellipsis" }
+			: {}),
 	};
 
 	return (
