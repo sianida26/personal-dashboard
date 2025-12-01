@@ -139,7 +139,7 @@ function RouteComponent() {
 					data={data}
 					columnOrderable
 					columnResizable
-					// rowVirtualization
+					rowVirtualization
 					title="Chemical Elements"
 					rowSelectable
 					fitToParentWidth

@@ -111,14 +111,26 @@ export const TableHeaderCell = <T,>({
 				};
 
 	return (
-		<ContextMenu>
-			<ContextMenuTrigger asChild>
-				<th
-					colSpan={header.colSpan}
-					ref={sortableHook?.setNodeRef}
-					style={style}
-					className="border relative"
-				>
+		<th
+			colSpan={header.colSpan}
+			ref={sortableHook?.setNodeRef}
+			style={style}
+			className={`border-y border-l relative ${
+				isResizable ? "" : "border-r"
+			} ${
+				draggable && !isActionsColumn && isOrderable
+					? "cursor-grab active:cursor-grabbing"
+					: ""
+			}`}
+			{...(draggable && !isActionsColumn && isOrderable && sortableHook
+				? {
+						...sortableHook.attributes,
+						...sortableHook.listeners,
+					}
+				: {})}
+		>
+			<ContextMenu>
+				<ContextMenuTrigger asChild>
 					<div className="flex items-center">
 						{header.isPlaceholder
 							? null
@@ -126,106 +138,91 @@ export const TableHeaderCell = <T,>({
 									header.column.columnDef.header,
 									header.getContext(),
 								)}
-						{draggable &&
-							!isActionsColumn &&
-							isOrderable &&
-							sortableHook && (
-								<button
-									type="button"
-									{...sortableHook.attributes}
-									{...sortableHook.listeners}
-									className="ml-2 cursor-grab active:cursor-grabbing"
-								>
-									🟰
-								</button>
-							)}
 						{isSortable && sortedState && (
 							<span className="ml-1">
 								{sortedState === "asc" ? "🔼" : "🔽"}
 							</span>
 						)}
 					</div>
-					{isResizable && (
-						<button
-							type="button"
-							onDoubleClick={() => header.column.resetSize()}
-							onMouseDown={header.getResizeHandler()}
-							onTouchStart={header.getResizeHandler()}
-							className={`absolute right-0 top-0 h-full w-2 cursor-col-resize select-none touch-none hover:bg-blue-500 border-0 p-0 ${
-								header.column.getIsResizing()
-									? "bg-blue-500"
-									: "bg-transparent"
-							}`}
-							style={{
-								transform: header.column.getIsResizing()
-									? `translateX(${
-											table.getState().columnSizingInfo
-												.deltaOffset ?? 0
-										}px)`
-									: "",
-							}}
-							aria-label="Resize column"
+				</ContextMenuTrigger>
+				<ContextMenuContent>
+					{hasVisibilityToggle && (
+						<ContextMenuItem
+							onSelect={() => header.column.toggleVisibility(false)}
 						>
-							<div className="w-px h-full bg-gray-300 mx-auto pointer-events-none" />
-						</button>
+							Hide column
+						</ContextMenuItem>
 					)}
-				</th>
-			</ContextMenuTrigger>
-			<ContextMenuContent>
-				{hasVisibilityToggle && (
-					<ContextMenuItem
-						onSelect={() => header.column.toggleVisibility(false)}
-					>
-						Hide column
-					</ContextMenuItem>
-				)}
-				{isSortable && (
-					<>
-						{hasVisibilityToggle && <Separator />}
-						<ContextMenuItem
-							onSelect={() => header.column.toggleSorting(false)}
-						>
-							Sort Ascending
-						</ContextMenuItem>
-						<ContextMenuItem
-							onSelect={() => header.column.toggleSorting(true)}
-						>
-							Sort Descending
-						</ContextMenuItem>
-						{sortedState && (
+					{isSortable && (
+						<>
+							{hasVisibilityToggle && <Separator />}
 							<ContextMenuItem
-								onSelect={() => header.column.clearSorting()}
+								onSelect={() => header.column.toggleSorting(false)}
 							>
-								Clear Sort
+								Sort Ascending
 							</ContextMenuItem>
-						)}
-					</>
-				)}
-				{canGroup && !isActionsColumn && (
-					<>
-						{(hasVisibilityToggle || isSortable) && <Separator />}
-						<ContextMenuItem
-							onSelect={() => {
-								if (onGroupByChange) {
-									onGroupByChange(
-										groupBy === header.column.id
-											? null
-											: header.column.id,
-									);
-								}
-							}}
-						>
-							{groupBy === header.column.id
-								? "Ungroup"
-								: "Group by this column"}
-						</ContextMenuItem>
-					</>
-				)}
-				{!columnVisibilityToggle && !canGroup && !isSortable && (
-					<ContextMenuItem>Dummy Menu Item</ContextMenuItem>
-				)}
-			</ContextMenuContent>
-		</ContextMenu>
+							<ContextMenuItem
+								onSelect={() => header.column.toggleSorting(true)}
+							>
+								Sort Descending
+							</ContextMenuItem>
+							{sortedState && (
+								<ContextMenuItem
+									onSelect={() => header.column.clearSorting()}
+								>
+									Clear Sort
+								</ContextMenuItem>
+							)}
+						</>
+					)}
+					{canGroup && !isActionsColumn && (
+						<>
+							{(hasVisibilityToggle || isSortable) && <Separator />}
+							<ContextMenuItem
+								onSelect={() => {
+									if (onGroupByChange) {
+										onGroupByChange(
+											groupBy === header.column.id
+												? null
+												: header.column.id,
+										);
+									}
+								}}
+							>
+								{groupBy === header.column.id
+									? "Ungroup"
+									: "Group by this column"}
+							</ContextMenuItem>
+						</>
+					)}
+					{!columnVisibilityToggle && !canGroup && !isSortable && (
+						<ContextMenuItem>Dummy Menu Item</ContextMenuItem>
+					)}
+				</ContextMenuContent>
+			</ContextMenu>
+			{isResizable && (
+				<button
+					type="button"
+					onDoubleClick={() => header.column.resetSize()}
+					onMouseDown={header.getResizeHandler()}
+					onTouchStart={header.getResizeHandler()}
+					className={`absolute right-0 top-0 h-full w-1 cursor-col-resize select-none touch-none border-r border-gray-200 hover:border-blue-500 hover:border-r-2 bg-transparent p-0 ${
+						header.column.getIsResizing()
+							? "border-blue-500 border-r-2"
+							: ""
+					}`}
+					style={{
+						transform: header.column.getIsResizing()
+							? `translateX(${
+									table.getState().columnSizingInfo
+										.deltaOffset ?? 0
+								}px)`
+							: "",
+					}}
+					aria-label="Resize column"
+				/>
+			)}
+		</th>
 	);
 };
 
