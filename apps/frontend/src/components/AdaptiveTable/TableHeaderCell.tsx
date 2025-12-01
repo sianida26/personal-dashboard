@@ -31,6 +31,8 @@ export const TableHeaderCell = <T,>({
 	paginationType,
 	sortable,
 	virtualized = false,
+	fitToParentWidth = false,
+	proportionalWidth,
 }: {
 	header: Header<T, unknown>;
 	draggable?: boolean;
@@ -43,6 +45,8 @@ export const TableHeaderCell = <T,>({
 	paginationType?: "client" | "server";
 	sortable?: boolean;
 	virtualized?: boolean;
+	fitToParentWidth?: boolean;
+	proportionalWidth?: string | number;
 }) => {
 	const columnDef = header.column.columnDef as AdaptiveColumnDef<T>;
 	const isActionsColumn = header.column.id === "_actions";
@@ -79,21 +83,23 @@ export const TableHeaderCell = <T,>({
 					transform: CSS.Translate.toString(sortableHook.transform),
 					transition: "width transform 0.2s ease-in-out",
 					whiteSpace: "nowrap",
-					width: virtualized
+					width: proportionalWidth ?? (virtualized
 						? header.getSize()
 						: columnResizable
 							? `calc(var(--header-${header.id}-size) * 1px)`
-							: header.column.getSize(),
+							: header.column.getSize()),
 					zIndex: sortableHook.isDragging ? 1 : 0,
 					...(virtualized ? { display: "flex" } : {}),
+					...(fitToParentWidth ? { overflow: "hidden", textOverflow: "ellipsis" } : {}),
 				}
 			: {
-					width: virtualized
+					width: proportionalWidth ?? (virtualized
 						? header.getSize()
 						: columnResizable
 							? `calc(var(--header-${header.id}-size) * 1px)`
-							: undefined,
+							: undefined),
 					...(virtualized ? { display: "flex" } : {}),
+					...(fitToParentWidth ? { overflow: "hidden", textOverflow: "ellipsis" } : {}),
 				};
 
 	return (

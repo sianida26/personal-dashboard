@@ -131,22 +131,26 @@ function RouteComponent() {
 	);
 
 	return (
-		<div className="p-4">
+		<div className="p-4 h-full flex flex-col">
 			<h1 className="text-2xl font-bold mb-4">Chemical Elements Table</h1>
-			<AdaptiveTable
-				columns={columns}
-				data={data}
-				columnOrderable
-				columnResizable
-				title="Chemical Elements"
-				rowSelectable
-				onSelectAction={(row, action) => {
-					alert(
-						`Action: ${action} on row with Atomic #${row.length}`,
-					);
-				}}
-				saveState="chemical-elements-table"
-			/>
+			<div className="flex-1 min-h-0">
+				<AdaptiveTable
+					columns={columns}
+					data={data}
+					columnOrderable
+					columnResizable
+					// rowVirtualization
+					title="Chemical Elements"
+					rowSelectable
+					fitToParentWidth
+					onSelectAction={(row, action) => {
+						alert(
+							`Action: ${action} on row with Atomic #${row.length}`,
+						);
+					}}
+					saveState="chemical-elements-table"
+				/>
+			</div>
 		</div>
 	);
 }

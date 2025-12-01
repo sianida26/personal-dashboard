@@ -24,7 +24,7 @@ import {
 } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { ChevronRight } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DetailSheet } from "./DetailSheet";
 import DragAlongCell from "./DragAlongCell";
 import EditableCell from "./EditableCell";
@@ -51,10 +51,32 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	const rowSelectable = props.rowSelectable ?? false;
 	const sortable = props.sortable ?? true;
 	const rowVirtualization = props.rowVirtualization ?? true;
-	const tableHeight = props.tableHeight ?? "600px";
+	const tableHeight = props.tableHeight ?? "100%";
+	const fitToParentWidth = props.fitToParentWidth ?? false;
 
 	// Reference for the scrollable container
 	const tableContainerRef = useRef<HTMLDivElement>(null);
+
+	// Track container width for fitToParentWidth
+	const [containerWidth, setContainerWidth] = useState<number>(0);
+
+	// Update container width on mount and resize
+	useEffect(() => {
+		if (!fitToParentWidth || !tableContainerRef.current) return;
+
+		const updateWidth = () => {
+			if (tableContainerRef.current) {
+				setContainerWidth(tableContainerRef.current.clientWidth);
+			}
+		};
+
+		updateWidth();
+
+		const resizeObserver = new ResizeObserver(updateWidth);
+		resizeObserver.observe(tableContainerRef.current);
+
+		return () => resizeObserver.disconnect();
+	}, [fitToParentWidth]);
 
 	// State for detail view
 	const [detailRowIndex, setDetailRowIndex] = useState<number | null>(null);
@@ -289,6 +311,34 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		props.columnResizable ? table.getState().columnSizing : null,
 	]);
 
+	/**
+	 * Calculate proportional column widths when fitToParentWidth is enabled
+	 * This ensures columns are scaled to fit the container without overflow
+	 */
+	const getProportionalWidth = useCallback(
+		(_columnId: string, originalSize: number): string | number | undefined => {
+			if (!fitToParentWidth || containerWidth <= 0) {
+				return undefined;
+			}
+
+			const visibleColumns = table.getVisibleFlatColumns();
+			const totalOriginalWidth = visibleColumns.reduce(
+				(sum, col) => sum + col.getSize(),
+				0,
+			);
+
+			// If total width is less than container, no need to shrink
+			if (totalOriginalWidth <= containerWidth) {
+				return undefined;
+			}
+
+			// Calculate percentage width
+			const percentage = (originalSize / totalOriginalWidth) * 100;
+			return `${percentage}%`;
+		},
+		[fitToParentWidth, containerWidth, table],
+	);
+
 	// Handle drag end for column reordering
 	const handleDragEnd = (event: DragEndEvent) => {
 		const { active, over } = event;
@@ -341,6 +391,11 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		rowIndex: number,
 		isVirtualized: boolean,
 	) => {
+		const proportionalWidth = getProportionalWidth(
+			cell.column.id,
+			cell.column.getSize(),
+		);
+
 		if (props.columnOrderable) {
 			return (
 				<SortableContext
@@ -353,6 +408,8 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 						cell={cell}
 						columnResizable={props.columnResizable}
 						rowIndex={rowIndex}
+						fitToParentWidth={fitToParentWidth}
+						proportionalWidth={proportionalWidth}
 					/>
 				</SortableContext>
 			);
@@ -364,11 +421,11 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 				className="border"
 				style={{
 					...(isVirtualized
-						? { display: "flex", width: cell.column.getSize() }
+						? { display: "flex", width: proportionalWidth ?? cell.column.getSize() }
 						: {
-								width: props.columnResizable
+								width: proportionalWidth ?? (props.columnResizable
 									? `calc(var(--col-${cell.column.id}-size) * 1px)`
-									: undefined,
+									: undefined),
 							}),
 				}}
 			>
@@ -386,6 +443,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 				...(rowVirtualization && !loading && !groupBy
 					? { display: "grid" }
 					: {}),
+				...(fitToParentWidth ? { tableLayout: "fixed" } : {}),
 			}}
 		>
 			<thead
@@ -433,6 +491,11 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 										virtualized={
 											rowVirtualization && !groupBy
 										}
+										fitToParentWidth={fitToParentWidth}
+										proportionalWidth={getProportionalWidth(
+											header.column.id,
+											header.getSize(),
+										)}
 									/>
 								))}
 							</SortableContext>
@@ -453,6 +516,11 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 									paginationType={paginationType}
 									sortable={sortable}
 									virtualized={rowVirtualization && !groupBy}
+									fitToParentWidth={fitToParentWidth}
+									proportionalWidth={getProportionalWidth(
+										header.column.id,
+										header.getSize(),
+									)}
 								/>
 							))
 						)}
@@ -631,7 +699,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 
 			<div
 				ref={tableContainerRef}
-				className="overflow-auto"
+				className={fitToParentWidth ? "overflow-y-auto overflow-x-hidden" : "overflow-auto"}
 				style={{
 					...(rowVirtualization && !groupBy
 						? {

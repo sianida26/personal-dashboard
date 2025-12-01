@@ -18,4 +18,11 @@ export default defineConfig({
 			"@": "/src",
 		},
 	},
+	server:
+		process.env.NODE_ENV === "development"
+			? {
+					port: Number(process.env.VITE_PORT) || 3000,
+					host: process.env.VITE_HOST || "0.0.0.0",
+				}
+			: {},
 });
