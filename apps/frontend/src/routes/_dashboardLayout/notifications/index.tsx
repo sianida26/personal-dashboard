@@ -28,8 +28,6 @@ import {
 	useMemo,
 	useState,
 } from "react";
-import { backendUrl } from "@/honoClient";
-import { authDB } from "@/indexedDB/authDB";
 import {
 	executeNotificationAction,
 	fetchNotifications,
@@ -389,76 +387,6 @@ function NotificationsPage() {
 			setActionComment("");
 		}
 	}, [selectedAction?.actionKey, selectedAction?.requiresComment]);
-
-	useEffect(() => {
-		let eventSource: EventSource | null = null;
-		let retryTimeout: ReturnType<typeof setTimeout> | null = null;
-		let cancelled = false;
-
-		const connect = async () => {
-			const auth = await authDB.auth.get("auth");
-			if (cancelled) return;
-			const token = auth?.accessToken;
-			if (!token) return;
-
-			const url = new URL(`${backendUrl}/notifications/stream`);
-			url.searchParams.set("token", token);
-
-			eventSource = new EventSource(url.toString());
-
-			const handleMessage = (event: MessageEvent) => {
-				try {
-					const payload = JSON.parse(String(event.data)) as {
-						title?: string;
-						message?: string;
-					};
-
-					toast({
-						title: payload.title ?? "New notification",
-						description:
-							payload.message ??
-							"A new update just landed in your inbox.",
-					});
-				} catch {
-					toast({
-						title: "New notification",
-						description: "A new update just landed in your inbox.",
-					});
-				}
-
-				void queryClient.invalidateQueries({
-					queryKey: notificationQueryKeys.all,
-					exact: false,
-				});
-				void queryClient.invalidateQueries({
-					queryKey: notificationQueryKeys.unreadCount,
-				});
-			};
-
-			eventSource.addEventListener("notification", handleMessage);
-
-			eventSource.onerror = () => {
-				eventSource?.close();
-				if (cancelled) return;
-				if (retryTimeout) {
-					clearTimeout(retryTimeout);
-				}
-				retryTimeout = setTimeout(() => {
-					void connect();
-				}, 5000);
-			};
-		};
-
-		void connect();
-
-		return () => {
-			cancelled = true;
-			eventSource?.close();
-			if (retryTimeout) {
-				clearTimeout(retryTimeout);
-			}
-		};
-	}, [queryClient, toast]);
 
 	const bulkMutation = useMutation({
 		mutationFn: ({

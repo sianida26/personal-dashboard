@@ -6,10 +6,8 @@ import {
 } from "@repo/validation";
 import type { Context } from "hono";
 import { Hono } from "hono";
-import { streamSSE } from "hono/streaming";
 import { z } from "zod";
 import { forbidden, unauthorized } from "../../errors/DashboardError";
-import notificationEventHub from "../../lib/event-bus/notification-event-hub";
 import authInfo from "../../middlewares/authInfo";
 import NotificationOrchestrator from "../../modules/notifications/notification-orchestrator";
 import type HonoEnv from "../../types/HonoEnv";
@@ -66,57 +64,6 @@ const notificationsRoute = new Hono<HonoEnv>()
 		const userId = requireUserId(c);
 		const count = await orchestrator.getUnreadCount(userId);
 		return c.json({ count });
-	})
-	.get("/stream", async (c) => {
-		const userId = requireUserId(c);
-
-		return streamSSE(c, async (stream) => {
-			let aborted = false;
-
-			// Send initial connected event to establish connection immediately
-			await stream.writeSSE({
-				event: "connected",
-				data: JSON.stringify({
-					userId,
-					timestamp: new Date().toISOString(),
-				}),
-			});
-
-			// Subscribe to notification events
-			const unsubscribeCreated = notificationEventHub.onCreatedForUser(
-				userId,
-				async (payload) => {
-					if (!aborted) {
-						await stream.writeSSE({
-							event: "notification",
-							data: JSON.stringify(payload),
-						});
-					}
-				},
-			);
-
-			// Handle client disconnect
-			stream.onAbort(() => {
-				aborted = true;
-				unsubscribeCreated();
-			});
-
-			// Keep connection alive with periodic heartbeat
-			// This is REQUIRED for Bun 1.3+ to prevent connection timeout
-			while (!aborted) {
-				await stream.sleep(15000); // 15 second heartbeat
-				if (!aborted) {
-					await stream.writeSSE({
-						event: "heartbeat",
-						data: JSON.stringify({
-							timestamp: new Date().toISOString(),
-						}),
-					});
-				}
-			}
-
-			unsubscribeCreated();
-		});
 	})
 	.post(
 		"/read",
