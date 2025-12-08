@@ -3,8 +3,6 @@ name: Auto-assign Project Fields
 on:
   issues:
     types: [opened]
-  project_card:
-    types: [created]
 
 jobs:
   assign-fields:
@@ -16,7 +14,7 @@ jobs:
 
     steps:
       - name: Wait for project item creation
-        run: sleep 5
+        run: sleep 10
 
       - name: Get Project Data
         id: get_project
@@ -77,9 +75,6 @@ jobs:
               priorityValue = priority;
             }
 
-            // Wait a bit more to ensure project item is created
-            await new Promise(resolve => setTimeout(resolve, 3000));
-
             // Get organization or user projects
             const owner = context.repo.owner;
             const repo = context.repo.repo;
@@ -122,16 +117,34 @@ jobs:
               }
             `;
 
-            const result = await github.graphql(query, {
-              owner: owner,
-              repo: repo,
-              issue_number: issue_number
-            });
+            // Retry logic to check for project items
+            let projectItems = [];
+            let maxRetries = 6; // Total wait time: 10s initial + (5s * 6) = 40s
 
-            const projectItems = result.repository.issue.projectItems.nodes;
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+              console.log(`Checking for project items (attempt ${attempt}/${maxRetries})...`);
+              
+              const result = await github.graphql(query, {
+                owner: owner,
+                repo: repo,
+                issue_number: issue_number
+              });
+
+              projectItems = result.repository.issue.projectItems.nodes;
+              
+              if (projectItems.length > 0) {
+                console.log(`Found ${projectItems.length} project(s)`);
+                break;
+              }
+              
+              if (attempt < maxRetries) {
+                console.log('No project items found yet, waiting 5 seconds...');
+                await new Promise(resolve => setTimeout(resolve, 5000));
+              }
+            }
 
             if (projectItems.length === 0) {
-              console.log('Issue not yet added to any project, skipping...');
+              console.log('Issue not yet added to any project after multiple retries, skipping...');
               return;
             }
 
