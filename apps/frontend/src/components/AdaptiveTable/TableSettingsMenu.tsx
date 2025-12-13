@@ -15,7 +15,7 @@ import {
 import type { SortingState, Table } from "@tanstack/react-table";
 import { ChevronRight, Settings } from "lucide-react";
 import { TbCaretDownFilled, TbCaretUpFilled } from "react-icons/tb";
-import type { AdaptiveColumnDef } from "./types";
+import type { AdaptiveColumnDef, TableSettingsLabels } from "./types";
 
 interface TableSettingsMenuProps<T> {
 	table: Table<T>;
@@ -27,6 +27,7 @@ interface TableSettingsMenuProps<T> {
 	sortable: boolean;
 	sorting: SortingState;
 	onSortingChange: (sorting: SortingState) => void;
+	labels?: Partial<TableSettingsLabels>;
 }
 
 export function TableSettingsMenu<T>({
@@ -39,7 +40,13 @@ export function TableSettingsMenu<T>({
 	sortable,
 	sorting,
 	onSortingChange,
+	labels,
 }: TableSettingsMenuProps<T>) {
+	const getColumnLabel = (column: ReturnType<Table<T>["getAllLeafColumns"]>[0]) => {
+		const columnDef = column.columnDef as AdaptiveColumnDef<T>;
+		return columnDef.settingsLabel || 
+			(typeof column.columnDef.header === "string" ? column.columnDef.header : column.id);
+	};
 	return (
 		<Popover>
 			<PopoverTrigger asChild>
@@ -55,7 +62,10 @@ export function TableSettingsMenu<T>({
 								type="button"
 								className="flex items-center justify-between w-full text-left hover:bg-accent px-3 py-2 rounded-sm text-sm transition-colors"
 							>
-								<span>Column Visibility</span>
+								<span>
+									{labels?.columnVisibility ||
+										"Column Visibility"}
+								</span>
 								<ChevronRight className="h-4 w-4 text-muted-foreground" />
 							</button>
 						</PopoverTrigger>
@@ -68,7 +78,8 @@ export function TableSettingsMenu<T>({
 							<div className="space-y-4">
 								<div>
 									<h4 className="font-medium mb-3">
-										Property visibility
+										{labels?.propertyVisibility ||
+											"Property visibility"}
 									</h4>
 									<div className="relative mb-3">
 										<Input
@@ -80,7 +91,8 @@ export function TableSettingsMenu<T>({
 								<Separator />
 								<div>
 									<p className="text-sm text-muted-foreground mb-2">
-										Shown in table
+										{labels?.shownInTable ||
+											"Shown in table"}
 									</p>
 									<ScrollArea className="h-48">
 										<div className="space-y-1">
@@ -101,36 +113,33 @@ export function TableSettingsMenu<T>({
 													);
 												})
 												.map((column) => (
-													<div
-														key={column.id}
-														className="flex items-center"
-													>
-														<button
-															type="button"
-															className="flex items-center gap-2 w-full text-left hover:bg-accent px-2 py-1 rounded-sm"
-														>
-															<Checkbox
-																checked={column.getIsVisible()}
-																onCheckedChange={(
-																	value,
-																) =>
-																	column.toggleVisibility(
-																		!!value,
-																	)
-																}
-															/>
-															<Label className="text-sm font-normal cursor-pointer flex-1">
-																{typeof column
-																	.columnDef
-																	.header ===
-																"string"
-																	? column
-																			.columnDef
-																			.header
-																	: column.id}
-															</Label>
-														</button>
-													</div>
+													<Tooltip key={column.id}>
+														<TooltipTrigger asChild>
+															<div className="flex items-center">
+																<button
+																	type="button"
+																	className="flex items-center gap-2 w-full text-left hover:bg-accent px-2 py-1 rounded-sm"
+																>
+																	<Checkbox
+																		checked={column.getIsVisible()}
+																		onCheckedChange={(
+																			value,
+																		) =>
+																			column.toggleVisibility(
+																				!!value,
+																			)
+																		}
+																	/>
+																	<Label className="text-sm font-normal cursor-pointer flex-1 truncate">
+																		{getColumnLabel(column)}
+																	</Label>
+																</button>
+															</div>
+														</TooltipTrigger>
+														<TooltipContent side="right" className="text-xs max-w-xs">
+															{getColumnLabel(column)}
+														</TooltipContent>
+													</Tooltip>
 												))}
 										</div>
 									</ScrollArea>
@@ -151,7 +160,7 @@ export function TableSettingsMenu<T>({
 										<Separator />
 										<div>
 											<p className="text-sm text-muted-foreground mb-2">
-												Hidden
+												{labels?.hidden || "Hidden"}
 											</p>
 											<div className="space-y-1">
 												{table
@@ -171,36 +180,33 @@ export function TableSettingsMenu<T>({
 														);
 													})
 													.map((column) => (
-														<div
-															key={column.id}
-															className="flex items-center"
-														>
-															<button
-																type="button"
-																className="flex items-center gap-2 w-full text-left hover:bg-accent px-2 py-1 rounded-sm"
-															>
-																<Checkbox
-																	checked={column.getIsVisible()}
-																	onCheckedChange={(
-																		value,
-																	) =>
-																		column.toggleVisibility(
-																			!!value,
-																		)
-																	}
-																/>
-																<Label className="text-sm font-normal cursor-pointer flex-1">
-																	{typeof column
-																		.columnDef
-																		.header ===
-																	"string"
-																		? column
-																				.columnDef
-																				.header
-																		: column.id}
-																</Label>
-															</button>
-														</div>
+														<Tooltip key={column.id}>
+															<TooltipTrigger asChild>
+																<div className="flex items-center">
+																	<button
+																		type="button"
+																		className="flex items-center gap-2 w-full text-left hover:bg-accent px-2 py-1 rounded-sm"
+																	>
+																		<Checkbox
+																			checked={column.getIsVisible()}
+																			onCheckedChange={(
+																				value,
+																			) =>
+																				column.toggleVisibility(
+																					!!value,
+																				)
+																			}
+																		/>
+																		<Label className="text-sm font-normal cursor-pointer flex-1 truncate">
+																			{getColumnLabel(column)}
+																		</Label>
+																	</button>
+																</div>
+															</TooltipTrigger>
+															<TooltipContent side="right" className="text-xs max-w-xs">
+																{getColumnLabel(column)}
+															</TooltipContent>
+														</Tooltip>
 													))}
 											</div>
 										</div>
@@ -216,7 +222,7 @@ export function TableSettingsMenu<T>({
 									type="button"
 									className="flex items-center justify-between w-full text-left hover:bg-accent px-3 py-2 rounded-sm text-sm transition-colors"
 								>
-									<span>Group By</span>
+									<span>{labels?.groupBy || "Group By"}</span>
 									<ChevronRight className="h-4 w-4 text-muted-foreground" />
 								</button>
 							</PopoverTrigger>
@@ -229,7 +235,8 @@ export function TableSettingsMenu<T>({
 								<div className="space-y-3">
 									<div className="flex items-center justify-between">
 										<h4 className="font-medium">
-											Group by property
+											{labels?.groupByProperty ||
+												"Group by property"}
 										</h4>
 										{groupBy && (
 											<Button
@@ -258,42 +265,41 @@ export function TableSettingsMenu<T>({
 													const isSelected =
 														groupBy === column.id;
 													return (
-														<button
-															key={column.id}
-															type="button"
-															onClick={() =>
-																onGroupByChange(
-																	column.id,
-																)
-															}
-															className={`flex items-center gap-2 w-full text-left hover:bg-accent px-2 py-1.5 rounded-sm text-sm transition-colors ${
-																isSelected
-																	? "bg-accent"
-																	: ""
-															}`}
-														>
-															<div
-																className={`w-4 h-4 rounded-sm border flex items-center justify-center ${
-																	isSelected
-																		? "bg-primary border-primary"
-																		: "border-input"
-																}`}
-															>
-																{isSelected && (
-																	<div className="w-2 h-2 bg-primary-foreground rounded-sm" />
-																)}
-															</div>
-															<span>
-																{typeof column
-																	.columnDef
-																	.header ===
-																"string"
-																	? column
-																			.columnDef
-																			.header
-																	: column.id}
-															</span>
-														</button>
+														<Tooltip key={column.id}>
+															<TooltipTrigger asChild>
+																<button
+																	type="button"
+																	onClick={() =>
+																		onGroupByChange(
+																			column.id,
+																		)
+																	}
+																	className={`flex items-center gap-2 w-full text-left hover:bg-accent px-2 py-1.5 rounded-sm text-sm transition-colors ${
+																		isSelected
+																			? "bg-accent"
+																			: ""
+																	}`}
+																>
+																	<div
+																		className={`w-4 h-4 rounded-sm border flex items-center justify-center ${
+																			isSelected
+																				? "bg-primary border-primary"
+																				: "border-input"
+																		}`}
+																	>
+																		{isSelected && (
+																			<div className="w-2 h-2 bg-primary-foreground rounded-sm" />
+																		)}
+																	</div>
+																	<span className="truncate">
+																		{getColumnLabel(column)}
+																	</span>
+																</button>
+															</TooltipTrigger>
+															<TooltipContent side="right" className="text-xs max-w-xs">
+																{getColumnLabel(column)}
+															</TooltipContent>
+														</Tooltip>
 													);
 												})}
 										</div>
@@ -309,7 +315,7 @@ export function TableSettingsMenu<T>({
 									type="button"
 									className="flex items-center justify-between w-full text-left hover:bg-accent px-3 py-2 rounded-sm text-sm transition-colors"
 								>
-									<span>Sort</span>
+									<span>{labels?.sort || "Sort"}</span>
 									<ChevronRight className="h-4 w-4 text-muted-foreground" />
 								</button>
 							</PopoverTrigger>
@@ -356,21 +362,16 @@ export function TableSettingsMenu<T>({
 													const sortedState =
 														column.getIsSorted();
 													return (
-														<div
-															key={column.id}
-															className="flex items-center justify-between gap-3 py-1 w-11/12"
-														>
+														<Tooltip key={column.id}>
+															<TooltipTrigger asChild>
+																<div
+																	key={column.id}
+																	className="flex items-center justify-between gap-3 py-1 w-11/12"
+																>
 															{/* Label kiri */}
 															<div className="min-w-0">
 																<div className="truncate text-xs font-medium text-foreground/90">
-																	{typeof column
-																		.columnDef
-																		.header ===
-																	"string"
-																		? column
-																				.columnDef
-																				.header
-																		: column.id}
+																	{getColumnLabel(column)}
 																</div>
 															</div>
 
@@ -461,6 +462,11 @@ export function TableSettingsMenu<T>({
 																</Tooltip>
 															</div>
 														</div>
+														</TooltipTrigger>
+														<TooltipContent side="left" className="text-xs max-w-xs">
+															Sort by {getColumnLabel(column)}
+														</TooltipContent>
+													</Tooltip>
 													);
 												})}
 										</div>
@@ -477,7 +483,7 @@ export function TableSettingsMenu<T>({
 								// TODO: Implement additional functionality
 							}}
 						>
-							<span>More Options</span>
+							<span>{labels?.moreOptions || "More Options"}</span>
 							<ChevronRight className="h-4 w-4 text-muted-foreground" />
 						</button>
 					)}

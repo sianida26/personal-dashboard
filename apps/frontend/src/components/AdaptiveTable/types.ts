@@ -22,7 +22,19 @@ export type AdaptiveColumnDef<T> = ColumnDef<T> & {
 	resizable?: boolean; // Override columnResizable for this column
 	visibilityToggle?: boolean; // Override columnVisibilityToggle for this column
 	sortable?: boolean; // Override sortable for this column
+	settingsLabel?: string; // Custom label for table settings menu (defaults to header)
 };
+
+export interface TableSettingsLabels {
+	columnVisibility?: string;
+	propertyVisibility?: string;
+	shownInTable?: string;
+	hidden?: string;
+	groupBy?: string;
+	groupByProperty?: string;
+	sort?: string;
+	moreOptions?: string;
+}
 
 export type AdaptiveTableProps<T> = {
 	columns: AdaptiveColumnDef<T>[];
@@ -59,6 +71,8 @@ export type AdaptiveTableProps<T> = {
 	tableHeight?: string; // Default: "100%", height of the table container
 	// Layout props
 	fitToParentWidth?: boolean; // Default: false, when true columns will shrink to fit parent width without horizontal scroll
+	// Custom labels for table settings
+	labels?: Partial<TableSettingsLabels>;
 };
 
 export interface TableState {

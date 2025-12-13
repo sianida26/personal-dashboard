@@ -704,6 +704,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 				sorting={sorting}
 				onSortingChange={setSorting}
 				headerActions={props.headerActions}
+				labels={props.labels}
 			/>
 
 			<div

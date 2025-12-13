@@ -2,6 +2,7 @@ import { Badge, Button } from "@repo/ui";
 import type { SortingState, Table } from "@tanstack/react-table";
 import type { ReactNode } from "react";
 import { TableSettingsMenu } from "./TableSettingsMenu";
+import type { TableSettingsLabels } from "./types";
 
 interface TableHeaderProps<T> {
 	title?: string;
@@ -20,6 +21,7 @@ interface TableHeaderProps<T> {
 	sorting: SortingState;
 	onSortingChange: (sorting: SortingState) => void;
 	headerActions?: ReactNode;
+	labels?: Partial<TableSettingsLabels>;
 }
 
 export function TableHeader<T>({
@@ -39,6 +41,7 @@ export function TableHeader<T>({
 	sorting,
 	onSortingChange,
 	headerActions,
+	labels,
 }: TableHeaderProps<T>) {
 	if (!showHeader) return null;
 
@@ -89,6 +92,7 @@ export function TableHeader<T>({
 						sortable={sortable}
 						sorting={sorting}
 						onSortingChange={onSortingChange}
+						labels={labels}
 					/>
 				)}
 				{headerActions ? headerActions : <Button size="sm">New</Button>}

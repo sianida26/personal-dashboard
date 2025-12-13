@@ -36,6 +36,7 @@ function RouteComponent() {
 			{
 				accessorKey: "atomicNumber",
 				header: "Atomic #",
+				settingsLabel: "Atomic Number",
 			},
 			{
 				accessorKey: "symbol",
@@ -46,6 +47,7 @@ function RouteComponent() {
 				header: "Name",
 				editable: true,
 				editType: "text",
+				settingsLabel: "Element Name",
 			},
 			{
 				accessorKey: "atomicMass",
@@ -149,6 +151,13 @@ function RouteComponent() {
 						);
 					}}
 					saveState="chemical-elements-table"
+					labels={{
+						columnVisibility: "Show/Hide Columns",
+						sort: "Order Elements",
+						groupBy: "Group Elements",
+						shownInTable: "Visible Properties",
+						hidden: "Hidden Properties",
+					}}
 				/>
 			</div>
 		</div>

@@ -25,6 +25,22 @@ const columns: AdaptiveColumnDef<User>[] = [
 />
 ```
 
+## Custom Labels
+
+You can customize the labels used in the table settings menu:
+
+```tsx
+<AdaptiveTable
+  columns={columns}
+  data={users}
+  labels={{
+    columnVisibility: "Show/Hide Columns",
+    sort: "Order By",
+    groupBy: "Categorize",
+  }}
+/>
+```
+
 ## Key Features
 
 ### 🚀 Performance
@@ -144,6 +160,19 @@ Row virtualization is **enabled by default** for optimal performance. It renders
 |------|------|---------|-------------|
 | `title` | `string` | `undefined` | Table title |
 | `headerActions` | `ReactNode` | `undefined` | Custom header actions |
+| `labels` | `Partial<TableSettingsLabels>` | `undefined` | Custom labels for table settings menu |
+
+### TableSettingsLabels
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `columnVisibility` | `string` | `"Column Visibility"` | Label for column visibility menu |
+| `propertyVisibility` | `string` | `"Property visibility"` | Header for visibility settings |
+| `shownInTable` | `string` | `"Shown in table"` | Label for visible columns section |
+| `hidden` | `string` | `"Hidden"` | Label for hidden columns section |
+| `groupBy` | `string` | `"Group By"` | Label for group by menu |
+| `groupByProperty` | `string` | `"Group by property"` | Header for group by settings |
+| `sort` | `string` | `"Sort"` | Label for sort menu |
+| `moreOptions` | `string` | `"More Options"` | Label for additional options menu |
 
 ### Pagination Props (when `pagination={true}`)
 | Prop | Type | Description |
@@ -195,6 +224,7 @@ type AdaptiveColumnDef<T> = ColumnDef<T> & {
   resizable?: boolean;
   visibilityToggle?: boolean;
   sortable?: boolean;
+  settingsLabel?: string; // Custom label for table settings menu (defaults to header)
 };
 ```
 
@@ -231,7 +261,9 @@ const columns: AdaptiveColumnDef<User>[] = [
       { label: "Active", value: "active", color: "#22c55e" },
       { label: "Inactive", value: "inactive", color: "#ef4444" },
     ],
+    settingsLabel: "User Status", // Custom label for settings menu
   },
+];
 ];
 ```
 

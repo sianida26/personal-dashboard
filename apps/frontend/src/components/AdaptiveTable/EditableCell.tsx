@@ -139,7 +139,7 @@ export const EditableCell = <T,>({
 				onKeyDown={handleKeyDown}
 				// biome-ignore lint/a11y/noAutofocus: required for inline editing
 				autoFocus
-				className="w-full h-full px-2 py-1 outline outline-2 outline-blue-500 bg-transparent"
+				className="w-full px-2 py-1 outline outline-2 outline-blue-500 bg-transparent focus:border-none focus:ring-0 min-h-[2rem]"
 			/>
 		);
 	}
