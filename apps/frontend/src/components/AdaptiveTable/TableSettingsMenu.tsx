@@ -8,9 +8,13 @@ import {
 	PopoverTrigger,
 	ScrollArea,
 	Separator,
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
 } from "@repo/ui";
 import type { SortingState, Table } from "@tanstack/react-table";
 import { ChevronRight, Settings } from "lucide-react";
+import { TbCaretDownFilled, TbCaretUpFilled } from "react-icons/tb";
 import type { AdaptiveColumnDef } from "./types";
 
 interface TableSettingsMenuProps<T> {
@@ -229,7 +233,7 @@ export function TableSettingsMenu<T>({
 										</h4>
 										{groupBy && (
 											<Button
-												variant="ghost"
+												variant="secondary"
 												size="sm"
 												onClick={() =>
 													onGroupByChange(null)
@@ -320,7 +324,7 @@ export function TableSettingsMenu<T>({
 										<h4 className="font-medium">Sort</h4>
 										{sorting.length > 0 && (
 											<Button
-												variant="ghost"
+												variant="secondary"
 												size="sm"
 												onClick={() =>
 													onSortingChange([])
@@ -354,53 +358,107 @@ export function TableSettingsMenu<T>({
 													return (
 														<div
 															key={column.id}
-															className="space-y-1"
+															className="flex items-center justify-between gap-3 py-1 w-11/12"
 														>
-															<div className="text-sm font-medium">
-																{typeof column
-																	.columnDef
-																	.header ===
-																"string"
-																	? column
-																			.columnDef
-																			.header
-																	: column.id}
+															{/* Label kiri */}
+															<div className="min-w-0">
+																<div className="truncate text-xs font-medium text-foreground/90">
+																	{typeof column
+																		.columnDef
+																		.header ===
+																	"string"
+																		? column
+																				.columnDef
+																				.header
+																		: column.id}
+																</div>
 															</div>
-															<div className="flex gap-1">
-																<Button
-																	variant={
-																		sortedState ===
-																		"asc"
-																			? "default"
-																			: "outline"
-																	}
-																	size="sm"
-																	onClick={() =>
-																		column.toggleSorting(
-																			false,
-																		)
-																	}
-																	className="flex-1 h-7 text-xs"
-																>
-																	🔼 Asc
-																</Button>
-																<Button
-																	variant={
-																		sortedState ===
-																		"desc"
-																			? "default"
-																			: "outline"
-																	}
-																	size="sm"
-																	onClick={() =>
-																		column.toggleSorting(
-																			true,
-																		)
-																	}
-																	className="flex-1 h-7 text-xs"
-																>
-																	🔽 Desc
-																</Button>
+
+															{/* Kontrol kanan */}
+															<div className="flex items-center gap-1">
+																<Tooltip>
+																	<TooltipTrigger
+																		asChild
+																	>
+																		<button
+																			type="button"
+																			onClick={() =>
+																				column.toggleSorting(
+																					false,
+																				)
+																			}
+																			className={[
+																				"inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium",
+																				"transition-colors",
+																				"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+																				sortedState ===
+																				"asc"
+																					? "bg-muted text-foreground"
+																					: "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
+																			].join(
+																				" ",
+																			)}
+																			aria-pressed={
+																				sortedState ===
+																				"asc"
+																			}
+																		>
+																			<TbCaretUpFilled className="h-3.5 w-3.5" />
+																			Asc
+																		</button>
+																	</TooltipTrigger>
+																	<TooltipContent
+																		side="top"
+																		className="text-xs"
+																	>
+																		Sort
+																		ascending
+																		(A → Z /
+																		1 → 9)
+																	</TooltipContent>
+																</Tooltip>
+
+																<Tooltip>
+																	<TooltipTrigger
+																		asChild
+																	>
+																		<button
+																			type="button"
+																			onClick={() =>
+																				column.toggleSorting(
+																					true,
+																				)
+																			}
+																			className={[
+																				"inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium",
+																				"transition-colors",
+																				"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+																				sortedState ===
+																				"desc"
+																					? "bg-muted text-foreground"
+																					: "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
+																			].join(
+																				" ",
+																			)}
+																			aria-pressed={
+																				sortedState ===
+																				"desc"
+																			}
+																		>
+																			<TbCaretDownFilled className="h-3.5 w-3.5" />
+																			Desc
+																		</button>
+																	</TooltipTrigger>
+																	<TooltipContent
+																		side="top"
+																		className="text-xs"
+																	>
+																		Sort
+																		descending
+																		(Z → A /
+																		9 → 1)
+																	</TooltipContent>
+																</Tooltip>
 															</div>
 														</div>
 													);
