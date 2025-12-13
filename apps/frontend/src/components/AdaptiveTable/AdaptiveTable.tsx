@@ -57,22 +57,22 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	// Reference for the scrollable container
 	const tableContainerRef = useRef<HTMLDivElement>(null);
 
-	// Track container width for fitToParentWidth
+	// Track container width for fit to parent
 	const [containerWidth, setContainerWidth] = useState<number>(0);
 
-	// Update container width on mount and resize
+	// Update container dimensions on mount and resize
 	useEffect(() => {
 		if (!fitToParentWidth || !tableContainerRef.current) return;
 
-		const updateWidth = () => {
+		const updateDimensions = () => {
 			if (tableContainerRef.current) {
 				setContainerWidth(tableContainerRef.current.clientWidth);
 			}
 		};
 
-		updateWidth();
+		updateDimensions();
 
-		const resizeObserver = new ResizeObserver(updateWidth);
+		const resizeObserver = new ResizeObserver(updateDimensions);
 		resizeObserver.observe(tableContainerRef.current);
 
 		return () => resizeObserver.disconnect();
@@ -108,7 +108,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 					)
 				: "",
 			cell: ({ row }) => (
-				<div className="px-1 flex items-center justify-center gap-1">
+				<div className="px-1 flex items-center justify-center gap-1 ps-2.5 pe-2">
 					{rowSelectable && (
 						<IndeterminateCheckbox
 							checked={row.getIsSelected()}
@@ -131,12 +131,12 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 							className="p-1 hover:bg-accent rounded transition-colors"
 							aria-label="Show details"
 						>
-							<ChevronRight className="h-4 w-4 text-gray-500" />
+							<ChevronRight className="h-4 w-4 text-muted-foreground" />
 						</button>
 					)}
 				</div>
 			),
-			size: rowSelectable && showDetail ? 80 : 50,
+			size: rowSelectable && showDetail ? 100 : 50,
 			enableResizing: false,
 			enableHiding: false,
 			enableSorting: false,
@@ -342,6 +342,8 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		[fitToParentWidth, containerWidth, table],
 	);
 
+	// Note: Row heights now auto-adjust to content, no proportional height needed
+
 	// Handle drag end for column reordering
 	const handleDragEnd = (event: DragEndEvent) => {
 		const { active, over } = event;
@@ -365,7 +367,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	const rowVirtualizer = useVirtualizer({
 		count: rows.length,
 		getScrollElement: () => tableContainerRef.current,
-		estimateSize: () => 53, // Estimate row height
+		estimateSize: () => 40,
 		overscan: 10,
 		enabled: rowVirtualization && !loading && !groupBy,
 	});
@@ -411,7 +413,6 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 						cell={cell}
 						columnResizable={props.columnResizable}
 						rowIndex={rowIndex}
-						fitToParentWidth={fitToParentWidth}
 						proportionalWidth={proportionalWidth}
 					/>
 				</SortableContext>
@@ -421,7 +422,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		return (
 			<td
 				key={cell.id}
-				className="border"
+				className="border p-1"
 				style={{
 					...(isVirtualized
 						? {
@@ -435,6 +436,8 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 									(props.columnResizable
 										? `calc(var(--col-${cell.column.id}-size) * 1px)`
 										: undefined),
+								wordWrap: "break-word",
+								whiteSpace: "normal",
 							}),
 				}}
 			>
@@ -610,16 +613,16 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 																	groupValue,
 																)
 															}
-															className="flex items-center gap-2 w-full text-left font-medium"
+															className="flex items-center gap-2 w-full text-left font-medium text-sm"
 														>
 															<ChevronRight
-																className={`h-4 w-4 transition-transform ${
+																className={`h-4 w-4 text-sm transition-transform ${
 																	isExpanded
 																		? "rotate-90"
 																		: ""
 																}`}
 															/>
-															<span>
+															<span className="text-sm">
 																{groupValue} (
 																{
 																	groupItems.length
@@ -709,18 +712,10 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 
 			<div
 				ref={tableContainerRef}
-				className={
-					fitToParentWidth
-						? "overflow-y-auto overflow-x-hidden"
-						: "overflow-auto"
-				}
+				className="flex-1 min-h-0 relative"
 				style={{
-					...(rowVirtualization && !groupBy
-						? {
-								position: "relative",
-								height: tableHeight,
-							}
-						: {}),
+					height: tableHeight,
+					overflow: "hidden",
 				}}
 			>
 				{props.columnOrderable ? (

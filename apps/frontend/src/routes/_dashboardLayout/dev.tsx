@@ -36,7 +36,6 @@ function RouteComponent() {
 			{
 				accessorKey: "atomicNumber",
 				header: "Atomic #",
-				settingsLabel: "Atomic Number",
 			},
 			{
 				accessorKey: "symbol",
@@ -47,7 +46,6 @@ function RouteComponent() {
 				header: "Name",
 				editable: true,
 				editType: "text",
-				settingsLabel: "Element Name",
 			},
 			{
 				accessorKey: "atomicMass",

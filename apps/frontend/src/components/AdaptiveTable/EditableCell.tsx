@@ -54,7 +54,11 @@ export const EditableCell = <T,>({
 	};
 
 	if (!columnDef.editable) {
-		return <>{flexRender(columnDef.cell, cell.getContext())}</>;
+		return (
+			<div className="text-sm py-1">
+				{flexRender(columnDef.cell, cell.getContext())}
+			</div>
+		);
 	}
 
 	// Render as chip/badge for editable cells
@@ -71,11 +75,11 @@ export const EditableCell = <T,>({
 					<button
 						type="button"
 						onClick={() => setIsEditing(true)}
-						className="cursor-pointer hover:bg-accent/50 px-2 py-1 min-h-[2rem] flex items-center justify-between w-full text-left group"
+						className="cursor-pointer hover:bg-accent/50 py-1 flex items-center justify-between w-full text-left group"
 					>
 						<Badge
 							variant="secondary"
-							className={columnDef.cellClassName}
+							className={`text-sm flex justify-between item-start gap-2 w-full ${columnDef.cellClassName || ""}`}
 							style={
 								cellColor
 									? {
@@ -85,9 +89,9 @@ export const EditableCell = <T,>({
 									: undefined
 							}
 						>
-							{displayValue}
+							<span className="clamp-1">{displayValue}</span>
+							<ChevronDown className="h-3 w-3 opacity-50 group-hover:opacity-100 transition-opacity" />
 						</Badge>
-						<ChevronDown className="h-3 w-3 opacity-50 group-hover:opacity-100 transition-opacity" />
 					</button>
 				</PopoverTrigger>
 				<PopoverContent
@@ -107,6 +111,7 @@ export const EditableCell = <T,>({
 								) : (
 									<Badge
 										variant="secondary"
+										className="text-sm"
 										style={
 											option.color
 												? {
@@ -137,22 +142,21 @@ export const EditableCell = <T,>({
 				onChange={(e) => setValue(e.target.value)}
 				onBlur={handleSave}
 				onKeyDown={handleKeyDown}
-				// biome-ignore lint/a11y/noAutofocus: required for inline editing
-				autoFocus
-				className="w-full px-2 py-1 outline outline-2 outline-blue-500 bg-transparent focus:outline-none"
+				className="w-full bg-transparent py-1 text-sm outline-none focus:outline-none focus:ring-0 leading-normal"
 			/>
 		);
 	}
 
 	// Text type shows plain value, not a chip
 	return (
-		<button
-			type="button"
+		// biome-ignore lint/a11y/noStaticElementInteractions: Editable cell needs onClick for editing
+		// biome-ignore lint/a11y/useKeyWithClickEvents: Editable cell needs onClick for editing
+		<div
 			onClick={() => setIsEditing(true)}
-			className="cursor-pointer hover:bg-accent/50 px-2 py-1 min-h-[2rem] flex items-center w-full text-left"
+			className="cursor-text py-1 w-full text-sm leading-normal"
 		>
 			{displayValue}
-		</button>
+		</div>
 	);
 };
 

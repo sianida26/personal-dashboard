@@ -42,10 +42,12 @@ export function TableSettingsMenu<T>({
 	onSortingChange,
 	labels,
 }: TableSettingsMenuProps<T>) {
-	const getColumnLabel = (column: ReturnType<Table<T>["getAllLeafColumns"]>[0]) => {
-		const columnDef = column.columnDef as AdaptiveColumnDef<T>;
-		return columnDef.settingsLabel || 
-			(typeof column.columnDef.header === "string" ? column.columnDef.header : column.id);
+	const getColumnLabel = (
+		column: ReturnType<Table<T>["getAllLeafColumns"]>[0],
+	) => {
+		return typeof column.columnDef.header === "string"
+			? column.columnDef.header
+			: column.id;
 	};
 	return (
 		<Popover>
@@ -131,13 +133,20 @@ export function TableSettingsMenu<T>({
 																		}
 																	/>
 																	<Label className="text-sm font-normal cursor-pointer flex-1 truncate">
-																		{getColumnLabel(column)}
+																		{getColumnLabel(
+																			column,
+																		)}
 																	</Label>
 																</button>
 															</div>
 														</TooltipTrigger>
-														<TooltipContent side="right" className="text-xs max-w-xs">
-															{getColumnLabel(column)}
+														<TooltipContent
+															side="right"
+															className="text-xs max-w-xs"
+														>
+															{getColumnLabel(
+																column,
+															)}
 														</TooltipContent>
 													</Tooltip>
 												))}
@@ -180,8 +189,12 @@ export function TableSettingsMenu<T>({
 														);
 													})
 													.map((column) => (
-														<Tooltip key={column.id}>
-															<TooltipTrigger asChild>
+														<Tooltip
+															key={column.id}
+														>
+															<TooltipTrigger
+																asChild
+															>
 																<div className="flex items-center">
 																	<button
 																		type="button"
@@ -198,13 +211,20 @@ export function TableSettingsMenu<T>({
 																			}
 																		/>
 																		<Label className="text-sm font-normal cursor-pointer flex-1 truncate">
-																			{getColumnLabel(column)}
+																			{getColumnLabel(
+																				column,
+																			)}
 																		</Label>
 																	</button>
 																</div>
 															</TooltipTrigger>
-															<TooltipContent side="right" className="text-xs max-w-xs">
-																{getColumnLabel(column)}
+															<TooltipContent
+																side="right"
+																className="text-xs max-w-xs"
+															>
+																{getColumnLabel(
+																	column,
+																)}
 															</TooltipContent>
 														</Tooltip>
 													))}
@@ -265,8 +285,12 @@ export function TableSettingsMenu<T>({
 													const isSelected =
 														groupBy === column.id;
 													return (
-														<Tooltip key={column.id}>
-															<TooltipTrigger asChild>
+														<Tooltip
+															key={column.id}
+														>
+															<TooltipTrigger
+																asChild
+															>
 																<button
 																	type="button"
 																	onClick={() =>
@@ -292,12 +316,19 @@ export function TableSettingsMenu<T>({
 																		)}
 																	</div>
 																	<span className="truncate">
-																		{getColumnLabel(column)}
+																		{getColumnLabel(
+																			column,
+																		)}
 																	</span>
 																</button>
 															</TooltipTrigger>
-															<TooltipContent side="right" className="text-xs max-w-xs">
-																{getColumnLabel(column)}
+															<TooltipContent
+																side="right"
+																className="text-xs max-w-xs"
+															>
+																{getColumnLabel(
+																	column,
+																)}
 															</TooltipContent>
 														</Tooltip>
 													);
@@ -362,111 +393,135 @@ export function TableSettingsMenu<T>({
 													const sortedState =
 														column.getIsSorted();
 													return (
-														<Tooltip key={column.id}>
-															<TooltipTrigger asChild>
+														<Tooltip
+															key={column.id}
+														>
+															<TooltipTrigger
+																asChild
+															>
 																<div
-																	key={column.id}
+																	key={
+																		column.id
+																	}
 																	className="flex items-center justify-between gap-3 py-1 w-11/12"
 																>
-															{/* Label kiri */}
-															<div className="min-w-0">
-																<div className="truncate text-xs font-medium text-foreground/90">
-																	{getColumnLabel(column)}
+																	{/* Label kiri */}
+																	<div className="min-w-0">
+																		<div className="truncate text-xs font-medium text-foreground/90">
+																			{getColumnLabel(
+																				column,
+																			)}
+																		</div>
+																	</div>
+
+																	{/* Kontrol kanan */}
+																	<div className="flex items-center gap-1">
+																		<Tooltip>
+																			<TooltipTrigger
+																				asChild
+																			>
+																				<button
+																					type="button"
+																					onClick={() =>
+																						column.toggleSorting(
+																							false,
+																						)
+																					}
+																					className={[
+																						"inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium",
+																						"transition-colors",
+																						"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+																						sortedState ===
+																						"asc"
+																							? "bg-muted text-foreground"
+																							: "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
+																					].join(
+																						" ",
+																					)}
+																					aria-pressed={
+																						sortedState ===
+																						"asc"
+																					}
+																				>
+																					<TbCaretUpFilled className="h-3.5 w-3.5" />
+																					Asc
+																				</button>
+																			</TooltipTrigger>
+																			<TooltipContent
+																				side="top"
+																				className="text-xs"
+																			>
+																				Sort
+																				ascending
+																				(A
+																				→
+																				Z
+																				/
+																				1
+																				→
+																				9)
+																			</TooltipContent>
+																		</Tooltip>
+
+																		<Tooltip>
+																			<TooltipTrigger
+																				asChild
+																			>
+																				<button
+																					type="button"
+																					onClick={() =>
+																						column.toggleSorting(
+																							true,
+																						)
+																					}
+																					className={[
+																						"inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium",
+																						"transition-colors",
+																						"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+																						sortedState ===
+																						"desc"
+																							? "bg-muted text-foreground"
+																							: "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
+																					].join(
+																						" ",
+																					)}
+																					aria-pressed={
+																						sortedState ===
+																						"desc"
+																					}
+																				>
+																					<TbCaretDownFilled className="h-3.5 w-3.5" />
+																					Desc
+																				</button>
+																			</TooltipTrigger>
+																			<TooltipContent
+																				side="top"
+																				className="text-xs"
+																			>
+																				Sort
+																				descending
+																				(Z
+																				→
+																				A
+																				/
+																				9
+																				→
+																				1)
+																			</TooltipContent>
+																		</Tooltip>
+																	</div>
 																</div>
-															</div>
-
-															{/* Kontrol kanan */}
-															<div className="flex items-center gap-1">
-																<Tooltip>
-																	<TooltipTrigger
-																		asChild
-																	>
-																		<button
-																			type="button"
-																			onClick={() =>
-																				column.toggleSorting(
-																					false,
-																				)
-																			}
-																			className={[
-																				"inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium",
-																				"transition-colors",
-																				"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-																				sortedState ===
-																				"asc"
-																					? "bg-muted text-foreground"
-																					: "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
-																			].join(
-																				" ",
-																			)}
-																			aria-pressed={
-																				sortedState ===
-																				"asc"
-																			}
-																		>
-																			<TbCaretUpFilled className="h-3.5 w-3.5" />
-																			Asc
-																		</button>
-																	</TooltipTrigger>
-																	<TooltipContent
-																		side="top"
-																		className="text-xs"
-																	>
-																		Sort
-																		ascending
-																		(A → Z /
-																		1 → 9)
-																	</TooltipContent>
-																</Tooltip>
-
-																<Tooltip>
-																	<TooltipTrigger
-																		asChild
-																	>
-																		<button
-																			type="button"
-																			onClick={() =>
-																				column.toggleSorting(
-																					true,
-																				)
-																			}
-																			className={[
-																				"inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium",
-																				"transition-colors",
-																				"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-																				sortedState ===
-																				"desc"
-																					? "bg-muted text-foreground"
-																					: "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
-																			].join(
-																				" ",
-																			)}
-																			aria-pressed={
-																				sortedState ===
-																				"desc"
-																			}
-																		>
-																			<TbCaretDownFilled className="h-3.5 w-3.5" />
-																			Desc
-																		</button>
-																	</TooltipTrigger>
-																	<TooltipContent
-																		side="top"
-																		className="text-xs"
-																	>
-																		Sort
-																		descending
-																		(Z → A /
-																		9 → 1)
-																	</TooltipContent>
-																</Tooltip>
-															</div>
-														</div>
-														</TooltipTrigger>
-														<TooltipContent side="left" className="text-xs max-w-xs">
-															Sort by {getColumnLabel(column)}
-														</TooltipContent>
-													</Tooltip>
+															</TooltipTrigger>
+															<TooltipContent
+																side="left"
+																className="text-xs max-w-xs"
+															>
+																Sort by{" "}
+																{getColumnLabel(
+																	column,
+																)}
+															</TooltipContent>
+														</Tooltip>
 													);
 												})}
 										</div>

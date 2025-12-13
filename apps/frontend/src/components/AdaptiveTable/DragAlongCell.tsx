@@ -9,13 +9,11 @@ const DragAlongCell = <T,>({
 	cell,
 	columnResizable,
 	rowIndex,
-	fitToParentWidth = false,
 	proportionalWidth,
 }: {
 	cell: Cell<T, unknown>;
 	columnResizable?: boolean;
 	rowIndex: number;
-	fitToParentWidth?: boolean;
 	proportionalWidth?: string | number;
 }) => {
 	const columnDef = cell.column.columnDef as AdaptiveColumnDef<T>;
@@ -40,13 +38,10 @@ const DragAlongCell = <T,>({
 				? `calc(var(--col-${cell.column.id}-size) * 1px)`
 				: cell.column.getSize()),
 		zIndex: isDragging ? 1 : 0,
-		...(fitToParentWidth
-			? { overflow: "hidden", textOverflow: "ellipsis" }
-			: {}),
 	};
 
 	return (
-		<td style={style} ref={setNodeRef} className="border">
+		<td style={style} ref={setNodeRef} className="border p-1">
 			<EditableCell cell={cell} rowIndex={rowIndex} />
 		</td>
 	);

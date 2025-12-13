@@ -115,7 +115,7 @@ export const TableHeaderCell = <T,>({
 			colSpan={header.colSpan}
 			ref={sortableHook?.setNodeRef}
 			style={style}
-			className={`border-y border-l relative ${
+			className={`border-y border-l relative p-1 ${
 				isResizable ? "" : "border-r"
 			} ${
 				draggable && !isActionsColumn && isOrderable
@@ -131,7 +131,7 @@ export const TableHeaderCell = <T,>({
 		>
 			<ContextMenu>
 				<ContextMenuTrigger asChild>
-					<div className="flex items-center">
+					<div className="flex items-center text-sm font-semibold leading-normal">
 						{header.isPlaceholder
 							? null
 							: flexRender(
@@ -139,7 +139,7 @@ export const TableHeaderCell = <T,>({
 									header.getContext(),
 								)}
 						{isSortable && sortedState && (
-							<span className="ml-1">
+							<span className="ml-1 text-sm">
 								{sortedState === "asc" ? "🔼" : "🔽"}
 							</span>
 						)}
@@ -148,7 +148,10 @@ export const TableHeaderCell = <T,>({
 				<ContextMenuContent>
 					{hasVisibilityToggle && (
 						<ContextMenuItem
-							onSelect={() => header.column.toggleVisibility(false)}
+							className="text-sm"
+							onSelect={() =>
+								header.column.toggleVisibility(false)
+							}
 						>
 							Hide column
 						</ContextMenuItem>
@@ -157,18 +160,26 @@ export const TableHeaderCell = <T,>({
 						<>
 							{hasVisibilityToggle && <Separator />}
 							<ContextMenuItem
-								onSelect={() => header.column.toggleSorting(false)}
+								className="text-sm"
+								onSelect={() =>
+									header.column.toggleSorting(false)
+								}
 							>
 								Sort Ascending
 							</ContextMenuItem>
 							<ContextMenuItem
-								onSelect={() => header.column.toggleSorting(true)}
+								className="text-sm"
+								onSelect={() =>
+									header.column.toggleSorting(true)
+								}
 							>
 								Sort Descending
 							</ContextMenuItem>
 							{sortedState && (
 								<ContextMenuItem
-									onSelect={() => header.column.clearSorting()}
+									onSelect={() =>
+										header.column.clearSorting()
+									}
 								>
 									Clear Sort
 								</ContextMenuItem>
@@ -177,7 +188,9 @@ export const TableHeaderCell = <T,>({
 					)}
 					{canGroup && !isActionsColumn && (
 						<>
-							{(hasVisibilityToggle || isSortable) && <Separator />}
+							{(hasVisibilityToggle || isSortable) && (
+								<Separator />
+							)}
 							<ContextMenuItem
 								onSelect={() => {
 									if (onGroupByChange) {
@@ -196,7 +209,9 @@ export const TableHeaderCell = <T,>({
 						</>
 					)}
 					{!columnVisibilityToggle && !canGroup && !isSortable && (
-						<ContextMenuItem>Dummy Menu Item</ContextMenuItem>
+						<ContextMenuItem className="text-sm">
+							Dummy Menu Item
+						</ContextMenuItem>
 					)}
 				</ContextMenuContent>
 			</ContextMenu>
@@ -206,9 +221,9 @@ export const TableHeaderCell = <T,>({
 					onDoubleClick={() => header.column.resetSize()}
 					onMouseDown={header.getResizeHandler()}
 					onTouchStart={header.getResizeHandler()}
-					className={`absolute right-0 top-0 h-full w-1 cursor-col-resize select-none touch-none border-r border-gray-200 hover:border-blue-500 hover:border-r-2 bg-transparent p-0 ${
+					className={`absolute right-0 top-0 h-full w-1 cursor-col-resize select-none touch-none border-r border-border hover:border-primary hover:border-r-2 bg-transparent p-0 ${
 						header.column.getIsResizing()
-							? "border-blue-500 border-r-2"
+							? "border-primary border-r-2"
 							: ""
 					}`}
 					style={{
