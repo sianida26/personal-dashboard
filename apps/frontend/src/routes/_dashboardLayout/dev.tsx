@@ -151,13 +151,6 @@ function RouteComponent() {
 						);
 					}}
 					saveState="chemical-elements-table"
-					labels={{
-						columnVisibility: "Show/Hide Columns",
-						sort: "Order Elements",
-						groupBy: "Group Elements",
-						shownInTable: "Visible Properties",
-						hidden: "Hidden Properties",
-					}}
 				/>
 			</div>
 		</div>
