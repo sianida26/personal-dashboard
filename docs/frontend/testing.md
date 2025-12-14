@@ -89,7 +89,7 @@ describe('Button', () => {
   it('calls onClick handler when clicked', () => {
     const handleClick = vi.fn();
     render(<Button onClick={handleClick}>Click me</Button>);
-    
+
     fireEvent.click(screen.getByRole('button'));
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
@@ -142,23 +142,23 @@ const renderWithAuth = (component: React.ReactElement, authValue = {}) => {
 describe('UserProfile', () => {
   it('displays user information when authenticated', () => {
     renderWithAuth(<UserProfile />);
-    
+
     expect(screen.getByText('John Doe')).toBeInTheDocument();
     expect(screen.getByText('john@example.com')).toBeInTheDocument();
   });
 
   it('shows loading state when user is loading', () => {
     renderWithAuth(<UserProfile />, { isLoading: true });
-    
+
     expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
   });
 
   it('shows login prompt when not authenticated', () => {
-    renderWithAuth(<UserProfile />, { 
+    renderWithAuth(<UserProfile />, {
       isAuthenticated: false,
       user: null,
     });
-    
+
     expect(screen.getByText('Please log in')).toBeInTheDocument();
   });
 });
@@ -175,10 +175,10 @@ describe('LoginForm', () => {
   it('validates required fields', async () => {
     const user = userEvent.setup();
     render(<LoginForm onSubmit={vi.fn()} />);
-    
+
     const submitButton = screen.getByRole('button', { name: 'Login' });
     await user.click(submitButton);
-    
+
     expect(screen.getByText('Username is required')).toBeInTheDocument();
     expect(screen.getByText('Password is required')).toBeInTheDocument();
   });
@@ -187,11 +187,11 @@ describe('LoginForm', () => {
     const user = userEvent.setup();
     const mockSubmit = vi.fn();
     render(<LoginForm onSubmit={mockSubmit} />);
-    
+
     await user.type(screen.getByLabelText('Username'), 'testuser');
     await user.type(screen.getByLabelText('Password'), 'password123');
     await user.click(screen.getByRole('button', { name: 'Login' }));
-    
+
     await waitFor(() => {
       expect(mockSubmit).toHaveBeenCalledWith({
         username: 'testuser',
@@ -204,11 +204,11 @@ describe('LoginForm', () => {
     const user = userEvent.setup();
     const mockSubmit = vi.fn().mockRejectedValue(new Error('Invalid credentials'));
     render(<LoginForm onSubmit={mockSubmit} />);
-    
+
     await user.type(screen.getByLabelText('Username'), 'testuser');
     await user.type(screen.getByLabelText('Password'), 'wrongpassword');
     await user.click(screen.getByRole('button', { name: 'Login' }));
-    
+
     await waitFor(() => {
       expect(screen.getByText('Invalid credentials')).toBeInTheDocument();
     });
@@ -232,7 +232,7 @@ const wrapper = ({ children }: { children: React.ReactNode }) => (
 describe('useAuth', () => {
   it('returns initial auth state', () => {
     const { result } = renderHook(() => useAuth(), { wrapper });
-    
+
     expect(result.current.isAuthenticated).toBe(false);
     expect(result.current.user).toBeNull();
     expect(result.current.isLoading).toBe(false);
@@ -240,28 +240,28 @@ describe('useAuth', () => {
 
   it('handles successful login', async () => {
     const { result } = renderHook(() => useAuth(), { wrapper });
-    
+
     await act(async () => {
       await result.current.login({ username: 'test', password: 'test' });
     });
-    
+
     expect(result.current.isAuthenticated).toBe(true);
     expect(result.current.user).toBeDefined();
   });
 
   it('handles logout', async () => {
     const { result } = renderHook(() => useAuth(), { wrapper });
-    
+
     // First login
     await act(async () => {
       await result.current.login({ username: 'test', password: 'test' });
     });
-    
+
     // Then logout
     await act(async () => {
       await result.current.logout();
     });
-    
+
     expect(result.current.isAuthenticated).toBe(false);
     expect(result.current.user).toBeNull();
   });
@@ -414,9 +414,9 @@ describe('UsersPage', () => {
 
   it('displays users table', async () => {
     renderWithProviders(<UsersPage />);
-    
+
     expect(screen.getByText('Loading...')).toBeInTheDocument();
-    
+
     await waitFor(() => {
       expect(screen.getByText('John Doe')).toBeInTheDocument();
       expect(screen.getByText('Jane Smith')).toBeInTheDocument();
@@ -426,13 +426,13 @@ describe('UsersPage', () => {
   it('handles create user action', async () => {
     const user = userEvent.setup();
     renderWithProviders(<UsersPage />);
-    
+
     await waitFor(() => {
       expect(screen.getByText('John Doe')).toBeInTheDocument();
     });
-    
+
     await user.click(screen.getByRole('button', { name: 'Create User' }));
-    
+
     expect(screen.getByText('Create User Modal')).toBeInTheDocument();
   });
 });
@@ -511,7 +511,7 @@ expect.extend({
       message: () => `expected element ${pass ? 'not ' : ''}to be in the document`,
     };
   },
-  
+
   toHaveClass(received, className) {
     const pass = received.classList.contains(className);
     return {
@@ -570,22 +570,22 @@ import { test, expect } from '@playwright/test';
 test.describe('Login Flow', () => {
   test('should login with valid credentials', async ({ page }) => {
     await page.goto('/login');
-    
+
     await page.fill('input[name="username"]', 'testuser');
     await page.fill('input[name="password"]', 'password123');
     await page.click('button[type="submit"]');
-    
+
     await expect(page).toHaveURL('/dashboard');
     await expect(page.locator('text=Welcome back')).toBeVisible();
   });
 
   test('should show error with invalid credentials', async ({ page }) => {
     await page.goto('/login');
-    
+
     await page.fill('input[name="username"]', 'testuser');
     await page.fill('input[name="password"]', 'wrongpassword');
     await page.click('button[type="submit"]');
-    
+
     await expect(page.locator('text=Invalid credentials')).toBeVisible();
   });
 });
@@ -603,14 +603,14 @@ export const measurePerformance = async (fn: () => Promise<void>, name: string) 
   await fn();
   const end = performance.now();
   const duration = end - start;
-  
+
   console.log(`${name} took ${duration.toFixed(2)}ms`);
-  
+
   // Assert performance thresholds
   if (duration > 1000) {
     console.warn(`${name} took longer than expected: ${duration.toFixed(2)}ms`);
   }
-  
+
   return duration;
 };
 
@@ -622,7 +622,7 @@ it('should load users quickly', async () => {
       expect(screen.getByText('John Doe')).toBeInTheDocument();
     });
   }, 'Users page load');
-  
+
   expect(duration).toBeLessThan(500); // Should load within 500ms
 });
 ```
@@ -710,18 +710,18 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: dsg-owned
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'npm'
-      
+
       - run: npm ci
       - run: npm run test
       - run: npm run test:e2e
-      
+
       - name: Upload coverage
         uses: codecov/codecov-action@v3
         with:
