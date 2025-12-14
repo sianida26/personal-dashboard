@@ -29,8 +29,7 @@ const checkPermission = (...permissions: ExtendedPermissionCodeWithAll[]) =>
 				if (permissions.includes("*")) {
 					span.setAttribute("permission.result", "allowed_wildcard");
 					span.setStatus({ code: SpanStatusCode.OK });
-					await next();
-					return;
+					return await next();
 				}
 
 				const currentUser = c.var.currentUser;
@@ -51,8 +50,9 @@ const checkPermission = (...permissions: ExtendedPermissionCodeWithAll[]) =>
 					) {
 						span.setAttribute("permission.result", "allowed");
 						span.setStatus({ code: SpanStatusCode.OK });
-						await next();
-					} else if (permissions.includes("guest-only")) {
+						return await next();
+					}
+					if (permissions.includes("guest-only")) {
 						// Track permission denial
 						permissionMetrics.permissionDenials.add(1, {
 							reason: "authenticated_user_on_guest_route",
@@ -64,39 +64,38 @@ const checkPermission = (...permissions: ExtendedPermissionCodeWithAll[]) =>
 						);
 						span.setStatus({ code: SpanStatusCode.ERROR });
 						// Guest-only routes should return 401 for authenticated users (original behavior)
-						unauthorized();
-					} else {
-						// Track permission denial
-						permissionMetrics.permissionDenials.add(1, {
-							reason: "insufficient_permissions",
-							route: c.req.path,
-						});
-						span.setAttribute(
-							"permission.result",
-							"denied_insufficient",
-						);
-						span.setStatus({ code: SpanStatusCode.ERROR });
-						// User exists but doesn't have the required permissions
-						forbidden();
+						return unauthorized();
 					}
-				} else if (permissions.includes("guest-only")) {
-					span.setAttribute("permission.result", "allowed_guest");
-					span.setStatus({ code: SpanStatusCode.OK });
-					await next();
-				} else {
 					// Track permission denial
 					permissionMetrics.permissionDenials.add(1, {
-						reason: "not_authenticated",
+						reason: "insufficient_permissions",
 						route: c.req.path,
 					});
 					span.setAttribute(
 						"permission.result",
-						"denied_not_authenticated",
+						"denied_insufficient",
 					);
 					span.setStatus({ code: SpanStatusCode.ERROR });
-					// No current user found, trigger unauthorized error
-					unauthorized();
+					// User exists but doesn't have the required permissions
+					return forbidden();
 				}
+				if (permissions.includes("guest-only")) {
+					span.setAttribute("permission.result", "allowed_guest");
+					span.setStatus({ code: SpanStatusCode.OK });
+					return await next();
+				}
+				// Track permission denial
+				permissionMetrics.permissionDenials.add(1, {
+					reason: "not_authenticated",
+					route: c.req.path,
+				});
+				span.setAttribute(
+					"permission.result",
+					"denied_not_authenticated",
+				);
+				span.setStatus({ code: SpanStatusCode.ERROR });
+				// No current user found, trigger unauthorized error
+				return unauthorized();
 			} catch (error) {
 				span.recordException(error as Error);
 				span.setStatus({ code: SpanStatusCode.ERROR });
