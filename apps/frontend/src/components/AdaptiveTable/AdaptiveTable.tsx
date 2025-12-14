@@ -113,7 +113,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 					<div className="flex items-center justify-center gap-0.5">
 						{rowSelectable && (
 							<div
-								className={`transition-opacity ${isSelected ? "opacity-100" : "opacity-0 group-hover/row:opacity-100"}`}
+								className={`${isSelected ? "opacity-100" : "opacity-0 group-hover/row:opacity-100"}`}
 							>
 								<IndeterminateCheckbox
 									checked={isSelected}
