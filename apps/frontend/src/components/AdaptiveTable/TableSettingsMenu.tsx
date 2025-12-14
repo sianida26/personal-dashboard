@@ -1,20 +1,26 @@
 import {
 	Button,
 	Checkbox,
-	Input,
-	Label,
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-	ScrollArea,
-	Separator,
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
+	DropdownMenuTrigger,
 } from "@repo/ui";
 import type { SortingState, Table } from "@tanstack/react-table";
-import { ChevronRight, Settings } from "lucide-react";
-import { TbCaretDownFilled, TbCaretUpFilled } from "react-icons/tb";
+import {
+	ArrowDownAZ,
+	ArrowUpAZ,
+	Check,
+	Eye,
+	Group,
+	Minus,
+	Settings,
+	X,
+} from "lucide-react";
 import type { AdaptiveColumnDef, TableSettingsLabels } from "./types";
 
 interface TableSettingsMenuProps<T> {
@@ -49,501 +55,278 @@ export function TableSettingsMenu<T>({
 			? column.columnDef.header
 			: column.id;
 	};
+
+	// Get visible columns for column visibility section
+	const visibleColumns = table.getAllLeafColumns().filter((column) => {
+		const columnDef = column.columnDef as AdaptiveColumnDef<T>;
+		const hasVisibilityToggle =
+			columnDef.visibilityToggle ?? columnVisibilityToggle;
+		return (
+			column.getIsVisible() &&
+			column.id !== "_actions" &&
+			hasVisibilityToggle !== false
+		);
+	});
+
+	// Get hidden columns
+	const hiddenColumns = table.getAllLeafColumns().filter((column) => {
+		const columnDef = column.columnDef as AdaptiveColumnDef<T>;
+		const hasVisibilityToggle =
+			columnDef.visibilityToggle ?? columnVisibilityToggle;
+		return (
+			!column.getIsVisible() &&
+			column.id !== "_actions" &&
+			hasVisibilityToggle !== false
+		);
+	});
+
+	// Get sortable columns
+	const sortableColumns = table.getAllLeafColumns().filter((column) => {
+		const columnDef = column.columnDef as AdaptiveColumnDef<T>;
+		const isSortable = columnDef.sortable ?? sortable;
+		return column.id !== "_actions" && isSortable;
+	});
+
+	// Get groupable columns
+	const groupableColumns = table
+		.getAllLeafColumns()
+		.filter((column) => column.id !== "_actions");
+
 	return (
-		<Popover>
-			<PopoverTrigger asChild>
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
 				<Button variant="outline" size="sm">
 					<Settings className="h-4 w-4" />
 				</Button>
-			</PopoverTrigger>
-			<PopoverContent className="w-48 p-1" align="end">
-				<div className="space-y-0.5">
-					<Popover>
-						<PopoverTrigger asChild>
-							<button
-								type="button"
-								className="flex items-center justify-between w-full text-left hover:bg-accent px-3 py-2 rounded-sm text-sm transition-colors"
-							>
-								<span>
-									{labels?.columnVisibility ||
-										"Column Visibility"}
-								</span>
-								<ChevronRight className="h-4 w-4 text-muted-foreground" />
-							</button>
-						</PopoverTrigger>
-						<PopoverContent
-							className="w-64"
-							align="start"
-							side="right"
-							sideOffset={4}
-						>
-							<div className="space-y-4">
-								<div>
-									<h4 className="font-medium mb-3">
-										{labels?.propertyVisibility ||
-											"Property visibility"}
-									</h4>
-									<div className="relative mb-3">
-										<Input
-											placeholder="Search for a property..."
-											className="h-9"
-										/>
-									</div>
-								</div>
-								<Separator />
-								<div>
-									<p className="text-sm text-muted-foreground mb-2">
-										{labels?.shownInTable ||
-											"Shown in table"}
-									</p>
-									<ScrollArea className="h-48">
-										<div className="space-y-1">
-											{table
-												.getAllLeafColumns()
-												.filter((column) => {
-													const columnDef =
-														column.columnDef as AdaptiveColumnDef<T>;
-													const hasVisibilityToggle =
-														columnDef.visibilityToggle ??
-														columnVisibilityToggle;
-													return (
-														column.getIsVisible() &&
-														column.id !==
-															"_actions" &&
-														hasVisibilityToggle !==
-															false
-													);
-												})
-												.map((column) => (
-													<Tooltip key={column.id}>
-														<TooltipTrigger asChild>
-															<div className="flex items-center">
-																<button
-																	type="button"
-																	className="flex items-center gap-2 w-full text-left hover:bg-accent px-2 py-1 rounded-sm"
-																>
-																	<Checkbox
-																		checked={column.getIsVisible()}
-																		onCheckedChange={(
-																			value,
-																		) =>
-																			column.toggleVisibility(
-																				!!value,
-																			)
-																		}
-																	/>
-																	<Label className="text-sm font-normal cursor-pointer flex-1 truncate">
-																		{getColumnLabel(
-																			column,
-																		)}
-																	</Label>
-																</button>
-															</div>
-														</TooltipTrigger>
-														<TooltipContent
-															side="right"
-															className="text-xs max-w-xs"
-														>
-															{getColumnLabel(
-																column,
-															)}
-														</TooltipContent>
-													</Tooltip>
-												))}
-										</div>
-									</ScrollArea>
-								</div>
-								{table.getAllLeafColumns().some((column) => {
-									const columnDef =
-										column.columnDef as AdaptiveColumnDef<T>;
-									const hasVisibilityToggle =
-										columnDef.visibilityToggle ??
-										columnVisibilityToggle;
-									return (
-										!column.getIsVisible() &&
-										column.id !== "_actions" &&
-										hasVisibilityToggle !== false
-									);
-								}) && (
-									<>
-										<Separator />
-										<div>
-											<p className="text-sm text-muted-foreground mb-2">
-												{labels?.hidden || "Hidden"}
-											</p>
-											<div className="space-y-1">
-												{table
-													.getAllLeafColumns()
-													.filter((column) => {
-														const columnDef =
-															column.columnDef as AdaptiveColumnDef<T>;
-														const hasVisibilityToggle =
-															columnDef.visibilityToggle ??
-															columnVisibilityToggle;
-														return (
-															!column.getIsVisible() &&
-															column.id !==
-																"_actions" &&
-															hasVisibilityToggle !==
-																false
-														);
-													})
-													.map((column) => (
-														<Tooltip
-															key={column.id}
-														>
-															<TooltipTrigger
-																asChild
-															>
-																<div className="flex items-center">
-																	<button
-																		type="button"
-																		className="flex items-center gap-2 w-full text-left hover:bg-accent px-2 py-1 rounded-sm"
-																	>
-																		<Checkbox
-																			checked={column.getIsVisible()}
-																			onCheckedChange={(
-																				value,
-																			) =>
-																				column.toggleVisibility(
-																					!!value,
-																				)
-																			}
-																		/>
-																		<Label className="text-sm font-normal cursor-pointer flex-1 truncate">
-																			{getColumnLabel(
-																				column,
-																			)}
-																		</Label>
-																	</button>
-																</div>
-															</TooltipTrigger>
-															<TooltipContent
-																side="right"
-																className="text-xs max-w-xs"
-															>
-																{getColumnLabel(
-																	column,
-																)}
-															</TooltipContent>
-														</Tooltip>
-													))}
-											</div>
-										</div>
-									</>
-								)}
+			</DropdownMenuTrigger>
+			<DropdownMenuContent className="w-52" align="end">
+				{/* Column Visibility Submenu */}
+				{columnVisibilityToggle && (
+					<DropdownMenuSub>
+						<DropdownMenuSubTrigger className="gap-2">
+							<Eye className="h-4 w-4" />
+							<span>
+								{labels?.columnVisibility ||
+									"Column Visibility"}
+							</span>
+						</DropdownMenuSubTrigger>
+						<DropdownMenuSubContent className="w-56 max-h-80 overflow-y-auto">
+							<div className="px-2 py-1">
+								<p className="text-xs font-medium text-muted-foreground">
+									{labels?.shownInTable || "Shown in table"}
+								</p>
 							</div>
-						</PopoverContent>
-					</Popover>
-					{groupable && paginationType !== "server" && (
-						<Popover>
-							<PopoverTrigger asChild>
-								<button
-									type="button"
-									className="flex items-center justify-between w-full text-left hover:bg-accent px-3 py-2 rounded-sm text-sm transition-colors"
+							{visibleColumns.map((column) => (
+								<DropdownMenuItem
+									key={column.id}
+									className="gap-2 px-2 py-1"
+									onSelect={(e) => {
+										e.preventDefault();
+										column.toggleVisibility(false);
+									}}
 								>
-									<span>{labels?.groupBy || "Group By"}</span>
-									<ChevronRight className="h-4 w-4 text-muted-foreground" />
-								</button>
-							</PopoverTrigger>
-							<PopoverContent
-								className="w-64"
-								align="start"
-								side="right"
-								sideOffset={4}
-							>
-								<div className="space-y-3">
-									<div className="flex items-center justify-between">
-										<h4 className="font-medium">
-											{labels?.groupByProperty ||
-												"Group by property"}
-										</h4>
-										{groupBy && (
-											<Button
-												variant="secondary"
-												size="sm"
-												onClick={() =>
-													onGroupByChange(null)
-												}
-												className="h-6 px-2"
-											>
-												Clear
-											</Button>
-										)}
-									</div>
-									<Separator />
-									<ScrollArea className="h-48">
-										<div className="space-y-1">
-											{table
-												.getAllLeafColumns()
-												.filter(
-													(column) =>
-														column.id !==
-														"_actions",
-												)
-												.map((column) => {
-													const isSelected =
-														groupBy === column.id;
-													return (
-														<Tooltip
-															key={column.id}
-														>
-															<TooltipTrigger
-																asChild
-															>
-																<button
-																	type="button"
-																	onClick={() =>
-																		onGroupByChange(
-																			column.id,
-																		)
-																	}
-																	className={`flex items-center gap-2 w-full text-left hover:bg-accent px-2 py-1.5 rounded-sm text-sm transition-colors ${
-																		isSelected
-																			? "bg-accent"
-																			: ""
-																	}`}
-																>
-																	<div
-																		className={`w-4 h-4 rounded-sm border flex items-center justify-center ${
-																			isSelected
-																				? "bg-primary border-primary"
-																				: "border-input"
-																		}`}
-																	>
-																		{isSelected && (
-																			<div className="w-2 h-2 bg-primary-foreground rounded-sm" />
-																		)}
-																	</div>
-																	<span className="truncate">
-																		{getColumnLabel(
-																			column,
-																		)}
-																	</span>
-																</button>
-															</TooltipTrigger>
-															<TooltipContent
-																side="right"
-																className="text-xs max-w-xs"
-															>
-																{getColumnLabel(
-																	column,
-																)}
-															</TooltipContent>
-														</Tooltip>
-													);
-												})}
-										</div>
-									</ScrollArea>
-								</div>
-							</PopoverContent>
-						</Popover>
-					)}
-					{sortable && (
-						<Popover>
-							<PopoverTrigger asChild>
-								<button
-									type="button"
-									className="flex items-center justify-between w-full text-left hover:bg-accent px-3 py-2 rounded-sm text-sm transition-colors"
-								>
-									<span>{labels?.sort || "Sort"}</span>
-									<ChevronRight className="h-4 w-4 text-muted-foreground" />
-								</button>
-							</PopoverTrigger>
-							<PopoverContent
-								className="w-64"
-								align="start"
-								side="right"
-								sideOffset={4}
-							>
-								<div className="space-y-3">
-									<div className="flex items-center justify-between">
-										<h4 className="font-medium">Sort</h4>
-										{sorting.length > 0 && (
-											<Button
-												variant="secondary"
-												size="sm"
-												onClick={() =>
-													onSortingChange([])
-												}
-												className="h-6 px-2"
-											>
-												Clear
-											</Button>
-										)}
-									</div>
-									<Separator />
-									<ScrollArea className="h-48">
-										<div className="space-y-2">
-											{table
-												.getAllLeafColumns()
-												.filter((column) => {
-													const columnDef =
-														column.columnDef as AdaptiveColumnDef<T>;
-													const isSortable =
-														columnDef.sortable ??
-														sortable;
-													return (
-														column.id !==
-															"_actions" &&
-														isSortable
-													);
-												})
-												.map((column) => {
-													const sortedState =
-														column.getIsSorted();
-													return (
-														<Tooltip
-															key={column.id}
-														>
-															<TooltipTrigger
-																asChild
-															>
-																<div
-																	key={
-																		column.id
-																	}
-																	className="flex items-center justify-between gap-3 py-1 w-11/12"
-																>
-																	{/* Label kiri */}
-																	<div className="min-w-0">
-																		<div className="truncate text-xs font-medium text-foreground/90">
-																			{getColumnLabel(
-																				column,
-																			)}
-																		</div>
-																	</div>
+									<Checkbox
+										checked={true}
+										className="h-3.5 w-3.5"
+									/>
+									<span className="text-sm truncate flex-1">
+										{getColumnLabel(column)}
+									</span>
+								</DropdownMenuItem>
+							))}
 
-																	{/* Kontrol kanan */}
-																	<div className="flex items-center gap-1">
-																		<Tooltip>
-																			<TooltipTrigger
-																				asChild
-																			>
-																				<button
-																					type="button"
-																					onClick={() =>
-																						column.toggleSorting(
-																							false,
-																						)
-																					}
-																					className={[
-																						"inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium",
-																						"transition-colors",
-																						"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-																						sortedState ===
-																						"asc"
-																							? "bg-muted text-foreground"
-																							: "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
-																					].join(
-																						" ",
-																					)}
-																					aria-pressed={
-																						sortedState ===
-																						"asc"
-																					}
-																				>
-																					<TbCaretUpFilled className="h-3.5 w-3.5" />
-																					Asc
-																				</button>
-																			</TooltipTrigger>
-																			<TooltipContent
-																				side="top"
-																				className="text-xs"
-																			>
-																				Sort
-																				ascending
-																				(A
-																				→
-																				Z
-																				/
-																				1
-																				→
-																				9)
-																			</TooltipContent>
-																		</Tooltip>
+							{hiddenColumns.length > 0 && (
+								<>
+									<DropdownMenuSeparator />
+									<div className="px-2 py-1">
+										<p className="text-xs font-medium text-muted-foreground">
+											{labels?.hidden || "Hidden"}
+										</p>
+									</div>
+									{hiddenColumns.map((column) => (
+										<DropdownMenuItem
+											key={column.id}
+											className="gap-2 px-2 py-1"
+											onSelect={(e) => {
+												e.preventDefault();
+												column.toggleVisibility(true);
+											}}
+										>
+											<Checkbox
+												checked={false}
+												className="h-3.5 w-3.5"
+											/>
+											<span className="text-sm truncate flex-1 text-muted-foreground">
+												{getColumnLabel(column)}
+											</span>
+										</DropdownMenuItem>
+									))}
+								</>
+							)}
+						</DropdownMenuSubContent>
+					</DropdownMenuSub>
+				)}
 
-																		<Tooltip>
-																			<TooltipTrigger
-																				asChild
-																			>
-																				<button
-																					type="button"
-																					onClick={() =>
-																						column.toggleSorting(
-																							true,
-																						)
-																					}
-																					className={[
-																						"inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium",
-																						"transition-colors",
-																						"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-																						sortedState ===
-																						"desc"
-																							? "bg-muted text-foreground"
-																							: "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
-																					].join(
-																						" ",
-																					)}
-																					aria-pressed={
-																						sortedState ===
-																						"desc"
-																					}
-																				>
-																					<TbCaretDownFilled className="h-3.5 w-3.5" />
-																					Desc
-																				</button>
-																			</TooltipTrigger>
-																			<TooltipContent
-																				side="top"
-																				className="text-xs"
-																			>
-																				Sort
-																				descending
-																				(Z
-																				→
-																				A
-																				/
-																				9
-																				→
-																				1)
-																			</TooltipContent>
-																		</Tooltip>
-																	</div>
-																</div>
-															</TooltipTrigger>
-															<TooltipContent
-																side="left"
-																className="text-xs max-w-xs"
-															>
-																Sort by{" "}
-																{getColumnLabel(
-																	column,
-																)}
-															</TooltipContent>
-														</Tooltip>
-													);
-												})}
+				{/* Group By Submenu */}
+				{groupable && paginationType !== "server" && (
+					<DropdownMenuSub>
+						<DropdownMenuSubTrigger className="gap-2">
+							<Group className="h-4 w-4" />
+							<span>{labels?.groupBy || "Group By"}</span>
+						</DropdownMenuSubTrigger>
+						<DropdownMenuSubContent className="w-56 max-h-80 overflow-y-auto">
+							{groupBy && (
+								<>
+									<DropdownMenuItem
+										className="gap-2 px-2 py-1 text-destructive"
+										onSelect={() => onGroupByChange(null)}
+									>
+										<X className="h-4 w-4" />
+										<span className="text-sm">
+											Clear grouping
+										</span>
+									</DropdownMenuItem>
+									<DropdownMenuSeparator />
+								</>
+							)}
+							<div className="px-2 py-1">
+								<p className="text-xs font-medium text-muted-foreground">
+									{labels?.groupByProperty ||
+										"Group by property"}
+								</p>
+							</div>
+							{groupableColumns.map((column) => {
+								const isSelected = groupBy === column.id;
+								return (
+									<DropdownMenuItem
+										key={column.id}
+										className="gap-2 px-2 py-1"
+										onSelect={() =>
+											onGroupByChange(column.id)
+										}
+									>
+										<div
+											className={`w-3.5 h-3.5 rounded-sm border flex items-center justify-center shrink-0 ${
+												isSelected
+													? "bg-primary border-primary"
+													: "border-input"
+											}`}
+										>
+											{isSelected && (
+												<Check className="h-2.5 w-2.5 text-primary-foreground" />
+											)}
 										</div>
-									</ScrollArea>
-								</div>
-							</PopoverContent>
-						</Popover>
-					)}
-					{!groupable && !sortable && (
-						<button
-							type="button"
-							className="flex items-center justify-between w-full text-left hover:bg-accent px-3 py-2 rounded-sm text-sm transition-colors"
-							onClick={() => {
-								// TODO: Implement additional functionality
-							}}
-						>
-							<span>{labels?.moreOptions || "More Options"}</span>
-							<ChevronRight className="h-4 w-4 text-muted-foreground" />
-						</button>
-					)}
-				</div>
-			</PopoverContent>
-		</Popover>
+										<span
+											className={`text-sm truncate flex-1 ${
+												isSelected ? "font-medium" : ""
+											}`}
+										>
+											{getColumnLabel(column)}
+										</span>
+									</DropdownMenuItem>
+								);
+							})}
+						</DropdownMenuSubContent>
+					</DropdownMenuSub>
+				)}
+
+				{/* Sort Submenu */}
+				{sortable && (
+					<DropdownMenuSub>
+						<DropdownMenuSubTrigger className="gap-2">
+							<ArrowUpAZ className="h-4 w-4" />
+							<span>{labels?.sort || "Order By"}</span>
+						</DropdownMenuSubTrigger>
+						<DropdownMenuSubContent className="w-56 max-h-80 overflow-y-auto">
+							{sorting.length > 0 && (
+								<>
+									<DropdownMenuItem
+										className="gap-2 px-2 py-1.5 text-destructive"
+										onSelect={() => onSortingChange([])}
+									>
+										<X className="h-4 w-4" />
+										<span className="text-sm">
+											Clear all sorting
+										</span>
+									</DropdownMenuItem>
+									<DropdownMenuSeparator />
+								</>
+							)}
+							{sortableColumns.map((column) => {
+								const sortedState = column.getIsSorted();
+								return (
+									<DropdownMenuSub key={column.id}>
+										<DropdownMenuSubTrigger className="gap-2 px-2 py-1.5">
+											{sortedState === "asc" ? (
+												<ArrowUpAZ className="h-4 w-4 text-primary" />
+											) : sortedState === "desc" ? (
+												<ArrowDownAZ className="h-4 w-4 text-primary" />
+											) : (
+												<Minus className="h-4 w-4 text-muted-foreground" />
+											)}
+											<span
+												className={`text-sm truncate flex-1 ${
+													sortedState
+														? "font-medium"
+														: ""
+												}`}
+											>
+												{getColumnLabel(column)}
+											</span>
+										</DropdownMenuSubTrigger>
+										<DropdownMenuSubContent className="w-36">
+											<DropdownMenuItem
+												className="gap-2 px-2 py-1.5"
+												onSelect={() =>
+													column.toggleSorting(false)
+												}
+											>
+												<ArrowUpAZ className="h-4 w-4" />
+												<span className="text-sm">
+													Ascending
+												</span>
+												{sortedState === "asc" && (
+													<Check className="h-4 w-4 ml-auto" />
+												)}
+											</DropdownMenuItem>
+											<DropdownMenuItem
+												className="gap-2 px-2 py-1.5"
+												onSelect={() =>
+													column.toggleSorting(true)
+												}
+											>
+												<ArrowDownAZ className="h-4 w-4" />
+												<span className="text-sm">
+													Descending
+												</span>
+												{sortedState === "desc" && (
+													<Check className="h-4 w-4 ml-auto" />
+												)}
+											</DropdownMenuItem>
+											{sortedState && (
+												<>
+													<DropdownMenuSeparator />
+													<DropdownMenuItem
+														className="gap-2 px-2 py-1.5 text-muted-foreground"
+														onSelect={() =>
+															column.clearSorting()
+														}
+													>
+														<X className="h-4 w-4" />
+														<span className="text-sm">
+															Clear
+														</span>
+													</DropdownMenuItem>
+												</>
+											)}
+										</DropdownMenuSubContent>
+									</DropdownMenuSub>
+								);
+							})}
+						</DropdownMenuSubContent>
+					</DropdownMenuSub>
+				)}
+			</DropdownMenuContent>
+		</DropdownMenu>
 	);
 }

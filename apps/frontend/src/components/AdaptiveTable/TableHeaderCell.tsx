@@ -4,10 +4,22 @@ import {
 	ContextMenu,
 	ContextMenuContent,
 	ContextMenuItem,
+	ContextMenuSeparator,
+	ContextMenuSub,
+	ContextMenuSubContent,
+	ContextMenuSubTrigger,
 	ContextMenuTrigger,
-	Separator,
 } from "@repo/ui";
 import { flexRender, type Header } from "@tanstack/react-table";
+import {
+	ArrowDownAZ,
+	ArrowUpAZ,
+	Columns3,
+	EyeOff,
+	Group,
+	Ungroup,
+	X,
+} from "lucide-react";
 import type { CSSProperties } from "react";
 import type { AdaptiveColumnDef } from "./types";
 
@@ -164,43 +176,68 @@ export const TableHeaderCell = <T,>({
 					)}
 				</th>
 			</ContextMenuTrigger>
-			<ContextMenuContent>
+			<ContextMenuContent className="w-48">
 				{hasVisibilityToggle && (
 					<ContextMenuItem
-						className="text-sm"
+						className="text-sm gap-2"
 						onSelect={() => header.column.toggleVisibility(false)}
 					>
+						<EyeOff className="h-4 w-4" />
 						Hide column
 					</ContextMenuItem>
 				)}
 				{isSortable && (
 					<>
-						{hasVisibilityToggle && <Separator />}
-						<ContextMenuItem
-							className="text-sm"
-							onSelect={() => header.column.toggleSorting(false)}
-						>
-							Sort Ascending
-						</ContextMenuItem>
-						<ContextMenuItem
-							className="text-sm"
-							onSelect={() => header.column.toggleSorting(true)}
-						>
-							Sort Descending
-						</ContextMenuItem>
-						{sortedState && (
-							<ContextMenuItem
-								onSelect={() => header.column.clearSorting()}
-							>
-								Clear Sort
-							</ContextMenuItem>
-						)}
+						{hasVisibilityToggle && <ContextMenuSeparator />}
+						<ContextMenuSub>
+							<ContextMenuSubTrigger className="text-sm gap-2">
+								<Columns3 className="h-4 w-4" />
+								Sort
+							</ContextMenuSubTrigger>
+							<ContextMenuSubContent className="w-40">
+								<ContextMenuItem
+									className="text-sm gap-2"
+									onSelect={() =>
+										header.column.toggleSorting(false)
+									}
+								>
+									<ArrowUpAZ className="h-4 w-4" />
+									Ascending
+								</ContextMenuItem>
+								<ContextMenuItem
+									className="text-sm gap-2"
+									onSelect={() =>
+										header.column.toggleSorting(true)
+									}
+								>
+									<ArrowDownAZ className="h-4 w-4" />
+									Descending
+								</ContextMenuItem>
+								{sortedState && (
+									<>
+										<ContextMenuSeparator />
+										<ContextMenuItem
+											className="text-sm gap-2"
+											onSelect={() =>
+												header.column.clearSorting()
+											}
+										>
+											<X className="h-4 w-4" />
+											Clear sort
+										</ContextMenuItem>
+									</>
+								)}
+							</ContextMenuSubContent>
+						</ContextMenuSub>
 					</>
 				)}
 				{canGroup && !isActionsColumn && (
 					<>
-						{(hasVisibilityToggle || isSortable) && <Separator />}
+						{(hasVisibilityToggle || isSortable) && (
+							<ContextMenuSeparator />
+						)}
 						<ContextMenuItem
+							className="text-sm gap-2"
 							onSelect={() => {
 								if (onGroupByChange) {
 									onGroupByChange(
@@ -211,15 +248,26 @@ export const TableHeaderCell = <T,>({
 								}
 							}}
 						>
-							{groupBy === header.column.id
-								? "Ungroup"
-								: "Group by this column"}
+							{groupBy === header.column.id ? (
+								<>
+									<Ungroup className="h-4 w-4" />
+									Ungroup
+								</>
+							) : (
+								<>
+									<Group className="h-4 w-4" />
+									Group by this column
+								</>
+							)}
 						</ContextMenuItem>
 					</>
 				)}
 				{!columnVisibilityToggle && !canGroup && !isSortable && (
-					<ContextMenuItem className="text-sm">
-						Dummy Menu Item
+					<ContextMenuItem
+						className="text-sm text-muted-foreground"
+						disabled
+					>
+						No actions available
 					</ContextMenuItem>
 				)}
 			</ContextMenuContent>
