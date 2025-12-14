@@ -89,7 +89,7 @@ const authFetch = Object.assign(authFetchImpl, {
 			: ((async () => {}) as typeof rawFetch.preconnect),
 });
 
-const client = hc<AppType>(backendUrl, {
+const client: ReturnType<typeof hc<AppType>> = hc<AppType>(backendUrl, {
 	headers: async () => {
 		const bridge = getAuthBridge();
 		const bridgeToken = bridge?.getAccessToken();
