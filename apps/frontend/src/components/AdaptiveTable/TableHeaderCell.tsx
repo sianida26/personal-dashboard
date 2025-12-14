@@ -7,11 +7,7 @@ import {
 	ContextMenuTrigger,
 	Separator,
 } from "@repo/ui";
-import {
-	flexRender,
-	type Header,
-	type useReactTable,
-} from "@tanstack/react-table";
+import { flexRender, type Header } from "@tanstack/react-table";
 import type { CSSProperties } from "react";
 import type { AdaptiveColumnDef } from "./types";
 
@@ -24,7 +20,6 @@ export const TableHeaderCell = <T,>({
 	draggable = false,
 	columnResizable,
 	columnVisibilityToggle,
-	table,
 	groupable,
 	groupBy,
 	onGroupByChange,
@@ -38,7 +33,6 @@ export const TableHeaderCell = <T,>({
 	draggable?: boolean;
 	columnResizable?: boolean;
 	columnVisibilityToggle?: boolean;
-	table: ReturnType<typeof useReactTable<T>>;
 	groupable?: boolean;
 	groupBy?: string | null;
 	onGroupByChange?: (columnId: string | null) => void;
@@ -73,6 +67,10 @@ export const TableHeaderCell = <T,>({
 		: null;
 
 	const sortedState = header.column.getIsSorted();
+	const isResizing = header.column.getIsResizing();
+
+	// Get the current width - use direct size for immediate resize feedback
+	const currentWidth = proportionalWidth ?? header.getSize();
 
 	// Build style based on whether draggable or not
 	const style: CSSProperties =
@@ -80,31 +78,31 @@ export const TableHeaderCell = <T,>({
 			? {
 					opacity: sortableHook.isDragging ? 0.8 : 1,
 					position: "relative",
-					transform: CSS.Translate.toString(sortableHook.transform),
-					transition: "width transform 0.2s ease-in-out",
+					// Don't apply transform during resize to keep resize handle anchored
+					transform: isResizing
+						? undefined
+						: CSS.Translate.toString(sortableHook.transform),
+					// Disable transition during resize for immediate feedback
+					transition: isResizing
+						? "none"
+						: "transform 0.2s ease-in-out",
 					whiteSpace: "nowrap",
-					width:
-						proportionalWidth ??
-						(virtualized
-							? header.getSize()
-							: columnResizable
-								? `calc(var(--header-${header.id}-size) * 1px)`
-								: header.column.getSize()),
+					width: currentWidth,
+					minWidth: header.column.columnDef.minSize ?? 80,
 					zIndex: sortableHook.isDragging ? 1 : 0,
-					...(virtualized ? { display: "flex" } : {}),
+					...(virtualized
+						? { display: "flex", alignItems: "center" }
+						: {}),
 					...(fitToParentWidth
 						? { overflow: "hidden", textOverflow: "ellipsis" }
 						: {}),
 				}
 			: {
-					width:
-						proportionalWidth ??
-						(virtualized
-							? header.getSize()
-							: columnResizable
-								? `calc(var(--header-${header.id}-size) * 1px)`
-								: undefined),
-					...(virtualized ? { display: "flex" } : {}),
+					width: currentWidth,
+					minWidth: header.column.columnDef.minSize ?? 80,
+					...(virtualized
+						? { display: "flex", alignItems: "center" }
+						: {}),
 					...(fitToParentWidth
 						? { overflow: "hidden", textOverflow: "ellipsis" }
 						: {}),
@@ -116,11 +114,15 @@ export const TableHeaderCell = <T,>({
 			ref={sortableHook?.setNodeRef}
 			style={style}
 			className={`border-y border-l last:border-r relative p-1 ${
-				draggable && !isActionsColumn && isOrderable
+				draggable && !isActionsColumn && isOrderable && !isResizing
 					? "cursor-grab active:cursor-grabbing"
 					: ""
 			}`}
-			{...(draggable && !isActionsColumn && isOrderable && sortableHook
+			{...(draggable &&
+			!isActionsColumn &&
+			isOrderable &&
+			sortableHook &&
+			!isResizing
 				? {
 						...sortableHook.attributes,
 						...sortableHook.listeners,
@@ -217,20 +219,20 @@ export const TableHeaderCell = <T,>({
 				<button
 					type="button"
 					onDoubleClick={() => header.column.resetSize()}
-					onMouseDown={header.getResizeHandler()}
-					onTouchStart={header.getResizeHandler()}
-					className={`absolute right-0 top-0 h-full w-1 cursor-col-resize select-none touch-none border-r border-border hover:border-primary hover:border-r-2 bg-transparent p-0 ${
-						header.column.getIsResizing()
-							? "border-primary border-r-2"
-							: ""
-					}`}
+					onMouseDown={(e) => {
+						e.stopPropagation();
+						header.getResizeHandler()(e);
+					}}
+					onTouchStart={(e) => {
+						e.stopPropagation();
+						header.getResizeHandler()(e);
+					}}
+					onPointerDown={(e) => {
+						e.stopPropagation();
+					}}
+					className={`absolute right-0 top-0 h-full w-2 cursor-col-resize select-none touch-none hover:bg-primary/50 border-0 p-0 ${header.column.getIsResizing() ? "bg-primary/50" : "bg-transparent"}`}
 					style={{
-						transform: header.column.getIsResizing()
-							? `translateX(${
-									table.getState().columnSizingInfo
-										.deltaOffset ?? 0
-								}px)`
-							: "",
+						userSelect: "none",
 					}}
 					aria-label="Resize column"
 				/>

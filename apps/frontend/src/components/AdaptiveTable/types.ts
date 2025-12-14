@@ -67,6 +67,7 @@ export type AdaptiveTableProps<T> = {
 	onSelectAction?: (rows: T[], actionName: string) => void;
 	// Row virtualization props
 	rowVirtualization?: boolean; // Default: true, enables row virtualization for better performance
+	rowHeight?: number; // Default: 40, fixed row height in pixels for virtualization performance
 	tableHeight?: string; // Default: "100%", height of the table container
 	// Layout props
 	fitToParentWidth?: boolean; // Default: false, when true columns will shrink to fit parent width without horizontal scroll

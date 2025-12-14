@@ -7,14 +7,14 @@ import type { AdaptiveColumnDef } from "./types";
 
 const DragAlongCellComponent = <T,>({
 	cell,
-	columnResizable,
 	rowIndex,
 	proportionalWidth,
+	rowHeight = 40,
 }: {
 	cell: Cell<T, unknown>;
-	columnResizable?: boolean;
 	rowIndex: number;
 	proportionalWidth?: string | number;
+	rowHeight?: number;
 }) => {
 	const columnDef = cell.column.columnDef as AdaptiveColumnDef<T>;
 	const isActionsColumn = cell.column.id === "_actions";
@@ -31,22 +31,23 @@ const DragAlongCellComponent = <T,>({
 		opacity: isDragging ? 0.8 : 1,
 		position: "relative",
 		transform: CSS.Translate.toString(transform),
-		transition: "width transform 0.2s ease-in-out",
-		width:
-			proportionalWidth ??
-			(columnResizable
-				? `calc(var(--col-${cell.column.id}-size) * 1px)`
-				: cell.column.getSize()),
+		transition: "transform 0.2s ease-in-out",
+		width: proportionalWidth ?? cell.column.getSize(),
+		minWidth: cell.column.columnDef.minSize ?? 80,
+		height: rowHeight,
 		zIndex: isDragging ? 1 : 0,
+		overflow: "hidden",
 	};
 
 	return (
 		<td
 			style={style}
 			ref={setNodeRef}
-			className="border-t border-l last:border-r p-1"
+			className="border-t border-l last:border-r p-1 overflow-hidden"
 		>
-			<EditableCell cell={cell} rowIndex={rowIndex} />
+			<div className="truncate w-full h-full flex items-center">
+				<EditableCell cell={cell} rowIndex={rowIndex} />
+			</div>
 		</td>
 	);
 };
@@ -55,6 +56,5 @@ const DragAlongCellComponent = <T,>({
 const DragAlongCell = memo(
 	DragAlongCellComponent,
 ) as typeof DragAlongCellComponent;
-DragAlongCell.displayName = "DragAlongCell";
 
 export default DragAlongCell;
