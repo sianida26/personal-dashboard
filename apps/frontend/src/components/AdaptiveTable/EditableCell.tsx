@@ -7,9 +7,11 @@ import type { AdaptiveColumnDef } from "./types";
 const EditableCellComponent = <T,>({
 	cell,
 	rowIndex,
+	isRowSelected: _isRowSelected, // Used to trigger re-render on selection change
 }: {
 	cell: Cell<T, unknown>;
 	rowIndex: number;
+	isRowSelected?: boolean;
 }) => {
 	const columnDef = cell.column.columnDef as AdaptiveColumnDef<T>;
 	const [isEditing, setIsEditing] = useState(false);

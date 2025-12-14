@@ -18,6 +18,7 @@ const DragAlongCellComponent = <T,>({
 	rowIndex,
 	proportionalWidth,
 	rowHeight = 40,
+	isRowSelected, // Pass to EditableCell to trigger re-render on selection change
 }: DragAlongCellProps<T>) => {
 	const columnDef = cell.column.columnDef as AdaptiveColumnDef<T>;
 	const isActionsColumn = cell.column.id === "_actions";
@@ -45,7 +46,11 @@ const DragAlongCellComponent = <T,>({
 	return (
 		<td style={style} ref={setNodeRef} className="p-1 overflow-hidden">
 			<div className="truncate w-full h-full flex items-center">
-				<EditableCell cell={cell} rowIndex={rowIndex} />
+				<EditableCell
+					cell={cell}
+					rowIndex={rowIndex}
+					isRowSelected={isRowSelected}
+				/>
 			</div>
 		</td>
 	);
