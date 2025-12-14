@@ -8,14 +8,17 @@ import db from "../../../drizzle";
 import { oauthMicrosoft } from "../../../drizzle/schema/oauthMicrosoft";
 import { users } from "../../../drizzle/schema/users";
 import { notFound, unauthorized } from "../../../errors/DashboardError";
+import rateLimit, {
+	oauthRateLimitConfig,
+} from "../../../middlewares/rateLimiter";
 import { getAppSettingValue } from "../../../services/appSettings/appSettingServices";
-import { createGraphClientForUser } from "../../../services/microsoft/graphClient";
-import { getMsalClient } from "../../../services/microsoft/msalClient";
-import type HonoEnv from "../../../types/HonoEnv";
 import {
 	buildAuthPayload,
 	type UserWithAuthorization,
 } from "../../../services/auth/authResponseService";
+import { createGraphClientForUser } from "../../../services/microsoft/graphClient";
+import { getMsalClient } from "../../../services/microsoft/msalClient";
+import type HonoEnv from "../../../types/HonoEnv";
 import { authMetrics, userMetrics } from "../../../utils/custom-metrics";
 import microsoftAdminRouter from "./admin";
 
@@ -124,6 +127,7 @@ async function isUserAdmin(userId: string): Promise<boolean> {
  * Microsoft authentication router
  */
 const microsoftRouter = new Hono<HonoEnv>()
+	.use(rateLimit(oauthRateLimitConfig))
 	.use(async (_, next) => {
 		// Check if Microsoft OAuth is enabled
 		const isMicrosoftAuthEnabled = await getAppSettingValue(

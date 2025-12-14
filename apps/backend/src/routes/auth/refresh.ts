@@ -4,7 +4,9 @@ import { z } from "zod";
 import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
 import DashboardError from "../../errors/DashboardError";
-import rateLimit from "../../middlewares/rateLimiter";
+import rateLimit, {
+	refreshRateLimitConfig,
+} from "../../middlewares/rateLimiter";
 import {
 	buildAuthPayloadWithExistingRefreshToken,
 	type UserWithAuthorization,
@@ -17,11 +19,7 @@ const refreshSchema = z.object({
 });
 
 const refreshRoute = createHonoRoute()
-	.use(
-		rateLimit({
-			limit: 60, // 60 refresh requests per minute per IP
-		}),
-	)
+	.use(rateLimit(refreshRateLimitConfig))
 	.post("/refresh", zValidator("json", refreshSchema), async (c) => {
 		const { refreshToken } = c.req.valid("json");
 

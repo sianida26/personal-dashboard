@@ -1,9 +1,9 @@
-import { beforeAll, describe, test, expect, mock, afterAll } from "bun:test";
+import { afterAll, beforeAll, describe, expect, mock, test } from "bun:test";
+import { eq } from "drizzle-orm";
 import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
-import { hashPassword } from "../../utils/passwordUtils";
-import { eq } from "drizzle-orm";
 import client from "../../utils/honoTestClient";
+import { hashPassword } from "../../utils/passwordUtils";
 
 // Mock getAppSettingValue
 mock.module("../../services/appSettings/appSettingServices", () => ({
@@ -162,8 +162,8 @@ describe("Auth Routes", () => {
 	});
 
 	test("Should not able to login if rate limit is exceeded", async () => {
-		// Make multiple requests to exceed the rate limit
-		const requests = Array(16)
+		// Make 6 requests to exceed the rate limit (limit is 5 per 15 minutes)
+		const requests = Array(6)
 			.fill(null)
 			.map(() =>
 				client.auth.login.$post(

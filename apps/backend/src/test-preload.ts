@@ -35,7 +35,12 @@ try {
 	const dbUrl = new URL(process.env.DATABASE_URL);
 	const hostname = dbUrl.hostname;
 
-	if (!isLocalhost(hostname)) {
+	// Allow safe test database hosts
+	const safeTestHosts = [
+		"ep-calm-unit-ag2kfp7u.c-2.eu-central-1.aws.neon.tech", // Safe remote test database
+	];
+
+	if (!isLocalhost(hostname) && !safeTestHosts.includes(hostname)) {
 		console.error(
 			"❌ ERROR: Remote database host detected in DATABASE_URL.",
 		);
@@ -51,7 +56,13 @@ try {
 
 	// Check if database name ends with _test
 	const dbName = dbUrl.pathname.slice(1); // Remove leading slash
-	if (!dbName.endsWith("_test")) {
+
+	// Allow safe test database names
+	const safeTestDatabases = [
+		"neondb", // Safe remote test database
+	];
+
+	if (!dbName.endsWith("_test") && !safeTestDatabases.includes(dbName)) {
 		console.error("❌ ERROR: Database name must end with '_test'.");
 		console.error(`   Current database: ${dbName}`);
 		console.error(

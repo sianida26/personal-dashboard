@@ -7,7 +7,7 @@ This document outlines the development workflow for the frontend application, in
 ## Development Environment Setup
 
 ### Prerequisites
-- Node.js 18+ 
+- Node.js 18+
 - npm or yarn package manager
 - Git for version control
 - VS Code (recommended) with extensions
@@ -116,7 +116,7 @@ export const UsersPage = createPageTemplate({
       cell: (info) => info.getValue(),
     }),
     helper.accessor("username", {
-      header: "Username", 
+      header: "Username",
       cell: (info) => info.getValue(),
     }),
     helper.accessor("email", {
@@ -126,7 +126,7 @@ export const UsersPage = createPageTemplate({
   ],
   actions: {
     edit: (row) => `/users/${row.id}/edit`,
-    delete: (row) => ({ 
+    delete: (row) => ({
       endpoint: client.users[":id"].$delete,
       params: { id: row.id },
       permission: PERMISSIONS.USERS.DELETE,
@@ -178,16 +178,16 @@ export const UserCard: React.FC<UserCardProps> = ({
           {user.role}
         </Badge>
       </Group>
-      
+
       <Text size="sm" c="dimmed">
         {user.email}
       </Text>
-      
+
       {showActions && (
         <Group mt="md">
           {onEdit && (
-            <Button 
-              variant="light" 
+            <Button
+              variant="light"
               size="sm"
               onClick={() => onEdit(user)}
             >
@@ -195,9 +195,9 @@ export const UserCard: React.FC<UserCardProps> = ({
             </Button>
           )}
           {onDelete && (
-            <Button 
-              variant="light" 
-              color="red" 
+            <Button
+              variant="light"
+              color="red"
               size="sm"
               onClick={() => onDelete(user)}
             >
@@ -240,7 +240,7 @@ const mockUser = {
 describe('UserCard', () => {
   it('renders user information', () => {
     render(<UserCard user={mockUser} />);
-    
+
     expect(screen.getByText('John Doe')).toBeInTheDocument();
     expect(screen.getByText('john@example.com')).toBeInTheDocument();
     expect(screen.getByText('user')).toBeInTheDocument();
@@ -249,14 +249,14 @@ describe('UserCard', () => {
   it('calls onEdit when edit button is clicked', () => {
     const mockOnEdit = vi.fn();
     render(<UserCard user={mockUser} onEdit={mockOnEdit} />);
-    
+
     fireEvent.click(screen.getByText('Edit'));
     expect(mockOnEdit).toHaveBeenCalledWith(mockUser);
   });
 
   it('hides actions when showActions is false', () => {
     render(<UserCard user={mockUser} showActions={false} />);
-    
+
     expect(screen.queryByText('Edit')).not.toBeInTheDocument();
     expect(screen.queryByText('Delete')).not.toBeInTheDocument();
   });
@@ -292,7 +292,7 @@ export const useUserPermissions = (userId?: string) => {
 // Hook for updating permissions
 export const useUpdateUserPermissions = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: ({ userId, permissions }: { userId: string; permissions: string[] }) =>
       client.users[userId].permissions.$patch({ json: { permissions } }),
@@ -410,20 +410,20 @@ export const UserForm: React.FC<UserFormProps> = ({
           placeholder="Enter full name"
           {...form.getInputProps('name')}
         />
-        
+
         <TextInput
           label="Email"
           type="email"
           placeholder="Enter email address"
           {...form.getInputProps('email')}
         />
-        
+
         <TextInput
           label="Username"
           placeholder="Enter username"
           {...form.getInputProps('username')}
         />
-        
+
         <Select
           label="Role"
           placeholder="Select role"
@@ -433,12 +433,12 @@ export const UserForm: React.FC<UserFormProps> = ({
           ]}
           {...form.getInputProps('role')}
         />
-        
+
         <Checkbox
           label="Active user"
           {...form.getInputProps('isActive', { type: 'checkbox' })}
         />
-        
+
         <Button type="submit" loading={isLoading}>
           Submit
         </Button>
@@ -469,9 +469,9 @@ export const CreateUserModal: React.FC<CreateUserModalProps> = ({
   onClose,
 }) => {
   const queryClient = useQueryClient();
-  
+
   const createUser = useMutation({
-    mutationFn: (userData: UserFormValues) => 
+    mutationFn: (userData: UserFormValues) =>
       client.users.$post({ json: userData }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
@@ -576,9 +576,9 @@ export const useUser = (userId: string) => {
 // Create user mutation
 export const useCreateUser = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
-    mutationFn: (userData: CreateUserRequest) => 
+    mutationFn: (userData: CreateUserRequest) =>
       client.users.$post({ json: userData }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
@@ -599,7 +599,7 @@ export const useCreateUser = () => {
 // Update user mutation
 export const useUpdateUser = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: ({ userId, userData }: { userId: string; userData: UpdateUserRequest }) =>
       client.users[userId].$patch({ json: userData }),
@@ -623,9 +623,9 @@ export const useUpdateUser = () => {
 // Delete user mutation
 export const useDeleteUser = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
-    mutationFn: (userId: string) => 
+    mutationFn: (userId: string) =>
       client.users[userId].$delete(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
@@ -745,14 +745,14 @@ on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: dsg-owned
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 18
           cache: 'npm'
-      
+
       - run: npm ci
       - run: npm run typecheck
       - run: npm run lint

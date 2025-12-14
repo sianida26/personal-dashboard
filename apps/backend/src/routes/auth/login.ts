@@ -1,24 +1,20 @@
 import { zValidator } from "@hono/zod-validator";
-import { and, eq, isNull, ne, or, sql } from "drizzle-orm";
 import { loginSchema } from "@repo/validation";
+import { and, eq, isNull, ne, or, sql } from "drizzle-orm";
 import db from "../../drizzle";
 import { users } from "../../drizzle/schema/users";
 import DashboardError from "../../errors/DashboardError";
 import checkPermission from "../../middlewares/checkPermission";
-import rateLimit from "../../middlewares/rateLimiter";
+import rateLimit, { authRateLimitConfig } from "../../middlewares/rateLimiter";
 import { getAppSettingValue } from "../../services/appSettings/appSettingServices";
-import { buildAuthPayload } from "../../services/auth/authResponseService";
 import type { UserWithAuthorization } from "../../services/auth/authResponseService";
+import { buildAuthPayload } from "../../services/auth/authResponseService";
 import { createHonoRoute } from "../../utils/createHonoRoute";
 import { authMetrics } from "../../utils/custom-metrics";
 import { checkPassword } from "../../utils/passwordUtils";
 
 const loginRoute = createHonoRoute()
-	.use(
-		rateLimit({
-			limit: 15,
-		}),
-	)
+	.use(rateLimit(authRateLimitConfig))
 	// Username and Password Login
 	.post(
 		"/login",

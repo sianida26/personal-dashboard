@@ -18,6 +18,33 @@ The authentication system follows this flow:
 
 All authentication responses now include both tokens plus their respective `accessTokenExpiresIn` and `refreshTokenExpiresIn` values so clients can schedule proactive refreshes (the frontend refreshes at the 4-minute mark by default).
 
+### Rate Limiting
+
+All authentication endpoints are protected by specialized rate limiting to prevent brute force attacks and abuse:
+
+| Endpoint            | Limit       | Window     | Purpose                      |
+| ------------------- | ----------- | ---------- | ---------------------------- |
+| `/auth/login`       | 5 requests  | 15 minutes | Prevent password brute force |
+| `/auth/google/*`    | 10 requests | 5 minutes  | Prevent OAuth abuse          |
+| `/auth/microsoft/*` | 10 requests | 5 minutes  | Prevent OAuth abuse          |
+| `/auth/refresh`     | 10 requests | 5 minutes  | Prevent token refresh abuse  |
+| `/auth/register`    | 3 requests  | 1 hour     | Prevent account spam         |
+
+**Rate Limit Behavior:**
+- Rate limits are tracked per IP address
+- Returns `429 Too Many Requests` when exceeded
+- Response includes `Retry-After` header indicating seconds until retry
+- Automatically disabled in test environment (unless `x-enable-rate-limit` header is set)
+
+**Example Rate Limit Response:**
+```json
+{
+  "error": "Too Many Requests",
+  "message": "Too many login attempts. Please try again later.",
+  "retryAfter": 900
+}
+```
+
 ## Middleware Stack
 
 ### 1. authTokenMiddleware
@@ -202,17 +229,17 @@ const loginEndpoint = createHonoRoute()
     requestValidator("json", loginSchema),
     async (c) => {
       const { username, password } = c.req.valid("json");
-      
+
       // Validate credentials
       const user = await validateCredentials(username, password);
       if (!user) {
         throw unauthorized({ message: "Invalid credentials" });
       }
-      
+
       // Generate tokens
       const accessToken = generateAccessToken(user.id);
       const refreshToken = generateRefreshToken(user.id);
-      
+
       return c.json({
         accessToken,
         refreshToken,
@@ -233,11 +260,11 @@ const getMeEndpoint = createHonoRoute()
   .use(authInfo)
   .get("/auth/me", async (c) => {
     const currentUser = c.var.currentUser;
-    
+
     if (!currentUser) {
       throw unauthorized({ message: "Not authenticated" });
     }
-    
+
     return c.json({
       data: currentUser
     });
@@ -252,7 +279,7 @@ const logoutEndpoint = createHonoRoute()
   .post("/auth/logout", async (c) => {
     // Token invalidation logic here
     // (e.g., add to blacklist, clear refresh token)
-    
+
     return c.json({ message: "Logged out successfully" });
   });
 ```
@@ -293,13 +320,13 @@ const googleCallbackEndpoint = createHonoRoute()
     // Handle OAuth callback
     const code = c.req.query("code");
     const tokens = await exchangeCodeForTokens(code);
-    
+
     // Create or update user
     const user = await createOrUpdateUserFromGoogle(tokens);
-    
+
     // Generate application tokens
     const accessToken = generateAccessToken(user.id);
-    
+
     return c.json({ accessToken });
   });
 ```

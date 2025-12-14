@@ -6,7 +6,7 @@ on:
 
 jobs:
   assign-fields:
-    runs-on: ubuntu-latest
+    runs-on: dsg-owned
     permissions:
       issues: write
       repository-projects: write
@@ -62,7 +62,7 @@ jobs:
             if (priorityMatch) {
               const priority = priorityMatch[1].toUpperCase();
               console.log(`Found Priority: ${priority}`);
-              
+
               // Map priority to deadline offset
               const priorityToDeadline = {
                 'P0': 1,   // 1 day for critical
@@ -70,7 +70,7 @@ jobs:
                 'P2': 14,  // 2 weeks for medium
                 'P3': 30   // 1 month for low
               };
-              
+
               daysUntilDeadline = priorityToDeadline[priority] || 7;
               priorityValue = priority;
             }
@@ -123,7 +123,7 @@ jobs:
 
             for (let attempt = 1; attempt <= maxRetries; attempt++) {
               console.log(`Checking for project items (attempt ${attempt}/${maxRetries})...`);
-              
+
               const result = await github.graphql(query, {
                 owner: owner,
                 repo: repo,
@@ -131,12 +131,12 @@ jobs:
               });
 
               projectItems = result.repository.issue.projectItems.nodes;
-              
+
               if (projectItems.length > 0) {
                 console.log(`Found ${projectItems.length} project(s)`);
                 break;
               }
-              
+
               if (attempt < maxRetries) {
                 console.log('No project items found yet, waiting 5 seconds...');
                 await new Promise(resolve => setTimeout(resolve, 5000));
@@ -151,16 +151,16 @@ jobs:
             // Process each project the issue is added to
             for (const item of projectItems) {
               console.log(`Found project: ${item.project.title}`);
-              
+
               const fields = item.project.fields.nodes;
               const projectId = item.project.id;
               const itemId = item.id;
-              
+
               // Find the Estimate, Deadline, and Priority fields
               const estimateField = fields.find(f => f.name === 'Estimate');
               const deadlineField = fields.find(f => f.name === 'Deadline');
               const priorityField = fields.find(f => f.name === 'Priority');
-              
+
               // Set Estimate (if it's a number field, set to parsed value)
               if (estimateField && estimateField.dataType === 'NUMBER') {
                 console.log(`Setting Estimate field to: ${estimate}`);
@@ -189,7 +189,7 @@ jobs:
                   console.error('Error setting Estimate:', error.message);
                 }
               }
-              
+
               // Set Deadline (if it's a date field, calculate from priority or use parsed date)
               if (deadlineField && deadlineField.dataType === 'DATE') {
                 console.log('Setting Deadline field...');
@@ -197,7 +197,7 @@ jobs:
                   // Check if there's a specific date in the footer
                   const deadlineMatch = issue_body.match(/\*\*Deadline:\*\*\s*(\d{1,2})\s+(\w+)\s+(\d{4})/i);
                   let deadlineStr;
-                  
+
                   if (deadlineMatch) {
                     const day = deadlineMatch[1].padStart(2, '0');
                     const monthMap = {
@@ -225,7 +225,7 @@ jobs:
                     deadlineStr = deadline.toISOString().split('T')[0];
                     console.log(`Using calculated deadline (${daysUntilDeadline} days): ${deadlineStr}`);
                   }
-                  
+
                   await github.graphql(`
                     mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: ProjectV2FieldValue!) {
                       updateProjectV2ItemFieldValue(input: {
@@ -250,18 +250,18 @@ jobs:
                   console.error('Error setting Deadline:', error.message);
                 }
               }
-              
+
               // Set Priority (if it's a single select field, set to parsed priority)
               if (priorityField && priorityField.dataType === 'SINGLE_SELECT') {
                 console.log(`Setting Priority field to: ${priorityValue}`);
                 try {
                   // Find the matching priority option
-                  const priorityOption = priorityField.options.find(opt => 
+                  const priorityOption = priorityField.options.find(opt =>
                     opt.name.toUpperCase() === priorityValue.toUpperCase() ||
                     opt.name === priorityValue
                   );
                   const defaultOption = priorityOption || priorityField.options[0];
-                  
+
                   if (defaultOption) {
                     await github.graphql(`
                       mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: ProjectV2FieldValue!) {
