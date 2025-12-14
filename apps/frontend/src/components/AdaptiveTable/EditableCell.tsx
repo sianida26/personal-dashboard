@@ -1,10 +1,10 @@
 import { Badge, Popover, PopoverContent, PopoverTrigger } from "@repo/ui";
 import { type Cell, flexRender } from "@tanstack/react-table";
 import { ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { memo, useState } from "react";
 import type { AdaptiveColumnDef } from "./types";
 
-export const EditableCell = <T,>({
+const EditableCellComponent = <T,>({
 	cell,
 	rowIndex,
 }: {
@@ -159,5 +159,11 @@ export const EditableCell = <T,>({
 		</div>
 	);
 };
+
+// Memo wrapper to prevent unnecessary re-renders
+export const EditableCell = memo(
+	EditableCellComponent,
+) as typeof EditableCellComponent;
+EditableCell.displayName = "EditableCell";
 
 export default EditableCell;

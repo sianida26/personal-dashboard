@@ -1,11 +1,11 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { Cell } from "@tanstack/react-table";
-import type { CSSProperties } from "react";
+import { type CSSProperties, memo } from "react";
 import EditableCell from "./EditableCell";
 import type { AdaptiveColumnDef } from "./types";
 
-const DragAlongCell = <T,>({
+const DragAlongCellComponent = <T,>({
 	cell,
 	columnResizable,
 	rowIndex,
@@ -50,5 +50,11 @@ const DragAlongCell = <T,>({
 		</td>
 	);
 };
+
+// Memo wrapper to prevent unnecessary re-renders
+const DragAlongCell = memo(
+	DragAlongCellComponent,
+) as typeof DragAlongCellComponent;
+DragAlongCell.displayName = "DragAlongCell";
 
 export default DragAlongCell;
