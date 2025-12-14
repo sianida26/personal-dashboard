@@ -147,8 +147,12 @@ export const TableHeaderCell = <T,>({
 									header.getContext(),
 								)}
 						{isSortable && sortedState && (
-							<span className="ml-1 text-sm">
-								{sortedState === "asc" ? "🔼" : "🔽"}
+							<span className="ml-1.5">
+								{sortedState === "asc" ? (
+									<ArrowUpAZ className="h-3.5 w-3.5" />
+								) : (
+									<ArrowDownAZ className="h-3.5 w-3.5" />
+								)}
 							</span>
 						)}
 					</div>
