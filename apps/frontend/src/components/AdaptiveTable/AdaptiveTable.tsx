@@ -402,6 +402,31 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		));
 	};
 
+	// Handle row click to show detail view
+	const handleRowClick = (
+		e: React.MouseEvent<HTMLTableRowElement>,
+		row: T,
+		rowIndex: number,
+	) => {
+		if (!showDetail) return;
+
+		// Don't trigger if clicking on interactive elements
+		const target = e.target as HTMLElement;
+		const isInteractive =
+			target.closest(
+				"button, a, input, select, textarea, [role='button'], [role='checkbox']",
+			) !== null;
+
+		if (isInteractive) return;
+
+		// Trigger detail view
+		if (props.onDetailClick) {
+			props.onDetailClick(row, rowIndex);
+		} else {
+			setDetailRowIndex(rowIndex);
+		}
+	};
+
 	// Helper function to render table cells (unified for grouped and ungrouped rows)
 	const renderCell = (
 		cell: Cell<T, unknown>,
@@ -598,7 +623,14 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 											key={row.id}
 											data-index={virtualRow.index}
 											data-selected={row.getIsSelected()}
-											className={`group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""}`}
+											className={`group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""} ${showDetail ? "cursor-pointer" : ""}`}
+											onClick={(e) =>
+												handleRowClick(
+													e,
+													row.original,
+													virtualRow.index,
+												)
+											}
 											style={{
 												display: "flex",
 												position: "absolute",
@@ -634,7 +666,14 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 									key={row.id}
 									data-index={virtualRow.index}
 									data-selected={row.getIsSelected()}
-									className={`group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""}`}
+									className={`group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""} ${showDetail ? "cursor-pointer" : ""}`}
+									onClick={(e) =>
+										handleRowClick(
+											e,
+											row.original,
+											virtualRow.index,
+										)
+									}
 									style={{
 										display: "flex",
 										position: "absolute",
@@ -714,7 +753,14 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 												<tr
 													key={row.id}
 													data-selected={row.getIsSelected()}
-													className={`group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""}`}
+													className={`group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""} ${showDetail ? "cursor-pointer" : ""}`}
+													onClick={(e) =>
+														handleRowClick(
+															e,
+															row.original,
+															originalIndex,
+														)
+													}
 												>
 													{row
 														.getVisibleCells()
@@ -740,7 +786,10 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 							<tr
 								key={row.id}
 								data-selected={row.getIsSelected()}
-								className={`group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""}`}
+								className={`group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""} ${showDetail ? "cursor-pointer" : ""}`}
+								onClick={(e) =>
+									handleRowClick(e, row.original, rowIndex)
+								}
 							>
 								{row
 									.getVisibleCells()
