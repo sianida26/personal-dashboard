@@ -25,16 +25,55 @@ const payload = jwt.verify(token, publicKey, { algorithms: ['RS256'] });
 ```
 
 ### Rate Limiting on Auth Endpoints
-```typescript
-// Strict rate limiting for authentication endpoints
-const authRateLimit = rateLimiter({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // 5 attempts per window
-  message: "Too many authentication attempts"
-});
 
-app.use("/auth/*", authRateLimit);
+The application implements specialized rate limiting for different authentication endpoints to prevent brute force attacks and abuse:
+
+```typescript
+// Authentication login rate limit - 5 requests per 15 minutes
+const authRateLimitConfig = {
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 5, // 5 requests per window per IP
+  message: "Too many login attempts. Please try again later.",
+};
+
+// OAuth rate limit - 10 requests per 5 minutes
+const oauthRateLimitConfig = {
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  limit: 10, // 10 requests per window per IP
+  message: "Too many OAuth attempts. Please try again later.",
+};
+
+// Token refresh rate limit - 10 requests per 5 minutes
+const refreshRateLimitConfig = {
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  limit: 10, // 10 requests per window per IP
+  message: "Too many token refresh attempts. Please try again later.",
+};
+
+// Registration rate limit - 3 requests per hour
+const registerRateLimitConfig = {
+  windowMs: 60 * 60 * 1000, // 1 hour
+  limit: 3, // 3 requests per window per IP
+  message: "Too many registration attempts. Please try again later.",
+};
 ```
+
+**Rate Limit Configuration by Endpoint:**
+
+| Endpoint            | Limit       | Window     | Purpose                                 |
+| ------------------- | ----------- | ---------- | --------------------------------------- |
+| `/auth/login`       | 5 requests  | 15 minutes | Prevent brute force password attacks    |
+| `/auth/google/*`    | 10 requests | 5 minutes  | Prevent OAuth abuse                     |
+| `/auth/microsoft/*` | 10 requests | 5 minutes  | Prevent OAuth abuse                     |
+| `/auth/refresh`     | 10 requests | 5 minutes  | Prevent token refresh abuse             |
+| `/auth/register`    | 3 requests  | 1 hour     | Prevent account spam (when implemented) |
+
+**Key Features:**
+- Rate limits are per IP address
+- Returns `429 Too Many Requests` status when exceeded
+- Includes `Retry-After` header with retry time
+- Automatically skipped in test environment (unless `x-enable-rate-limit` header is set)
+- Uses Cloudflare/forwarded IP detection for accurate client identification
 
 ### Password Security
 - **Hashing**: Use bcrypt with appropriate salt rounds
@@ -96,9 +135,9 @@ const customPermissionCheck = createMiddleware<HonoEnv>(async (c, next) => {
 // Soft delete implementation
 const softDeleteUser = async (userId: string) => {
   await db.update(users)
-    .set({ 
+    .set({
       deletedAt: new Date(),
-      isEnabled: false 
+      isEnabled: false
     })
     .where(eq(users.id, userId));
 };
@@ -150,7 +189,7 @@ const sanitizeHtml = (input: string): string => {
 ### Environment-Based CORS
 ```typescript
 const corsConfig = {
-  origin: appEnv.APP_ENV === "production" 
+  origin: appEnv.APP_ENV === "production"
     ? [appEnv.FRONTEND_URL]
     : ["http://localhost:3000", "http://localhost:5173"],
   credentials: true,
@@ -217,7 +256,7 @@ if (!secureEnv.JWT_SECRET) {
 ```typescript
 // Validate all request inputs
 const secureEndpoint = createHonoRoute()
-  .post("/secure", 
+  .post("/secure",
     requestValidator("json", secureSchema),
     async (c) => {
       const data = c.req.valid("json");
@@ -240,7 +279,7 @@ const sanitizeUser = (user: User) => {
 // Add security headers
 const securityHeaders = createMiddleware(async (c, next) => {
   await next();
-  
+
   c.header("X-Content-Type-Options", "nosniff");
   c.header("X-Frame-Options", "DENY");
   c.header("X-XSS-Protection", "1; mode=block");
@@ -257,10 +296,10 @@ const googleOAuth = createHonoRoute()
   .get("/auth/google", async (c) => {
     const state = crypto.randomBytes(32).toString('hex');
     const nonce = crypto.randomBytes(32).toString('hex');
-    
+
     // Store state and nonce securely
     await storeOAuthState(state, nonce);
-    
+
     const authUrl = buildGoogleAuthUrl(state, nonce);
     return c.redirect(authUrl);
   });
@@ -272,19 +311,19 @@ const googleCallback = createHonoRoute()
   .get("/auth/google/callback", async (c) => {
     const code = c.req.query("code");
     const state = c.req.query("state");
-    
+
     // Verify state parameter
     const isValidState = await verifyOAuthState(state);
     if (!isValidState) {
       throw badRequest({ message: "Invalid OAuth state" });
     }
-    
+
     // Exchange code for tokens
     const tokens = await exchangeGoogleCode(code);
-    
+
     // Validate and create user
     const user = await createOrUpdateGoogleUser(tokens);
-    
+
     return c.json({ accessToken: generateJWT(user.id) });
   });
 ```
@@ -313,7 +352,7 @@ const trackFailedLogin = async (email: string, ip: string) => {
     ipAddress: ip,
     timestamp: new Date()
   });
-  
+
   // Check for brute force attempts
   const recentFailures = await db.query.failedLogins.findMany({
     where: and(
@@ -321,7 +360,7 @@ const trackFailedLogin = async (email: string, ip: string) => {
       gte(failedLogins.timestamp, new Date(Date.now() - 15 * 60 * 1000))
     )
   });
-  
+
   if (recentFailures.length >= 5) {
     // Lock account or increase delay
     await lockAccount(email);

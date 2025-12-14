@@ -8,12 +8,15 @@ import db from "../../../drizzle";
 import { oauthGoogle } from "../../../drizzle/schema/oauthGoogle";
 import { users } from "../../../drizzle/schema/users";
 import DashboardError, { notFound } from "../../../errors/DashboardError";
+import rateLimit, {
+	oauthRateLimitConfig,
+} from "../../../middlewares/rateLimiter";
 import { getAppSettingValue } from "../../../services/appSettings/appSettingServices";
-import type HonoEnv from "../../../types/HonoEnv";
 import {
 	buildAuthPayload,
 	type UserWithAuthorization,
 } from "../../../services/auth/authResponseService";
+import type HonoEnv from "../../../types/HonoEnv";
 import { authMetrics, userMetrics } from "../../../utils/custom-metrics";
 
 const FRONTEND_CALLBACK_ROUTE = "/oauth/google-callback";
@@ -36,6 +39,7 @@ const tempAuthSessions = new Map<
 >();
 
 const googleOAuthRoutes = new Hono<HonoEnv>()
+	.use(rateLimit(oauthRateLimitConfig))
 	.get("/auth-data/:sessionId", (c) => {
 		const sessionId = c.req.param("sessionId");
 		const authData = tempAuthSessions.get(sessionId);
