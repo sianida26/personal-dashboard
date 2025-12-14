@@ -5,17 +5,20 @@ import { type CSSProperties, memo } from "react";
 import EditableCell from "./EditableCell";
 import type { AdaptiveColumnDef } from "./types";
 
+interface DragAlongCellProps<T> {
+	cell: Cell<T, unknown>;
+	rowIndex: number;
+	proportionalWidth?: string | number;
+	rowHeight?: number;
+	isRowSelected?: boolean; // Passed from parent to trigger re-render on selection change
+}
+
 const DragAlongCellComponent = <T,>({
 	cell,
 	rowIndex,
 	proportionalWidth,
 	rowHeight = 40,
-}: {
-	cell: Cell<T, unknown>;
-	rowIndex: number;
-	proportionalWidth?: string | number;
-	rowHeight?: number;
-}) => {
+}: DragAlongCellProps<T>) => {
 	const columnDef = cell.column.columnDef as AdaptiveColumnDef<T>;
 	const isActionsColumn = cell.column.id === "_actions";
 
@@ -48,9 +51,29 @@ const DragAlongCellComponent = <T,>({
 	);
 };
 
-// Memo wrapper to prevent unnecessary re-renders
+// Custom comparison function - compare isRowSelected prop directly
+const arePropsEqual = <T,>(
+	prevProps: DragAlongCellProps<T>,
+	nextProps: DragAlongCellProps<T>,
+) => {
+	// Re-render if row selection state changed (passed as prop from parent)
+	if (prevProps.isRowSelected !== nextProps.isRowSelected) {
+		return false;
+	}
+	// Check other props
+	return (
+		prevProps.cell.id === nextProps.cell.id &&
+		prevProps.rowIndex === nextProps.rowIndex &&
+		prevProps.proportionalWidth === nextProps.proportionalWidth &&
+		prevProps.rowHeight === nextProps.rowHeight &&
+		prevProps.cell.column.getSize() === nextProps.cell.column.getSize()
+	);
+};
+
+// Memo wrapper with custom comparison to handle selection state
 const DragAlongCell = memo(
 	DragAlongCellComponent,
+	arePropsEqual,
 ) as typeof DragAlongCellComponent;
 
 export default DragAlongCell;

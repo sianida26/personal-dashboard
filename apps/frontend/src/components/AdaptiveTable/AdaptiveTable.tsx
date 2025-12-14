@@ -107,35 +107,45 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 						/>
 					)
 				: "",
-			cell: ({ row }) => (
-				<div className="flex items-center justify-center gap-0.5 opacity-0 group-hover/row:opacity-100 transition-opacity">
-					{rowSelectable && (
-						<IndeterminateCheckbox
-							checked={row.getIsSelected()}
-							disabled={!row.getCanSelect()}
-							indeterminate={row.getIsSomeSelected()}
-							onChange={row.getToggleSelectedHandler()}
-						/>
-					)}
-					{showDetail && (
-						<button
-							type="button"
-							onClick={() => {
-								const rowIndex = row.index;
-								if (props.onDetailClick) {
-									props.onDetailClick(row.original, rowIndex);
-								} else {
-									setDetailRowIndex(rowIndex);
-								}
-							}}
-							className="p-0.5 hover:bg-accent rounded transition-colors"
-							aria-label="Show details"
-						>
-							<ChevronRight className="h-4 w-4 text-muted-foreground" />
-						</button>
-					)}
-				</div>
-			),
+			cell: ({ row }) => {
+				const isSelected = row.getIsSelected();
+				return (
+					<div className="flex items-center justify-center gap-0.5">
+						{rowSelectable && (
+							<div
+								className={`transition-opacity ${isSelected ? "opacity-100" : "opacity-0 group-hover/row:opacity-100"}`}
+							>
+								<IndeterminateCheckbox
+									checked={isSelected}
+									disabled={!row.getCanSelect()}
+									indeterminate={row.getIsSomeSelected()}
+									onChange={row.getToggleSelectedHandler()}
+								/>
+							</div>
+						)}
+						{showDetail && (
+							<button
+								type="button"
+								onClick={() => {
+									const rowIndex = row.index;
+									if (props.onDetailClick) {
+										props.onDetailClick(
+											row.original,
+											rowIndex,
+										);
+									} else {
+										setDetailRowIndex(rowIndex);
+									}
+								}}
+								className="p-0.5 hover:bg-accent rounded transition-colors opacity-0 group-hover/row:opacity-100"
+								aria-label="Show details"
+							>
+								<ChevronRight className="h-4 w-4 text-muted-foreground" />
+							</button>
+						)}
+					</div>
+				);
+			},
 			size: rowSelectable && showDetail ? 56 : 32,
 			minSize: rowSelectable && showDetail ? 56 : 32,
 			enableResizing: false,
@@ -411,6 +421,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 					rowIndex={rowIndex}
 					proportionalWidth={proportionalWidth}
 					rowHeight={rowHeight}
+					isRowSelected={cell.row.getIsSelected()}
 				/>
 			);
 		}
@@ -586,7 +597,8 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 										<tr
 											key={row.id}
 											data-index={virtualRow.index}
-											className="group/row hover:bg-muted/50 transition-colors border-b"
+											data-selected={row.getIsSelected()}
+											className={`group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""}`}
 											style={{
 												display: "flex",
 												position: "absolute",
@@ -621,7 +633,8 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 								<tr
 									key={row.id}
 									data-index={virtualRow.index}
-									className="group/row hover:bg-muted/50 transition-colors border-b"
+									data-selected={row.getIsSelected()}
+									className={`group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""}`}
 									style={{
 										display: "flex",
 										position: "absolute",
@@ -700,7 +713,8 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 											return (
 												<tr
 													key={row.id}
-													className="group/row hover:bg-muted/50 transition-colors border-b"
+													data-selected={row.getIsSelected()}
+													className={`group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""}`}
 												>
 													{row
 														.getVisibleCells()
@@ -725,7 +739,8 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 						.rows.map((row, rowIndex) => (
 							<tr
 								key={row.id}
-								className="group/row hover:bg-muted/50 transition-colors border-b"
+								data-selected={row.getIsSelected()}
+								className={`group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""}`}
 							>
 								{row
 									.getVisibleCells()
