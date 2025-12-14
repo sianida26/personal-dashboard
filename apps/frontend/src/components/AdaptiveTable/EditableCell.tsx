@@ -172,9 +172,9 @@ const EditableCellComponent = <T,>({
 };
 
 // Memo wrapper to prevent unnecessary re-renders
-export const EditableCell = memo(
-	EditableCellComponent,
-) as typeof EditableCellComponent;
-EditableCell.displayName = "EditableCell";
+export const EditableCell = Object.assign(
+	memo(EditableCellComponent) as typeof EditableCellComponent,
+	{ displayName: "EditableCell" },
+);
 
 export default EditableCell;
