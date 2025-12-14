@@ -1,5 +1,6 @@
 import type { ColumnDef, SortingState } from "@tanstack/react-table";
 import type { ReactNode } from "react";
+import type { FilterState, FilterType } from "./filterEngine";
 
 export type AdaptiveColumnDef<T> = ColumnDef<T> & {
 	editable?: boolean;
@@ -22,7 +23,20 @@ export type AdaptiveColumnDef<T> = ColumnDef<T> & {
 	resizable?: boolean; // Override columnResizable for this column
 	visibilityToggle?: boolean; // Override columnVisibilityToggle for this column
 	sortable?: boolean; // Override sortable for this column
+	// Filter settings
+	filterable?: boolean; // Whether this column can be filtered (default: true for accessor columns)
+	filterType?: FilterType; // Type of filter to use (auto-detected: "select" if has options, otherwise "text")
 };
+
+// Represents a column that can be filtered
+export interface FilterableColumn {
+	columnId: string;
+	filterType: FilterType;
+	options?: Array<{
+		label: string;
+		value: string | number;
+	}>;
+}
 
 export interface TableSettingsLabels {
 	columnVisibility?: string;
@@ -33,6 +47,7 @@ export interface TableSettingsLabels {
 	groupByProperty?: string;
 	sort?: string;
 	moreOptions?: string;
+	filter?: string;
 }
 
 export type AdaptiveTableProps<T> = {
@@ -45,6 +60,9 @@ export type AdaptiveTableProps<T> = {
 	saveState?: string; // Unique key to save/load table state
 	sortable?: boolean; // Default: true
 	onSortingChange?: (sorting: SortingState) => void;
+	// Filter props
+	filterable?: boolean; // Default: true, enables filtering
+	onFiltersChange?: (filters: FilterState) => void; // Callback when filters change
 	// Header section props
 	title?: string;
 	headerActions?: ReactNode;
@@ -84,4 +102,5 @@ export interface TableState {
 	expandedGroups?: Record<string, boolean>;
 	perPage?: number;
 	sorting?: SortingState;
+	filters?: FilterState;
 }

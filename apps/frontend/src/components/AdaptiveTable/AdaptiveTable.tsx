@@ -28,11 +28,17 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DetailSheet } from "./DetailSheet";
 import DragAlongCell from "./DragAlongCell";
 import EditableCell from "./EditableCell";
+import type { FilterType } from "./filterEngine";
 import IndeterminateCheckbox from "./IndeterminateCheckbox";
 import { TableHeader } from "./TableHeader";
 import TableHeaderCell from "./TableHeaderCell";
 import { TablePagination } from "./TablePagination";
-import type { AdaptiveColumnDef, AdaptiveTableProps } from "./types";
+import type {
+	AdaptiveColumnDef,
+	AdaptiveTableProps,
+	FilterableColumn,
+} from "./types";
+import { useTableFiltering } from "./useTableFiltering";
 import { useTableGrouping } from "./useTableGrouping";
 import { useTablePagination } from "./useTablePagination";
 import { useTableSorting } from "./useTableSorting";
@@ -53,6 +59,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	const rowVirtualization = props.rowVirtualization ?? true;
 	const rowHeight = props.rowHeight ?? 40;
 	const fitToParentWidth = props.fitToParentWidth ?? false;
+	const filterable = props.filterable ?? true;
 
 	// Reference for the scrollable container
 	const tableContainerRef = useRef<HTMLDivElement>(null);
@@ -179,6 +186,8 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		setPerPage,
 		sorting,
 		setSorting,
+		filters,
+		setFilters,
 	} = useTableState({
 		saveStateKey: props.saveState,
 		defaultColumnOrder: columnsWithDetail.map((c) => c.id as string),
@@ -188,7 +197,178 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		enableGroupable: groupable,
 		enablePagination: pagination,
 		enableSortable: sortable,
+		enableFilterable: filterable,
 	});
+
+	// Build filterable columns from column definitions
+	// By default, all accessor columns are filterable unless explicitly set to false
+	// Filter type is auto-detected: "select" if has options, "number" for numeric accessors, otherwise "text"
+	const filterableColumns = useMemo<FilterableColumn[]>(() => {
+		if (!filterable) return [];
+
+		// Helper to detect if a column is likely numeric based on accessor key or sample data
+		const detectNumberType = (columnDef: AdaptiveColumnDef<T>): boolean => {
+			// Check if accessorKey suggests a number (common patterns)
+			if ("accessorKey" in columnDef && columnDef.accessorKey) {
+				const key = String(columnDef.accessorKey).toLowerCase();
+				const numericPatterns = [
+					"number",
+					"count",
+					"total",
+					"amount",
+					"price",
+					"cost",
+					"quantity",
+					"qty",
+					"age",
+					"year",
+					"month",
+					"day",
+					"id",
+					"index",
+					"size",
+					"width",
+					"height",
+					"weight",
+					"mass",
+					"density",
+					"point",
+					"score",
+					"rating",
+					"percent",
+					"percentage",
+					"rate",
+					"ratio",
+					"period",
+					"group",
+				];
+				if (numericPatterns.some((pattern) => key.includes(pattern))) {
+					return true;
+				}
+			}
+
+			// Check sample data if available
+			if (props.data.length > 0) {
+				const firstRow = props.data[0];
+				let sampleValue: unknown;
+
+				if (
+					"accessorKey" in columnDef &&
+					columnDef.accessorKey &&
+					firstRow
+				) {
+					const keys = String(columnDef.accessorKey).split(".");
+					sampleValue = keys.reduce<unknown>(
+						(obj, key) =>
+							obj && typeof obj === "object"
+								? (obj as Record<string, unknown>)[key]
+								: undefined,
+						firstRow,
+					);
+				} else if (
+					"accessorFn" in columnDef &&
+					columnDef.accessorFn &&
+					firstRow
+				) {
+					try {
+						sampleValue = columnDef.accessorFn(firstRow, 0);
+					} catch {
+						// Ignore accessor errors
+					}
+				}
+
+				if (typeof sampleValue === "number") {
+					return true;
+				}
+			}
+
+			return false;
+		};
+
+		return columnsWithIds
+			.filter((col) => {
+				const columnDef = col as AdaptiveColumnDef<T>;
+				// Skip internal columns like _actions
+				if (col.id?.startsWith("_")) return false;
+				// If explicitly set to false, exclude
+				if (columnDef.filterable === false) return false;
+				// If explicitly set to true, include
+				if (columnDef.filterable === true) return true;
+				// By default, include columns that have an accessor (accessorKey or accessorFn)
+				return "accessorKey" in columnDef || "accessorFn" in columnDef;
+			})
+			.map((col) => {
+				const columnDef = col as AdaptiveColumnDef<T>;
+				// Auto-detect filter type:
+				// 1. Use explicit filterType if provided
+				// 2. "select" if has options
+				// 3. "number" if detected as numeric
+				// 4. Default to "text"
+				let autoFilterType: FilterType = "text";
+				if (columnDef.filterType) {
+					autoFilterType = columnDef.filterType;
+				} else if (columnDef.options && columnDef.options.length > 0) {
+					autoFilterType = "select";
+				} else if (detectNumberType(columnDef)) {
+					autoFilterType = "number";
+				}
+
+				return {
+					columnId: col.id as string,
+					filterType: autoFilterType,
+					options: columnDef.options?.map((opt) => ({
+						label: opt.label,
+						value: opt.value,
+					})),
+				};
+			});
+	}, [filterable, columnsWithIds, props.data]);
+
+	// Build accessor functions for filtering
+	const filterAccessorFns = useMemo(() => {
+		if (!filterable) return undefined;
+		const accessorFns: Record<string, (row: T) => unknown> = {};
+		for (const col of columnsWithIds) {
+			const columnDef = col as AdaptiveColumnDef<T>;
+			// Include accessor functions for all filterable columns
+			if ("accessorFn" in columnDef && columnDef.accessorFn) {
+				accessorFns[col.id as string] = columnDef.accessorFn as (
+					row: T,
+				) => unknown;
+			}
+		}
+		return Object.keys(accessorFns).length > 0 ? accessorFns : undefined;
+	}, [filterable, columnsWithIds]);
+
+	// Use custom hook for filtering
+	const {
+		filteredData,
+		addFilter,
+		updateFilter,
+		removeFilter,
+		clearFilters,
+	} = useTableFiltering({
+		data: props.data,
+		filters,
+		onFiltersChange: (newFilters) => {
+			setFilters(newFilters);
+			props.onFiltersChange?.(newFilters);
+		},
+		accessorFns: filterAccessorFns,
+	});
+
+	// Handle adding a filter for a column
+	const handleAddFilter = useCallback(
+		(columnId: string) => {
+			const filterCol = filterableColumns.find(
+				(f) => f.columnId === columnId,
+			);
+			if (filterCol) {
+				addFilter(columnId, filterCol.filterType);
+			}
+		},
+		[filterableColumns, addFilter],
+	);
 
 	// Use custom hooks for pagination
 	const {
@@ -204,7 +384,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		currentPage: props.currentPage,
 		maxPage: props.maxPage,
 		perPage,
-		data: props.data,
+		data: filteredData, // Use filtered data for client-side pagination
 		loading,
 		isGrouped: groupBy !== null,
 		onPaginationChange: props.onPaginationChange,
@@ -214,7 +394,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	// Use custom hook for grouping
 	const { groupedData, toggleGroup } = useTableGrouping({
 		groupBy,
-		data: props.data,
+		data: filteredData, // Use filtered data for grouping
 		expandedGroups,
 		setExpandedGroups,
 	});
@@ -228,23 +408,35 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	// Determine which data to use
 	// When grouped (client-side), always use full data regardless of pagination
 	const tableData = useMemo(() => {
-		// If grouped with client pagination, show all data
+		// If grouped with client pagination, show all filtered data
 		if (groupBy && pagination && paginationType === "client") {
-			return props.data;
+			return filteredData;
 		}
 		// If paginated (not grouped), use paginated data
 		if (pagination && paginationType === "client") {
 			return paginatedData;
 		}
-		// Otherwise, use original data
-		return props.data;
-	}, [groupBy, pagination, paginationType, paginatedData, props.data]);
+		// Otherwise, use filtered data
+		return filteredData;
+	}, [groupBy, pagination, paginationType, paginatedData, filteredData]);
 
 	const table = useReactTable({
 		data: tableData,
 		columns: columnsWithDetail,
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
+		// Generate unique row IDs based on data content to ensure proper re-rendering
+		// when filtered data changes (prevents stale cell data from being displayed)
+		getRowId: (originalRow, index) => {
+			// Try to use a unique identifier from the row data, fallback to stringified content + index
+			const row = originalRow as Record<string, unknown>;
+			if (row.id !== undefined) return String(row.id);
+			if (row._id !== undefined) return String(row._id);
+			if (row.key !== undefined) return String(row.key);
+			// Fallback: use first few values + index to create a unique-ish ID
+			const values = Object.values(row).slice(0, 3).join("-");
+			return `${values}-${index}`;
+		},
 		state: {
 			columnOrder: props.columnOrderable ? columnOrder : undefined,
 			...(props.columnResizable && { columnSizing }),
@@ -376,6 +568,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 
 	// Setup row virtualizer
 	const rows = table.getRowModel().rows;
+
 	const rowVirtualizer = useVirtualizer({
 		count: rows.length,
 		getScrollElement: () => tableContainerRef.current,
@@ -824,6 +1017,13 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 				onSortingChange={setSorting}
 				headerActions={props.headerActions}
 				labels={props.labels}
+				filterable={filterable}
+				filterableColumns={filterableColumns}
+				filters={filters}
+				onAddFilter={handleAddFilter}
+				onUpdateFilter={updateFilter}
+				onRemoveFilter={removeFilter}
+				onClearFilters={clearFilters}
 			/>
 
 			<div
@@ -854,7 +1054,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 					totalRecords={
 						paginationType === "server"
 							? (props.recordsTotal ?? 0)
-							: props.data.length
+							: filteredData.length
 					}
 					loading={loading}
 					onPageChange={handlePageChange}
@@ -870,7 +1070,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 						if (!open) setDetailRowIndex(null);
 					}}
 					columns={columnsWithIds}
-					data={props.data}
+					data={filteredData}
 					detailRowIndex={detailRowIndex}
 				/>
 			)}

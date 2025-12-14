@@ -1,5 +1,6 @@
 import type { SortingState } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
+import type { FilterState } from "./filterEngine";
 import type { TableState } from "./types";
 import { loadTableState, saveTableState } from "./utils";
 
@@ -12,6 +13,7 @@ interface UseTableStateOptions {
 	enableGroupable?: boolean;
 	enablePagination?: boolean;
 	enableSortable?: boolean;
+	enableFilterable?: boolean;
 }
 
 interface UseTableStateReturn {
@@ -35,6 +37,8 @@ interface UseTableStateReturn {
 	setPerPage: React.Dispatch<React.SetStateAction<number>>;
 	sorting: SortingState;
 	setSorting: React.Dispatch<React.SetStateAction<SortingState>>;
+	filters: FilterState;
+	setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
 }
 
 export function useTableState({
@@ -46,6 +50,7 @@ export function useTableState({
 	enableGroupable,
 	enablePagination,
 	enableSortable,
+	enableFilterable,
 }: UseTableStateOptions): UseTableStateReturn {
 	// Initialize column order from saved state or default order
 	const [columnOrder, setColumnOrder] = useState<string[]>(() => {
@@ -191,6 +196,21 @@ export function useTableState({
 		return [];
 	});
 
+	// Initialize filter state from saved state
+	const [filters, setFilters] = useState<FilterState>(() => {
+		if (saveStateKey && enableFilterable) {
+			try {
+				const savedState = loadTableState(saveStateKey);
+				if (savedState?.filters) {
+					return savedState.filters;
+				}
+			} catch (error) {
+				console.error("Error loading filter state:", error);
+			}
+		}
+		return [];
+	});
+
 	// Save state whenever any state changes
 	useEffect(() => {
 		if (saveStateKey) {
@@ -214,6 +234,9 @@ export function useTableState({
 			if (enableSortable) {
 				state.sorting = sorting;
 			}
+			if (enableFilterable) {
+				state.filters = filters;
+			}
 			saveTableState(saveStateKey, state);
 		}
 	}, [
@@ -225,12 +248,14 @@ export function useTableState({
 		expandedGroups,
 		perPage,
 		sorting,
+		filters,
 		enableColumnOrderable,
 		enableColumnResizable,
 		enableColumnVisibilityToggle,
 		enableGroupable,
 		enablePagination,
 		enableSortable,
+		enableFilterable,
 	]);
 
 	return {
@@ -248,5 +273,7 @@ export function useTableState({
 		setPerPage,
 		sorting,
 		setSorting,
+		filters,
+		setFilters,
 	};
 }

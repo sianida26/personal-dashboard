@@ -1,8 +1,11 @@
 import { Badge, Button } from "@repo/ui";
 import type { SortingState, Table } from "@tanstack/react-table";
 import type { ReactNode } from "react";
+import { FilterBar } from "./FilterBar";
+import { FilterMenu } from "./FilterMenu";
+import type { FilterCondition } from "./filterEngine";
 import { TableSettingsMenu } from "./TableSettingsMenu";
-import type { TableSettingsLabels } from "./types";
+import type { FilterableColumn, TableSettingsLabels } from "./types";
 
 interface TableHeaderProps<T> {
 	title?: string;
@@ -22,6 +25,17 @@ interface TableHeaderProps<T> {
 	onSortingChange: (sorting: SortingState) => void;
 	headerActions?: ReactNode;
 	labels?: Partial<TableSettingsLabels>;
+	// Filter props
+	filterable: boolean;
+	filterableColumns: FilterableColumn[];
+	filters: FilterCondition[];
+	onAddFilter: (columnId: string) => void;
+	onUpdateFilter: (
+		filterId: string,
+		updates: Partial<FilterCondition>,
+	) => void;
+	onRemoveFilter: (filterId: string) => void;
+	onClearFilters: () => void;
 }
 
 export function TableHeader<T>({
@@ -42,6 +56,13 @@ export function TableHeader<T>({
 	onSortingChange,
 	headerActions,
 	labels,
+	filterable,
+	filterableColumns,
+	filters,
+	onAddFilter,
+	onUpdateFilter,
+	onRemoveFilter,
+	onClearFilters,
 }: TableHeaderProps<T>) {
 	if (!showHeader) return null;
 
@@ -51,52 +72,82 @@ export function TableHeader<T>({
 	const selectedRows = rowSelectable
 		? table.getSelectedRowModel().rows.map((row) => row.original)
 		: [];
+	const hasActiveFilters = filters.length > 0;
 
 	return (
-		<div className="flex items-center justify-between mb-4">
-			<div className="flex items-center gap-2">
-				{title && <h2 className="text-lg font-semibold">{title}</h2>}
-				{rowSelectable && selectedRowsCount > 0 && (
-					<>
-						<Badge variant="secondary">
-							{selectedRowsCount} selected
-						</Badge>
-						{selectActions?.map((action) => (
-							<button
-								key={action.name}
-								type="button"
-								onClick={() => {
-									if (onSelectAction) {
-										onSelectAction(
-											selectedRows,
-											action.name,
-										);
-									}
-								}}
-							>
-								{action.button}
-							</button>
-						))}
-					</>
-				)}
+		<div className="mb-4">
+			<div className="flex items-center justify-between">
+				<div className="flex items-center gap-2">
+					{title && (
+						<h2 className="text-lg font-semibold">{title}</h2>
+					)}
+					{rowSelectable && selectedRowsCount > 0 && (
+						<>
+							<Badge variant="secondary">
+								{selectedRowsCount} selected
+							</Badge>
+							{selectActions?.map((action) => (
+								<button
+									key={action.name}
+									type="button"
+									onClick={() => {
+										if (onSelectAction) {
+											onSelectAction(
+												selectedRows,
+												action.name,
+											);
+										}
+									}}
+								>
+									{action.button}
+								</button>
+							))}
+						</>
+					)}
+				</div>
+				<div className="flex items-center gap-2">
+					{filterable && filterableColumns.length > 0 && (
+						<FilterMenu
+							table={table}
+							filterableColumns={filterableColumns}
+							onAddFilter={onAddFilter}
+							hasActiveFilters={hasActiveFilters}
+						/>
+					)}
+					{columnVisibilityToggle && (
+						<TableSettingsMenu
+							table={table}
+							columnVisibilityToggle={columnVisibilityToggle}
+							groupable={groupable}
+							groupBy={groupBy}
+							onGroupByChange={onGroupByChange}
+							paginationType={paginationType}
+							sortable={sortable}
+							sorting={sorting}
+							onSortingChange={onSortingChange}
+							labels={labels}
+						/>
+					)}
+					{headerActions ? (
+						headerActions
+					) : (
+						<Button size="sm">New</Button>
+					)}
+				</div>
 			</div>
-			<div className="flex items-center gap-2">
-				{columnVisibilityToggle && (
-					<TableSettingsMenu
+			{/* Filter chips bar */}
+			{filterable && hasActiveFilters && (
+				<div className="mt-3">
+					<FilterBar
+						filters={filters}
 						table={table}
-						columnVisibilityToggle={columnVisibilityToggle}
-						groupable={groupable}
-						groupBy={groupBy}
-						onGroupByChange={onGroupByChange}
-						paginationType={paginationType}
-						sortable={sortable}
-						sorting={sorting}
-						onSortingChange={onSortingChange}
-						labels={labels}
+						filterableColumns={filterableColumns}
+						onUpdateFilter={onUpdateFilter}
+						onRemoveFilter={onRemoveFilter}
+						onClearFilters={onClearFilters}
 					/>
-				)}
-				{headerActions ? headerActions : <Button size="sm">New</Button>}
-			</div>
+				</div>
+			)}
 		</div>
 	);
 }

@@ -36,6 +36,7 @@ function RouteComponent() {
 			{
 				accessorKey: "atomicNumber",
 				header: "Atomic #",
+				// Auto-detects as "number" filter based on accessor key pattern and sample data
 			},
 			{
 				accessorKey: "symbol",
@@ -50,6 +51,7 @@ function RouteComponent() {
 			{
 				accessorKey: "atomicMass",
 				header: "Atomic Mass",
+				// Auto-detects as "number" filter based on sample data (typeof number)
 				cell: (info) => {
 					const value = info.getValue() as number;
 					return value?.toFixed(3) ?? "N/A";
@@ -58,10 +60,12 @@ function RouteComponent() {
 			{
 				accessorKey: "category",
 				header: "Category",
+				// Auto-detects as "text" filter since no options and not numeric
 			},
 			{
 				accessorKey: "group",
 				header: "Group",
+				// Auto-detects as "number" filter based on accessor key pattern
 				cell: (info) => info.getValue() ?? "—",
 			},
 			{
@@ -69,6 +73,7 @@ function RouteComponent() {
 				header: "Period",
 				editable: true,
 				editType: "select",
+				// Auto-detects as "select" filter since it has options
 				options: [
 					{ label: "1", value: 1, color: "#ef4444" },
 					{ label: "2", value: 2, color: "#f97316" },
@@ -85,6 +90,7 @@ function RouteComponent() {
 				header: "Block",
 				editable: true,
 				editType: "select",
+				// Auto-detects as "select" filter since it has options
 				options: [
 					{ label: "s-block", value: "s", color: "#10b981" },
 					{ label: "p-block", value: "p", color: "#3b82f6" },
@@ -100,6 +106,7 @@ function RouteComponent() {
 			{
 				accessorKey: "density",
 				header: "Density (g/cm³)",
+				// Auto-detects as "number" filter based on accessor key pattern and sample data
 				cell: (info) => {
 					const value = info.getValue() as number | null;
 					return value?.toFixed(4) ?? "N/A";
@@ -108,6 +115,7 @@ function RouteComponent() {
 			{
 				accessorKey: "meltingPoint",
 				header: "Melting Point (K)",
+				// Auto-detects as "number" filter based on accessor key pattern and sample data
 				cell: (info) => {
 					const value = info.getValue() as number | null;
 					return value?.toFixed(2) ?? "N/A";
@@ -116,6 +124,7 @@ function RouteComponent() {
 			{
 				accessorKey: "boilingPoint",
 				header: "Boiling Point (K)",
+				// Auto-detects as "number" filter based on accessor key pattern and sample data
 				cell: (info) => {
 					const value = info.getValue() as number | null;
 					return value?.toFixed(2) ?? "N/A";
@@ -124,6 +133,7 @@ function RouteComponent() {
 			{
 				accessorKey: "discoveryYear",
 				header: "Discovery Year",
+				// Auto-detects as "number" filter based on accessor key pattern
 				cell: (info) => info.getValue() ?? "Ancient",
 			},
 		],

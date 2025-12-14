@@ -1,7 +1,7 @@
 import { Badge, Popover, PopoverContent, PopoverTrigger } from "@repo/ui";
 import { type Cell, flexRender } from "@tanstack/react-table";
 import { ChevronDown } from "lucide-react";
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import type { AdaptiveColumnDef } from "./types";
 
 const EditableCellComponent = <T,>({
@@ -15,11 +15,19 @@ const EditableCellComponent = <T,>({
 }) => {
 	const columnDef = cell.column.columnDef as AdaptiveColumnDef<T>;
 	const [isEditing, setIsEditing] = useState(false);
-	const [value, setValue] = useState(cell.getValue());
+	const [editValue, setEditValue] = useState(cell.getValue());
+
+	// Get the current cell value directly (not from state)
+	const currentValue = cell.getValue();
+
+	// Sync edit value when cell value changes (e.g., from filtering)
+	useEffect(() => {
+		setEditValue(currentValue);
+	}, [currentValue]);
 
 	const handleSave = () => {
 		if (columnDef.onEdited) {
-			columnDef.onEdited(rowIndex, cell.column.id, value);
+			columnDef.onEdited(rowIndex, cell.column.id, editValue);
 		}
 		setIsEditing(false);
 	};
@@ -28,27 +36,27 @@ const EditableCellComponent = <T,>({
 		if (e.key === "Enter") {
 			handleSave();
 		} else if (e.key === "Escape") {
-			setValue(cell.getValue());
+			setEditValue(currentValue);
 			setIsEditing(false);
 		}
 	};
 
 	const handleSelectOption = (optionValue: string | number) => {
-		setValue(optionValue);
+		setEditValue(optionValue);
 		if (columnDef.onEdited) {
 			columnDef.onEdited(rowIndex, cell.column.id, optionValue);
 		}
 		setIsEditing(false);
 	};
 
-	// Helper to get color for current value
+	// Helper to get color for current value (use currentValue, not state)
 	const getColorForValue = () => {
 		if (columnDef.getCellColor) {
-			return columnDef.getCellColor(value);
+			return columnDef.getCellColor(currentValue);
 		}
 		if (columnDef.options) {
 			const option = columnDef.options.find(
-				(opt) => String(opt.value) === String(value),
+				(opt) => String(opt.value) === String(currentValue),
 			);
 			return option?.color;
 		}
@@ -63,11 +71,12 @@ const EditableCellComponent = <T,>({
 		);
 	}
 
-	// Render as chip/badge for editable cells
+	// Render as chip/badge for editable cells - use currentValue for display
 	const cellColor = getColorForValue();
 	const displayValue =
-		columnDef.options?.find((opt) => String(opt.value) === String(value))
-			?.label || String(value ?? "");
+		columnDef.options?.find(
+			(opt) => String(opt.value) === String(currentValue),
+		)?.label || String(currentValue ?? "");
 
 	// For select type, use Popover with menu
 	if (columnDef.editType === "select") {
@@ -140,8 +149,8 @@ const EditableCellComponent = <T,>({
 		return (
 			<input
 				type="text"
-				value={String(value ?? "")}
-				onChange={(e) => setValue(e.target.value)}
+				value={String(editValue ?? "")}
+				onChange={(e) => setEditValue(e.target.value)}
 				onBlur={handleSave}
 				onKeyDown={handleKeyDown}
 				className="w-full bg-transparent py-1 text-sm outline-none focus:outline-none focus:ring-0 leading-normal"
