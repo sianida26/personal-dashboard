@@ -10,6 +10,10 @@
 		"check": "tsc --noEmit"
 	},
 	"dependencies": {
+		"@dnd-kit/core": "^6.3.1",
+		"@dnd-kit/modifiers": "^9.0.0",
+		"@dnd-kit/sortable": "^10.0.0",
+		"@dnd-kit/utilities": "^3.2.2",
 		"@mantine/form": "^8.3.6",
 		"@mantine/hooks": "^8.3.6",
 		"@repo/data": "workspace:*",
@@ -20,7 +24,9 @@
 		"@tanstack/react-query": "^5.90.7",
 		"@tanstack/react-router": "^1.134.13",
 		"@tanstack/react-table": "^8.21.3",
+		"@tanstack/react-virtual": "^3.13.12",
 		"@tanstack/router-plugin": "^1.134.14",
+		"react-icons": "^5.5.0",
 		"@types/uuid": "^10.0.0",
 		"@vitejs/plugin-react": "^5.1.0",
 		"backend": "workspace:*",
@@ -33,5 +39,9 @@
 	},
 	"devDependencies": {
 		"@tanstack/router-devtools": "^1.134.13"
+	},
+	"resolutions": {
+		"@tanstack/router-generator>zod": "^3.25.76",
+		"@tanstack/router-plugin>zod": "^3.25.76"
 	}
 }

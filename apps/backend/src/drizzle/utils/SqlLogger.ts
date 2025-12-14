@@ -15,8 +15,17 @@ import appLogger from "../../utils/logger";
  */
 class SqlLogger implements Logger {
 	logQuery(query: string, params: unknown[]) {
-		// Log the SQL query
-		appLogger.sql(query, params);
+		// Skip logging for job queue polling queries to reduce noise
+		// These queries run frequently (every poll interval) when workers check for pending jobs
+		const isJobQueuePollQuery =
+			query.includes('from "jobs"') &&
+			query.includes('where ("jobs"."status" = $1') &&
+			query.includes("for update skip locked");
+
+		// Log the SQL query (skip if it's a job queue poll query)
+		if (!isJobQueuePollQuery) {
+			appLogger.sql(query, params);
+		}
 
 		// Create OpenTelemetry span for the database query if enabled
 		if (appEnv.OTEL_ENABLED) {
