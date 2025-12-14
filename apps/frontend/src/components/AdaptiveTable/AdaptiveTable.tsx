@@ -108,7 +108,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 					)
 				: "",
 			cell: ({ row }) => (
-				<div className="px-1 flex items-center justify-center gap-1 ps-2.5 pe-2">
+				<div className="flex items-center justify-center gap-0.5 opacity-0 group-hover/row:opacity-100 transition-opacity">
 					{rowSelectable && (
 						<IndeterminateCheckbox
 							checked={row.getIsSelected()}
@@ -128,7 +128,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 									setDetailRowIndex(rowIndex);
 								}
 							}}
-							className="p-1 hover:bg-accent rounded transition-colors"
+							className="p-0.5 hover:bg-accent rounded transition-colors"
 							aria-label="Show details"
 						>
 							<ChevronRight className="h-4 w-4 text-muted-foreground" />
@@ -136,7 +136,8 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 					)}
 				</div>
 			),
-			size: rowSelectable && showDetail ? 100 : 50,
+			size: rowSelectable && showDetail ? 56 : 32,
+			minSize: rowSelectable && showDetail ? 56 : 32,
 			enableResizing: false,
 			enableHiding: false,
 			enableSorting: false,
@@ -417,7 +418,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		return (
 			<td
 				key={cell.id}
-				className="border-t border-l last:border-r p-1 overflow-hidden"
+				className="p-1 overflow-hidden"
 				style={{
 					...(isVirtualized
 						? {
@@ -585,6 +586,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 										<tr
 											key={row.id}
 											data-index={virtualRow.index}
+											className="group/row hover:bg-muted/50 transition-colors border-b"
 											style={{
 												display: "flex",
 												position: "absolute",
@@ -619,6 +621,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 								<tr
 									key={row.id}
 									data-index={virtualRow.index}
+									className="group/row hover:bg-muted/50 transition-colors border-b"
 									style={{
 										display: "flex",
 										position: "absolute",
@@ -695,7 +698,10 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 											if (!row) return null;
 
 											return (
-												<tr key={row.id}>
+												<tr
+													key={row.id}
+													className="group/row hover:bg-muted/50 transition-colors border-b"
+												>
 													{row
 														.getVisibleCells()
 														.map((cell) =>
@@ -717,7 +723,10 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 					table
 						.getRowModel()
 						.rows.map((row, rowIndex) => (
-							<tr key={row.id}>
+							<tr
+								key={row.id}
+								className="group/row hover:bg-muted/50 transition-colors border-b"
+							>
 								{row
 									.getVisibleCells()
 									.map((cell) =>

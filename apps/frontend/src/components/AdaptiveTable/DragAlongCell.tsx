@@ -40,11 +40,7 @@ const DragAlongCellComponent = <T,>({
 	};
 
 	return (
-		<td
-			style={style}
-			ref={setNodeRef}
-			className="border-t border-l last:border-r p-1 overflow-hidden"
-		>
+		<td style={style} ref={setNodeRef} className="p-1 overflow-hidden">
 			<div className="truncate w-full h-full flex items-center">
 				<EditableCell cell={cell} rowIndex={rowIndex} />
 			</div>

@@ -113,7 +113,7 @@ export const TableHeaderCell = <T,>({
 			colSpan={header.colSpan}
 			ref={sortableHook?.setNodeRef}
 			style={style}
-			className={`border-y border-l last:border-r relative p-1 ${
+			className={`border-b relative p-1 ${
 				draggable && !isActionsColumn && isOrderable && !isResizing
 					? "cursor-grab active:cursor-grabbing"
 					: ""
