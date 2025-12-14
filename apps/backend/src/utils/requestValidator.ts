@@ -9,7 +9,7 @@ import type {
 } from "hono";
 import type { input as ZodInput, output as ZodOutput, ZodTypeAny } from "zod";
 import DashboardError from "../errors/DashboardError";
-// Local hook type retained for external callers, but not enforced against zValidator to avoid version skew
+// Local hook type retained for external callers for backwards compatibility
 export type Hook<T, E extends Env, P extends string, O = {}> = (
 	result:
 		| { success: true; data: T }
@@ -77,10 +77,16 @@ function requestValidator<
 	schema: T,
 	hook?: Hook<Out, E, P, {}> | undefined,
 ): MiddlewareHandler<E, P, V> {
-	const defaultHook: Hook<Out, E, P, {}> = (result) => {
+	// Default hook that handles validation errors by throwing DashboardError
+	const defaultHook = (result: {
+		success: boolean;
+		data?: unknown;
+		error?: unknown;
+		target?: string;
+	}) => {
 		if (!("success" in result) || result.success) return undefined;
 		type Flatten = { fieldErrors: Record<string, string[]> };
-		const flattenFn = (result.error as { flatten?: () => Flatten }).flatten;
+		const flattenFn = (result.error as { flatten?: () => Flatten })?.flatten;
 		const fieldErrors = flattenFn ? flattenFn().fieldErrors : {};
 		const firstErrors: Record<string, string> = {};
 		for (const field in fieldErrors) {
@@ -96,11 +102,16 @@ function requestValidator<
 		});
 	};
 
-	return zValidator(
-		target,
-		schema,
-		hook ?? defaultHook,
-	) as unknown as MiddlewareHandler<E, P, V>;
+	// Use type assertion to bridge the gap between our Hook type and zValidator's Hook type
+	// This is necessary because zValidator's Hook type includes additional properties (target, Schema generic)
+	// that are not needed for our validation error handling logic
+	const hookToUse = (hook ?? defaultHook) as Parameters<typeof zValidator>[2];
+
+	return zValidator(target, schema, hookToUse) as unknown as MiddlewareHandler<
+		E,
+		P,
+		V
+	>;
 }
 
 export default requestValidator;
