@@ -41,13 +41,13 @@ function DashboardLayout() {
 	// During token refresh, maintain current state to prevent flicker
 	return isAuthenticated || isRefreshing ? (
 		// App Shell
-		<SidebarProvider className="flex min-h-screen w-full">
+		<SidebarProvider className="flex h-screen w-full overflow-hidden">
 			<AppSidebar />
-			<SidebarInset className="relative flex flex-1 flex-col min-w-0">
+			<SidebarInset className="relative flex flex-1 flex-col min-w-0 overflow-hidden">
 				<AppHeader />
-				<div className="flex-1 overflow-auto">
+				<main className="flex-1 min-h-0 overflow-hidden">
 					<Outlet />
-				</div>
+				</main>
 			</SidebarInset>
 		</SidebarProvider>
 	) : (

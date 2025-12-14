@@ -51,7 +51,6 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	const rowSelectable = props.rowSelectable ?? false;
 	const sortable = props.sortable ?? true;
 	const rowVirtualization = props.rowVirtualization ?? true;
-	const tableHeight = props.tableHeight ?? "100%";
 	const fitToParentWidth = props.fitToParentWidth ?? false;
 
 	// Reference for the scrollable container
@@ -367,9 +366,11 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	const rowVirtualizer = useVirtualizer({
 		count: rows.length,
 		getScrollElement: () => tableContainerRef.current,
-		estimateSize: () => 40,
+		estimateSize: () => 45,
 		overscan: 10,
 		enabled: rowVirtualization && !loading && !groupBy,
+		measureElement: (element) =>
+			element?.getBoundingClientRect().height ?? 45,
 	});
 
 	// Render skeleton loader
@@ -381,7 +382,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 					<td
 						// biome-ignore lint/suspicious/noArrayIndexKey: Static skeleton cells don't need stable keys
 						key={`skeleton-cell-${colIndex}`}
-						className="border p-2"
+						className="border-t border-l last:border-r p-2"
 					>
 						<Skeleton className="h-8 w-full" />
 					</td>
@@ -422,13 +423,14 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		return (
 			<td
 				key={cell.id}
-				className="border p-1"
+				className="border-t border-l last:border-r p-1"
 				style={{
 					...(isVirtualized
 						? {
 								display: "flex",
 								width:
 									proportionalWidth ?? cell.column.getSize(),
+								alignItems: "center",
 							}
 						: {
 								width:
@@ -438,6 +440,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 										: undefined),
 								wordWrap: "break-word",
 								whiteSpace: "normal",
+								overflowWrap: "break-word",
 							}),
 				}}
 			>
@@ -540,6 +543,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 				))}
 			</thead>
 			<tbody
+				className="border-b"
 				style={
 					rowVirtualization && !loading && !groupBy
 						? {
@@ -567,6 +571,11 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 										<tr
 											key={row.id}
 											data-index={virtualRow.index}
+											ref={(node) =>
+												rowVirtualizer.measureElement(
+													node,
+												)
+											}
 											style={{
 												display: "flex",
 												position: "absolute",
@@ -604,7 +613,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 												>
 													<td
 														colSpan={columnCount}
-														className="border px-3 py-2"
+														className="border-t border-x px-3 py-2"
 													>
 														<button
 															type="button"
@@ -712,11 +721,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 
 			<div
 				ref={tableContainerRef}
-				className="flex-1 min-h-0 relative"
-				style={{
-					height: tableHeight,
-					overflow: "hidden",
-				}}
+				className="flex-1 min-h-0 overflow-auto"
 			>
 				{props.columnOrderable ? (
 					<DndContext

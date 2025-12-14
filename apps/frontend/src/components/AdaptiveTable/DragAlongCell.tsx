@@ -41,7 +41,11 @@ const DragAlongCell = <T,>({
 	};
 
 	return (
-		<td style={style} ref={setNodeRef} className="border p-1">
+		<td
+			style={style}
+			ref={setNodeRef}
+			className="border-t border-l last:border-r p-1"
+		>
 			<EditableCell cell={cell} rowIndex={rowIndex} />
 		</td>
 	);
