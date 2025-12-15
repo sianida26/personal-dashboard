@@ -4,8 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Navigate, Outlet } from "@tanstack/react-router";
 import AppHeader from "@/components/AppHeader";
 import AppSidebar from "@/components/AppSidebar";
+import SidebarErrorBoundary from "@/components/SidebarErrorBoundary";
 import client from "@/honoClient";
 import useAuth from "@/hooks/useAuth";
+import { useLogoutShortcut } from "@/hooks/useLogoutShortcut";
 import fetchRPC from "@/utils/fetchRPC";
 
 export const Route = createFileRoute("/_dashboardLayout")({
@@ -14,6 +16,9 @@ export const Route = createFileRoute("/_dashboardLayout")({
 
 function DashboardLayout() {
 	const { isAuthenticated, saveAuthData, isRefreshing } = useAuth();
+
+	// Enable keyboard shortcut for emergency logout (Ctrl/Cmd+Shift+Q)
+	useLogoutShortcut();
 
 	const { error } = useQuery({
 		queryKey: ["my-profile"],
@@ -42,7 +47,9 @@ function DashboardLayout() {
 	return isAuthenticated || isRefreshing ? (
 		// App Shell
 		<SidebarProvider className="flex h-screen w-full overflow-hidden">
-			<AppSidebar />
+			<SidebarErrorBoundary>
+				<AppSidebar />
+			</SidebarErrorBoundary>
 			<SidebarInset className="relative flex flex-1 flex-col min-w-0 overflow-hidden">
 				<AppHeader />
 				<main className="flex-1 min-h-0 overflow-hidden">

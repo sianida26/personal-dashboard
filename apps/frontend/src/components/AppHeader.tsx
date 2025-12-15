@@ -1,9 +1,10 @@
-import { Link, useMatches } from "@tanstack/react-router";
+import { Badge, SidebarTrigger } from "@repo/ui";
 import { useQuery } from "@tanstack/react-query";
-import { SidebarTrigger, Badge } from "@repo/ui";
+import { Link, useMatches } from "@tanstack/react-router";
 import { TbBell } from "react-icons/tb";
-import { notificationQueryKeys } from "@/modules/notifications/queryKeys";
+import ProfileMenu from "@/components/ProfileMenu";
 import { fetchUnreadCount } from "@/modules/notifications/api";
+import { notificationQueryKeys } from "@/modules/notifications/queryKeys";
 
 export default function AppHeader() {
 	const matches = useMatches();
@@ -40,6 +41,9 @@ export default function AppHeader() {
 					</span>
 					<span>Notifications</span>
 				</Link>
+
+				{/* Profile Menu - Always accessible even when sidebar fails */}
+				<ProfileMenu />
 			</div>
 		</div>
 	);
