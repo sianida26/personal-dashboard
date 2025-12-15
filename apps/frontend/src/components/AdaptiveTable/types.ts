@@ -63,6 +63,9 @@ export type AdaptiveTableProps<T> = {
 	// Filter props
 	filterable?: boolean; // Default: true, enables filtering
 	onFiltersChange?: (filters: FilterState) => void; // Callback when filters change
+	// Search props
+	search?: boolean; // Default: true, enables search input
+	onSearchChange?: (searchValue: string) => void; // Callback when search value changes
 	// Header section props
 	title?: string;
 	headerActions?: ReactNode;

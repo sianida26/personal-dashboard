@@ -1,6 +1,8 @@
-import { Badge, Button } from "@repo/ui";
+import { Badge, Button, Input } from "@repo/ui";
 import type { SortingState, Table } from "@tanstack/react-table";
+import { Search } from "lucide-react";
 import type { ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FilterBar } from "./FilterBar";
 import { FilterMenu } from "./FilterMenu";
 import type { FilterCondition } from "./filterEngine";
@@ -36,6 +38,10 @@ interface TableHeaderProps<T> {
 	) => void;
 	onRemoveFilter: (filterId: string) => void;
 	onClearFilters: () => void;
+	// Search props
+	search: boolean;
+	searchValue: string;
+	onSearchChange: (value: string) => void;
 }
 
 export function TableHeader<T>({
@@ -63,8 +69,59 @@ export function TableHeader<T>({
 	onUpdateFilter,
 	onRemoveFilter,
 	onClearFilters,
+	search,
+	searchValue,
+	onSearchChange,
 }: TableHeaderProps<T>) {
 	if (!showHeader) return null;
+
+	const [isSearchOpen, setIsSearchOpen] = useState(false);
+	const searchInputRef = useRef<HTMLInputElement>(null);
+	const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+	// Auto-focus when search opens
+	useEffect(() => {
+		if (isSearchOpen && searchInputRef.current) {
+			searchInputRef.current.focus();
+		}
+	}, [isSearchOpen]);
+
+	// Handle blur with 3s delay
+	const handleBlur = () => {
+		if (!searchValue.trim()) {
+			closeTimeoutRef.current = setTimeout(() => {
+				setIsSearchOpen(false);
+			}, 1000);
+		}
+	};
+
+	// Cancel close timeout on focus
+	const handleFocus = () => {
+		if (closeTimeoutRef.current) {
+			clearTimeout(closeTimeoutRef.current);
+			closeTimeoutRef.current = null;
+		}
+	};
+
+	// Clear timeout on unmount
+	useEffect(() => {
+		return () => {
+			if (closeTimeoutRef.current) {
+				clearTimeout(closeTimeoutRef.current);
+			}
+		};
+	}, []);
+
+	// Keep search open if there's a value
+	useEffect(() => {
+		if (searchValue.trim()) {
+			setIsSearchOpen(true);
+			if (closeTimeoutRef.current) {
+				clearTimeout(closeTimeoutRef.current);
+				closeTimeoutRef.current = null;
+			}
+		}
+	}, [searchValue]);
 
 	const selectedRowsCount = rowSelectable
 		? Object.keys(rowSelection).length
@@ -105,7 +162,38 @@ export function TableHeader<T>({
 						</>
 					)}
 				</div>
-				<div className="flex items-center gap-2">
+				<div className="flex items-center gap-0.5">
+					{search && (
+						<div
+							className="relative flex items-center overflow-hidden transition-all duration-300 ease-in-out"
+							style={{
+								width: isSearchOpen ? "16rem" : "2.25rem",
+							}}
+						>
+							<button
+								type="button"
+								className="absolute left-2.5 z-10 p-0 border-0 bg-transparent cursor-pointer"
+								onClick={() => setIsSearchOpen(true)}
+								onMouseEnter={() => setIsSearchOpen(true)}
+								aria-label="Search"
+							>
+								<Search className="h-4 w-4 text-muted-foreground" />
+							</button>
+							<Input
+								ref={searchInputRef}
+								type="text"
+								placeholder="Search..."
+								value={searchValue}
+								onChange={(e) => onSearchChange(e.target.value)}
+								onBlur={handleBlur}
+								onFocus={handleFocus}
+								className="pl-8 h-9 w-full transition-opacity duration-300"
+								style={{
+									opacity: isSearchOpen ? 1 : 0,
+								}}
+							/>
+						</div>
+					)}
 					{filterable && filterableColumns.length > 0 && (
 						<FilterMenu
 							table={table}

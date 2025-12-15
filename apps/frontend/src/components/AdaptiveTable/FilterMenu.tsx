@@ -56,7 +56,7 @@ export function FilterMenu<T>({
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button
-					variant="outline"
+					variant="ghost"
 					size="sm"
 					className={hasActiveFilters ? "border-primary" : ""}
 				>

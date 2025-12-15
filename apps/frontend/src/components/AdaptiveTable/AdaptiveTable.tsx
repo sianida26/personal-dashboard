@@ -60,6 +60,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	const rowHeight = props.rowHeight ?? 40;
 	const fitToParentWidth = props.fitToParentWidth ?? false;
 	const filterable = props.filterable ?? true;
+	const search = props.search ?? true;
 
 	// Reference for the scrollable container
 	const tableContainerRef = useRef<HTMLDivElement>(null);
@@ -92,6 +93,22 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	const [rowSelection, setRowSelection] = useState<Record<string, boolean>>(
 		{},
 	);
+
+	// State for search with debounce
+	const [searchValue, setSearchValue] = useState<string>("");
+
+	// Debounced search value using useEffect for 300ms delay
+	const [debouncedSearchValue, setDebouncedSearchValue] =
+		useState<string>("");
+
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			setDebouncedSearchValue(searchValue);
+			props.onSearchChange?.(searchValue);
+		}, 300);
+
+		return () => clearTimeout(timer);
+	}, [searchValue, props.onSearchChange]);
 
 	// Ensure all columns have IDs
 	const columnsWithIds = useMemo(
@@ -342,7 +359,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 
 	// Use custom hook for filtering
 	const {
-		filteredData,
+		filteredData: filterEngineData,
 		addFilter,
 		updateFilter,
 		removeFilter,
@@ -356,6 +373,61 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		},
 		accessorFns: filterAccessorFns,
 	});
+
+	// Apply search filtering on top of filter engine results
+	const filteredData = useMemo(() => {
+		if (!search || !debouncedSearchValue.trim()) {
+			return filterEngineData;
+		}
+
+		const searchLower = debouncedSearchValue.toLowerCase().trim();
+
+		return filterEngineData.filter((row) => {
+			// Search through all accessor columns
+			for (const col of columnsWithIds) {
+				const columnDef = col as AdaptiveColumnDef<T>;
+				// Skip internal columns
+				if (col.id?.startsWith("_")) continue;
+
+				let cellValue: unknown;
+
+				// Get cell value using accessorKey or accessorFn
+				if (
+					"accessorKey" in columnDef &&
+					columnDef.accessorKey &&
+					row
+				) {
+					const keys = String(columnDef.accessorKey).split(".");
+					cellValue = keys.reduce<unknown>(
+						(obj, key) =>
+							obj && typeof obj === "object"
+								? (obj as Record<string, unknown>)[key]
+								: undefined,
+						row,
+					);
+				} else if (
+					"accessorFn" in columnDef &&
+					columnDef.accessorFn &&
+					row
+				) {
+					try {
+						cellValue = columnDef.accessorFn(row, 0);
+					} catch {
+						// Ignore accessor errors
+					}
+				}
+
+				// Convert value to string and check if it contains search term
+				if (cellValue !== undefined && cellValue !== null) {
+					const stringValue = String(cellValue).toLowerCase();
+					if (stringValue.includes(searchLower)) {
+						return true;
+					}
+				}
+			}
+			return false;
+		});
+	}, [search, debouncedSearchValue, filterEngineData, columnsWithIds]);
 
 	// Handle adding a filter for a column
 	const handleAddFilter = useCallback(
@@ -1024,6 +1096,9 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 				onUpdateFilter={updateFilter}
 				onRemoveFilter={removeFilter}
 				onClearFilters={clearFilters}
+				search={search}
+				searchValue={searchValue}
+				onSearchChange={setSearchValue}
 			/>
 
 			<div
