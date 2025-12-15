@@ -3,29 +3,61 @@ import type { ReactNode } from "react";
 import type { FilterState, FilterType } from "./filterEngine";
 
 export type AdaptiveColumnDef<T> = ColumnDef<T> & {
+	/** Enable inline editing for this column */
 	editable?: boolean;
+	/** Callback when cell value is edited */
 	onEdited?: (rowIndex: number, columnId: string, value: unknown) => void;
+	/**
+	 * Type of editor to use for inline editing
+	 * @default "text"
+	 */
 	editType?: "text" | "select";
+	/** Options for select editor type */
 	options?: Array<{
 		label: string;
 		value: string | number;
 		color?: string;
 	}>;
+	/** Custom component to render select options */
 	customOptionComponent?: (option: {
 		label: string;
 		value: string | number;
 		color?: string;
 	}) => ReactNode;
+	/** Custom CSS class for the cell */
 	cellClassName?: string;
+	/** Function to determine cell background color based on value */
 	getCellColor?: (value: unknown) => string | undefined;
-	// Column-level overrides for table settings
-	orderable?: boolean; // Override columnOrderable for this column
-	resizable?: boolean; // Override columnResizable for this column
-	visibilityToggle?: boolean; // Override columnVisibilityToggle for this column
-	sortable?: boolean; // Override sortable for this column
-	// Filter settings
-	filterable?: boolean; // Whether this column can be filtered (default: true for accessor columns)
-	filterType?: FilterType; // Type of filter to use (auto-detected: "select" if has options, otherwise "text")
+	/**
+	 * Override columnOrderable for this specific column
+	 * @default undefined (inherits from table setting)
+	 */
+	orderable?: boolean;
+	/**
+	 * Override columnResizable for this specific column
+	 * @default undefined (inherits from table setting)
+	 */
+	resizable?: boolean;
+	/**
+	 * Override columnVisibilityToggle for this specific column
+	 * @default undefined (inherits from table setting)
+	 */
+	visibilityToggle?: boolean;
+	/**
+	 * Override sortable for this specific column
+	 * @default undefined (inherits from table setting)
+	 */
+	sortable?: boolean;
+	/**
+	 * Whether this column can be filtered
+	 * @default true (for accessor columns)
+	 */
+	filterable?: boolean;
+	/**
+	 * Type of filter to use (auto-detected if not specified)
+	 * Auto-detection: "select" if has options, "number" for numeric columns, otherwise "text"
+	 */
+	filterType?: FilterType;
 };
 
 // Represents a column that can be filtered
@@ -51,52 +83,137 @@ export interface TableSettingsLabels {
 }
 
 export type AdaptiveTableProps<T> = {
+	/** Column definitions for the table */
 	columns: AdaptiveColumnDef<T>[];
+	/** Data to display in the table */
 	data: T[];
+	/** Enable column reordering via drag and drop */
 	columnOrderable?: boolean;
+	/** Enable column resizing */
 	columnResizable?: boolean;
-	columnVisibilityToggle?: boolean; // Default: true
-	groupable?: boolean; // Default: true
-	saveState?: string; // Unique key to save/load table state
-	sortable?: boolean; // Default: true
+	/**
+	 * Enable column visibility toggle in settings menu
+	 * @default true
+	 */
+	columnVisibilityToggle?: boolean;
+	/**
+	 * Enable grouping functionality
+	 * @default true
+	 */
+	groupable?: boolean;
+	/** Unique key to save/load table state to localStorage */
+	saveState?: string;
+	/**
+	 * Enable column sorting
+	 * @default true
+	 */
+	sortable?: boolean;
+	/** Callback when sorting state changes */
 	onSortingChange?: (sorting: SortingState) => void;
-	// Filter props
-	filterable?: boolean; // Default: true, enables filtering
-	onFiltersChange?: (filters: FilterState) => void; // Callback when filters change
-	// Search props
-	search?: boolean; // Default: true, enables search input
-	onSearchChange?: (searchValue: string) => void; // Callback when search value changes
-	// Header section props
+	/**
+	 * Enable filtering functionality
+	 * @default true
+	 */
+	filterable?: boolean;
+	/** Callback when filters change */
+	onFiltersChange?: (filters: FilterState) => void;
+	/**
+	 * Enable search input in header
+	 * @default true
+	 */
+	search?: boolean;
+	/** Callback when search value changes */
+	onSearchChange?: (searchValue: string) => void;
+	/** Title displayed in the table header */
 	title?: string;
+	/** Custom action buttons displayed in the header */
 	headerActions?: ReactNode;
-	showHeader?: boolean; // Default: true
-	// Detail view props
-	showDetail?: boolean; // Default: true
+	/**
+	 * Show the table header section
+	 * @default true
+	 */
+	showHeader?: boolean;
+	/**
+	 * Enable detail view/sheet for rows
+	 * @default true
+	 */
+	showDetail?: boolean;
+	/** Callback when a row detail is clicked */
 	onDetailClick?: (row: T, rowIndex: number) => void;
-	// Pagination props
-	pagination?: boolean; // Default: false
-	paginationType?: "client" | "server"; // Default: "client"
+	/**
+	 * Enable pagination
+	 * @default false
+	 */
+	pagination?: boolean;
+	/**
+	 * Type of pagination to use
+	 * @default "client"
+	 */
+	paginationType?: "client" | "server";
+	/** Callback when pagination changes (perPage or page) */
 	onPaginationChange?: (perPage: number, currentPage: number) => void;
+	/** Current page number (for server-side pagination) */
 	currentPage?: number;
-	recordsTotal?: number; // Total records count (shows "X of Y records")
-	maxPage?: number; // Mandatory if pagination is true
-	loading?: boolean; // Default: false, shows skeleton loader
-	// Revalidating state (stale-while-revalidate pattern)
-	isRevalidating?: boolean; // Default: false, shows small "Updating..." indicator while showing stale data
-	revalidatingText?: string; // Default: "Updating data...", customize the revalidating text
-	// Row selection props
-	rowSelectable?: boolean; // Default: false
+	/** Total number of records (for server-side pagination) */
+	recordsTotal?: number;
+	/** Maximum number of pages (required if pagination is true) */
+	maxPage?: number;
+	/**
+	 * Show skeleton loader while data is loading
+	 * @default false
+	 */
+	isLoading?: boolean;
+	/**
+	 * @deprecated Use isLoading instead
+	 */
+	loading?: boolean;
+	/**
+	 * Show "Updating..." indicator while revalidating (stale-while-revalidate pattern)
+	 * @default false
+	 */
+	isRevalidating?: boolean;
+	/**
+	 * Custom text for revalidating indicator
+	 * @default "Updating data..."
+	 */
+	revalidatingText?: string;
+	/**
+	 * Enable row selection with checkboxes
+	 * @default false
+	 */
+	rowSelectable?: boolean;
+	/** Actions to show when rows are selected */
 	selectActions?: Array<{ name: string; button: ReactNode }>;
+	/** Callback when a row is selected */
 	onSelect?: (row: T) => void;
+	/** Callback when a select action is triggered */
 	onSelectAction?: (rows: T[], actionName: string) => void;
-	// Row virtualization props
-	rowVirtualization?: boolean; // Default: true, enables row virtualization for better performance
-	rowHeight?: number; // Default: 40, fixed row height in pixels for virtualization performance
-	tableHeight?: string; // Default: "100%", height of the table container
-	// Layout props
-	fitToParentWidth?: boolean; // Default: false, when true columns will shrink to fit parent width without horizontal scroll
-	fitToParentHeight?: boolean; // Default: false, when true rows will shrink to fit parent height without vertical scroll
-	// Custom labels for table settings
+	/**
+	 * Enable row virtualization for better performance with large datasets
+	 * @default true
+	 */
+	rowVirtualization?: boolean;
+	/**
+	 * Fixed row height in pixels (required for virtualization)
+	 * @default 40
+	 */
+	rowHeight?: number;
+	/**
+	 * Height of the table container
+	 * @default "100%"
+	 */
+	tableHeight?: string;
+	/**
+	 * Scale columns to fit parent width without horizontal scroll
+	 * @default false
+	 */
+	fitToParentWidth?: boolean;
+	/**
+	 * Scale rows to fit parent height without vertical scroll
+	 * @default false
+	 */
+	fitToParentHeight?: boolean;
+	/** Custom labels for table settings menu */
 	labels?: Partial<TableSettingsLabels>;
 };
 

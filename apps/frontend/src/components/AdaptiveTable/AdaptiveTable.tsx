@@ -53,7 +53,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	const groupable = props.groupable ?? true;
 	const pagination = props.pagination ?? false;
 	const paginationType = props.paginationType ?? "client";
-	const loading = props.loading ?? false;
+	const loading = props.isLoading ?? props.loading ?? false;
 	const rowSelectable = props.rowSelectable ?? false;
 	const sortable = props.sortable ?? true;
 	const rowVirtualization = props.rowVirtualization ?? true;
