@@ -1,4 +1,5 @@
 import { type ReactNode, useEffect, useState } from "react";
+import { trackError } from "@/lib/observability/telemetry";
 
 interface ErrorBoundaryProps {
 	children: ReactNode;
@@ -107,6 +108,14 @@ export default function ErrorBoundary({ children }: ErrorBoundaryProps) {
 		const handleError = (event: ErrorEvent) => {
 			const newError = new Error(event.message);
 			setError(newError);
+
+			// Track error to Signoz
+			trackError(newError, {
+				error_type: "unhandled_error",
+				filename: event.filename,
+				lineno: event.lineno,
+				colno: event.colno,
+			});
 		};
 
 		const handlePromiseRejection = (event: PromiseRejectionEvent) => {
@@ -114,6 +123,12 @@ export default function ErrorBoundary({ children }: ErrorBoundaryProps) {
 				event.reason?.message || "Unhandled promise rejection",
 			);
 			setError(newError);
+
+			// Track error to Signoz
+			trackError(newError, {
+				error_type: "unhandled_promise_rejection",
+				reason: String(event.reason),
+			});
 		};
 
 		window.addEventListener("error", handleError);

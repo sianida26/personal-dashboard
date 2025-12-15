@@ -1,5 +1,6 @@
 import type { AppType } from "backend";
 import { hc } from "hono/client";
+import { trackApiRequest, trackError } from "@/lib/observability/telemetry";
 import { authDB } from "./indexedDB/authDB";
 import { getAuthBridge } from "./utils/authBridge";
 
@@ -9,6 +10,39 @@ if (!backendUrl) throw new Error("Backend URL not set");
 
 const rawFetch = globalThis.fetch.bind(globalThis);
 const backendBaseUrl = new URL(backendUrl);
+
+// Wrapper to track API request metrics
+const trackedFetch: typeof rawFetch = async (input, init) => {
+	const startTime = Date.now();
+	const request = new Request(input, init);
+
+	try {
+		const response = await rawFetch(input, init);
+		const duration = Date.now() - startTime;
+
+		if (isBackendRequest(request.url)) {
+			trackApiRequest(
+				request.method,
+				request.url,
+				response.status,
+				duration,
+			);
+		}
+
+		return response;
+	} catch (error) {
+		const duration = Date.now() - startTime;
+		if (error instanceof Error && isBackendRequest(request.url)) {
+			trackError(error, {
+				error_type: "api_error",
+				url: request.url,
+				method: request.method,
+				duration: String(duration),
+			});
+		}
+		throw error;
+	}
+};
 
 const resolveAgainstBackend = (url: string) => {
 	try {
@@ -36,7 +70,7 @@ const shouldSkipRetry = (url: string) => {
 
 const authFetchImpl = async (input: RequestInfo | URL, init?: RequestInit) => {
 	const baseRequest = new Request(input, init);
-	const initialResponse = await rawFetch(baseRequest.clone());
+	const initialResponse = await trackedFetch(baseRequest.clone());
 
 	if (
 		initialResponse.status !== 401 ||
@@ -73,7 +107,7 @@ const authFetchImpl = async (input: RequestInfo | URL, init?: RequestInit) => {
 		headers: updatedHeaders,
 	});
 
-	const retryResponse = await rawFetch(retryRequest);
+	const retryResponse = await trackedFetch(retryRequest);
 
 	if (retryResponse.status === 401) {
 		await bridge.clearAuthData().catch(() => {});
