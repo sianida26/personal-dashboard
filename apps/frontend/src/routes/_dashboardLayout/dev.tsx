@@ -161,7 +161,8 @@ function RouteComponent() {
 						);
 					}}
 					saveState="chemical-elements-table"
-					isRevalidating={true}
+					// isRevalidating={true}
+					// loading={true}
 				/>
 			</div>
 		</div>

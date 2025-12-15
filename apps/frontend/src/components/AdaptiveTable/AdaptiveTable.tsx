@@ -658,7 +658,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 					<td
 						// biome-ignore lint/suspicious/noArrayIndexKey: Static skeleton cells don't need stable keys
 						key={`skeleton-cell-${colIndex}`}
-						className="border-t border-l last:border-r p-2"
+						className="border-t p-2"
 					>
 						<Skeleton className="h-8 w-full" />
 					</td>
@@ -816,7 +816,9 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 										paginationType={paginationType}
 										sortable={sortable}
 										virtualized={
-											rowVirtualization && !groupBy
+											rowVirtualization &&
+											!loading &&
+											!groupBy
 										}
 										fitToParentWidth={fitToParentWidth}
 										proportionalWidth={getProportionalWidth(
@@ -841,7 +843,11 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 									onGroupByChange={setGroupBy}
 									paginationType={paginationType}
 									sortable={sortable}
-									virtualized={rowVirtualization && !groupBy}
+									virtualized={
+										rowVirtualization &&
+										!loading &&
+										!groupBy
+									}
 									fitToParentWidth={fitToParentWidth}
 									proportionalWidth={getProportionalWidth(
 										header.column.id,
