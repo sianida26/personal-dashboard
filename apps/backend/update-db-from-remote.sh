@@ -2,8 +2,12 @@
 
 set -euo pipefail
 
-# Ensure we use PostgreSQL 17 client tools
-export PATH=/usr/lib/postgresql/17/bin:$PATH
+# Ensure we use PostgreSQL 18 client tools (fallback to 17 if not available)
+if [ -d /usr/lib/postgresql/18/bin ]; then
+	export PATH=/usr/lib/postgresql/18/bin:$PATH
+else
+	export PATH=/usr/lib/postgresql/17/bin:$PATH
+fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE="${ENV_FILE:-${SCRIPT_DIR}/.env}"
@@ -14,6 +18,7 @@ DUMP_PATH=""
 PRESERVE_DUMP=false
 RESTORE_FROM_DUMP=false
 RESTORE_DUMP_FILE=""
+SKIP_VERSION_CHECK=false
 
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
@@ -31,9 +36,13 @@ while [[ $# -gt 0 ]]; do
 				shift
 			fi
 			;;
+		--skip-version-check)
+			SKIP_VERSION_CHECK=true
+			shift
+			;;
 		*)
 			echo "Unknown option: $1" >&2
-			echo "Usage: $0 [--preserve-sql-dump] [--restore-from-dump [dump-file]]" >&2
+			echo "Usage: $0 [--preserve-sql-dump] [--restore-from-dump [dump-file]] [--skip-version-check]" >&2
 			exit 1
 			;;
 	esac
@@ -249,14 +258,24 @@ else
 	LOCAL_PGDUMP_MAJOR="${LOCAL_PGDUMP_VERSION%%.*}"
 	USE_DOCKER=false
 
-	if [ "$REMOTE_MAJOR" != "$LOCAL_PGDUMP_MAJOR" ]; then
+	if [ "$SKIP_VERSION_CHECK" = false ] && [ "$REMOTE_MAJOR" != "$LOCAL_PGDUMP_MAJOR" ]; then
 		echo "pg_dump major version ($LOCAL_PGDUMP_MAJOR) does not match remote server version ($REMOTE_MAJOR)." >&2
+		echo "" >&2
+		echo "Options:" >&2
+		echo "  1. Run with --skip-version-check flag (pg_dump often works across versions)" >&2
+		echo "  2. Install pg_dump $REMOTE_MAJOR" >&2
+		echo "  3. Use Docker (requires docker group access)" >&2
+		echo "" >&2
 		if command -v docker >/dev/null 2>&1; then
 			USE_DOCKER=true
 		else
-			echo "Install pg_dump $REMOTE_MAJOR or Docker to continue." >&2
+			echo "Docker not found. Use --skip-version-check or install pg_dump $REMOTE_MAJOR." >&2
 			exit 1
 		fi
+	elif [ "$SKIP_VERSION_CHECK" = true ] && [ "$REMOTE_MAJOR" != "$LOCAL_PGDUMP_MAJOR" ]; then
+		echo "WARNING: Using pg_dump $LOCAL_PGDUMP_MAJOR with PostgreSQL $REMOTE_MAJOR server." >&2
+		echo "This may work, but could have compatibility issues." >&2
+		echo "" >&2
 	fi
 
 	check_docker_access() {
@@ -268,6 +287,22 @@ else
 	}
 
 	echo "Dumping remote database '$REMOTE_DB' (server $REMOTE_VERSION)..."
+	
+	# Function to show progress while dumping
+	show_dump_progress() {
+		local dump_file="$1"
+		local pid="$2"
+		echo -n "Progress: "
+		while kill -0 "$pid" 2>/dev/null; do
+			if [ -f "$dump_file" ]; then
+				local size=$(du -h "$dump_file" 2>/dev/null | cut -f1)
+				echo -ne "\rProgress: ${size} dumped..."
+			fi
+			sleep 2
+		done
+		echo ""
+	}
+	
 	if [ "$USE_DOCKER" = true ]; then
 		check_docker_access
 		DUMP_BASENAME=$(basename "$DUMP_PATH")
@@ -287,15 +322,38 @@ else
 			--dbname "$REMOTE_DB" \
 			--file "/dumpdir/$DUMP_BASENAME"
 	else
-		PGPASSWORD="$REMOTE_PASS" pg_dump \
-			--no-owner \
-			--exclude-table-data=observability_events \
-			--exclude-table-data=request_details \
-			--host "$REMOTE_HOST" \
-			--port "$REMOTE_PORT" \
-			--username "$REMOTE_USER" \
-			--dbname "$REMOTE_DB" \
-			--file "$DUMP_PATH"
+		# Disable version check if skipping version validation
+		if [ "$SKIP_VERSION_CHECK" = true ]; then
+			export PGGROUPREADWRITE=1  # Suppress some warnings
+		fi
+		
+		# Check if pv is available for progress bar
+		if command -v pv >/dev/null 2>&1; then
+			PGPASSWORD="$REMOTE_PASS" pg_dump \
+				--no-owner \
+				--exclude-table-data=observability_events \
+				--exclude-table-data=request_details \
+				--host "$REMOTE_HOST" \
+				--port "$REMOTE_PORT" \
+				--username "$REMOTE_USER" \
+				--dbname "$REMOTE_DB" \
+				--no-sync | pv -p -t -e -r -b > "$DUMP_PATH"
+		else
+			# Fallback: run in background and show file size progress
+			PGPASSWORD="$REMOTE_PASS" pg_dump \
+				--no-owner \
+				--exclude-table-data=observability_events \
+				--exclude-table-data=request_details \
+				--host "$REMOTE_HOST" \
+				--port "$REMOTE_PORT" \
+				--username "$REMOTE_USER" \
+				--dbname "$REMOTE_DB" \
+				--file "$DUMP_PATH" \
+				--no-sync &
+			DUMP_PID=$!
+			show_dump_progress "$DUMP_PATH" "$DUMP_PID"
+			wait "$DUMP_PID"
+		fi
 	fi
 fi
 
@@ -315,11 +373,20 @@ PGPASSWORD="$LOCAL_PASS" createdb \
 	"$LOCAL_DB"
 
 echo "Restoring database dump into '$LOCAL_DB'..."
-PGPASSWORD="$LOCAL_PASS" psql \
-	--host "$LOCAL_HOST" \
-	--port "$LOCAL_PORT" \
-	--username "$LOCAL_USER" \
-	--dbname "$LOCAL_DB" \
-	--file "$DUMP_PATH"
+if command -v pv >/dev/null 2>&1; then
+	pv "$DUMP_PATH" | PGPASSWORD="$LOCAL_PASS" psql \
+		--host "$LOCAL_HOST" \
+		--port "$LOCAL_PORT" \
+		--username "$LOCAL_USER" \
+		--dbname "$LOCAL_DB" \
+		>/dev/null
+else
+	PGPASSWORD="$LOCAL_PASS" psql \
+		--host "$LOCAL_HOST" \
+		--port "$LOCAL_PORT" \
+		--username "$LOCAL_USER" \
+		--dbname "$LOCAL_DB" \
+		--file "$DUMP_PATH"
+fi
 
 echo "Database synchronization complete!"
