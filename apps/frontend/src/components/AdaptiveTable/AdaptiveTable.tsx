@@ -23,7 +23,7 @@ import {
 	useReactTable,
 } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Loader2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DetailSheet } from "./DetailSheet";
 import DragAlongCell from "./DragAlongCell";
@@ -1071,6 +1071,19 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	// Unified render
 	return (
 		<div className="flex flex-col h-full">
+			{/* Revalidating indicator */}
+			{props.isRevalidating && (
+				<div className="absolute w-full">
+					<div className="sticky top-0 left-0 right-0 z-20 flex items-center justify-center py-3 pointer-events-none">
+						<div className="flex items-center gap-2.5 bg-primary rounded-lg px-4 py-2 shadow-lg pointer-events-auto">
+							<Loader2 className="h-4 w-4 animate-spin text-primary-foreground" />
+							<span className="text-sm font-semibold text-primary-foreground">
+								{props.revalidatingText ?? "Updating data..."}
+							</span>
+						</div>
+					</div>
+				</div>
+			)}
 			<TableHeader
 				title={props.title}
 				showHeader={showHeader}
@@ -1103,7 +1116,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 
 			<div
 				ref={tableContainerRef}
-				className="flex-1 min-h-0 overflow-auto"
+				className="flex-1 min-h-0 overflow-auto relative"
 			>
 				{props.columnOrderable ? (
 					<DndContext

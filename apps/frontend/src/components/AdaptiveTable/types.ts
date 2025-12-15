@@ -81,6 +81,9 @@ export type AdaptiveTableProps<T> = {
 	recordsTotal?: number; // Total records count (shows "X of Y records")
 	maxPage?: number; // Mandatory if pagination is true
 	loading?: boolean; // Default: false, shows skeleton loader
+	// Revalidating state (stale-while-revalidate pattern)
+	isRevalidating?: boolean; // Default: false, shows small "Updating..." indicator while showing stale data
+	revalidatingText?: string; // Default: "Updating data...", customize the revalidating text
 	// Row selection props
 	rowSelectable?: boolean; // Default: false
 	selectActions?: Array<{ name: string; button: ReactNode }>;
