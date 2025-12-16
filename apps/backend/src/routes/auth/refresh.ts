@@ -24,7 +24,17 @@ const refreshRoute = createHonoRoute()
 		const { refreshToken } = c.req.valid("json");
 
 		// Validate token but don't revoke it - allows multiple tabs/devices to use the same token
-		const record = await validateRefreshTokenOrThrow(refreshToken);
+		let record;
+		try {
+			record = await validateRefreshTokenOrThrow(refreshToken);
+		} catch (error) {
+			// Log refresh token validation failures for debugging
+			console.warn("[auth/refresh] Token validation failed:", {
+				error: error instanceof Error ? error.message : "Unknown error",
+				timestamp: new Date().toISOString(),
+			});
+			throw error;
+		}
 
 		const user = await db.query.users.findFirst({
 			where: and(
@@ -55,11 +65,15 @@ const refreshRoute = createHonoRoute()
 		});
 
 		if (!user) {
+			console.warn("[auth/refresh] User not found or disabled:", {
+				userId: record.userId,
+				timestamp: new Date().toISOString(),
+			});
 			throw new DashboardError({
-				message: "User not found",
-				statusCode: 404,
+				message: "User not found or account disabled",
+				statusCode: 401,
 				severity: "LOW",
-				errorCode: "USER_NOT_FOUND",
+				errorCode: "USER_NOT_FOUND_OR_DISABLED",
 			});
 		}
 

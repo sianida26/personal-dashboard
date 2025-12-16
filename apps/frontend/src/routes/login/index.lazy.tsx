@@ -43,14 +43,19 @@ export default function LoginPage() {
 		validate: zodResolver(formSchema),
 	});
 
+	// Get redirect path from search params, default to dashboard
+	const search = Route.useSearch() as { redirect?: string };
+	const redirectPath = search?.redirect || "/dashboard";
+
 	useEffect(() => {
 		if (isAuthenticated) {
+			// If already authenticated, redirect to intended path
 			navigate({
-				to: "/dashboard",
+				to: redirectPath,
 				replace: true,
 			});
 		}
-	}, [navigate, isAuthenticated]);
+	}, [navigate, isAuthenticated, redirectPath]);
 
 	const extractErrorMessage = async (response: Response) => {
 		try {

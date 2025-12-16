@@ -23,24 +23,68 @@ function DashboardLayout() {
 	const { error } = useQuery({
 		queryKey: ["my-profile"],
 		queryFn: async () => {
-			const response = await fetchRPC(client.auth["my-profile"].$get());
+			try {
+				const response = await fetchRPC(client.auth["my-profile"].$get());
 
-			await saveAuthData({
-				id: response.id,
-				name: response.name,
-				permissions: response.permissions,
-				roles: response.roles,
-			});
+				await saveAuthData({
+					id: response.id,
+					name: response.name,
+					permissions: response.permissions,
+					roles: response.roles,
+				});
 
-			return response;
+				return response;
+			} catch (err) {
+				// If we get a 401 error, the token might be expired
+				// The AuthProvider will handle token refresh automatically
+				throw err;
+			}
 		},
 		enabled: isAuthenticated,
+		// Don't retry on 401 errors - let the auth system handle it
+		retry: (failureCount, error) => {
+			if (error && typeof error === 'object' && 'message' in error) {
+				const message = String(error.message);
+				if (message.includes('401') || message.includes('Invalid access token')) {
+					return false;
+				}
+			}
+			return failureCount < 1;
+		},
 	});
 
 	// const [openNavbar, { toggle }] = useDisclosure(false);
 
-	if (error && error.message === "Invalid access token signature") {
-		return <Navigate to="/logout" />;
+	// Handle authentication errors
+	if (error) {
+		const errorMessage = error.message || '';
+		// Check for authentication-related errors
+		if (
+			errorMessage.includes('401') ||
+			errorMessage.includes('Invalid access token') ||
+			errorMessage.includes('Unauthorized')
+		) {
+			// Don't redirect if we're currently refreshing - give it a chance
+			if (!isRefreshing) {
+				return <Navigate to="/logout" replace />;
+			}
+		}
+	}
+
+	// Redirect to login with current path if not authenticated and not refreshing
+	if (!isAuthenticated && !isRefreshing) {
+		const currentPath = window.location.pathname;
+		// Don't redirect to login if we're already there
+		if (currentPath === '/login') {
+			return null;
+		}
+		return (
+			<Navigate
+				to="/login"
+				search={{ redirect: currentPath }}
+				replace
+			/>
+		);
 	}
 
 	// During token refresh, maintain current state to prevent flicker
@@ -57,7 +101,5 @@ function DashboardLayout() {
 				</main>
 			</SidebarInset>
 		</SidebarProvider>
-	) : (
-		<Navigate to="/login" />
-	);
+	) : null;
 }

@@ -271,7 +271,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 				// Only clear auth data on 401 (invalid/expired token)
 				// For other errors (500, 429, network issues), keep the session active
 				if (response.status === 401) {
-					const errorText = await response.text();
+					let errorText = "Token refresh failed";
+					try {
+						const errorData = await response.json();
+						errorText = errorData.message || errorText;
+					} catch {
+						errorText = await response.text().catch(() => errorText);
+					}
+
+					console.warn("[auth] Token refresh failed (401):", {
+						error: errorText,
+						timestamp: new Date().toISOString(),
+					});
+
 					throw new Error(
 						`Refresh failed: ${response.status} - ${errorText}`,
 					);
@@ -279,7 +291,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 				// For non-401 errors, log but don't logout
 				console.warn(
-					`Token refresh failed with status ${response.status}, will retry on next attempt`,
+					`[auth] Token refresh failed with status ${response.status}, will retry on next attempt`,
 				);
 				return;
 			}

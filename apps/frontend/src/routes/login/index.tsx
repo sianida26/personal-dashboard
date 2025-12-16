@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { z } from "zod";
 import client from "@/honoClient";
 import fetchRPC from "@/utils/fetchRPC";
 
@@ -8,7 +9,12 @@ const DEFAULT_LOGIN_SETTINGS = {
 	enableUsernameAndPasswordLogin: true,
 };
 
+const loginSearchSchema = z.object({
+	redirect: z.string().optional(),
+});
+
 export const Route = createFileRoute("/login/")({
+	validateSearch: loginSearchSchema,
 	loader: async () => {
 		try {
 			const loginSettings = await fetchRPC(

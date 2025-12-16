@@ -1,26 +1,12 @@
-import type { QueryClient } from "@tanstack/react-query";
-import {
-	createRootRouteWithContext,
-	Link,
-	Outlet,
-} from "@tanstack/react-router";
-import ErrorBoundary from "@/components/ErrorBoundary";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import illustration from "@/assets/illustrations/undraw_alert_w756.svg";
 
-export interface RouteContext {
-	queryClient: QueryClient;
-	pageTitle?: string;
-}
+export const Route = createFileRoute("/404")({
+	component: NotFoundPage,
+});
 
-export const Route = createRootRouteWithContext<RouteContext>()({
-	component: () => (
-		<div className="font-manrope">
-			<ErrorBoundary>
-				<Outlet />
-			</ErrorBoundary>
-		</div>
-	),
-	notFoundComponent: () => (
+function NotFoundPage() {
+	return (
 		<div className="w-screen h-screen flex flex-col items-center justify-center gap-8 px-4 lg:px-8">
 			<img
 				src={illustration}
@@ -41,5 +27,5 @@ export const Route = createRootRouteWithContext<RouteContext>()({
 				</Link>
 			</div>
 		</div>
-	),
-});
+	);
+}
