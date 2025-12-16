@@ -1,6 +1,6 @@
 import type { AppType } from "backend";
 import { hc } from "hono/client";
-import { trackApiRequest, trackError } from "@/lib/observability/telemetry";
+import { trackApiRequest, trackError } from "@/lib/telemetry";
 import { authDB } from "./indexedDB/authDB";
 import { getAuthBridge } from "./utils/authBridge";
 
@@ -12,7 +12,7 @@ const rawFetch = globalThis.fetch.bind(globalThis);
 const backendBaseUrl = new URL(backendUrl);
 
 // Wrapper to track API request metrics
-const trackedFetch: typeof rawFetch = async (input, init) => {
+const trackedFetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
 	const startTime = Date.now();
 	const request = new Request(input, init);
 
@@ -42,7 +42,7 @@ const trackedFetch: typeof rawFetch = async (input, init) => {
 		}
 		throw error;
 	}
-};
+});
 
 const resolveAgainstBackend = (url: string) => {
 	try {

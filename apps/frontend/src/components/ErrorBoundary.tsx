@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useState } from "react";
-import { trackError } from "@/lib/observability/telemetry";
+import { trackError } from "@/lib/telemetry";
 
 interface ErrorBoundaryProps {
 	children: ReactNode;

@@ -1,9 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import {
-	initializeOtel,
-	trackPerformanceMetrics,
-} from "@/lib/observability/telemetry";
+import { initializeOtel, trackPerformanceMetrics } from "@/lib/telemetry";
 import App from "./App.tsx";
 import ErrorBoundary from "./components/ErrorBoundary.tsx";
 import "./index.css";
