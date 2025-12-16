@@ -1,9 +1,33 @@
-// Signoz configuration
-const SIGNOZ_ENDPOINT =
-	import.meta.env.VITE_SIGNOZ_ENDPOINT || "https://signoz.dsg.id/v1/traces";
-const SIGNOZ_TOKEN = import.meta.env.VITE_SIGNOZ_TOKEN || "";
-const SERVICE_NAME = "dashboard-template-frontend";
+// OpenTelemetry configuration (mirrors backend conventions)
+const OTEL_ENDPOINT = import.meta.env.VITE_OTEL_EXPORTER_OTLP_ENDPOINT || "";
+const OTEL_HEADERS = import.meta.env.VITE_OTEL_EXPORTER_OTLP_HEADERS || "";
+const SERVICE_NAME = "dasbort";
 const ENVIRONMENT = import.meta.env.MODE || "development";
+
+// Normalize OTLP base URL (backend uses base + /v1/{traces,metrics,logs})
+const OTEL_BASE_URL = OTEL_ENDPOINT.replace(/\/+$/, "").replace(
+	/\/v1\/(traces|metrics|logs)$/,
+	"",
+);
+const OTEL_LOGS_URL = OTEL_BASE_URL ? `${OTEL_BASE_URL}/v1/logs` : "";
+
+// Parse OTEL header string (e.g. "signoz-access-token=xyz,another-header=abc")
+function parseOtelHeaders(headerString: string): Record<string, string> {
+	if (!headerString) return {};
+	return headerString
+		.split(",")
+		.reduce<Record<string, string>>((acc, part) => {
+			const [rawKey, ...rest] = part.split("=");
+			const key = rawKey?.trim();
+			const value = rest.join("=").trim();
+			if (key && value) {
+				acc[key] = value;
+			}
+			return acc;
+		}, {});
+}
+
+const parsedHeaders = parseOtelHeaders(OTEL_HEADERS);
 
 let isInitialized = false;
 
@@ -59,14 +83,13 @@ export function trackError(
 			},
 		};
 
-		// Send to Signoz (fire and forget)
-		fetch(SIGNOZ_ENDPOINT.replace("/v1/traces", "/v1/logs"), {
+		if (!OTEL_LOGS_URL) return;
+		// Send to OpenTelemetry endpoint (fire and forget)
+		fetch(OTEL_LOGS_URL, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				...(SIGNOZ_TOKEN
-					? { "signoz-access-token": SIGNOZ_TOKEN }
-					: {}),
+				...parsedHeaders,
 			},
 			body: JSON.stringify(payload),
 		}).catch(() => {
@@ -99,13 +122,12 @@ export function trackEvent(
 			},
 		};
 
-		fetch(SIGNOZ_ENDPOINT.replace("/v1/traces", "/v1/logs"), {
+		if (!OTEL_LOGS_URL) return;
+		fetch(OTEL_LOGS_URL, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				...(SIGNOZ_TOKEN
-					? { "signoz-access-token": SIGNOZ_TOKEN }
-					: {}),
+				...parsedHeaders,
 			},
 			body: JSON.stringify(payload),
 		}).catch(() => {});
@@ -258,11 +280,11 @@ export function trackPerformanceMetrics() {
 	}
 }
 
-// Expose signoz object to window for ErrorBoundary
+// Expose otel object to window for ErrorBoundary
 if (typeof window !== "undefined") {
 	(
-		window as typeof window & { signoz?: { trackError: typeof trackError } }
-	).signoz = {
+		window as typeof window & { otel?: { trackError: typeof trackError } }
+	).otel = {
 		trackError,
 	};
 }
