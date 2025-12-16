@@ -95,7 +95,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 						setRoles(stored.roles);
 						setAccessToken(stored.accessToken ?? null);
 						setRefreshToken(stored.refreshToken ?? null);
-						setAccessTokenExpiresAt(stored.accessTokenExpiresAt ?? null);
+						setAccessTokenExpiresAt(
+							stored.accessTokenExpiresAt ?? null,
+						);
 					}
 				})();
 			}
@@ -139,7 +141,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 						setRoles(stored.roles);
 						setAccessToken(stored.accessToken ?? null);
 						setRefreshToken(stored.refreshToken ?? null);
-						setAccessTokenExpiresAt(stored.accessTokenExpiresAt ?? null);
+						setAccessTokenExpiresAt(
+							stored.accessTokenExpiresAt ?? null,
+						);
 					}
 				})();
 			}
@@ -175,7 +179,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 				// Fallback: Use localStorage to trigger storage event in other tabs
 				try {
-					localStorage.setItem("auth-logout-event", Date.now().toString());
+					localStorage.setItem(
+						"auth-logout-event",
+						Date.now().toString(),
+					);
 					localStorage.removeItem("auth-logout-event");
 				} catch {
 					// localStorage might be unavailable (private browsing, etc.)
@@ -224,7 +231,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 		try {
 			const existingLock = localStorage.getItem(lockKey);
-			const existingLockTime = existingLock ? Number.parseInt(existingLock) : 0;
+			const existingLockTime = existingLock
+				? Number.parseInt(existingLock)
+				: 0;
 
 			// If another tab holds a recent lock, wait and read updated tokens instead
 			if (existingLock && Date.now() - existingLockTime < lockTimeout) {
@@ -242,7 +251,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 					setRoles(stored.roles);
 					setAccessToken(stored.accessToken ?? null);
 					setRefreshToken(stored.refreshToken ?? null);
-					setAccessTokenExpiresAt(stored.accessTokenExpiresAt ?? null);
+					setAccessTokenExpiresAt(
+						stored.accessTokenExpiresAt ?? null,
+					);
 				}
 
 				setIsRefreshing(false);
@@ -276,7 +287,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 						const errorData = await response.json();
 						errorText = errorData.message || errorText;
 					} catch {
-						errorText = await response.text().catch(() => errorText);
+						errorText = await response
+							.text()
+							.catch(() => errorText);
 					}
 
 					console.warn("[auth] Token refresh failed (401):", {
@@ -327,7 +340,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			} catch {
 				// localStorage might be unavailable
 			}
-		} catch (error) {
+		} catch {
 			// Only clear auth data on authentication errors (401)
 			// For network errors or other issues, keep the session active
 			await clearAuthData({ broadcastLogout: false });
@@ -394,7 +407,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		setAuthBridge({
 			getAccessToken: () => accessToken,
 			refreshSession,
-			clearAuthData: async () => clearAuthData({ broadcastLogout: false }),
+			clearAuthData: async () =>
+				clearAuthData({ broadcastLogout: false }),
 		});
 
 		return () => {
@@ -412,6 +426,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 	const checkPermission = (permission: string) =>
 		permissions?.includes(permission) ?? false;
+
+	const hasNoAccess = () => {
+		// User has no access if they're authenticated but have no roles AND no permissions
+		if (!isAuthenticated || !userId) return false;
+		const hasNoRoles = !roles || roles.length === 0;
+		const hasNoPermissions = !permissions || permissions.length === 0;
+		return hasNoRoles && hasNoPermissions;
+	};
 
 	const isAuthenticated = Boolean(accessToken);
 
@@ -431,9 +453,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 				refreshToken,
 				accessTokenExpiresAt,
 				saveAuthData,
-				clearAuthData: async () => clearAuthData({ broadcastLogout: true }),
+				clearAuthData: async () =>
+					clearAuthData({ broadcastLogout: true }),
 				isAuthenticated,
 				checkPermission,
+				hasNoAccess,
 				refreshSession,
 				isRefreshing,
 			}}

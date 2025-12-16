@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import illustration from "@/assets/illustrations/undraw_alert_w756.svg";
 
-export const Route = createFileRoute("/404")({
+export const Route = createFileRoute("/not-found")({
 	component: NotFoundPage,
 });
 
@@ -11,7 +11,7 @@ function NotFoundPage() {
 			<img
 				src={illustration}
 				alt="404 Not Found Illustration"
-				className="w-full max-w-(--breakpoint-md)"
+				className="w-full max-w-sm"
 			/>
 			<div className="flex flex-col items-center text-lg gap-4 text-center">
 				<h1 className="text-4xl font-bold">404 - Page Not Found</h1>
@@ -22,7 +22,10 @@ function NotFoundPage() {
 					Please check the URL or navigate back to the home page.
 				</p>
 
-				<Link to="/" className="font-medium text-primary hover:underline">
+				<Link
+					to="/"
+					className="font-medium text-primary hover:underline"
+				>
 					Take me home! 🏠
 				</Link>
 			</div>

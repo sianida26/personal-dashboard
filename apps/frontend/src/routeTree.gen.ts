@@ -11,8 +11,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as NotFoundRouteImport } from './routes/not-found'
+import { Route as NoAccessRouteImport } from './routes/no-access'
 import { Route as DashboardLayoutRouteImport } from './routes/_dashboardLayout'
-import { Route as R403RouteImport } from './routes/403'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
 import { Route as DashboardLayoutUsersRouteImport } from './routes/_dashboardLayout/users'
 import { Route as DashboardLayoutGraphAdminRouteImport } from './routes/_dashboardLayout/graph-admin'
@@ -47,13 +48,18 @@ const DashboardLayoutAppSettingsEditIdLazyRouteImport = createFileRoute(
   '/_dashboardLayout/app-settings/edit/$id',
 )()
 
-const DashboardLayoutRoute = DashboardLayoutRouteImport.update({
-  id: '/_dashboardLayout',
+const NotFoundRoute = NotFoundRouteImport.update({
+  id: '/not-found',
+  path: '/not-found',
   getParentRoute: () => rootRouteImport,
 } as any)
-const R403Route = R403RouteImport.update({
-  id: '/403',
-  path: '/403',
+const NoAccessRoute = NoAccessRouteImport.update({
+  id: '/no-access',
+  path: '/no-access',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardLayoutRoute = DashboardLayoutRouteImport.update({
+  id: '/_dashboardLayout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexLazyRoute = IndexLazyRouteImport.update({
@@ -203,7 +209,8 @@ const DashboardLayoutRolesEditRoleIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
-  '/403': typeof R403Route
+  '/no-access': typeof NoAccessRoute
+  '/not-found': typeof NotFoundRoute
   '/dev': typeof DashboardLayoutDevRoute
   '/graph-admin': typeof DashboardLayoutGraphAdminRoute
   '/users': typeof DashboardLayoutUsersRouteWithChildren
@@ -228,7 +235,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
-  '/403': typeof R403Route
+  '/no-access': typeof NoAccessRoute
+  '/not-found': typeof NotFoundRoute
   '/dev': typeof DashboardLayoutDevRoute
   '/graph-admin': typeof DashboardLayoutGraphAdminRoute
   '/users': typeof DashboardLayoutUsersRouteWithChildren
@@ -254,8 +262,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexLazyRoute
-  '/403': typeof R403Route
   '/_dashboardLayout': typeof DashboardLayoutRouteWithChildren
+  '/no-access': typeof NoAccessRoute
+  '/not-found': typeof NotFoundRoute
   '/_dashboardLayout/dev': typeof DashboardLayoutDevRoute
   '/_dashboardLayout/graph-admin': typeof DashboardLayoutGraphAdminRoute
   '/_dashboardLayout/users': typeof DashboardLayoutUsersRouteWithChildren
@@ -282,7 +291,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/403'
+    | '/no-access'
+    | '/not-found'
     | '/dev'
     | '/graph-admin'
     | '/users'
@@ -307,7 +317,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/403'
+    | '/no-access'
+    | '/not-found'
     | '/dev'
     | '/graph-admin'
     | '/users'
@@ -332,8 +343,9 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/403'
     | '/_dashboardLayout'
+    | '/no-access'
+    | '/not-found'
     | '/_dashboardLayout/dev'
     | '/_dashboardLayout/graph-admin'
     | '/_dashboardLayout/users'
@@ -359,8 +371,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
-  R403Route: typeof R403Route
   DashboardLayoutRoute: typeof DashboardLayoutRouteWithChildren
+  NoAccessRoute: typeof NoAccessRoute
+  NotFoundRoute: typeof NotFoundRoute
   OauthGoogleCallbackLazyRoute: typeof OauthGoogleCallbackLazyRoute
   OauthMicrosoftAdminCallbackLazyRoute: typeof OauthMicrosoftAdminCallbackLazyRoute
   OauthMicrosoftCallbackLazyRoute: typeof OauthMicrosoftCallbackLazyRoute
@@ -370,18 +383,25 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/not-found': {
+      id: '/not-found'
+      path: '/not-found'
+      fullPath: '/not-found'
+      preLoaderRoute: typeof NotFoundRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/no-access': {
+      id: '/no-access'
+      path: '/no-access'
+      fullPath: '/no-access'
+      preLoaderRoute: typeof NoAccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_dashboardLayout': {
       id: '/_dashboardLayout'
       path: ''
       fullPath: ''
       preLoaderRoute: typeof DashboardLayoutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/403': {
-      id: '/403'
-      path: '/403'
-      fullPath: '/403'
-      preLoaderRoute: typeof R403RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -598,8 +618,9 @@ const DashboardLayoutRouteWithChildren = DashboardLayoutRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
-  R403Route: R403Route,
   DashboardLayoutRoute: DashboardLayoutRouteWithChildren,
+  NoAccessRoute: NoAccessRoute,
+  NotFoundRoute: NotFoundRoute,
   OauthGoogleCallbackLazyRoute: OauthGoogleCallbackLazyRoute,
   OauthMicrosoftAdminCallbackLazyRoute: OauthMicrosoftAdminCallbackLazyRoute,
   OauthMicrosoftCallbackLazyRoute: OauthMicrosoftCallbackLazyRoute,

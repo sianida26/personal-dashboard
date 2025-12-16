@@ -1,7 +1,7 @@
-import AuthContext from "@/contexts/Auth/AuthContext";
 import type { ExtendedPermissionCodeWithAll, PermissionCode } from "@repo/data";
 import { useNavigate } from "@tanstack/react-router";
 import { useContext } from "react";
+import AuthContext from "@/contexts/Auth/AuthContext";
 
 /**
  * A hook that provides access to authentication context.
@@ -101,7 +101,7 @@ export const usePermissions = (
 		);
 
 		navigate({
-			to: "/403",
+			to: "/no-access",
 		});
 	}
 

@@ -527,7 +527,7 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 	if (query.isError) {
 		if (query.error instanceof ResponseError) {
 			if (query.error.errorCode === "UNAUTHORIZED") {
-				return <Navigate to="/403" replace />;
+				return <Navigate to="/no-access" replace />;
 			}
 		}
 		return <div>Error: {query.error.message}</div>;

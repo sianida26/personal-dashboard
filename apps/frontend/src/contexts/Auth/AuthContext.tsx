@@ -23,6 +23,7 @@ export interface AuthContextType {
 	) => Promise<void>;
 	clearAuthData: () => Promise<void>;
 	checkPermission: (permission: string) => boolean;
+	hasNoAccess: () => boolean;
 	isAuthenticated: boolean;
 	refreshSession: () => Promise<void>;
 	isRefreshing: boolean;

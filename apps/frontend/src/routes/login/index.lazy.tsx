@@ -33,7 +33,7 @@ export default function LoginPage() {
 	const authSettings = Route.useLoaderData();
 	const isUsingFallbackSettings = authSettings.isFallback;
 
-	const { isAuthenticated, saveAuthData } = useAuth();
+	const { isAuthenticated, saveAuthData, hasNoAccess } = useAuth();
 
 	const form = useForm<FormSchema>({
 		initialValues: {
@@ -49,13 +49,22 @@ export default function LoginPage() {
 
 	useEffect(() => {
 		if (isAuthenticated) {
+			// Check if user has no access (no roles and no permissions)
+			if (hasNoAccess()) {
+				navigate({
+					to: "/no-access",
+					replace: true,
+				});
+				return;
+			}
+
 			// If already authenticated, redirect to intended path
 			navigate({
 				to: redirectPath,
 				replace: true,
 			});
 		}
-	}, [navigate, isAuthenticated, redirectPath]);
+	}, [navigate, isAuthenticated, redirectPath, hasNoAccess]);
 
 	const extractErrorMessage = async (response: Response) => {
 		try {
@@ -113,6 +122,25 @@ export default function LoginPage() {
 					refreshToken: data.refreshToken,
 				},
 			);
+
+			// Check if user has no roles and no permissions
+			const hasNoRoles = !data.user.roles || data.user.roles.length === 0;
+			const hasNoPermissions =
+				!data.user.permissions || data.user.permissions.length === 0;
+
+			if (hasNoRoles && hasNoPermissions) {
+				navigate({
+					to: "/no-access",
+					replace: true,
+				});
+				return;
+			}
+
+			// Navigate to intended path
+			navigate({
+				to: redirectPath,
+				replace: true,
+			});
 		},
 
 		onError: async (error) => {
