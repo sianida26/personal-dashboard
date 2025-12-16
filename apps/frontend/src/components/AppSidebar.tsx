@@ -171,11 +171,13 @@ export default function AppSidebar() {
 											<p className="w-full truncate font-semibold">
 												{user?.name}
 											</p>
-											<p className="w-full text-xs truncate text-muted-foreground">
-												{user?.email ??
-													user?.username ??
-													"User"}
-											</p>
+											{(user?.email ||
+												user?.username) && (
+												<p className="w-full text-xs truncate text-muted-foreground">
+													{user.email ??
+														user.username}
+												</p>
+											)}
 										</div>
 									</div>
 
@@ -185,29 +187,46 @@ export default function AppSidebar() {
 									</div>
 								</SidebarMenuButton>
 							</DropdownMenuTrigger>
-							<DropdownMenuContent
-								side="top"
-								className="w-(--radix-popper-anchor-width)"
-							>
+							<DropdownMenuContent side="top" className="w-56">
+								<div className="flex items-center gap-2 p-2">
+									<img
+										src={defaultProfilePicture}
+										alt="User avatar"
+										className="h-10 w-10 rounded-full"
+									/>
+									<div className="flex flex-col">
+										<span className="text-sm font-semibold">
+											{user?.name}
+										</span>
+										{(user?.email || user?.username) && (
+											<span className="text-xs text-muted-foreground">
+												{user.email ?? user.username}
+											</span>
+										)}
+									</div>
+								</div>
 								<DropdownMenuItem>
-									<span className="flex items-center gap-2">
-										<TbUser /> Account
-									</span>
+									<TbUser className="mr-2 h-4 w-4" />
+									<span>Account</span>
 								</DropdownMenuItem>
-								<Link to="/personal/notifications">
-									<DropdownMenuItem>
-										<span className="flex items-center gap-2">
-											<TbBell /> Notification
-										</span>
-									</DropdownMenuItem>
-								</Link>
-								<Link to="/logout">
-									<DropdownMenuItem>
-										<span className="flex items-center gap-2 text-red-500">
-											<TbDoorExit /> Sign Out
-										</span>
-									</DropdownMenuItem>
-								</Link>
+								<DropdownMenuItem asChild>
+									<Link
+										to="/personal/notifications"
+										className="cursor-pointer"
+									>
+										<TbBell className="mr-2 h-4 w-4" />
+										<span>Notifications</span>
+									</Link>
+								</DropdownMenuItem>
+								<DropdownMenuItem asChild>
+									<Link
+										to="/logout"
+										className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950"
+									>
+										<TbDoorExit className="mr-2 h-4 w-4" />
+										<span>Sign Out</span>
+									</Link>
+								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
 					</SidebarMenuItem>

@@ -1,7 +1,7 @@
 import { useForm } from "@mantine/form";
 import { Alert, AlertDescription, AlertTitle, Button } from "@repo/ui";
 import { useMutation } from "@tanstack/react-query";
-import { useNavigate, createLazyFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
@@ -31,6 +31,7 @@ export default function LoginPage() {
 	const navigate = useNavigate();
 
 	const authSettings = Route.useLoaderData();
+	const isUsingFallbackSettings = authSettings.isFallback;
 
 	const { isAuthenticated, saveAuthData } = useAuth();
 
@@ -50,6 +51,31 @@ export default function LoginPage() {
 			});
 		}
 	}, [navigate, isAuthenticated]);
+
+	const extractErrorMessage = async (response: Response) => {
+		try {
+			const body = (await response.clone().json()) as {
+				message?: string;
+			};
+
+			if (body?.message) {
+				return body.message;
+			}
+		} catch {
+			// ignore JSON parsing errors for error responses
+		}
+
+		try {
+			const rawText = await response.text();
+			if (rawText) {
+				return rawText;
+			}
+		} catch {
+			// ignore text parsing errors for error responses
+		}
+
+		return "Unable to login. Please try again.";
+	};
 
 	const loginMutation = useMutation({
 		mutationFn: async (values: FormSchema) => {
@@ -81,10 +107,12 @@ export default function LoginPage() {
 
 		onError: async (error) => {
 			if (error instanceof Response) {
-				const body = await error.json();
-				setErrorMessage(body.message as string);
+				const message = await extractErrorMessage(error);
+				setErrorMessage(message);
 				return;
 			}
+
+			setErrorMessage("Unable to login. Please try again.");
 		},
 	});
 
@@ -124,7 +152,19 @@ export default function LoginPage() {
 								app
 							</p>
 						</div>
-
+						{isUsingFallbackSettings && (
+							<Alert variant="default" className="w-full">
+								<AlertTitle>
+									Using default login options
+								</AlertTitle>
+								<AlertDescription>
+									We couldn&apos;t load login preferences
+									right now. Username and password sign-in is
+									available; please retry later for social
+									providers.
+								</AlertDescription>
+							</Alert>
+						)}
 						{errorMessage && (
 							<Alert
 								variant="default"
@@ -132,11 +172,11 @@ export default function LoginPage() {
 							>
 								<AlertTitle>Error</AlertTitle>
 								<AlertDescription>
-									Username or Password does not match.
+									{errorMessage ||
+										"Username or Password does not match."}
 								</AlertDescription>
 							</Alert>
 						)}
-
 						{authSettings.enableUsernameAndPasswordLogin && (
 							<form
 								className="flex flex-col w-full gap-4"

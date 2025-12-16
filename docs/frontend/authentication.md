@@ -22,7 +22,7 @@ const loginSchema = z.object({
 
 export const LoginForm = () => {
   const { login, isLoading } = useAuth();
-  
+
   const form = useForm({
     initialValues: {
       username: '',
@@ -57,6 +57,13 @@ export const LoginForm = () => {
 };
 ```
 
+#### Login Settings Fetch & Resilience
+
+- The `/login` route loader (`apps/frontend/src/routes/login/index.tsx`) fetches `/auth/login-settings` once and merges the result with safe defaults.
+- If the endpoint is rate limited or returns a non-JSON body, the loader falls back to default settings (username/password enabled, social OAuth disabled) and shows an inline notice on the login page instead of blocking the form.
+- The shared `fetchRPC` helper now defends against non-JSON error payloads (e.g., `429 Too Many Requests` text responses) to avoid `Unexpected token` JSON parse failures.
+- Keep the login flow functional during upstream hiccups; avoid adding aggressive retries that could trip rate limits.
+
 #### Authentication Context
 ```typescript
 // src/contexts/Auth/AuthContext.tsx
@@ -87,11 +94,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const initializeAuth = async () => {
     try {
       const authData = await authDB.auth.get('auth');
-      
+
       if (authData && authData.expiresAt > Date.now()) {
         setUser(authData.user);
         setPermissions(authData.permissions);
-        
+
         // Setup token refresh
         setupTokenRefresh(authData.expiresAt);
       } else if (authData?.refreshToken) {
@@ -108,10 +115,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (credentials: LoginCredentials) => {
     try {
-      const response = await client.auth.login.$post({ 
-        json: credentials 
+      const response = await client.auth.login.$post({
+        json: credentials
       });
-      
+
       const authData = {
         id: 'auth',
         accessToken: response.accessToken,
@@ -122,11 +129,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       };
 
       await authDB.auth.put(authData);
-      
+
       setUser(response.user);
       setPermissions(response.permissions);
       setupTokenRefresh(authData.expiresAt);
-      
+
     } catch (error) {
       throw new Error('Login failed');
     }
@@ -163,7 +170,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       await authDB.auth.put(newAuthData);
       setupTokenRefresh(newAuthData.expiresAt);
-      
+
     } catch (error) {
       console.error('Token refresh failed:', error);
       await logout();
@@ -172,7 +179,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const setupTokenRefresh = (expiresAt: number) => {
     const refreshTime = expiresAt - Date.now() - 5 * 60 * 1000; // 5 minutes before expiry
-    
+
     setTimeout(() => {
       refreshToken();
     }, Math.max(refreshTime, 0));
@@ -230,7 +237,7 @@ export interface AuthData {
 
 export class AuthDatabase extends Dexie {
   auth!: Table<AuthData>;
-  
+
   constructor() {
     super('DashboardAuth');
     this.version(1).stores({
@@ -306,18 +313,18 @@ import { useAuth } from '@/contexts/Auth';
 
 export const usePermissions = (requiredPermissions: string | string[]) => {
   const { hasPermission, isAuthenticated } = useAuth();
-  
-  const permissions = Array.isArray(requiredPermissions) 
-    ? requiredPermissions 
+
+  const permissions = Array.isArray(requiredPermissions)
+    ? requiredPermissions
     : [requiredPermissions];
-  
+
   const hasAccess = permissions.every(permission => {
     if (permission === 'authenticated-only') {
       return isAuthenticated;
     }
     return hasPermission(permission);
   });
-  
+
   return {
     hasAccess,
     checkPermission: hasPermission,
@@ -357,11 +364,11 @@ export const PermissionGate: React.FC<PermissionGateProps> = ({
   requireAll = true,
 }) => {
   const { hasAccess } = usePermissions(permissions);
-  
+
   if (!hasAccess) {
     return <>{fallback}</>;
   }
-  
+
   return <>{children}</>;
 };
 
@@ -370,7 +377,7 @@ export const PermissionGate: React.FC<PermissionGateProps> = ({
   <Button onClick={handleCreateUser}>Create User</Button>
 </PermissionGate>
 
-<PermissionGate 
+<PermissionGate
   permissions={[PERMISSIONS.USERS.READ, PERMISSIONS.USERS.UPDATE]}
   requireAll={false}
 >
@@ -395,11 +402,11 @@ export const AuthorizedComponent: React.FC<AuthorizedComponentProps> = ({
   fallback: Fallback,
 }) => {
   const { hasAccess } = usePermissions(permissions);
-  
+
   if (!hasAccess) {
     return Fallback ? <Fallback {...props} /> : null;
   }
-  
+
   return <Component {...props} />;
 };
 ```
@@ -424,25 +431,25 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requireAuth = true,
 }) => {
   const { isAuthenticated, hasPermission, isLoading } = useAuth();
-  
+
   if (isLoading) {
     return <LoadingSpinner />;
   }
-  
+
   if (requireAuth && !isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
-  
+
   if (permissions) {
     const hasAccess = Array.isArray(permissions)
       ? permissions.some(p => hasPermission(p))
       : hasPermission(permissions);
-      
+
     if (!hasAccess) {
       return <Navigate to="/403" replace />;
     }
   }
-  
+
   return <>{children}</>;
 };
 ```
@@ -457,7 +464,7 @@ export const Route = createFileRoute('/_dashboardLayout')({
   component: DashboardLayout,
   beforeLoad: async ({ context }) => {
     const { auth } = context;
-    
+
     if (!auth.isAuthenticated) {
       throw redirect({
         to: '/login',
@@ -466,7 +473,7 @@ export const Route = createFileRoute('/_dashboardLayout')({
         },
       });
     }
-    
+
     if (!auth.hasPermission(PERMISSIONS.AUTHENTICATED)) {
       throw redirect({ to: '/403' });
     }
@@ -478,7 +485,7 @@ export const AdminRoute = createFileRoute('/_dashboardLayout/admin')({
   component: AdminPage,
   beforeLoad: async ({ context }) => {
     const { auth } = context;
-    
+
     if (!auth.hasPermission(PERMISSIONS.ADMIN.DASHBOARD)) {
       throw redirect({ to: '/403' });
     }
@@ -499,7 +506,7 @@ export const OAuthLogin = () => {
       response_type: 'code',
       scope: 'openid email profile',
     });
-    
+
     window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
   };
 
@@ -522,7 +529,7 @@ import { useAuth } from '@/contexts/Auth';
 const OAuthCallback = () => {
   const { login } = useAuth();
   const search = Route.useSearch();
-  
+
   useEffect(() => {
     const handleCallback = async () => {
       if (search.code) {
@@ -533,10 +540,10 @@ const OAuthCallback = () => {
         }
       }
     };
-    
+
     handleCallback();
   }, [search.code, login]);
-  
+
   return <div>Processing login...</div>;
 };
 
@@ -568,7 +575,7 @@ export const useUserPermissions = (userId: string) => {
 // Update permissions
 export const useUpdatePermissions = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: ({ userId, permissions }: { userId: string; permissions: string[] }) =>
       client.users[userId].permissions.$patch({ json: { permissions } }),
@@ -584,15 +591,15 @@ export const useUpdatePermissions = () => {
 // src/hooks/usePermissionCache.ts
 export const usePermissionCache = () => {
   const queryClient = useQueryClient();
-  
+
   const cachePermissions = (userId: string, permissions: string[]) => {
     queryClient.setQueryData(['user', userId, 'permissions'], permissions);
   };
-  
+
   const getCachedPermissions = (userId: string) => {
     return queryClient.getQueryData(['user', userId, 'permissions']) as string[] | undefined;
   };
-  
+
   return { cachePermissions, getCachedPermissions };
 };
 ```
@@ -644,18 +651,18 @@ const wrapper = ({ children }) => (
 describe('AuthContext', () => {
   it('should provide authentication state', () => {
     const { result } = renderHook(() => useAuth(), { wrapper });
-    
+
     expect(result.current.isAuthenticated).toBe(false);
     expect(result.current.user).toBeNull();
   });
-  
+
   it('should handle login', async () => {
     const { result } = renderHook(() => useAuth(), { wrapper });
-    
+
     await act(async () => {
       await result.current.login({ username: 'test', password: 'test' });
     });
-    
+
     expect(result.current.isAuthenticated).toBe(true);
   });
 });
@@ -670,13 +677,13 @@ import { usePermissions } from '../usePermissions';
 describe('usePermissions', () => {
   it('should check single permission', () => {
     const { result } = renderHook(() => usePermissions('users.read'));
-    
+
     expect(result.current.hasAccess).toBe(true);
   });
-  
+
   it('should check multiple permissions', () => {
     const { result } = renderHook(() => usePermissions(['users.read', 'users.write']));
-    
+
     expect(result.current.hasAccess).toBe(false);
   });
 });

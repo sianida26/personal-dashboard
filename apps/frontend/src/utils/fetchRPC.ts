@@ -1,6 +1,6 @@
+import type { ClientResponse } from "hono/client";
 import FormResponseError from "@/errors/FormResponseError";
 import ResponseError from "@/errors/ResponseError";
-import type { ClientResponse } from "hono/client";
 
 // biome-ignore lint/suspicious/noExplicitAny: any is used to allow for any type of property
 type BlankRecordToNever<T> = T extends any
@@ -10,6 +10,58 @@ type BlankRecordToNever<T> = T extends any
 			? never
 			: T
 	: never;
+
+type ParsedResponse = {
+	data: unknown;
+	rawText: string;
+	parseError?: Error;
+};
+
+const parseResponseBody = async (res: Response): Promise<ParsedResponse> => {
+	const rawText = await res.text();
+	const contentType = res.headers.get("content-type") ?? "";
+	const isLikelyJson = contentType.includes("application/json");
+
+	if (!rawText) {
+		return { data: null, rawText };
+	}
+
+	if (isLikelyJson) {
+		try {
+			return { data: JSON.parse(rawText), rawText };
+		} catch (error) {
+			return {
+				data: null,
+				rawText,
+				parseError:
+					error instanceof Error
+						? error
+						: new Error("Failed to parse JSON response"),
+			};
+		}
+	}
+
+	return { data: null, rawText };
+};
+
+const pickErrorBody = (
+	data: unknown,
+):
+	| {
+			message?: string;
+			formErrors?: Record<string, string>;
+			errorCode?: string;
+	  }
+	| undefined => {
+	if (data && typeof data === "object" && !Array.isArray(data)) {
+		return data as {
+			message?: string;
+			formErrors?: Record<string, string>;
+			errorCode?: string;
+		};
+	}
+	return undefined;
+};
 
 /**
  * Handles API requests and response parsing with type-safe error handling.
@@ -50,31 +102,61 @@ async function fetchRPC<T>(
 	endpoint: Promise<ClientResponse<T>>,
 ): Promise<BlankRecordToNever<T>> {
 	const res = await endpoint;
+	const { data, rawText, parseError } = await parseResponseBody(res);
 
-	// Handle successful responses (2xx status codes)
 	if (res.ok) {
-		const data = await res.json();
+		if (parseError) {
+			throw new ResponseError(
+				"Received an invalid JSON response from the server",
+				res.status,
+			);
+		}
+
+		if (data === null) {
+			return null as BlankRecordToNever<T>;
+		}
+
+		if (data === undefined && !rawText) {
+			return null as BlankRecordToNever<T>;
+		}
+
+		if (data === null && rawText) {
+			throw new ResponseError(
+				"Unexpected non-JSON response from the server",
+				res.status,
+			);
+		}
+
 		return data as BlankRecordToNever<T>;
 	}
 
 	//TODO: Add error reporting
 
-	// Extract error details from response body
-	const data = (await res.json()) as unknown as {
-		message?: string;
-		formErrors?: Record<string, string>;
-		errorCode?: string;
-	};
+	const errorBody = pickErrorBody(data);
 
-	const errorMessage = data.message ?? "Something is gone wrong";
+	const isRateLimited = res.status === 429;
+	const defaultMessage = isRateLimited
+		? "Too many requests. Please wait before trying again."
+		: res.statusText || "Something is gone wrong";
 
-	// Handle form validation errors (422 Unprocessable Entity)
-	if (res.status === 422 && data.formErrors) {
-		throw new FormResponseError(errorMessage, data.formErrors);
+	const errorMessage =
+		errorBody?.message ??
+		(rawText?.trim() ? rawText : undefined) ??
+		(parseError ? "Invalid error response format" : undefined) ??
+		defaultMessage;
+
+	if (res.status === 422 && errorBody?.formErrors) {
+		throw new FormResponseError(
+			errorMessage ?? "Validation error",
+			errorBody.formErrors,
+		);
 	}
 
-	// Handle all other error types
-	throw new ResponseError(errorMessage, res.status, data.errorCode);
+	throw new ResponseError(
+		errorMessage ?? "Something is gone wrong",
+		res.status,
+		errorBody?.errorCode,
+	);
 }
 
 export default fetchRPC;
