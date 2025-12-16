@@ -1,10 +1,10 @@
-import microsoftRouter from "./microsoft/route";
-import googleOAuthRoutes from "./google/route";
 import { createHonoRoute } from "../../utils/createHonoRoute";
+import googleOAuthRoutes from "./google/route";
 import loginRoute from "./login";
-import myProfileRoute from "./my-profile";
-import logoutRoute from "./logout";
 import loginSettingsRoute from "./login-settings";
+import logoutRoute from "./logout";
+import microsoftRouter from "./microsoft/route";
+import myProfileRoute from "./my-profile";
 import refreshRoute from "./refresh";
 
 const authRoutes = createHonoRoute()

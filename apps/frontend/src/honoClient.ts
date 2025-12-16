@@ -12,12 +12,12 @@ const rawFetch = globalThis.fetch.bind(globalThis);
 const backendBaseUrl = new URL(backendUrl);
 
 // Wrapper to track API request metrics
-const trackedFetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+const trackedFetch = async (input: RequestInfo | URL, init?: RequestInit) => {
 	const startTime = Date.now();
 	const request = new Request(input, init);
 
 	try {
-		const response = await rawFetch(input, init);
+		const response = await rawFetch(request);
 		const duration = Date.now() - startTime;
 
 		if (isBackendRequest(request.url)) {
@@ -42,7 +42,7 @@ const trackedFetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
 		}
 		throw error;
 	}
-});
+};
 
 const resolveAgainstBackend = (url: string) => {
 	try {
@@ -103,7 +103,7 @@ const authFetchImpl = async (input: RequestInfo | URL, init?: RequestInit) => {
 	const updatedHeaders = new Headers(baseRequest.headers);
 	updatedHeaders.set("Authorization", `Bearer ${nextAccessToken}`);
 
-	const retryRequest = new Request(baseRequest, {
+	const retryRequest = new Request(baseRequest.clone(), {
 		headers: updatedHeaders,
 	});
 

@@ -14,10 +14,10 @@ import { authMetrics } from "../../utils/custom-metrics";
 import { checkPassword } from "../../utils/passwordUtils";
 
 const loginRoute = createHonoRoute()
-	.use(rateLimit(authRateLimitConfig))
 	// Username and Password Login
 	.post(
 		"/login",
+		rateLimit(authRateLimitConfig),
 		checkPermission("guest-only"),
 		zValidator("json", loginSchema),
 		async (c) => {

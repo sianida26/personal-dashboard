@@ -66,7 +66,7 @@ export default function LoginPage() {
 		}
 
 		try {
-			const rawText = await response.text();
+			const rawText = await response.clone().text();
 			if (rawText) {
 				return rawText;
 			}
@@ -79,15 +79,20 @@ export default function LoginPage() {
 
 	const loginMutation = useMutation({
 		mutationFn: async (values: FormSchema) => {
-			const res = await client.auth.login.$post({
-				json: values,
-			});
+			try {
+				const res = await client.auth.login.$post({
+					json: values,
+				});
 
-			if (res.ok) {
-				return await res.json();
+				if (res.ok) {
+					return await res.json();
+				}
+
+				throw res;
+			} catch (error) {
+				console.error("Login request error:", error);
+				throw error;
 			}
-
-			throw res;
 		},
 
 		onSuccess: async (data) => {
@@ -106,9 +111,18 @@ export default function LoginPage() {
 		},
 
 		onError: async (error) => {
+			console.error("Login mutation error:", error);
+
 			if (error instanceof Response) {
 				const message = await extractErrorMessage(error);
 				setErrorMessage(message);
+				return;
+			}
+
+			if (error instanceof Error) {
+				setErrorMessage(
+					error.message || "Unable to login. Please try again.",
+				);
 				return;
 			}
 
@@ -152,19 +166,6 @@ export default function LoginPage() {
 								app
 							</p>
 						</div>
-						{isUsingFallbackSettings && (
-							<Alert variant="default" className="w-full">
-								<AlertTitle>
-									Using default login options
-								</AlertTitle>
-								<AlertDescription>
-									We couldn&apos;t load login preferences
-									right now. Username and password sign-in is
-									available; please retry later for social
-									providers.
-								</AlertDescription>
-							</Alert>
-						)}
 						{errorMessage && (
 							<Alert
 								variant="default"
