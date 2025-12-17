@@ -10,7 +10,22 @@ export default function AppHeader() {
 	const { data: unreadCount } = useQuery({
 		queryKey: notificationQueryKeys.unreadCount,
 		queryFn: fetchUnreadCount,
-		refetchInterval: 30_000,
+		// Only refetch if not in error state to avoid hammering failed server
+		refetchInterval: (query) => {
+			// Stop refetching if query is in error state
+			if (query.state.status === "error") return false;
+			return 30_000;
+		},
+		// Gracefully handle network errors
+		retry: (failureCount, error) => {
+			if (failureCount >= 2) return false;
+			const isNetworkError =
+				error instanceof Error &&
+				(error.message.includes("NetworkError") ||
+					error.message.includes("Failed to fetch"));
+			return isNetworkError;
+		},
+		retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 5000),
 	});
 
 	const pageTitle = matches[matches.length - 1]?.staticData.title ?? "";

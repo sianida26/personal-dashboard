@@ -1,11 +1,14 @@
 import { LoadingSpinner } from "@repo/ui";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { backendUrl } from "@/honoClient";
 import { authDB } from "@/indexedDB/authDB";
 import { setAuthBridge } from "@/utils/authBridge";
 import { decodeJwt } from "@/utils/jwt";
 import AuthContext, { type AuthContextType } from "./AuthContext";
+
+const REFRESH_OFFLINE_TOAST_ID = "auth-refresh-offline";
 
 /**
  * AuthProvider component that wraps your app and provides authentication context.
@@ -279,8 +282,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			});
 
 			if (!response.ok) {
-				// Only clear auth data on 401 (invalid/expired token)
-				// For other errors (500, 429, network issues), keep the session active
 				if (response.status === 401) {
 					let errorText = "Token refresh failed";
 					try {
@@ -297,15 +298,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 						timestamp: new Date().toISOString(),
 					});
 
-					throw new Error(
-						`Refresh failed: ${response.status} - ${errorText}`,
-					);
+					await clearAuthData({ broadcastLogout: false });
+					toast.dismiss(REFRESH_OFFLINE_TOAST_ID);
+					return;
 				}
 
-				// For non-401 errors, log but don't logout
 				console.warn(
 					`[auth] Token refresh failed with status ${response.status}, will retry on next attempt`,
 				);
+
+				toast.dismiss(REFRESH_OFFLINE_TOAST_ID);
 				return;
 			}
 
@@ -323,14 +325,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 				},
 			);
 
-			// Notify other tabs that tokens were refreshed
+			toast.dismiss(REFRESH_OFFLINE_TOAST_ID);
+
 			if (broadcastChannelRef.current) {
 				broadcastChannelRef.current.postMessage({
 					type: "token-refreshed",
 				});
 			}
 
-			// Fallback notification
 			try {
 				localStorage.setItem(
 					"auth-token-refreshed",
@@ -340,10 +342,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			} catch {
 				// localStorage might be unavailable
 			}
-		} catch {
-			// Only clear auth data on authentication errors (401)
-			// For network errors or other issues, keep the session active
-			await clearAuthData({ broadcastLogout: false });
+		} catch (error) {
+			console.warn(
+				"[auth] Token refresh skipped – backend unreachable. Keeping current session active.",
+				error,
+			);
+
+			toast.error("Can't reach the server right now.", {
+				description:
+					"We'll keep you signed in and try again once the connection is back.",
+				id: REFRESH_OFFLINE_TOAST_ID,
+				duration: 6000,
+			});
+
+			clearRefreshTimer();
+			refreshTimerRef.current = window.setTimeout(() => {
+				void refreshSession();
+			}, 30_000);
 		} finally {
 			isRefreshingRef.current = false;
 			setIsRefreshing(false);
@@ -358,7 +373,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 				// localStorage unavailable
 			}
 		}
-	}, [refreshToken, saveAuthData, clearAuthData]);
+	}, [refreshToken, saveAuthData, clearAuthData, clearRefreshTimer]);
 
 	useEffect(() => {
 		clearRefreshTimer();

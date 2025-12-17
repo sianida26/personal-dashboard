@@ -37,6 +37,7 @@ import React, {
 	useCallback,
 	useEffect,
 	useMemo,
+	useRef,
 	useState,
 } from "react";
 import {
@@ -47,6 +48,7 @@ import {
 	TbPlus,
 	TbSearch,
 } from "react-icons/tb";
+import { toast } from "sonner";
 import ResponseError from "@/errors/ResponseError";
 import fetchRPC from "@/utils/fetchRPC";
 import DashboardTable from "./DashboardTable";
@@ -224,6 +226,9 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 	const pageSizeOptions = props.pageSizeOptions ?? [5, 10, 25, 50, 100, 500];
 	const defaultPageSize = props.defaultPageSize ?? 10;
 
+	// Track if we've shown error toast to avoid duplicates
+	const hasShownErrorRef = useRef(false);
+
 	const [sorting, setSorting] = React.useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [page, setPage] = useState(1);
@@ -376,7 +381,32 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 			filterParam,
 		],
 		queryFn: () => fetchRPC(props.endpoint(queryParams)),
+		// Note: placeholderData is set globally in QueryClient defaults
+		// This keeps previous data visible during refetch errors
 	});
+
+	// Show toast notification on error, but only once per error
+	useEffect(() => {
+		if (query.isError && !hasShownErrorRef.current) {
+			hasShownErrorRef.current = true;
+			const error = query.error;
+			const isNetworkError =
+				error instanceof Error &&
+				(error.message.includes("NetworkError") ||
+					error.message.includes("Failed to fetch") ||
+					error.message.includes("Network request failed"));
+
+			toast.error("Failed to load data", {
+				description: isNetworkError
+					? "Unable to reach server. Using cached data if available."
+					: "An error occurred while loading data. Using cached data if available.",
+				duration: 5000,
+			});
+		} else if (!query.isError && hasShownErrorRef.current) {
+			// Reset when error is resolved
+			hasShownErrorRef.current = false;
+		}
+	}, [query.isError, query.error]);
 
 	const table = useReactTable({
 		data: query.data?.data ?? [],
@@ -524,15 +554,15 @@ export default function PageTemplate<T extends Record<string, unknown>>(
 	const totalPages = query.data?._metadata?.totalPages ?? 1;
 	const currentPage = page;
 
-	if (query.isError) {
-		if (query.error instanceof ResponseError) {
-			if (query.error.errorCode === "UNAUTHORIZED") {
-				return <Navigate to="/no-access" replace />;
-			}
+	// Handle UNAUTHORIZED errors by redirecting
+	if (query.isError && query.error instanceof ResponseError) {
+		if (query.error.errorCode === "UNAUTHORIZED") {
+			return <Navigate to="/no-access" replace />;
 		}
-		return <div>Error: {query.error.message}</div>;
 	}
 
+	// Always render the table UI, even on errors (uses cached data via placeholderData)
+	// Toast notification is shown via useEffect above
 	return query.data ? (
 		<div className="p-8 bg-muted h-full flex flex-col gap-8">
 			{/* Title */}

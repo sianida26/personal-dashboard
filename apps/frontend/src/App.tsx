@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
+import AppErrorBoundary from "./components/AppErrorBoundary";
 import { AppProvider } from "./contexts/App/AppContext";
 import { AuthProvider } from "./contexts/Auth/AuthProvider";
 import { NotificationProvider } from "./contexts/Notification/NotificationProvider";
@@ -9,6 +10,37 @@ const queryClient = new QueryClient({
 	defaultOptions: {
 		queries: {
 			staleTime: 0,
+			// Prevent refetch on window focus when server is down
+			refetchOnWindowFocus: false,
+			// Prevent refetch on reconnect to avoid hammering failed server
+			refetchOnReconnect: false,
+			// Prevent refetch on mount if we already have data
+			refetchOnMount: false,
+			// CRITICAL: Keep previous data during refetch to maintain UI
+			// This prevents error states from replacing working UI
+			placeholderData: (previousData) => previousData,
+			// Smart retry only on network errors
+			retry: (failureCount, error) => {
+				// Max 2 retries
+				if (failureCount >= 2) return false;
+
+				// Only retry on genuine network errors
+				const isNetworkError =
+					error instanceof Error &&
+					(error.message.includes("NetworkError") ||
+						error.message.includes("Failed to fetch") ||
+						error.message.includes("Network request failed") ||
+						error.message.includes("fetch failed"));
+
+				return isNetworkError;
+			},
+			// Exponential backoff
+			retryDelay: (attemptIndex) =>
+				Math.min(1000 * 2 ** attemptIndex, 10000),
+		},
+		mutations: {
+			// Don't retry mutations - they might have side effects
+			retry: false,
 		},
 	},
 });
@@ -31,15 +63,17 @@ declare module "@tanstack/react-router" {
 
 function App() {
 	return (
-		<QueryClientProvider client={queryClient}>
-			<AppProvider>
-				<AuthProvider>
-					<NotificationProvider>
-						<RouterProvider router={router} />
-					</NotificationProvider>
-				</AuthProvider>
-			</AppProvider>
-		</QueryClientProvider>
+		<AppErrorBoundary>
+			<QueryClientProvider client={queryClient}>
+				<AppProvider>
+					<AuthProvider>
+						<NotificationProvider>
+							<RouterProvider router={router} />
+						</NotificationProvider>
+					</AuthProvider>
+				</AppProvider>
+			</QueryClientProvider>
+		</AppErrorBoundary>
 	);
 }
 

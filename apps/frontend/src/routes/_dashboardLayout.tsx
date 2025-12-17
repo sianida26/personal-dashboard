@@ -2,8 +2,11 @@ import { SidebarInset } from "@repo/ui";
 import { SidebarProvider } from "@repo/ui/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Navigate, Outlet } from "@tanstack/react-router";
+import { useEffect, useRef } from "react";
+import { toast } from "sonner";
 import AppHeader from "@/components/AppHeader";
 import AppSidebar from "@/components/AppSidebar";
+import ContentErrorBoundary from "@/components/ContentErrorBoundary";
 import SidebarErrorBoundary from "@/components/SidebarErrorBoundary";
 import client from "@/honoClient";
 import useAuth from "@/hooks/useAuth";
@@ -20,6 +23,9 @@ function DashboardLayout() {
 
 	// Enable keyboard shortcut for emergency logout (Ctrl/Cmd+Shift+Q)
 	useLogoutShortcut();
+
+	// Track if we've shown error toast to avoid duplicates
+	const hasShownErrorToast = useRef(false);
 
 	const { error } = useQuery({
 		queryKey: ["my-profile"],
@@ -44,6 +50,8 @@ function DashboardLayout() {
 			}
 		},
 		enabled: isAuthenticated,
+		// Preserve cached data during refetch to maintain UI
+		placeholderData: (previousData) => previousData,
 		// Don't retry on 401 errors - let the auth system handle it
 		retry: (failureCount, error) => {
 			if (error && typeof error === "object" && "message" in error) {
@@ -55,9 +63,46 @@ function DashboardLayout() {
 					return false;
 				}
 			}
-			return failureCount < 1;
+			// Only retry on network errors
+			if (failureCount >= 2) return false;
+			const isNetworkError =
+				(error instanceof Error &&
+					(error.message.includes("NetworkError") ||
+						error.message.includes("Failed to fetch"))) ||
+				String(error).includes("Network request failed");
+			return isNetworkError;
 		},
+		retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 5000),
 	});
+
+	// Show toast notification on error (only once)
+	useEffect(() => {
+		if (error && !hasShownErrorToast.current) {
+			const errorMessage = error.message || "";
+			// Don't show toast for auth errors (handled by auth system)
+			const isAuthError =
+				errorMessage.includes("401") ||
+				errorMessage.includes("Invalid access token") ||
+				errorMessage.includes("Unauthorized");
+
+			if (!isAuthError) {
+				const isNetworkError =
+					errorMessage.includes("NetworkError") ||
+					errorMessage.includes("Failed to fetch") ||
+					errorMessage.includes("Network request failed");
+
+				toast.error(
+					isNetworkError
+						? "Unable to reach server. Working with cached data."
+						: "Failed to fetch profile data. Working with cached data.",
+				);
+				hasShownErrorToast.current = true;
+			}
+		} else if (!error) {
+			// Reset flag when error is cleared
+			hasShownErrorToast.current = false;
+		}
+	}, [error]);
 
 	// const [openNavbar, { toggle }] = useDisclosure(false);
 
@@ -75,6 +120,8 @@ function DashboardLayout() {
 				return <Navigate to="/logout" replace />;
 			}
 		}
+		// For network errors, keep the current UI and let retry logic handle it
+		// Don't redirect - maintain current state
 	}
 
 	// Redirect to login with current path if not authenticated and not refreshing
@@ -104,7 +151,9 @@ function DashboardLayout() {
 			<SidebarInset className="relative flex flex-1 flex-col min-w-0 overflow-hidden">
 				<AppHeader />
 				<main className="flex-1 min-h-0 overflow-hidden">
-					<Outlet />
+					<ContentErrorBoundary>
+						<Outlet />
+					</ContentErrorBoundary>
 				</main>
 			</SidebarInset>
 		</SidebarProvider>
