@@ -3,6 +3,11 @@ import { hc } from "hono/client";
 import { trackApiRequest, trackError } from "@/lib/telemetry";
 import { authDB } from "./indexedDB/authDB";
 import { getAuthBridge } from "./utils/authBridge";
+import {
+	isCircuitOpen,
+	recordFailure,
+	recordSuccess,
+} from "./utils/circuitBreaker";
 
 const backendUrl = import.meta.env.VITE_BACKEND_BASE_URL as string | undefined;
 
@@ -11,10 +16,24 @@ if (!backendUrl) throw new Error("Backend URL not set");
 const rawFetch = globalThis.fetch.bind(globalThis);
 const backendBaseUrl = new URL(backendUrl);
 
-// Wrapper to track API request metrics
+// Wrapper to track API request metrics and implement circuit breaker
 const trackedFetch = async (input: RequestInfo | URL, init?: RequestInit) => {
 	const startTime = Date.now();
 	const request = new Request(input, init);
+	const circuitKey = `api:${request.url}`;
+
+	// Check circuit breaker - block if too many recent failures
+	if (isBackendRequest(request.url) && isCircuitOpen(circuitKey)) {
+		const error = new Error(
+			"Circuit breaker open - too many recent failures. Please try again later.",
+		);
+		trackError(error, {
+			error_type: "circuit_breaker",
+			url: request.url,
+			method: request.method,
+		});
+		throw error;
+	}
 
 	try {
 		const response = await rawFetch(request);
@@ -27,6 +46,14 @@ const trackedFetch = async (input: RequestInfo | URL, init?: RequestInit) => {
 				response.status,
 				duration,
 			);
+
+			// Record success for circuit breaker
+			if (response.ok) {
+				recordSuccess(circuitKey);
+			} else if (response.status >= 500) {
+				// Server errors count as failures
+				recordFailure(circuitKey);
+			}
 		}
 
 		return response;
@@ -39,6 +66,9 @@ const trackedFetch = async (input: RequestInfo | URL, init?: RequestInit) => {
 				method: request.method,
 				duration: String(duration),
 			});
+
+			// Record failure for circuit breaker on network errors
+			recordFailure(circuitKey);
 		}
 		throw error;
 	}

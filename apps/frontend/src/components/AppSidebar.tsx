@@ -18,8 +18,10 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { Link, useMatchRoute } from "@tanstack/react-router";
 import type { SidebarMenu as SidebarMenuType } from "backend/types";
+import { useEffect, useRef } from "react";
 import type { IconType } from "react-icons";
 import { TbBell, TbChevronUp, TbDoorExit, TbUser } from "react-icons/tb";
+import { toast } from "sonner";
 import defaultProfilePicture from "@/assets/images/default-picture.jpg";
 import logo from "@/assets/logos/logo.png";
 import client from "@/honoClient";
@@ -28,6 +30,7 @@ import { getTablerIcon } from "@/utils/getTablerIcon";
 
 export default function AppSidebar() {
 	const { user } = useAuth();
+	const hasShownErrorRef = useRef(false);
 
 	const { data, isLoading, error } = useQuery<SidebarMenuType[], Error>({
 		queryKey: ["sidebarData"],
@@ -42,11 +45,39 @@ export default function AppSidebar() {
 			console.error(`Error: ${res.status} ${res.statusText}`);
 			throw new Error("Error fetching sidebar data");
 		},
+		// Keep previous data while refetching
+		placeholderData: (previousData) => previousData,
+		// Retry on network errors but not on 4xx/5xx responses
+		retry: (failureCount, error) => {
+			if (failureCount >= 3) return false;
+			const isNetworkError =
+				error.message.includes("NetworkError") ||
+				error.message.includes("Failed to fetch") ||
+				error.message.includes("Network request failed");
+			return isNetworkError;
+		},
+		retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
 	});
+
+	// Show toast notification on error, but only once
+	useEffect(() => {
+		if (error && !hasShownErrorRef.current) {
+			hasShownErrorRef.current = true;
+			toast.error("Can't load menu", {
+				description:
+					"Having trouble connecting to the server. Using cached menu if available.",
+				duration: 5000,
+			});
+		} else if (!error && hasShownErrorRef.current) {
+			// Reset when error is resolved
+			hasShownErrorRef.current = false;
+		}
+	}, [error]);
 
 	const matchRoute = useMatchRoute();
 
-	if (isLoading) {
+	// Show loading only on initial load (no data yet)
+	if (isLoading && !data) {
 		return (
 			<Sidebar>
 				<SidebarHeader />
@@ -60,12 +91,24 @@ export default function AppSidebar() {
 		);
 	}
 
-	if (error) {
+	// If error and no cached data, show minimal sidebar with logout
+	if (error && !data) {
 		return (
 			<Sidebar>
-				<SidebarHeader />
-				<SidebarContent>
-					<p>Error loading sidebar</p>
+				<SidebarHeader className="h-16">
+					<div className="flex justify-center items-center">
+						<img src={logo} alt="Logo" className="h-14" />
+					</div>
+				</SidebarHeader>
+				<SidebarContent className="pt-4">
+					<div className="flex flex-col items-center justify-center gap-4 px-4 py-8 text-center">
+						<div className="text-sm font-semibold text-muted-foreground">
+							Menu unavailable
+						</div>
+						<p className="text-xs text-muted-foreground">
+							Server connection issue. Retrying automatically...
+						</p>
+					</div>
 				</SidebarContent>
 				<SidebarFooter />
 			</Sidebar>
