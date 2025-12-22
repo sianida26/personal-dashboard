@@ -4,6 +4,7 @@ import { useTheme as useNextTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import {
 	TbCheck,
+	TbChevronRight,
 	TbDeviceDesktop,
 	TbMoon,
 	TbPalette,
@@ -66,7 +67,7 @@ const colorSchemes: {
 	},
 ];
 
-export function ThemeSettings() {
+export function ThemeSettings({ children }: { children?: React.ReactNode }) {
 	const { themeMode, colorScheme, setThemeMode, setColorScheme, isSyncing } =
 		useTheme();
 	const { setTheme } = useNextTheme();
@@ -85,6 +86,107 @@ export function ThemeSettings() {
 		setColorScheme(scheme);
 	};
 
+	if (children) {
+		// When used as dropdown item, render as expandable sub-menu
+		return (
+			<div className="relative">
+				<button
+					type="button"
+					onClick={() => setIsOpen(!isOpen)}
+					className={cn(
+						"flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-sm",
+						"hover:bg-accent hover:text-accent-foreground",
+						"focus:bg-accent focus:text-accent-foreground",
+						"transition-colors",
+						isOpen && "bg-accent",
+					)}
+				>
+					<div className="flex items-center gap-2">
+						{children}
+					</div>
+					<div className="flex items-center gap-1">
+						{isSyncing && (
+							<div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
+						)}
+						<TbChevronRight
+							size={14}
+							className={cn(
+								"transition-transform",
+								isOpen && "rotate-90",
+							)}
+						/>
+					</div>
+				</button>
+
+				{isOpen && (
+					<div className="ml-4 mt-1 space-y-3 py-2">
+						{/* Theme Mode Section */}
+						<div>
+							<h5 className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">
+								Theme Mode
+							</h5>
+							<div className="grid grid-cols-3 gap-1">
+								{themeModes.map((mode) => (
+									<button
+										key={mode.value}
+										type="button"
+										onClick={() => handleThemeModeChange(mode.value)}
+										className={cn(
+											"flex flex-col items-center gap-1 rounded p-2 text-xs",
+											"hover:bg-accent/50 transition-colors",
+											themeMode === mode.value
+												? "bg-accent text-accent-foreground"
+												: "text-muted-foreground",
+										)}
+									>
+										{mode.icon}
+										<span>{mode.label}</span>
+									</button>
+								))}
+							</div>
+						</div>
+
+						{/* Color Scheme Section */}
+						<div>
+							<h5 className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">
+								Color Scheme
+							</h5>
+							<div className="grid grid-cols-3 gap-1">
+								{colorSchemes.map((scheme) => (
+									<button
+										key={scheme.value}
+										type="button"
+										onClick={() => handleColorSchemeChange(scheme.value)}
+										className={cn(
+											"relative flex flex-col items-center gap-1 rounded p-2 text-xs",
+											"hover:bg-accent/50 transition-colors",
+											colorScheme === scheme.value
+												? "bg-accent text-accent-foreground"
+												: "text-muted-foreground",
+										)}
+									>
+										<div
+											className="h-3 w-3 rounded-full border border-border"
+											style={{ backgroundColor: scheme.preview }}
+										/>
+										<span>{scheme.label}</span>
+										{colorScheme === scheme.value && (
+											<TbCheck
+												size={12}
+												className="absolute top-1 right-1 text-accent-foreground"
+											/>
+										)}
+									</button>
+								))}
+							</div>
+						</div>
+					</div>
+				)}
+			</div>
+		);
+	}
+
+	// Original popover implementation for standalone usage
 	return (
 		<div className="relative">
 			<button
@@ -94,12 +196,12 @@ export function ThemeSettings() {
 					"flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm",
 					"text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
 					"transition-colors",
-					isOpen && "bg-sidebar-accent text-sidebar-accent-foreground",
+					isOpen && "bg-sidebar-accent",
 				)}
 				title="Theme Settings"
 			>
-				<TbPalette size={20} />
-				<span className="flex-1 text-left">Theme</span>
+				<TbPalette size={14} />
+				<span className="flex-1 text-left text-dark">Theme</span>
 				{isSyncing && (
 					<div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
 				)}

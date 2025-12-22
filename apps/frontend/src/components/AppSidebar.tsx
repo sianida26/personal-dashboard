@@ -20,7 +20,7 @@ import { Link, useMatchRoute } from "@tanstack/react-router";
 import type { SidebarMenu as SidebarMenuType } from "backend/types";
 import { useEffect, useRef } from "react";
 import type { IconType } from "react-icons";
-import { TbBell, TbChevronUp, TbDoorExit, TbUser } from "react-icons/tb";
+import { TbBell, TbChevronUp, TbDoorExit, TbUser, TbPalette } from "react-icons/tb";
 import { toast } from "sonner";
 import defaultProfilePicture from "@/assets/images/default-picture.jpg";
 import logo from "@/assets/logos/logo.png";
@@ -198,9 +198,6 @@ export default function AppSidebar() {
 				})}
 			</SidebarContent>
 			<SidebarFooter>
-				<div className="border-t border-sidebar-border pt-2">
-					<ThemeSettings />
-				</div>
 				<SidebarMenu>
 					<SidebarMenuItem>
 						<DropdownMenu>
@@ -265,6 +262,10 @@ export default function AppSidebar() {
 										<span>Notifications</span>
 									</Link>
 								</DropdownMenuItem>
+								<ThemeSettings>
+									<TbPalette className="mr-2 h-4 w-4" />
+									<span>Theme</span>
+								</ThemeSettings>
 								<DropdownMenuItem asChild>
 									<Link
 										to="/logout"
