@@ -20,7 +20,13 @@ import { Link, useMatchRoute } from "@tanstack/react-router";
 import type { SidebarMenu as SidebarMenuType } from "backend/types";
 import { useEffect, useRef } from "react";
 import type { IconType } from "react-icons";
-import { TbBell, TbChevronUp, TbDoorExit, TbUser, TbPalette } from "react-icons/tb";
+import {
+	TbBell,
+	TbChevronUp,
+	TbDoorExit,
+	TbPalette,
+	TbUser,
+} from "react-icons/tb";
 import { toast } from "sonner";
 import defaultProfilePicture from "@/assets/images/default-picture.jpg";
 import logo from "@/assets/logos/logo.png";
@@ -128,7 +134,7 @@ export default function AppSidebar() {
 					if (menu.type === "group") {
 						return (
 							<SidebarGroup key={menu.label}>
-								<SidebarGroupLabel>
+								<SidebarGroupLabel className="text-primary">
 									{menu.label}
 								</SidebarGroupLabel>
 								<SidebarGroupContent>
@@ -155,7 +161,7 @@ export default function AppSidebar() {
 													>
 														<Link to={child.link}>
 															{Icon && (
-																<Icon className="mr-2" />
+																<Icon className="mr-2 text-primary" />
 															)}
 															<span>
 																{child.label}
@@ -188,7 +194,9 @@ export default function AppSidebar() {
 									size="lg"
 								>
 									<Link to={menu.link}>
-										{Icon && <Icon className="mr-2" />}
+										{Icon && (
+											<Icon className="mr-2 text-primary" />
+										)}
 										<span>{menu.label}</span>
 									</Link>
 								</SidebarMenuButton>
@@ -202,13 +210,19 @@ export default function AppSidebar() {
 					<SidebarMenuItem>
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild className="">
-								<SidebarMenuButton className="h-16 rounded-sm border pl-2 flex w-full items-center justify-between">
+								<SidebarMenuButton
+									className="h-16 rounded-lg border pl-2 flex w-full items-center justify-between transition-all duration-200 hover:shadow-[0_0_8px_0_hsl(var(--primary)_/_0.15)] focus:border-none focus:ring-none focus:ring-primary/20"
+									style={{
+										borderColor:
+											"hsl(var(--primary) / 0.2)",
+									}}
+								>
 									{/* Left Side */}
 									<div className="flex overflow-clip items-center gap-2 w-full">
 										<img
 											src={defaultProfilePicture}
 											alt="User avatar"
-											className="h-12 rounded-xl"
+											className="h-12 rounded-xl ring-2 ring-primary/20"
 										/>
 
 										<div className="flex flex-col w-full text-sm overflow-hidden">
@@ -231,7 +245,10 @@ export default function AppSidebar() {
 									</div>
 								</SidebarMenuButton>
 							</DropdownMenuTrigger>
-							<DropdownMenuContent side="top" className="w-56">
+							<DropdownMenuContent
+								side="top"
+								className="w-56 dropdown-themed"
+							>
 								<div className="flex items-center gap-2 p-2">
 									<img
 										src={defaultProfilePicture}

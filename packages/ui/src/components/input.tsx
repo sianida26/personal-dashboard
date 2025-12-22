@@ -168,10 +168,10 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 						className={cn(
 							`flex h-9 w-full rounded-md border bg-transparent ${
 								leftSection ? "pl-10 pr-3" : "px-3"
-							} py-1 text-base shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm ${
+							} py-1 text-base shadow-sm transition-all duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 md:text-sm hover:border-primary/50 ${
 								error
-									? "border-destructive focus-visible:ring-destructive"
-									: "border-input focus-visible:ring-ring"
+									? "border-destructive focus-visible:ring-2 focus-visible:ring-destructive/30 focus-visible:shadow-[0_0_8px_0_hsl(var(--destructive)_/_0.2)]"
+									: "border-input focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:border-primary focus-visible:shadow-[0_0_8px_0_hsl(var(--primary)_/_0.15)]"
 							}`,
 							classNames?.input,
 						)}

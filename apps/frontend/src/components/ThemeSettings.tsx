@@ -1,5 +1,5 @@
-import type { ColorScheme, ThemeMode } from "@repo/validation";
 import { cn } from "@repo/ui/utils";
+import type { ColorScheme, ThemeMode } from "@repo/validation";
 import { useTheme as useNextTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import {
@@ -137,9 +137,7 @@ export function ThemeSettings({ children }: { children?: React.ReactNode }) {
 						isOpen && "bg-accent",
 					)}
 				>
-					<div className="flex items-center gap-2">
-						{children}
-					</div>
+					<div className="flex items-center gap-2">{children}</div>
 					<div className="flex items-center gap-1">
 						{isSyncing && (
 							<div className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
@@ -166,7 +164,9 @@ export function ThemeSettings({ children }: { children?: React.ReactNode }) {
 									<button
 										key={mode.value}
 										type="button"
-										onClick={() => handleThemeModeChange(mode.value)}
+										onClick={() =>
+											handleThemeModeChange(mode.value)
+										}
 										className={cn(
 											"flex flex-col items-center gap-1 rounded p-2 text-xs",
 											"hover:bg-accent/50 transition-colors",
@@ -192,7 +192,11 @@ export function ThemeSettings({ children }: { children?: React.ReactNode }) {
 									<button
 										key={scheme.value}
 										type="button"
-										onClick={() => handleColorSchemeChange(scheme.value)}
+										onClick={() =>
+											handleColorSchemeChange(
+												scheme.value,
+											)
+										}
 										className={cn(
 											"relative flex flex-col items-center gap-1 rounded p-2 text-xs",
 											"hover:bg-accent/50 transition-colors",
@@ -203,7 +207,9 @@ export function ThemeSettings({ children }: { children?: React.ReactNode }) {
 									>
 										<div
 											className="h-3 w-3 rounded-full border border-border"
-											style={{ backgroundColor: scheme.preview }}
+											style={{
+												backgroundColor: scheme.preview,
+											}}
 										/>
 										<span>{scheme.label}</span>
 										{colorScheme === scheme.value && (
@@ -246,6 +252,7 @@ export function ThemeSettings({ children }: { children?: React.ReactNode }) {
 			{isOpen && (
 				<>
 					{/* Backdrop */}
+					{/** biome-ignore lint/a11y/noStaticElementInteractions: <> */}
 					<div
 						className="fixed inset-0 z-40"
 						onClick={() => setIsOpen(false)}
@@ -267,7 +274,11 @@ export function ThemeSettings({ children }: { children?: React.ReactNode }) {
 										<button
 											key={mode.value}
 											type="button"
-											onClick={() => handleThemeModeChange(mode.value)}
+											onClick={() =>
+												handleThemeModeChange(
+													mode.value,
+												)
+											}
 											className={cn(
 												"flex flex-col items-center gap-1.5 rounded-md border-2 p-2.5",
 												"transition-colors hover:bg-accent",
@@ -276,7 +287,9 @@ export function ThemeSettings({ children }: { children?: React.ReactNode }) {
 													: "border-border",
 											)}
 										>
-											<div className="text-foreground">{mode.icon}</div>
+											<div className="text-foreground">
+												{mode.icon}
+											</div>
 											<span className="text-xs font-medium text-foreground">
 												{mode.label}
 											</span>
@@ -301,7 +314,11 @@ export function ThemeSettings({ children }: { children?: React.ReactNode }) {
 										<button
 											key={scheme.value}
 											type="button"
-											onClick={() => handleColorSchemeChange(scheme.value)}
+											onClick={() =>
+												handleColorSchemeChange(
+													scheme.value,
+												)
+											}
 											className={cn(
 												"relative flex flex-col items-center gap-1.5 rounded-md border-2 p-2.5",
 												"transition-colors hover:bg-accent",
@@ -311,8 +328,14 @@ export function ThemeSettings({ children }: { children?: React.ReactNode }) {
 											)}
 										>
 											<div
-												className={cn("h-5 w-5 rounded-full", scheme.bgClass)}
-												style={{ backgroundColor: scheme.preview }}
+												className={cn(
+													"h-5 w-5 rounded-full",
+													scheme.bgClass,
+												)}
+												style={{
+													backgroundColor:
+														scheme.preview,
+												}}
 											/>
 											<span className="text-xs font-medium text-foreground">
 												{scheme.label}
