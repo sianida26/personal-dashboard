@@ -22,6 +22,7 @@ export const themeModeSchema = z.enum(["light", "dark", "system"]);
  * - cyan: Cyan accent theme
  * - indigo: Indigo accent theme
  * - rose: Rose accent theme
+ * - navy: Navy dark teal theme
  */
 export const colorSchemeSchema = z.enum([
 	"default",
@@ -36,6 +37,7 @@ export const colorSchemeSchema = z.enum([
 	"cyan",
 	"indigo",
 	"rose",
+	"navy",
 ]);
 
 /**
@@ -57,7 +59,5 @@ export const themePreferenceSchema = z.object({
 // Type exports
 export type ThemeMode = z.infer<typeof themeModeSchema>;
 export type ColorScheme = z.infer<typeof colorSchemeSchema>;
-export type UpdateThemePreference = z.infer<
-	typeof updateThemePreferenceSchema
->;
+export type UpdateThemePreference = z.infer<typeof updateThemePreferenceSchema>;
 export type ThemePreference = z.infer<typeof themePreferenceSchema>;

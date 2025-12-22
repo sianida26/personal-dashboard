@@ -80,8 +80,8 @@ const colorSchemes: {
 	{
 		value: "yellow",
 		label: "Yellow",
-		preview: "hsl(45.4 93.4% 47.5%)",
-		bgClass: "bg-yellow-500",
+		preview: "hsl(45.4 93.4% 36%)",
+		bgClass: "bg-yellow-600",
 	},
 	{
 		value: "cyan",
@@ -100,6 +100,12 @@ const colorSchemes: {
 		label: "Rose",
 		preview: "hsl(346.8 77.2% 49.8%)",
 		bgClass: "bg-rose-600",
+	},
+	{
+		value: "navy",
+		label: "Navy",
+		preview: "hsl(188 100% 18%)",
+		bgClass: "bg-[hsl(188,100%,18%)]",
 	},
 ];
 
@@ -184,9 +190,20 @@ export function ThemeSettings({ children }: { children?: React.ReactNode }) {
 
 						{/* Color Scheme Section */}
 						<div>
-							<h5 className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">
-								Color Scheme
-							</h5>
+							<div className="flex items-center justify-between mb-2">
+								<h5 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+									Color Scheme
+								</h5>
+								<button
+									type="button"
+									onClick={() =>
+										handleColorSchemeChange("default")
+									}
+									className="text-xs text-primary hover:underline"
+								>
+									Reset
+								</button>
+							</div>
 							<div className="grid grid-cols-4 gap-1">
 								{colorSchemes.map((scheme) => (
 									<button
