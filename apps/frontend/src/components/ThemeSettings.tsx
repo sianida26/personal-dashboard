@@ -125,7 +125,7 @@ export function ThemeSettings({ children }: { children?: React.ReactNode }) {
 	if (children) {
 		// When used as dropdown item, render as expandable sub-menu
 		return (
-			<div className="relative">
+			<div className="relative me-2">
 				<button
 					type="button"
 					onClick={() => setIsOpen(!isOpen)}

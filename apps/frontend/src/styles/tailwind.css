@@ -885,6 +885,15 @@
 	.dropdown-item-danger:hover {
 		@apply bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300;
 	}
+
+	/* Sidebar Menu Button Hover Override */
+	[data-sidebar="menu-button"]:hover {
+		background-color: hsl(var(--primary) / 0.08) !important;
+	}
+
+	[data-sidebar="menu-button"]:focus-visible {
+		background-color: hsl(var(--primary) / 0.08) !important;
+	}
 }
 
 /* ==========================================================================

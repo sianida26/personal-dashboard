@@ -166,7 +166,6 @@ export default function AppSidebar() {
 											return (
 												<SidebarMenuItem
 													key={child.link}
-													className="bg-red-500"
 												>
 													<SidebarMenuButton
 														asChild
@@ -175,7 +174,7 @@ export default function AppSidebar() {
 																to: child.link,
 															}),
 														)}
-														className="data-[active=true]:bg-primary/15 data-[active=true]:text-primary rounded-full w-11/12"
+														className="data-[active=true]:bg-primary/15 data-[active=true]:text-primary rounded-full w-11/12 hover:bg-primary"
 													>
 														<Link to={child.link}>
 															{Icon && (
@@ -230,8 +229,7 @@ export default function AppSidebar() {
 											to: menu.link,
 										}),
 									)}
-									size="lg"
-									className="data-[active=true]:bg-primary/20 data-[active=true]:text-primary rounded-full w-11/12 hover:bg-red-500"
+									className="data-[active=true]:bg-primary/20 data-[active=true]:text-primary rounded-full w-11/12 hover:bg-primary"
 								>
 									<Link to={menu.link}>
 										{Icon && (
@@ -264,7 +262,7 @@ export default function AppSidebar() {
 										<img
 											src={defaultProfilePicture}
 											alt="User avatar"
-											className="h-12 rounded-xl ring-2 ring-primary/20"
+											className="h-12 rounded-full ring-2 ring-primary/20"
 										/>
 
 										<div className="flex flex-col w-full text-sm overflow-hidden">
@@ -361,7 +359,7 @@ export default function AppSidebar() {
 									</Link>
 								</DropdownMenuItem>
 								<ThemeSettings>
-									<TbPalette className="h-4 w-4" />
+									<TbPalette className="h-4 w-4 ms-2" />
 									<span>Theme</span>
 								</ThemeSettings>
 								<DropdownMenuItem asChild>
