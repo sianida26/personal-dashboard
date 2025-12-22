@@ -31,7 +31,6 @@ export default function LoginPage() {
 	const navigate = useNavigate();
 
 	const authSettings = Route.useLoaderData();
-	const isUsingFallbackSettings = authSettings.isFallback;
 
 	const { isAuthenticated, saveAuthData, hasNoAccess } = useAuth();
 

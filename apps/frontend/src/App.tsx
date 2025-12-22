@@ -4,6 +4,7 @@ import AppErrorBoundary from "./components/AppErrorBoundary";
 import { AppProvider } from "./contexts/App/AppContext";
 import { AuthProvider } from "./contexts/Auth/AuthProvider";
 import { NotificationProvider } from "./contexts/Notification/NotificationProvider";
+import { ThemeProvider } from "./contexts/Theme/ThemeProvider";
 import { routeTree } from "./routeTree.gen";
 
 const queryClient = new QueryClient({
@@ -18,7 +19,7 @@ const queryClient = new QueryClient({
 			refetchOnMount: false,
 			// CRITICAL: Keep previous data during refetch to maintain UI
 			// This prevents error states from replacing working UI
-			placeholderData: (previousData) => previousData,
+			placeholderData: (previousData: unknown) => previousData,
 			// Smart retry only on network errors
 			retry: (failureCount, error) => {
 				// Max 2 retries
@@ -67,9 +68,11 @@ function App() {
 			<QueryClientProvider client={queryClient}>
 				<AppProvider>
 					<AuthProvider>
-						<NotificationProvider>
-							<RouterProvider router={router} />
-						</NotificationProvider>
+						<ThemeProvider>
+							<NotificationProvider>
+								<RouterProvider router={router} />
+							</NotificationProvider>
+						</ThemeProvider>
 					</AuthProvider>
 				</AppProvider>
 			</QueryClientProvider>

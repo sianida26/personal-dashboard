@@ -24,6 +24,7 @@ import { TbBell, TbChevronUp, TbDoorExit, TbUser } from "react-icons/tb";
 import { toast } from "sonner";
 import defaultProfilePicture from "@/assets/images/default-picture.jpg";
 import logo from "@/assets/logos/logo.png";
+import { ThemeSettings } from "@/components/ThemeSettings";
 import client from "@/honoClient";
 import useAuth from "@/hooks/useAuth";
 import { getTablerIcon } from "@/utils/getTablerIcon";
@@ -197,6 +198,9 @@ export default function AppSidebar() {
 				})}
 			</SidebarContent>
 			<SidebarFooter>
+				<div className="border-t border-sidebar-border pt-2">
+					<ThemeSettings />
+				</div>
 				<SidebarMenu>
 					<SidebarMenuItem>
 						<DropdownMenu>

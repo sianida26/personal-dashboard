@@ -19,6 +19,7 @@ import appLogger from "../../utils/logger";
 import { sendToRoles } from "../../utils/notifications/notification-helpers";
 import { hashPassword } from "../../utils/passwordUtils";
 import requestValidator from "../../utils/requestValidator";
+import themeRoute from "./theme";
 
 export interface DateRange {
 	from?: Date;
@@ -27,6 +28,7 @@ export interface DateRange {
 
 const usersRoute = new Hono<HonoEnv>()
 	.use(authInfo)
+	.route("/", themeRoute)
 	/**
 	 * Get All Users With Metadata
 	 *
