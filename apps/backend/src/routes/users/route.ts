@@ -536,6 +536,12 @@ const usersRoute = new Hono<HonoEnv>()
 				});
 			}
 
+			if (user[0].username === "superadmin") {
+				throw new HTTPException(403, {
+					message: "Cannot delete superadmin user",
+				});
+			}
+
 			if (skipTrash) {
 				await db.delete(users).where(eq(users.id, userId));
 			} else {
