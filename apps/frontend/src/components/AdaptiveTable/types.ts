@@ -124,6 +124,11 @@ export type AdaptiveTableProps<T> = {
 	search?: boolean;
 	/** Callback when search value changes */
 	onSearchChange?: (searchValue: string) => void;
+	/**
+	 * TTL for persisted search query in seconds
+	 * @default 1800 (30 minutes)
+	 */
+	searchQueryPersistedTtl?: number;
 	/** Title displayed in the table header */
 	title?: string;
 	/** Custom action buttons displayed in the header */
@@ -226,4 +231,6 @@ export interface TableState {
 	perPage?: number;
 	sorting?: SortingState;
 	filters?: FilterState;
+	searchQuery?: string;
+	searchQueryTimestamp?: number;
 }

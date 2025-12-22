@@ -14,6 +14,8 @@ interface UseTableStateOptions {
 	enablePagination?: boolean;
 	enableSortable?: boolean;
 	enableFilterable?: boolean;
+	enableSearch?: boolean;
+	searchQueryTtl?: number;
 }
 
 interface UseTableStateReturn {
@@ -39,6 +41,8 @@ interface UseTableStateReturn {
 	setSorting: React.Dispatch<React.SetStateAction<SortingState>>;
 	filters: FilterState;
 	setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
+	searchQuery: string;
+	setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export function useTableState({
@@ -51,6 +55,8 @@ export function useTableState({
 	enablePagination,
 	enableSortable,
 	enableFilterable,
+	enableSearch,
+	searchQueryTtl = 1800,
 }: UseTableStateOptions): UseTableStateReturn {
 	// Initialize column order from saved state or default order
 	const [columnOrder, setColumnOrder] = useState<string[]>(() => {
@@ -211,6 +217,31 @@ export function useTableState({
 		return [];
 	});
 
+	// Initialize search query state from saved state with TTL check
+	const [searchQuery, setSearchQuery] = useState<string>(() => {
+		if (saveStateKey && enableSearch) {
+			try {
+				const savedState = loadTableState(saveStateKey);
+				if (
+					savedState?.searchQuery &&
+					savedState?.searchQueryTimestamp
+				) {
+					// Check if TTL has expired (convert seconds to milliseconds)
+					const now = Date.now();
+					const elapsed =
+						(now - savedState.searchQueryTimestamp) / 1000;
+					if (elapsed < searchQueryTtl) {
+						return savedState.searchQuery;
+					}
+					// TTL expired, clear the search query
+				}
+			} catch (error) {
+				console.error("Error loading search query state:", error);
+			}
+		}
+		return "";
+	});
+
 	// Save state whenever any state changes
 	useEffect(() => {
 		if (saveStateKey) {
@@ -237,6 +268,10 @@ export function useTableState({
 			if (enableFilterable) {
 				state.filters = filters;
 			}
+			if (enableSearch) {
+				state.searchQuery = searchQuery;
+				state.searchQueryTimestamp = Date.now();
+			}
 			saveTableState(saveStateKey, state);
 		}
 	}, [
@@ -249,6 +284,7 @@ export function useTableState({
 		perPage,
 		sorting,
 		filters,
+		searchQuery,
 		enableColumnOrderable,
 		enableColumnResizable,
 		enableColumnVisibilityToggle,
@@ -256,6 +292,7 @@ export function useTableState({
 		enablePagination,
 		enableSortable,
 		enableFilterable,
+		enableSearch,
 	]);
 
 	return {
@@ -275,5 +312,7 @@ export function useTableState({
 		setSorting,
 		filters,
 		setFilters,
+		searchQuery,
+		setSearchQuery,
 	};
 }

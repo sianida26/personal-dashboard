@@ -18,7 +18,7 @@ const queryClient = new QueryClient({
 			refetchOnMount: false,
 			// CRITICAL: Keep previous data during refetch to maintain UI
 			// This prevents error states from replacing working UI
-			placeholderData: (previousData) => previousData,
+			placeholderData: (previousData: unknown) => previousData,
 			// Smart retry only on network errors
 			retry: (failureCount, error) => {
 				// Max 2 retries

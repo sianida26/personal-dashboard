@@ -94,21 +94,9 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		{},
 	);
 
-	// State for search with debounce
-	const [searchValue, setSearchValue] = useState<string>("");
-
 	// Debounced search value using useEffect for 300ms delay
 	const [debouncedSearchValue, setDebouncedSearchValue] =
 		useState<string>("");
-
-	useEffect(() => {
-		const timer = setTimeout(() => {
-			setDebouncedSearchValue(searchValue);
-			props.onSearchChange?.(searchValue);
-		}, 300);
-
-		return () => clearTimeout(timer);
-	}, [searchValue, props.onSearchChange]);
 
 	// Ensure all columns have IDs
 	const columnsWithIds = useMemo(
@@ -205,6 +193,8 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		setSorting,
 		filters,
 		setFilters,
+		searchQuery: searchValue,
+		setSearchQuery: setSearchValue,
 	} = useTableState({
 		saveStateKey: props.saveState,
 		defaultColumnOrder: columnsWithDetail.map((c) => c.id as string),
@@ -215,7 +205,19 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		enablePagination: pagination,
 		enableSortable: sortable,
 		enableFilterable: filterable,
+		enableSearch: search,
+		searchQueryTtl: props.searchQueryPersistedTtl,
 	});
+
+	// Debounce search value changes
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			setDebouncedSearchValue(searchValue);
+			props.onSearchChange?.(searchValue);
+		}, 300);
+
+		return () => clearTimeout(timer);
+	}, [searchValue, props.onSearchChange]);
 
 	// Build filterable columns from column definitions
 	// By default, all accessor columns are filterable unless explicitly set to false
