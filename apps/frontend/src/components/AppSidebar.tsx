@@ -1,4 +1,5 @@
 import {
+	Badge,
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
@@ -123,19 +124,34 @@ export default function AppSidebar() {
 	}
 
 	return (
-		<Sidebar>
-			<SidebarHeader className="h-16">
+		<Sidebar className="bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700">
+			<SidebarHeader className="h-16 bg-white dark:bg-gray-900">
 				<div className="flex justify-center items-center">
 					<img src={logo} alt="Logo" className="h-14" />
 				</div>
 			</SidebarHeader>
-			<SidebarContent className="pt-4">
+			<SidebarContent className="pt-4 bg-white dark:bg-gray-900">
 				{data?.map((menu) => {
 					if (menu.type === "group") {
 						return (
 							<SidebarGroup key={menu.label}>
-								<SidebarGroupLabel className="text-primary">
-									{menu.label}
+								<SidebarGroupLabel className="text-primary flex justify-between">
+									<span>{menu.label}</span>
+									{menu.badge && (
+										<Badge
+											className={`text-[10px] py-0 px-2 ${
+												menu.badge.toLowerCase() ===
+												"dev"
+													? "bg-red-400"
+													: menu.badge.toLowerCase() ===
+															"beta"
+														? "bg-amber-500"
+														: "bg-primary/80"
+											}`}
+										>
+											{menu.badge}
+										</Badge>
+									)}
 								</SidebarGroupLabel>
 								<SidebarGroupContent>
 									<SidebarMenu>
@@ -150,6 +166,7 @@ export default function AppSidebar() {
 											return (
 												<SidebarMenuItem
 													key={child.link}
+													className="bg-red-500"
 												>
 													<SidebarMenuButton
 														asChild
@@ -158,14 +175,36 @@ export default function AppSidebar() {
 																to: child.link,
 															}),
 														)}
+														className="data-[active=true]:bg-primary/15 data-[active=true]:text-primary rounded-full w-11/12"
 													>
 														<Link to={child.link}>
 															{Icon && (
-																<Icon className="mr-2 text-primary" />
+																<Icon className="mr-2 text-primary flex-shrink-0" />
 															)}
-															<span>
-																{child.label}
-															</span>
+															<div className="flex-1 min-w-0 flex items-center justify-between">
+																<span className="truncate text-primary/80">
+																	{
+																		child.label
+																	}{" "}
+																</span>
+																{child.badge && (
+																	<Badge
+																		className={`text-[10px] py-0 px-2 ml-2 ${
+																			child.badge.toLowerCase() ===
+																			"dev"
+																				? "bg-red-400"
+																				: child.badge.toLowerCase() ===
+																						"beta"
+																					? "bg-amber-500"
+																					: "bg-primary/80"
+																		}`}
+																	>
+																		{
+																			child.badge
+																		}
+																	</Badge>
+																)}
+															</div>
 														</Link>
 													</SidebarMenuButton>
 												</SidebarMenuItem>
@@ -192,12 +231,15 @@ export default function AppSidebar() {
 										}),
 									)}
 									size="lg"
+									className="data-[active=true]:bg-primary/20 data-[active=true]:text-primary rounded-full w-11/12 hover:bg-red-500"
 								>
 									<Link to={menu.link}>
 										{Icon && (
 											<Icon className="mr-2 text-primary" />
 										)}
-										<span>{menu.label}</span>
+										<span className="text-primary/80">
+											{menu.label}
+										</span>
 									</Link>
 								</SidebarMenuButton>
 							</SidebarMenuItem>
@@ -247,49 +289,88 @@ export default function AppSidebar() {
 							</DropdownMenuTrigger>
 							<DropdownMenuContent
 								side="top"
-								className="w-56 dropdown-themed"
+								align="start"
+								sideOffset={8}
+								className="sidebar-dropdown-content w-64 md:w-58"
 							>
-								<div className="flex items-center gap-2 p-2">
-									<img
-										src={defaultProfilePicture}
-										alt="User avatar"
-										className="h-10 w-10 rounded-full"
-									/>
-									<div className="flex flex-col">
-										<span className="text-sm font-semibold">
-											{user?.name}
-										</span>
-										{(user?.email || user?.username) && (
-											<span className="text-xs text-muted-foreground">
-												{user.email ?? user.username}
-											</span>
-										)}
+								<div className="px-4 py-3 bg-gradient-to-r from-primary/10 to-primary/5 dark:from-primary/20 dark:to-primary/10 border-b border-primary/20">
+									<div className="flex items-center space-x-3">
+										<div className="relative">
+											<img
+												src={
+													user?.profilePictureUrl ||
+													defaultProfilePicture
+												}
+												alt="Profile"
+												className="w-10 h-10 rounded-full object-cover border-2 border-primary/30"
+											/>
+											<div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-primary border-2 border-white dark:border-gray-800 rounded-full" />
+										</div>
+										<div className="flex-1 min-w-0">
+											<p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
+												{user?.name || "User"}
+											</p>
+											<p className="text-xs text-primary font-medium truncate">
+												{user?.email ||
+													"user@example.com"}
+											</p>
+											<p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+												@{user?.username || "username"}
+											</p>
+										</div>
 									</div>
+
+									{user?.roles && user.roles.length > 0 && (
+										<div className="mt-2 flex flex-wrap gap-1">
+											{user.roles
+												.slice(0, 2)
+												.map((role) => (
+													<span
+														key={role}
+														className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary"
+													>
+														{role}
+													</span>
+												))}
+											{user.roles.length > 2 && (
+												<span className="text-xs text-gray-500 dark:text-gray-400">
+													+{user.roles.length - 2}{" "}
+													more
+												</span>
+											)}
+										</div>
+									)}
 								</div>
-								<DropdownMenuItem>
-									<TbUser className="mr-2 h-4 w-4" />
-									<span>Account</span>
+
+								<DropdownMenuItem asChild>
+									<Link
+										to="/dashboard/personal-data"
+										className="dropdown-item"
+									>
+										<TbUser className="h-4 w-4" />
+										<span>Personal</span>
+									</Link>
 								</DropdownMenuItem>
 								<DropdownMenuItem asChild>
 									<Link
 										to="/personal/notifications"
-										className="cursor-pointer"
+										className="dropdown-item"
 									>
-										<TbBell className="mr-2 h-4 w-4" />
+										<TbBell className="h-4 w-4" />
 										<span>Notifications</span>
 									</Link>
 								</DropdownMenuItem>
 								<ThemeSettings>
-									<TbPalette className="mr-2 h-4 w-4" />
+									<TbPalette className="h-4 w-4" />
 									<span>Theme</span>
 								</ThemeSettings>
 								<DropdownMenuItem asChild>
 									<Link
 										to="/logout"
-										className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950"
+										className="dropdown-item dropdown-item-danger"
 									>
-										<TbDoorExit className="mr-2 h-4 w-4" />
-										<span>Sign Out</span>
+										<TbDoorExit className="h-4 w-4" />
+										<span>Logout</span>
 									</Link>
 								</DropdownMenuItem>
 							</DropdownMenuContent>
