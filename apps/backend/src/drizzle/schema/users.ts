@@ -23,6 +23,8 @@ export const users = pgTable("users", {
 	phoneNumber: varchar("phone_number", { length: 20 }),
 	password: text("password"),
 	isEnabled: boolean("is_enable").default(true),
+	themeMode: varchar("theme_mode", { length: 20 }).default("light"),
+	colorScheme: varchar("color_scheme", { length: 20 }).default("default"),
 	createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
 	updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
 	deletedAt: timestamp("deleted_at", { mode: "date" }),
