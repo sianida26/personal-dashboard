@@ -2,14 +2,15 @@ import type { ColorScheme, ThemeMode } from "@repo/validation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import {
 	createContext,
+	type ReactNode,
 	useCallback,
 	useContext,
 	useEffect,
 	useRef,
 	useState,
-	type ReactNode,
 } from "react";
 import { toast } from "sonner";
+import { DEFAULT_THEME_CONFIG } from "@/config/theme.config";
 import client from "@/honoClient";
 import useAuth from "@/hooks/useAuth";
 import { themeDB } from "@/indexedDB/themeDB";
@@ -32,8 +33,12 @@ interface ThemeProviderProps {
 export function ThemeProvider({ children }: ThemeProviderProps) {
 	const { user } = useAuth();
 	const userId = user?.id;
-	const [themeMode, setThemeModeState] = useState<ThemeMode>("light");
-	const [colorScheme, setColorSchemeState] = useState<ColorScheme>("default");
+	const [themeMode, setThemeModeState] = useState<ThemeMode>(
+		DEFAULT_THEME_CONFIG.themeMode,
+	);
+	const [colorScheme, setColorSchemeState] = useState<ColorScheme>(
+		DEFAULT_THEME_CONFIG.colorScheme,
+	);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isSyncing, setIsSyncing] = useState(false);
 	const broadcastChannelRef = useRef<BroadcastChannel | null>(null);

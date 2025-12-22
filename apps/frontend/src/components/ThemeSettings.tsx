@@ -10,6 +10,7 @@ import {
 	TbPalette,
 	TbSun,
 } from "react-icons/tb";
+import { DEFAULT_THEME_CONFIG } from "@/config/theme.config";
 import { useTheme } from "@/contexts/Theme/ThemeProvider";
 
 const themeModes: { value: ThemeMode; label: string; icon: React.ReactNode }[] =
@@ -128,6 +129,11 @@ export function ThemeSettings({ children }: { children?: React.ReactNode }) {
 		setColorScheme(scheme);
 	};
 
+	const handleResetToDefault = () => {
+		setThemeMode(DEFAULT_THEME_CONFIG.themeMode);
+		setColorScheme(DEFAULT_THEME_CONFIG.colorScheme);
+	};
+
 	if (children) {
 		// When used as dropdown item, render as expandable sub-menu
 		return (
@@ -196,9 +202,7 @@ export function ThemeSettings({ children }: { children?: React.ReactNode }) {
 								</h5>
 								<button
 									type="button"
-									onClick={() =>
-										handleColorSchemeChange("default")
-									}
+									onClick={handleResetToDefault}
 									className="text-xs text-primary hover:underline"
 								>
 									Reset
