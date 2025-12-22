@@ -3,26 +3,92 @@
 ## Contents
 
 1. [Overview](#overview)
-2. [Data Model](#data-model)
-3. [API Reference](#api-reference)
-4. [Permissions](#permissions)
-5. [Validation](#validation)
+2. [Flows](#flows)
+3. [Database Schema](#database-schema)
+4. [Important Notes](#important-notes)
+5. [Revision History](#revision-history)
 
 ---
 
 ## Overview
 
-CRUD operations for users, roles, and permissions with soft-delete support.
+Comprehensive user, role, and permission management system with RBAC (Role-Based Access Control) supporting both direct permission assignment and role-based inheritance.
 
 **Key Features:**
-- User CRUD with soft-delete (trash/restore)
-- Role-based access control (RBAC)
-- Direct user-permission assignment
-- Paginated listings with search, filter, and sort
+- User CRUD with soft-delete (trash/restore/permanent delete)
+- Hierarchical permission system (user-direct + role-inherited)
+- Protected system roles (Super Admin cannot be deleted)
+- Advanced data table with server-side pagination, search, filtering, and sorting
+- Real-time notifications on user creation
+
+**Authorization Model:**
+```
+User Effective Permissions = Direct Permissions ∪ Role Permissions
+```
 
 ---
 
-## Data Model
+## Flows
+
+### User Creation Flow
+
+```mermaid
+sequenceDiagram
+    participant Admin as Admin User
+    participant FE as Frontend
+    participant BE as Backend
+    participant DB as Database
+    participant NS as Notification Service
+
+    Admin->>FE: Submit create user form
+    FE->>BE: POST /users {name, username, password, roles}
+    BE->>BE: Validate form (unique username)
+    BE->>BE: Hash password (bcrypt)
+    BE->>DB: Insert user record
+    BE->>DB: Insert roles_to_users (if roles provided)
+    BE->>NS: Send notification to Super Admins
+    NS-->>Admin: Notify user created
+    BE-->>FE: 200 OK {message}
+    FE->>FE: Invalidate users query
+    FE-->>Admin: Show success toast
+```
+
+### Soft Delete & Restore Flow
+
+```mermaid
+sequenceDiagram
+    participant Admin as Admin
+    participant BE as Backend
+    participant DB as Database
+
+    Admin->>BE: DELETE /users/:id (skipTrash=false)
+    BE->>DB: UPDATE users SET deleted_at = NOW()
+    BE-->>Admin: 200 OK
+
+    Note over DB: User still in database<br/>Refresh tokens CASCADE deleted
+
+    Admin->>BE: PATCH /users/restore/:id
+    BE->>DB: Check if user.deleted_at IS NOT NULL
+    BE->>DB: UPDATE users SET deleted_at = NULL
+    BE-->>Admin: 200 OK (User restored)
+```
+
+### Permission Resolution Flow
+
+```mermaid
+flowchart TD
+    A[User Requests Protected Resource] --> B{Has Direct Permission?}
+    B -->|Yes| G[Access Granted]
+    B -->|No| C[Fetch User Roles]
+    C --> D[Collect All Role Permissions]
+    D --> E{Any Role Has Permission?}
+    E -->|Yes| G
+    E -->|No| F[Access Denied - 403]
+```
+
+---
+
+## Database Schema
 
 ```mermaid
 erDiagram
@@ -79,225 +145,257 @@ erDiagram
     }
 ```
 
-**Authorization Resolution:**
-User permissions = Direct permissions + All permissions from assigned roles
+## Database Schema
 
----
+```mermaid
+erDiagram
+    USERS ||--o{ ROLES_TO_USERS : has
+    USERS ||--o{ PERMISSIONS_TO_USERS : has
+    USERS ||--o{ REFRESH_TOKENS : has
+    ROLES ||--o{ ROLES_TO_USERS : assigned
+    ROLES ||--o{ PERMISSIONS_TO_ROLES : has
+    PERMISSIONS ||--o{ PERMISSIONS_TO_ROLES : assigned
+    PERMISSIONS ||--o{ PERMISSIONS_TO_USERS : assigned
 
-## API Reference
-
-### Users `/users`
-
-| Method | Endpoint | Permission | Description |
-|--------|----------|------------|-------------|
-| `GET` | `/users` | `users.readAll` | List users (paginated) |
-| `GET` | `/users/:id` | `users.readAll` | Get user by ID |
-| `POST` | `/users` | `users.create` | Create user |
-| `PATCH` | `/users/:id` | `users.update` | Update user |
-| `DELETE` | `/users/:id` | `users.delete` | Soft-delete user |
-| `PATCH` | `/users/restore/:id` | `users.restore` | Restore deleted user |
-
-#### Query Parameters (GET `/users`)
-
-| Param | Type | Description |
-|-------|------|-------------|
-| `page` | number | Page number (default: 1) |
-| `limit` | number | Items per page |
-| `q` | string | Search by name, username, email, or ID |
-| `includeTrashed` | boolean | Include soft-deleted users |
-| `sort` | array | Sort config `[{id, desc}]` |
-| `filter` | array | Filter config `[{id, value}]` |
-
-**Filterable Fields:** `name`, `isEnabled`, `roles`, `createdAt` (date range)
-
-**Sortable Fields:** `name`, `username`, `email`, `isEnabled`, `createdAt`
-
-#### Request Bodies
-
-**Create User (POST):**
-```json
-{
-  "name": "string",
-  "username": "string",
-  "email": "string?",
-  "password": "string (min 6)",
-  "isEnabled": true,
-  "roles": ["roleId1", "roleId2"]
-}
-```
-
-**Update User (PATCH):**
-```json
-{
-  "name": "string?",
-  "username": "string?",
-  "email": "string?",
-  "password": "string? (omit to keep)",
-  "isEnabled": true,
-  "roles": ["roleId1"]
-}
-```
-
-**Delete User (DELETE):**
-```
-Form: skipTrash=true  // permanent delete
-```
-
-#### Response Format
-
-**List Response:**
-```json
-{
-  "data": [
-    {
-      "id": "string",
-      "name": "string",
-      "email": "string",
-      "username": "string",
-      "isEnabled": true,
-      "createdAt": "timestamp",
-      "updatedAt": "timestamp",
-      "roles": [{ "id": "string", "name": "string", "code": "string" }]
+    USERS {
+        text id PK
+        varchar name
+        varchar username UK
+        varchar email
+        varchar phone_number
+        text password
+        boolean is_enable
+        timestamp created_at
+        timestamp updated_at
+        timestamp deleted_at
     }
-  ],
-  "_metadata": {
-    "currentPage": 1,
-    "totalPages": 10,
-    "totalItems": 100,
-    "perPage": 10
-  }
-}
+
+    ROLES {
+        text id PK
+        varchar code UK
+        varchar name
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    PERMISSIONS {
+        text id PK
+        varchar code UK
+        varchar description
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    ROLES_TO_USERS {
+        text userId PK,FK
+        text roleId PK,FK
+    }
+
+    PERMISSIONS_TO_USERS {
+        text userId PK,FK
+        text permissionId PK,FK
+    }
+
+    PERMISSIONS_TO_ROLES {
+        text roleId PK,FK
+        text permissionId PK,FK
+    }
+
+    REFRESH_TOKENS {
+        text id PK
+        text user_id FK
+        text token_hash
+        timestamp expires_at
+        timestamp revoked_at
+    }
 ```
 
----
-
-### Roles `/roles`
-
-| Method | Endpoint | Permission | Description |
-|--------|----------|------------|-------------|
-| `GET` | `/roles` | `roles.read` | List roles (paginated) |
-| `GET` | `/roles/:id` | `roles.read` | Get role by ID |
-| `POST` | `/roles` | `roles.create` | Create role |
-| `PATCH` | `/roles/:id` | `roles.update` | Update role |
-| `DELETE` | `/roles/:id` | `roles.delete` | Delete role |
-
-> **Note:** Super Admin role is protected and excluded from all operations.
-
-#### Request Bodies
-
-**Create/Update Role:**
-```json
-{
-  "name": "string",
-  "code": "string?",
-  "description": "string",
-  "permissions": ["users.readAll", "users.create"]
-}
-```
+**Key Relationships:**
+- `roles_to_users`: CASCADE on role delete, CASCADE on user delete
+- `permissions_to_users`: No cascade (manual cleanup via cleanup functions)
+- `refresh_tokens`: CASCADE on user delete (auto-logout on user removal)
 
 ---
 
-### Permissions `/permissions`
+## Important Notes
 
-| Method | Endpoint | Permission | Description |
-|--------|----------|------------|-------------|
-| `GET` | `/permissions` | - | List all permissions |
+### Soft Delete System
 
-**Response:**
-```json
-[
-  { "id": "string", "code": "users.readAll" },
-  { "id": "string", "code": "users.create" }
-]
-```
+**Default Behavior:**
+- Users are soft-deleted by default (`DELETE /users/:id` with `skipTrash=false`)
+- Soft-deleted users have `deletedAt` timestamp set
+- Cascade effects on soft delete:
+  - ✅ `refresh_tokens` physically deleted (CASCADE constraint)
+  - ❌ `roles_to_users` remain intact (allows restoration with original roles)
+  - ❌ `permissions_to_users` remain intact
 
----
+**Permanent Delete:**
+- Use `skipTrash=true` form parameter
+- Physically removes user record
+- Cascades to all related tables via database constraints
 
-## Permissions
+**Self-Delete Prevention:**
+- Users cannot delete their own account
+- Backend validates `userId !== currentUserId`
+- Returns 400 error if attempted
 
-### Available Permission Codes
+### Super Admin Protection
 
-| Code | Description |
-|------|-------------|
-| `users.readAll` | View all users |
-| `users.create` | Create users |
-| `users.update` | Update users |
-| `users.delete` | Delete users |
-| `users.restore` | Restore deleted users |
-| `roles.read` | View roles |
-| `roles.create` | Create roles |
-| `roles.update` | Update roles |
-| `roles.delete` | Delete roles |
-| `permissions.read` | View permissions |
-| `app-settings.read` | View app settings |
-| `app-settings.edit` | Edit app settings |
-| `dev-routes` | Access dev routes |
-| `ms-graph.read` | Microsoft Graph API access |
-| `observability.read` | View observability data |
-| `observability.write` | Write observability data |
-| `observability.delete` | Delete observability data |
+**Hard-coded Protections:**
+- Super Admin role (`code: "super-admin"`) cannot be deleted
+- Backend query filters: `WHERE NOT (name = 'Super Admin')`
+- Returns 404 if deletion attempted (role appears non-existent)
+- Frontend displays "Superadmin" user with disabled delete button
 
-### Special Permissions
+**Why Protected:**
+- System requires at least one Super Admin for administrative access
+- Prevents lock-out scenarios where all admins are deleted
 
-| Code | Description |
-|------|-------------|
-| `*` | Bypass all permission checks |
-| `authenticated-only` | Any authenticated user |
-| `guest-only` | Unauthenticated users only |
+### Permission Resolution
 
----
-
-## Validation
-
-### User Schema
-
+**Computation:**
 ```typescript
-// Create
-{
-  name: string,         // 1-255 chars
-  username: string,     // 1-255 chars, unique
-  email?: string,       // valid email or empty
-  password: string,     // min 6 chars
-  isEnabled?: boolean,  // default: true
-  roles?: string[]      // role IDs
-}
-
-// Update (all optional except validation rules apply)
-{
-  password?: string     // omit to keep existing
-}
+// Backend: authInfo middleware
+permissions = new Set([
+  ...userDirectPermissions,
+  ...roleBased Permissions (flattened from all roles)
+]);
 ```
 
-### Role Schema
+**Important Behaviors:**
+- Permissions are **additive** (union, not intersection)
+- Having role "A" + direct permission "X" = all role A permissions + permission X
+- Removing a role doesn't affect direct permissions
+- Permission changes take effect after next access token refresh (max 5 minutes)
 
+**Query Efficiency:**
+- Single query with nested joins loads user + roles + permissions
+- Result cached in access token JWT (no DB lookup per request)
+
+### Role Update Behavior
+
+**Complete Replacement:**
+- Updating user roles is **not additive** - it's a complete replacement
+- Backend flow:
+  1. DELETE all existing `roles_to_users` for user
+  2. INSERT new `roles_to_users` from request
+- Frontend must send full role array, not just changes
+
+**Example:**
 ```typescript
-{
-  name: string,         // 1-255 chars
-  code?: string,        // 1-255 chars, defaults to name
-  description: string,
-  permissions?: PermissionCode[]
-}
+// User currently has roles: ["role-1", "role-2"]
+PATCH /users/:id { roles: ["role-3"] }
+// Result: User now has ONLY ["role-3"]
 ```
 
-### Validation Errors
+### Username Uniqueness
 
+**Constraint:**
+- Database unique constraint on `users.username`
+- Backend validation returns 422 with field-specific error:
 ```json
 {
   "errorCode": "INVALID_FORM_DATA",
-  "message": "Username is already exists",
-  "formErrors": {
-    "username": "This username is already exists"
-  },
-  "statusCode": 422
+  "formErrors": { "username": "This username is already exists" }
 }
 ```
 
+**Frontend Handling:**
+- React Hook Form maps `formErrors` to field-level validation
+- Shows inline error message below username input
+- Prevents form submission until resolved
+
+### Notification System
+
+**Trigger:**
+- Creating a user sends notification to all users with `super-admin` role
+- Uses `sendToRoles(["super-admin"], notification)` utility
+- Non-blocking (notification failure doesn't fail user creation)
+
+**Notification Content:**
+```typescript
+{
+  title: "User Created",
+  message: "User {name} has been created",
+  type: "info"
+}
+```
+
+### Frontend Data Table
+
+**Features Implemented:**
+- Server-side pagination (configurable per-page: 10/25/50/100)
+- Multi-column sorting (client sends: `?sort=name:asc,createdAt:desc`)
+- Advanced filtering with date ranges for `createdAt`
+- Global search across name/username/email/ID
+- Column visibility toggle
+- State persistence in localStorage (`users-table` key)
+
+**Sortable Columns:**
+`name`, `username`, `email`, `isEnabled`, `createdAt`
+
+**Filterable Columns:**
+`name`, `isEnabled`, `roles` (multi-select), `createdAt` (date range)
+
+**Performance:**
+- Uses `placeholderData` to prevent loading flicker during pagination
+- Query automatically refetches when params change
+- Debounced search input (avoids excessive API calls)
+
+### Password Handling
+
+**Creation:**
+- Minimum 6 characters validation
+- Hashed with `Bun.password.hash()` before storage
+- Never logged or sent in responses
+
+**Update:**
+- Password field optional in PATCH request
+- Omitting password keeps existing hash unchanged
+- Backend logic:
+```typescript
+...(userData.password ? { password: await hashPassword(userData.password) } : {})
+```
+
+### Edge Cases
+
+**Restoring Non-Deleted User:**
+- Returns 400: "The user is not deleted"
+- Frontend should gray out/hide restore button for active users
+
+**Deleting Non-Existent User:**
+- Returns 404: "The user does not exists" (sic - typo in code)
+
+**Empty Role Array:**
+- Sending `roles: []` removes all role assignments
+- User retains only direct permissions
+
+**OAuth Users:**
+- Can have `password: null` if created via OAuth only
+- Cannot log in with username/password
+- Still manageable through user management interface
+
+### Testing Utilities
+
+**Test User Creation:**
+- `createUserForTesting()` utility pre-seeds permissions and roles
+- Returns user object + valid access token for API testing
+- Example:
+```typescript
+const testUser = await createUserForTesting({
+  permissions: ["users.readAll", "users.create"]
+});
+// Use: testUser.accessToken, testUser.user.id
+```
+
+**Cleanup:**
+- `cleanupTestUser(userId)` removes user + all associations
+- Explicit cleanup in `afterAll()` hooks to prevent test pollution
+
 ---
 
-## Notes
+## Revision History
 
-- **Soft Delete:** Users are soft-deleted by default (`deletedAt` timestamp). Use `skipTrash=true` for permanent deletion.
-- **Password Hashing:** Passwords are hashed using `Bun.password.hash()` before storage.
-- **Super Admin:** The "Super Admin" role cannot be modified or deleted.
-- **Cascade Delete:** Deleting a user cascades to `roles_to_users`, `permissions_to_users`, and `refresh_tokens`.
-- **Notifications:** Creating a user sends a notification to users with `super-admin` role.
+| Version | Date | Summary of Change |
+|---------|------|-------------------|
+| 1 | 2025-12-22 | Initial documentation |

@@ -71,6 +71,8 @@ erDiagram
 - Dependencies on other features
 - Known limitations
 
+**Use diagrams when helpful:** If explaining complex concepts, race conditions, data flow, or architectural decisions, include Mermaid diagrams (flowcharts, sequence diagrams, or other appropriate types) to clarify the explanation.
+
 ### 7. Revision History
 Always include this table at the bottom:
 
@@ -119,6 +121,8 @@ Document only non-obvious functions:
 - Common pitfalls or mistakes
 - Security considerations
 - Breaking changes or deprecations
+
+**Use diagrams when helpful:** If explaining complex concepts, race conditions, data flow, request/response cycles, or architectural decisions, include Mermaid diagrams (sequence diagrams, flowcharts, or other appropriate types) to clarify the explanation.
 
 ### 6. Revision History
 Standard revision table

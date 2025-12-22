@@ -3,27 +3,35 @@
 ## Contents
 
 1. [Overview](#overview)
-2. [Auth Flows](#auth-flows)
-3. [API Reference](#api-reference)
-4. [Authorization](#authorization)
-5. [Security](#security)
-6. [Configuration](#configuration)
+2. [Flows](#flows)
+3. [Database Schema](#database-schema)
+4. [Important Notes](#important-notes)
+5. [Revision History](#revision-history)
 
 ---
 
 ## Overview
 
-JWT-based authentication with RS256 signing. Supports username/password login and OAuth (Google, Microsoft).
+JWT-based authentication system with RS256 asymmetric signing supporting multiple authentication methods.
 
-**Token Lifecycle:**
-- **Access Token**: 5 minutes TTL, contains `uid`, `permissions`, `roles`
-- **Refresh Token**: 60 days TTL, hashed and stored in database
+**Key Features:**
+- Username/password authentication with bcrypt hashing
+- OAuth 2.0 integration (Google, Microsoft)
+- Token-based stateless authentication with automatic refresh
+- Multi-tab synchronization using BroadcastChannel API
+- Role-based access control (RBAC) with granular permissions
 
-**Frontend Storage:** IndexedDB with cross-tab sync via `BroadcastChannel`.
+**Token Strategy:**
+- **Access Token**: 5-minute TTL, embeds `uid`, `permissions`, `roles` - stored in memory
+- **Refresh Token**: 60-day TTL, hashed (bcrypt) and persisted in database - allows multi-device support
+
+**Storage:**
+- Backend: Refresh tokens hashed in PostgreSQL with revocation support
+- Frontend: IndexedDB with BroadcastChannel for cross-tab synchronization
 
 ---
 
-## Auth Flows
+## Flows
 
 ### Username/Password Login
 
@@ -85,181 +93,174 @@ sequenceDiagram
     FE->>FE: Broadcast to other tabs
 ```
 
----
-
-## API Reference
-
-### Auth Endpoints
-
-| Method | Endpoint | Permission | Description |
-|--------|----------|------------|-------------|
-| `GET` | `/auth/login-settings` | `guest-only` | Get enabled login methods |
-| `POST` | `/auth/login` | `guest-only` | Username/password login |
-| `POST` | `/auth/refresh` | `*` | Refresh access token |
-| `POST` | `/auth/logout` | `authenticated-only` | Revoke refresh token |
-| `GET` | `/auth/my-profile` | `authenticated-only` | Get current user profile |
-
-### OAuth Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/auth/google/` | Initiate Google OAuth |
-| `GET` | `/auth/google/auth-data/:sessionId` | Get auth data after callback |
-| `GET` | `/auth/microsoft/login` | Initiate Microsoft OAuth |
-| `GET` | `/auth/microsoft/callback` | Microsoft OAuth callback |
-| `GET` | `/auth/microsoft/auth-data/:sessionId` | Get auth data after callback |
-
-### Request/Response
-
-**Login Request:**
-```json
-{ "username": "string", "password": "string" }
-```
-
-**Auth Response:**
-```json
-{
-  "accessToken": "string",
-  "refreshToken": "string",
-  "accessTokenExpiresIn": 300,
-  "refreshTokenExpiresIn": 5184000,
-  "user": {
-    "id": "string",
-    "name": "string",
-    "permissions": ["string"],
-    "roles": ["string"]
-  }
-}
-```
+**Key Behaviors:**
+- Refresh starts 60 seconds before expiry
+- **Multi-tab coordination**: Uses `localStorage` lock to prevent concurrent refreshes
+- **Reuses refresh token** - same token valid across all devices/tabs until revoked
+- Failed refresh (401) triggers automatic logout across all tabs
 
 ---
 
-## Authorization
+## Database Schema
 
-### Permission Types
+```mermaid
+erDiagram
+    USERS ||--o{ REFRESH_TOKENS : has
+    USERS ||--o{ PERMISSIONS_TO_USERS : has
+    USERS ||--o{ ROLES_TO_USERS : has
+    USERS ||--o| OAUTH_GOOGLE : has
+    USERS ||--o| OAUTH_MICROSOFT : has
+    ROLES ||--o{ ROLES_TO_USERS : has
+    ROLES ||--o{ PERMISSIONS_TO_ROLES : has
+    PERMISSIONS ||--o{ PERMISSIONS_TO_USERS : has
+    PERMISSIONS ||--o{ PERMISSIONS_TO_ROLES : has
 
-| Permission | Description |
-|------------|-------------|
-| `*` | Allow all (bypass check) |
-| `authenticated-only` | Requires valid user session |
-| `guest-only` | Only unauthenticated users |
-| `{permission-code}` | Specific permission code |
+    USERS {
+        text id PK
+        varchar username UK
+        varchar email
+        text password
+        varchar name
+        boolean is_enable
+        timestamp created_at
+        timestamp deleted_at
+    }
 
-### Middleware Chain
+    REFRESH_TOKENS {
+        text id PK
+        text user_id FK
+        text token_hash
+        timestamp expires_at
+        timestamp created_at
+        timestamp revoked_at
+    }
 
-```
-authTokenMiddleware → authInfo → checkPermission
-       ↓                  ↓              ↓
-  Extract JWT         Load user      Verify
-  Set uid            + roles/perms   permissions
-```
+    PERMISSIONS {
+        text id PK
+        varchar code UK
+        varchar name
+        text description
+    }
 
-### Backend Usage
+    ROLES {
+        text id PK
+        varchar code UK
+        varchar name
+        text description
+    }
 
-```typescript
-// Public route (anyone)
-app.get("/public", checkPermission("*"), handler);
+    PERMISSIONS_TO_USERS {
+        text user_id FK
+        text permission_id FK
+    }
 
-// Authenticated users only
-app.get("/dashboard", authInfo, checkPermission("authenticated-only"), handler);
+    ROLES_TO_USERS {
+        text user_id FK
+        text role_id FK
+    }
 
-// Specific permission
-app.get("/users", authInfo, checkPermission("users.read"), handler);
+    PERMISSIONS_TO_ROLES {
+        text role_id FK
+        text permission_id FK
+    }
 
-// Multiple permissions (OR)
-app.delete("/users/:id", authInfo, checkPermission("users.delete", "admin"), handler);
-```
+    OAUTH_GOOGLE {
+        text id PK
+        text user_id FK
+        varchar google_id UK
+        varchar email
+    }
 
-### Frontend Usage
-
-```typescript
-// Hook usage
-const { user, isAuthenticated } = useAuth();
-const hasAccess = usePermissions("users.read");
-
-// Route protection - redirects to /403 if unauthorized
-usePermissions(["users.read", "users.write"]);
+    OAUTH_MICROSOFT {
+        text id PK
+        text user_id FK
+        varchar microsoft_id UK
+        varchar email
+    }
 ```
 
 ---
 
-## Security
+## Important Notes
 
-### Token Security
+### Multi-Tab/Device Behavior
 
-| Feature | Implementation |
-|---------|----------------|
-| Algorithm | RS256 (RSA + SHA-256) |
-| Key Storage | File-based (`private_key.pem`, `public_key.pem`) |
-| Auto-generation | Keys created on first run if missing |
-| Refresh Token Storage | Hashed (bcrypt) in database |
-| Token Revocation | `revokedAt` timestamp in `refresh_tokens` table |
+**Refresh Token Reuse Strategy:**
+- Single refresh token valid across multiple tabs and devices
+- No automatic rotation on refresh (original design decision for simplicity)
+- Token only revoked on explicit logout or expiration
+- Allows users to stay logged in on multiple devices without interruption
 
-### Rate Limiting
+**Cross-Tab Synchronization:**
+1. **BroadcastChannel API** (primary): Real-time sync for modern browsers
+2. **localStorage events** (fallback): For older browsers or when BroadcastChannel unavailable
+3. **Lock mechanism**: Prevents multiple tabs from refreshing simultaneously
 
-| Endpoint | Limit | Window |
-|----------|-------|--------|
-| Login | 5 requests | 15 min |
-| OAuth | 10 requests | 5 min |
-| Token Refresh | 10 requests | 5 min |
-| General API | 100 requests | 1 min |
+**Frontend Events:**
+- `logout`: Broadcasts logout to all tabs, triggers immediate session clear
+- `token-refreshed`: Notifies other tabs to reload tokens from IndexedDB
 
-### Password Security
+### Security Considerations
 
-- Hashing: `Bun.password.hash()` (bcrypt-based)
-- Verification: Constant-time comparison
+**Token Signing:**
+- Uses RS256 (RSA-SHA256) asymmetric encryption
+- Private key auto-generated on first backend startup if missing
+- Public key used for verification - safe to expose in distributed systems
 
-### Cross-Tab Sync
+**Password Handling:**
+- Passwords hashed with Bun's built-in bcrypt implementation
+- Original password never stored or logged
+- OAuth-only users have `null` password field
 
-- Primary: `BroadcastChannel` API
-- Fallback: `localStorage` events
-- Events: `logout`, `token-refreshed`
+**Rate Limiting:**
+- Applied at endpoint level (login, refresh, OAuth)
+- Configured per-route using `rateLimit()` middleware
+- Limits tracked per IP address
+
+### Edge Cases
+
+**Disabled Users:**
+- Immediately blocked from token refresh (query filters `is_enabled = true`)
+- Existing access tokens remain valid until expiry (5 minutes max)
+- Cannot revoke active access tokens (stateless JWT limitation)
+
+**Deleted Users:**
+- Soft-deleted users (`deleted_at IS NOT NULL`) blocked from authentication
+- Refresh tokens automatically cascade-deleted via `ON DELETE CASCADE`
+
+**Offline Behavior:**
+- Frontend tolerates backend unreachability during refresh
+- Keeps session active with current token
+- Shows toast notification to user
+- Retries refresh after 30 seconds
+
+**OAuth Edge Cases:**
+- User email mismatch between OAuth providers handled by separate `oauth_google`/`oauth_microsoft` tables
+- Multiple OAuth accounts can't link to same user - creates separate users
+- OAuth users without password can't use username/password login
+
+### Performance Notes
+
+**Middleware Efficiency:**
+- `authTokenMiddleware`: Extracts JWT, sets `uid` - runs on ALL routes
+- `authInfo`: Queries DB for full user data - only use on protected routes requiring role/permission checks
+- `checkPermission`: Lightweight check against cached data - negligible overhead
+
+**Database Queries:**
+- User authentication loads permissions/roles via nested joins (single query)
+- Refresh token validation: 2 queries (token lookup + user lookup with authorization)
+
+### Known Limitations
+
+1. **Access Token Revocation**: Cannot revoke active access tokens before expiry (stateless JWT trade-off)
+2. **Permission Changes**: Don't take effect until next token refresh (max 5 minutes)
+3. **OAuth Account Linking**: No built-in support for linking multiple OAuth accounts to one user
+4. **Session Management**: No server-side session tracking - can't list/revoke individual sessions per device
 
 ---
 
-## Configuration
+## Revision History
 
-### Backend Environment
-
-```env
-# Required
-DATABASE_URL=postgresql://...
-BASE_URL=http://localhost:3000
-FRONTEND_URL=http://localhost:5173
-
-# Token Keys (auto-generated if missing)
-PRIVATE_KEY_PATH=private_key.pem
-PUBLIC_KEY_PATH=public_key.pem
-```
-
-### OAuth Settings (via App Settings)
-
-| Setting Key | Description |
-|-------------|-------------|
-| `login.usernameAndPassword.enabled` | Enable password login |
-| `oauth.google.enabled` | Enable Google OAuth |
-| `oauth.google.clientId` | Google Client ID |
-| `oauth.google.clientSecret` | Google Client Secret |
-| `oauth.microsoft.enabled` | Enable Microsoft OAuth |
-| `oauth.microsoft.clientId` | Microsoft Client ID |
-| `oauth.microsoft.clientSecret` | Microsoft Client Secret |
-
-### Database Schema
-
-```sql
--- refresh_tokens
-id          TEXT PRIMARY KEY
-user_id     TEXT REFERENCES users(id) ON DELETE CASCADE
-token_hash  TEXT NOT NULL
-expires_at  TIMESTAMP NOT NULL
-created_at  TIMESTAMP DEFAULT NOW()
-revoked_at  TIMESTAMP
-
--- users (auth-related fields)
-id          TEXT PRIMARY KEY
-username    VARCHAR UNIQUE NOT NULL
-email       VARCHAR
-password    TEXT  -- null for OAuth-only users
-is_enable   BOOLEAN DEFAULT true
-deleted_at  TIMESTAMP
-```
+| Version | Date | Summary of Change |
+|---------|------|-------------------|
+| 1 | 2025-12-22 | Initial documentation |
