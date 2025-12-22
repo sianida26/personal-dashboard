@@ -65,6 +65,42 @@ const colorSchemes: {
 		preview: "hsl(0 72.2% 50.6%)",
 		bgClass: "bg-red-600",
 	},
+	{
+		value: "pink",
+		label: "Pink",
+		preview: "hsl(322.4 84.1% 60.2%)",
+		bgClass: "bg-pink-600",
+	},
+	{
+		value: "teal",
+		label: "Teal",
+		preview: "hsl(178.6 84.2% 35.1%)",
+		bgClass: "bg-teal-600",
+	},
+	{
+		value: "yellow",
+		label: "Yellow",
+		preview: "hsl(45.4 93.4% 47.5%)",
+		bgClass: "bg-yellow-500",
+	},
+	{
+		value: "cyan",
+		label: "Cyan",
+		preview: "hsl(188.7 94.5% 42.7%)",
+		bgClass: "bg-cyan-500",
+	},
+	{
+		value: "indigo",
+		label: "Indigo",
+		preview: "hsl(243.4 75.4% 58.6%)",
+		bgClass: "bg-indigo-600",
+	},
+	{
+		value: "rose",
+		label: "Rose",
+		preview: "hsl(346.8 77.2% 49.8%)",
+		bgClass: "bg-rose-600",
+	},
 ];
 
 export function ThemeSettings({ children }: { children?: React.ReactNode }) {
@@ -151,7 +187,7 @@ export function ThemeSettings({ children }: { children?: React.ReactNode }) {
 							<h5 className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">
 								Color Scheme
 							</h5>
-							<div className="grid grid-cols-3 gap-1">
+							<div className="grid grid-cols-4 gap-1">
 								{colorSchemes.map((scheme) => (
 									<button
 										key={scheme.value}
@@ -260,7 +296,7 @@ export function ThemeSettings({ children }: { children?: React.ReactNode }) {
 								<h4 className="text-sm font-medium mb-2 text-foreground">
 									Color Scheme
 								</h4>
-								<div className="grid grid-cols-3 gap-2">
+								<div className="grid grid-cols-4 gap-2">
 									{colorSchemes.map((scheme) => (
 										<button
 											key={scheme.value}

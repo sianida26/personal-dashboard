@@ -16,6 +16,12 @@ export const themeModeSchema = z.enum(["light", "dark", "system"]);
  * - green: Green accent theme
  * - orange: Orange accent theme
  * - red: Red accent theme
+ * - pink: Pink accent theme
+ * - teal: Teal accent theme
+ * - yellow: Yellow accent theme
+ * - cyan: Cyan accent theme
+ * - indigo: Indigo accent theme
+ * - rose: Rose accent theme
  */
 export const colorSchemeSchema = z.enum([
 	"default",
@@ -24,6 +30,12 @@ export const colorSchemeSchema = z.enum([
 	"green",
 	"orange",
 	"red",
+	"pink",
+	"teal",
+	"yellow",
+	"cyan",
+	"indigo",
+	"rose",
 ]);
 
 /**

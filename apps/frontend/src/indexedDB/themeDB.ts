@@ -3,7 +3,7 @@ import Dexie, { type Table } from "dexie";
 export interface ThemePreference {
 	id: string;
 	themeMode: "light" | "dark" | "system";
-	colorScheme: "default" | "blue" | "purple" | "green" | "orange" | "red";
+	colorScheme: "default" | "blue" | "purple" | "green" | "orange" | "red" | "pink" | "teal" | "yellow" | "cyan" | "indigo" | "rose";
 	updatedAt: number;
 }
 
