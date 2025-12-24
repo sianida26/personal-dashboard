@@ -1,5 +1,6 @@
+import { Toaster } from "@repo/ui";
 import { type ReactNode, useCallback, useEffect, useState } from "react";
-import { Toaster, toast } from "sonner";
+import { toast } from "sonner";
 import {
 	type Notification,
 	NotificationContext,

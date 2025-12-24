@@ -753,7 +753,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	// Render table content (unified for both orderable and regular tables)
 	const renderTableContent = () => (
 		<table
-			className="border-collapse"
+			className="border-collapse table-themed"
 			style={{
 				...columnSizeVars,
 				...(rowVirtualization && !loading && !groupBy
@@ -999,7 +999,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 												className="flex items-center gap-2 w-full text-left font-medium text-sm"
 											>
 												<ChevronRight
-													className={`h-4 w-4 text-sm transition-transform ${
+													className={`text-primary h-4 w-4 text-sm transition-transform ${
 														isExpanded
 															? "rotate-90"
 															: ""

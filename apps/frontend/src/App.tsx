@@ -4,6 +4,7 @@ import AppErrorBoundary from "./components/AppErrorBoundary";
 import { AppProvider } from "./contexts/App/AppContext";
 import { AuthProvider } from "./contexts/Auth/AuthProvider";
 import { NotificationProvider } from "./contexts/Notification/NotificationProvider";
+import { ThemeProvider } from "./contexts/Theme/ThemeProvider";
 import { routeTree } from "./routeTree.gen";
 
 const queryClient = new QueryClient({
@@ -67,9 +68,11 @@ function App() {
 			<QueryClientProvider client={queryClient}>
 				<AppProvider>
 					<AuthProvider>
-						<NotificationProvider>
-							<RouterProvider router={router} />
-						</NotificationProvider>
+						<ThemeProvider>
+							<NotificationProvider>
+								<RouterProvider router={router} />
+							</NotificationProvider>
+						</ThemeProvider>
 					</AuthProvider>
 				</AppProvider>
 			</QueryClientProvider>

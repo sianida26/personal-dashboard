@@ -25,20 +25,20 @@ const Checkbox = React.forwardRef<
 	const checkboxId = id || generatedId;
 
 	return (
-		<div
+<div
 			className={cn(
-				"flex items-center gap-2",
-				className,
-				classNames?.root,
-			)}
+"flex items-center gap-2",
+className,
+classNames?.root,
+)}
 		>
 			<CheckboxPrimitive.Root
 				ref={ref}
 				id={checkboxId}
 				className={cn(
-					"peer h-4 w-4 shrink-0 rounded-sm border border-primary shadow-sm focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground",
-					classNames?.checkbox,
-				)}
+"peer h-4 w-4 shrink-0 rounded border border-primary/50 shadow-sm transition-all duration-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/30 hover:border-primary/70 hover:shadow-[0_0_4px_0_hsl(var(--primary)_/_0.2)] disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground data-[state=checked]:border-primary data-[state=checked]:shadow-[0_0_8px_0_hsl(var(--primary)_/_0.3)]",
+classNames?.checkbox,
+)}
 				onCheckedChange={(e) => {
 					props.onChange?.(e.valueOf() as boolean);
 				}}
@@ -46,8 +46,8 @@ const Checkbox = React.forwardRef<
 			>
 				<CheckboxPrimitive.Indicator
 					className={cn(
-						"flex items-center justify-center text-current",
-					)}
+"flex items-center justify-center text-current",
+)}
 				>
 					<CheckIcon className="h-4 w-4" />
 				</CheckboxPrimitive.Indicator>

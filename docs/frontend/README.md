@@ -14,6 +14,7 @@ Welcome to the comprehensive frontend documentation for the dashboard template p
 - **[Data Management](./data-management.md)** - State management, API integration, and caching
 - **[Authentication](./authentication.md)** - JWT authentication, RBAC, and permission system
 - **[Form Handling](./form-handling.md)** - Form validation, submission, and state management
+- **[Theming](./theming.md)** - Dynamic theme system with color schemes and dark mode
 
 ### Operations & Maintenance
 - **[Error Handling](./error-handling.md)** - Error boundaries, API errors, and recovery strategies
