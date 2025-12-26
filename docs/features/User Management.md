@@ -92,63 +92,6 @@ flowchart TD
 
 ```mermaid
 erDiagram
-    users ||--o{ roles_to_users : has
-    users ||--o{ permissions_to_users : has
-    roles ||--o{ roles_to_users : assigned
-    roles ||--o{ permissions_to_roles : has
-    permissions ||--o{ permissions_to_roles : assigned
-    permissions ||--o{ permissions_to_users : assigned
-
-    users {
-        text id PK
-        varchar name
-        varchar username UK
-        varchar email
-        varchar phone_number
-        text password
-        boolean is_enable
-        timestamp created_at
-        timestamp updated_at
-        timestamp deleted_at
-    }
-
-    roles {
-        text id PK
-        varchar code UK
-        varchar name
-        varchar description
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    permissions {
-        text id PK
-        varchar code UK
-        varchar description
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    roles_to_users {
-        text userId PK,FK
-        text roleId PK,FK
-    }
-
-    permissions_to_users {
-        text userId PK,FK
-        text permissionId PK,FK
-    }
-
-    permissions_to_roles {
-        text roleId PK,FK
-        text permissionId PK,FK
-    }
-```
-
-## Database Schema
-
-```mermaid
-erDiagram
     USERS ||--o{ ROLES_TO_USERS : has
     USERS ||--o{ PERMISSIONS_TO_USERS : has
     USERS ||--o{ REFRESH_TOKENS : has
