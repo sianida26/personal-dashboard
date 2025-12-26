@@ -8,6 +8,7 @@ export type Role = {
 	permissions: readonly ExtendedPermissionCode[];
 };
 
+// Default roles to be created in the system
 const defaultRoles: Role[] = [
 	{
 		code: "super-admin",
