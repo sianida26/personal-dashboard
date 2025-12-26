@@ -40,7 +40,7 @@ jobs:
             -d '{
               "session": "${{ env.WAHA_SESSION }}",
               "chatId": "${{ env.WAHA_CHAT_ID }}",
-              "text": "🔄 *CI/CD Started*\n\n*Job:* Type Check - ${{ matrix.name }}\n*Status:* Running\n*Action:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n*Branch:* ${{ github.head_ref }}\n*Commit:* ${{ github.sha }}\n*Author:* ${{ github.actor }}"
+              "text": "🔄 *CI/CD Started*\n\n*Repository:* ${{ github.repository }}\n*Job:* Type Check - ${{ matrix.name }}\n*Status:* Running\n*Action:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n*Branch:* ${{ github.head_ref }}\n*Commit:* ${{ github.sha }}\n*Author:* ${{ github.actor }}"
             }'
 
       - uses: actions/checkout@v4
@@ -71,7 +71,7 @@ jobs:
             -d '{
               "session": "${{ env.WAHA_SESSION }}",
               "chatId": "${{ env.WAHA_CHAT_ID }}",
-              "text": "✅ *CI/CD Success*\n\n*Job:* Type Check - ${{ matrix.name }}\n*Status:* Success\n*Duration:* '"${MINUTES}m ${SECONDS}s"'\n*Action:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n*Branch:* ${{ github.head_ref }}\n*Commit:* ${{ github.sha }}\n*Author:* ${{ github.actor }}"
+              "text": "✅ *CI/CD Success*\n\n*Repository:* ${{ github.repository }}\n*Job:* Type Check - ${{ matrix.name }}\n*Status:* Success\n*Duration:* '"${MINUTES}m ${SECONDS}s"'\n*Action:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n*Branch:* ${{ github.head_ref }}\n*Commit:* ${{ github.sha }}\n*Author:* ${{ github.actor }}"
             }'
 
       - name: Calculate duration and send failure notification
@@ -90,5 +90,5 @@ jobs:
             -d '{
               "session": "${{ env.WAHA_SESSION }}",
               "chatId": "${{ env.WAHA_CHAT_ID }}",
-              "text": "❌ *CI/CD Failed*\n\n*Job:* Type Check - ${{ matrix.name }}\n*Status:* Failed\n*Duration:* '"${MINUTES}m ${SECONDS}s"'\n*Action:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n*Branch:* ${{ github.head_ref }}\n*Commit:* ${{ github.sha }}\n*Author:* ${{ github.actor }}"
+              "text": "❌ *CI/CD Failed*\n\n*Repository:* ${{ github.repository }}\n*Job:* Type Check - ${{ matrix.name }}\n*Status:* Failed\n*Duration:* '"${MINUTES}m ${SECONDS}s"'\n*Action:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n*Branch:* ${{ github.head_ref }}\n*Commit:* ${{ github.sha }}\n*Author:* ${{ github.actor }}"
             }'
