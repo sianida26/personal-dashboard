@@ -87,12 +87,35 @@ export function TableHeader<T>({
 	const searchInputRef = useRef<HTMLInputElement>(null);
 	const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+	// Detect OS for keyboard shortcut display
+	const isMac =
+		typeof navigator !== "undefined" &&
+		/Mac|iPhone|iPod|iPad/.test(navigator.platform);
+	const searchShortcut = isMac ? "⌘K" : "Ctrl+K";
+
 	// Auto-focus when search opens
 	useEffect(() => {
 		if (isSearchOpen && searchInputRef.current) {
 			searchInputRef.current.focus();
 		}
 	}, [isSearchOpen]);
+
+	// Global keyboard shortcut: Ctrl+K / Cmd+K to focus search
+	useEffect(() => {
+		if (!search) return;
+
+		const handleKeyDown = (e: KeyboardEvent) => {
+			// Check for Ctrl+K (Windows/Linux) or Cmd+K (Mac)
+			if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+				e.preventDefault();
+				setIsSearchOpen(true);
+				// Focus will be triggered by the isSearchOpen effect
+			}
+		};
+
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [search]);
 
 	// Handle blur with 3s delay
 	const handleBlur = () => {
@@ -190,7 +213,11 @@ export function TableHeader<T>({
 							<Input
 								ref={searchInputRef}
 								type="text"
-								placeholder="Search..."
+								placeholder={
+									searchValue.trim()
+										? "Search..."
+										: `Search... (${searchShortcut})`
+								}
 								value={searchValue}
 								onChange={(e) => onSearchChange(e.target.value)}
 								onBlur={handleBlur}
