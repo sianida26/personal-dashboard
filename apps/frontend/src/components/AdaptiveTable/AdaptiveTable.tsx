@@ -1168,6 +1168,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 					loading={loading}
 					onPageChange={handlePageChange}
 					onPerPageChange={handlePaginationChange}
+					pageSizeOptions={props.pageSizeOptions}
 				/>
 			)}
 

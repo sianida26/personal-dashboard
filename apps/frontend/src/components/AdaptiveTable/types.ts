@@ -156,6 +156,11 @@ export type AdaptiveTableProps<T> = {
 	 * @default "client"
 	 */
 	paginationType?: "client" | "server";
+	/**
+	 * Options for page size selector
+	 * @default [10, 20, 50, 100]
+	 */
+	pageSizeOptions?: number[];
 	/** Callback when pagination changes (perPage or page) */
 	onPaginationChange?: (perPage: number, currentPage: number) => void;
 	/** Current page number (for server-side pagination) */

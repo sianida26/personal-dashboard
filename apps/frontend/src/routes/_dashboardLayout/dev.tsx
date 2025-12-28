@@ -6,6 +6,7 @@ import {
 	type AdaptiveColumnDef,
 	AdaptiveTable,
 	type FilterState,
+	loadTableState,
 } from "@/components/AdaptiveTable";
 import client from "@/honoClient";
 import { usePermissions } from "@/hooks/useAuth";
@@ -16,12 +17,17 @@ export const Route = createFileRoute("/_dashboardLayout/dev")({
 	component: RouteComponent,
 });
 
+const SAVE_STATE_KEY = "chemical-elements-table";
+
 function RouteComponent() {
 	usePermissions("dev-routes");
 
-	// Pagination state
+	// Pagination state - initialize from localStorage to sync with AdaptiveTable
 	const [page, setPage] = useState(1);
-	const [perPage, setPerPage] = useState(10);
+	const [perPage, setPerPage] = useState(() => {
+		const savedState = loadTableState(SAVE_STATE_KEY);
+		return savedState?.perPage ?? 10;
+	});
 
 	// Sorting state
 	const [sorting, setSorting] = useState<SortingState>([]);
@@ -238,6 +244,7 @@ function RouteComponent() {
 					// Server-side pagination
 					pagination
 					paginationType="server"
+					pageSizeOptions={[10, 25, 50, 100, 250]}
 					currentPage={page}
 					maxPage={totalPages}
 					recordsTotal={totalItems}
@@ -264,7 +271,7 @@ function RouteComponent() {
 						);
 					}}
 					newButton
-					saveState="chemical-elements-table"
+					saveState={SAVE_STATE_KEY}
 				/>
 			</div>
 		</div>
