@@ -30,6 +30,6 @@ FROM caddy:2-alpine AS production
 COPY --from=builder /node/apps/frontend/caddyfile /etc/caddy/caddyfile
 COPY --from=builder /node/apps/frontend/dist /srv
 
-EXPOSE 80
+EXPOSE 3005
 
 CMD ["caddy", "run", "--config", "/etc/caddy/caddyfile"]

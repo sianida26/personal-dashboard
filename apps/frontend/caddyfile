@@ -8,7 +8,7 @@
 	}
 }
 
-:80 {
+:3005 {
 	# Root directory for your static Vite build files
 	root * /srv
 

@@ -32,6 +32,6 @@ COPY --from=installer /node/bun.lock ./bun.lock
 RUN mkdir -p /node/logs /node/keys /node/uploads \
   && chmod 777 /node/logs /node/keys /node/uploads
 
-EXPOSE 81
+EXPOSE 3006
 
 CMD ["sh", "-c", "bun run db:prepare && bun run start"]
