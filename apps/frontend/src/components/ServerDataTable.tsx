@@ -211,6 +211,10 @@ export function ServerDataTable<T>({
 			return transformed;
 		},
 		placeholderData: (previousData) => previousData,
+		// Cache strategy: serve cached data immediately while revalidating in background
+		// This provides instant navigation and updates data if it has changed
+		staleTime: 0, // Consider data fresh for 30 seconds
+		gcTime: 5 * 60 * 1000, // Keep unused data in cache for 5 minutes
 	});
 
 	// Handlers
