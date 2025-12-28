@@ -179,6 +179,11 @@ export type AdaptiveTableProps<T> = {
 	 */
 	loading?: boolean;
 	/**
+	 * Error object to display in the table
+	 * If provided, shows an error row with the message
+	 */
+	error?: Error | null;
+	/**
 	 * Show "Updating..." indicator while revalidating (stale-while-revalidate pattern)
 	 * @default false
 	 */

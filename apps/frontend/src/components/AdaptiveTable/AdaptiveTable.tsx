@@ -23,8 +23,9 @@ import {
 	useReactTable,
 } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { ChevronRight, Loader2 } from "lucide-react";
+import { AlertCircle, ChevronRight, Loader2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import FormResponseError from "@/errors/FormResponseError";
 import { DetailSheet } from "./DetailSheet";
 import DragAlongCell from "./DragAlongCell";
 import EditableCell from "./EditableCell";
@@ -62,6 +63,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	const fitToParentWidth = props.fitToParentWidth ?? false;
 	const filterable = props.filterable ?? true;
 	const search = props.search ?? true;
+	const error = props.error;
 
 	// Reference for the scrollable container
 	const tableContainerRef = useRef<HTMLDivElement>(null);
@@ -883,6 +885,48 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 					renderSkeletonRows(
 						table.getHeaderGroups()[0]?.headers.length ?? 1,
 					)
+				) : error ? (
+					// Render error row
+					<tr className="border-b">
+						<td
+							colSpan={
+								table.getHeaderGroups()[0]?.headers.length ?? 1
+							}
+							className="p-4 bg-red-50 dark:bg-red-950/20"
+						>
+							<div className="flex items-start gap-3">
+								<AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+								<div className="flex-1">
+									<div className="font-medium text-red-900 dark:text-red-100">
+										{error.message}
+										{(error as any).errorCode && (
+											<span className="ml-2 text-sm font-normal text-red-700 dark:text-red-300">
+												({(error as any).errorCode})
+											</span>
+										)}
+									</div>
+									{error instanceof FormResponseError &&
+										error.formErrors && (
+											<div className="mt-2 space-y-1">
+												{Object.entries(
+													error.formErrors,
+												).map(([field, message]) => (
+													<div
+														key={field}
+														className="text-sm text-red-800 dark:text-red-200"
+													>
+														<span className="font-medium">
+															{field}:
+														</span>{" "}
+														{message}
+													</div>
+												))}
+											</div>
+										)}
+								</div>
+							</div>
+						</td>
+					</tr>
 				) : rowVirtualization && !groupBy ? (
 					// Render virtualized rows - wrap in SortableContext for column ordering
 					props.columnOrderable ? (
