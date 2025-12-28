@@ -3,10 +3,13 @@ import type { SortingState } from "@tanstack/react-table";
 import type { ClientRequestOptions } from "hono";
 import type { ClientResponse } from "hono/client";
 import { useCallback, useMemo, useState } from "react";
-import AdaptiveTable from "./AdaptiveTable";
-import type { FilterState } from "./filterEngine";
-import type { AdaptiveColumnDef, AdaptiveTableProps } from "./types";
-import { loadTableState } from "./utils";
+import AdaptiveTable from "./AdaptiveTable/AdaptiveTable";
+import type { FilterState } from "./AdaptiveTable/filterEngine";
+import type {
+	AdaptiveColumnDef,
+	AdaptiveTableProps,
+} from "./AdaptiveTable/types";
+import { loadTableState } from "./AdaptiveTable/utils";
 
 /**
  * Standard paginated response format from the backend
