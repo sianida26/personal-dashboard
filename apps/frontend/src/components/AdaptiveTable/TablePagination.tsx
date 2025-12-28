@@ -67,7 +67,10 @@ export function TablePagination({
 							onChange={(e) => setCustomValue(e.target.value)}
 							onKeyDown={handleCustomInputKeyDown}
 							placeholder="Enter rows"
-							className="h-8 w-24"
+							className="h-8 w-24 text-sm"
+							classNames={{
+								input: "h-8",
+							}}
 							min={1}
 							max={10000}
 							autoFocus
@@ -81,7 +84,7 @@ export function TablePagination({
 						<Button
 							variant="outline"
 							size="sm"
-							className="h-8"
+							className="h-8 px-3 text-sm"
 							onClick={handleCustomInputSubmit}
 						>
 							OK
