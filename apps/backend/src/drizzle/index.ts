@@ -13,6 +13,10 @@ import * as permissionsToUsersSchema from "./schema/permissionsToUsers";
 import * as refreshTokensSchema from "./schema/refreshTokens";
 import * as rolesSchema from "./schema/roles";
 import * as rolesToUsersSchema from "./schema/rolesToUsers";
+import * as ujianSchema from "./schema/ujian";
+import * as ujianAnswersSchema from "./schema/ujianAnswers";
+import * as ujianAttemptsSchema from "./schema/ujianAttempts";
+import * as ujianQuestionsSchema from "./schema/ujianQuestions";
 import * as usersSchema from "./schema/users";
 import SqlLogger from "./utils/SqlLogger";
 
@@ -33,6 +37,10 @@ const db = drizzle({
 		...jobQueueSchema,
 		...notificationsSchema,
 		...refreshTokensSchema,
+		...ujianSchema,
+		...ujianQuestionsSchema,
+		...ujianAttemptsSchema,
+		...ujianAnswersSchema,
 	},
 	logger: new SqlLogger(),
 });

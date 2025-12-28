@@ -1,7 +1,7 @@
 import type { Config } from "drizzle-kit";
-import appEnv from "./src/appEnv";
 
-const databaseUrl = appEnv.DATABASE_URL;
+// Use env var directly for drizzle-kit commands
+const databaseUrl = process.env.DATABASE_URL || "postgresql://placeholder";
 
 export default {
 	schema: "./src/drizzle/schema/*",

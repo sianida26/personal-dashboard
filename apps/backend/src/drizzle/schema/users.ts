@@ -7,11 +7,13 @@ import {
 	timestamp,
 	varchar,
 } from "drizzle-orm/pg-core";
-import { permissionsToUsers } from "./permissionsToUsers";
-import { rolesToUsers } from "./rolesToUsers";
 import { oauthGoogle } from "./oauthGoogle";
 import { oauthMicrosoft } from "./oauthMicrosoft";
+import { permissionsToUsers } from "./permissionsToUsers";
 import { refreshTokens } from "./refreshTokens";
+import { rolesToUsers } from "./rolesToUsers";
+import { ujian } from "./ujian";
+import { ujianAttempts } from "./ujianAttempts";
 
 export const users = pgTable("users", {
 	id: text("id")
@@ -42,4 +44,6 @@ export const usersRelations = relations(users, ({ many, one }) => ({
 		references: [oauthMicrosoft.userId],
 	}),
 	refreshTokens: many(refreshTokens),
+	createdUjian: many(ujian),
+	ujianAttempts: many(ujianAttempts),
 }));
