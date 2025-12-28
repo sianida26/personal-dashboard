@@ -192,7 +192,7 @@ export function ServerDataTable<T>({
 	}, [page, perPage, sorting, filters, searchQuery, additionalParams]);
 
 	// Fetch data from server
-	const { data, isLoading, isFetching, error } = useQuery({
+	const { data, isLoading, isFetching, error, refetch } = useQuery({
 		queryKey: [...queryKey, queryParams],
 		queryFn: async () => {
 			const response = await fetchFn(endpoint({ query: queryParams }));
@@ -266,6 +266,7 @@ export function ServerDataTable<T>({
 			isLoading={isLoading}
 			isRevalidating={isFetching && !isLoading}
 			error={error as Error | null}
+			onRetry={() => refetch()}
 			// Pass through remaining props
 			{...tableProps}
 		/>

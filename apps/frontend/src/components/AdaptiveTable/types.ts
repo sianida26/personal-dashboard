@@ -179,10 +179,15 @@ export type AdaptiveTableProps<T> = {
 	 */
 	loading?: boolean;
 	/**
-	 * Error object to display in the table
-	 * If provided, shows an error row with the message
+	 * Error object to display when data fetching fails
+	 * If provided, replaces the table with an elegant error display
 	 */
 	error?: Error | null;
+	/**
+	 * Callback function to retry fetching data when error occurs
+	 * If provided, shows a "Retry" button in the error display
+	 */
+	onRetry?: () => void;
 	/**
 	 * Show "Updating..." indicator while revalidating (stale-while-revalidate pattern)
 	 * @default false
