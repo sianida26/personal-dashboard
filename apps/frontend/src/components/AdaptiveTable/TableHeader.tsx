@@ -42,6 +42,8 @@ interface TableHeaderProps<T> {
 	search: boolean;
 	searchValue: string;
 	onSearchChange: (value: string) => void;
+	// Reset settings
+	onResetSettings?: () => void;
 }
 
 export function TableHeader<T>({
@@ -58,6 +60,7 @@ export function TableHeader<T>({
 	onGroupByChange,
 	paginationType,
 	sortable,
+	onResetSettings,
 	sorting,
 	onSortingChange,
 	headerActions,
@@ -214,6 +217,7 @@ export function TableHeader<T>({
 							sorting={sorting}
 							onSortingChange={onSortingChange}
 							labels={labels}
+							onResetSettings={onResetSettings}
 						/>
 					)}
 					{headerActions ? (

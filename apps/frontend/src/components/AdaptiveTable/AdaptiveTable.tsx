@@ -195,6 +195,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		setFilters,
 		searchQuery: searchValue,
 		setSearchQuery: setSearchValue,
+		resetSettings,
 	} = useTableState({
 		saveStateKey: props.saveState,
 		defaultColumnOrder: columnsWithDetail.map((c) => c.id as string),
@@ -1120,6 +1121,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 				search={search}
 				searchValue={searchValue}
 				onSearchChange={setSearchValue}
+				onResetSettings={props.saveState ? resetSettings : undefined}
 			/>
 
 			<div

@@ -80,6 +80,7 @@ export interface TableSettingsLabels {
 	sort?: string;
 	moreOptions?: string;
 	filter?: string;
+	resetSettings?: string;
 }
 
 export type AdaptiveTableProps<T> = {
