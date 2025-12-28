@@ -567,7 +567,8 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		if (props.onSortingChange) {
 			props.onSortingChange(sorting);
 		}
-	}, [sorting, props]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [sorting]);
 
 	/**
 	 * Calculate all column sizes at once at the root table level in a useMemo

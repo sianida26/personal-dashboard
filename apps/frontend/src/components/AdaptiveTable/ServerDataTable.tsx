@@ -213,8 +213,9 @@ export function ServerDataTable<T>({
 	// Handlers
 	const handlePaginationChange = useCallback(
 		(newPerPage: number, newPage: number) => {
-			setPerPage(newPerPage);
-			setPage(newPage);
+			// Batch state updates to prevent multiple re-renders
+			setPerPage((prev) => (newPerPage !== prev ? newPerPage : prev));
+			setPage((prev) => (newPage !== prev ? newPage : prev));
 		},
 		[],
 	);

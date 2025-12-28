@@ -29,6 +29,8 @@ export function TablePagination({
 	const endRecord = Math.min(currentPage * perPage, totalRecords);
 	const [customValue, setCustomValue] = useState("");
 	const [showCustomInput, setShowCustomInput] = useState(false);
+	const [pageInputValue, setPageInputValue] = useState("");
+	const [showPageInput, setShowPageInput] = useState(false);
 
 	// Check if current perPage is in the options
 	const isCustomPerPage = !pageSizeOptions.includes(perPage);
@@ -50,6 +52,26 @@ export function TablePagination({
 		} else if (e.key === "Escape") {
 			setCustomValue("");
 			setShowCustomInput(false);
+		}
+	};
+
+	const handlePageInputSubmit = () => {
+		const value = Number.parseInt(pageInputValue, 10);
+		if (value > 0 && value <= maxPage) {
+			onPageChange(value);
+			setPageInputValue("");
+			setShowPageInput(false);
+		}
+	};
+
+	const handlePageInputKeyDown = (
+		e: React.KeyboardEvent<HTMLInputElement>,
+	) => {
+		if (e.key === "Enter") {
+			handlePageInputSubmit();
+		} else if (e.key === "Escape") {
+			setPageInputValue("");
+			setShowPageInput(false);
 		}
 	};
 
@@ -148,9 +170,50 @@ export function TablePagination({
 				>
 					<ChevronLeft className="h-4 w-4" />
 				</Button>
-				<span className="text-sm px-4">
-					Page {currentPage} of {maxPage}
-				</span>
+				{showPageInput ? (
+					<div className="flex items-center gap-1">
+						<Input
+							type="number"
+							value={pageInputValue}
+							onChange={(e) => setPageInputValue(e.target.value)}
+							onKeyDown={handlePageInputKeyDown}
+							placeholder="Page"
+							className="h-8 w-16 text-sm"
+							classNames={{
+								input: "h-8 text-center",
+							}}
+							min={1}
+							max={maxPage}
+							autoFocus
+							onBlur={() => {
+								setTimeout(() => {
+									setShowPageInput(false);
+									setPageInputValue("");
+								}, 200);
+							}}
+						/>
+						<span className="text-sm text-muted-foreground">
+							of {maxPage}
+						</span>
+						<Button
+							variant="outline"
+							size="sm"
+							className="h-8 px-3 text-sm"
+							onClick={handlePageInputSubmit}
+						>
+							Go
+						</Button>
+					</div>
+				) : (
+					<button
+						type="button"
+						className="text-sm px-4 hover:text-primary cursor-pointer transition-colors"
+						onClick={() => setShowPageInput(true)}
+						disabled={loading}
+					>
+						Page {currentPage} of {maxPage}
+					</button>
+				)}
 				<Button
 					variant="outline"
 					size="icon"
