@@ -30,6 +30,7 @@ import DragAlongCell from "./DragAlongCell";
 import EditableCell from "./EditableCell";
 import type { FilterType } from "./filterEngine";
 import IndeterminateCheckbox from "./IndeterminateCheckbox";
+import { NewItemSheet } from "./NewItemSheet";
 import { TableHeader } from "./TableHeader";
 import TableHeaderCell from "./TableHeaderCell";
 import { TablePagination } from "./TablePagination";
@@ -88,6 +89,9 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 
 	// State for detail view
 	const [detailRowIndex, setDetailRowIndex] = useState<number | null>(null);
+
+	// State for new item sheet
+	const [newItemSheetOpen, setNewItemSheetOpen] = useState(false);
 
 	// State for row selection
 	const [rowSelection, setRowSelection] = useState<Record<string, boolean>>(
@@ -1122,6 +1126,13 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 				searchValue={searchValue}
 				onSearchChange={setSearchValue}
 				onResetSettings={props.saveState ? resetSettings : undefined}
+				newButton={props.headerActions ? false : props.newButton}
+				onNewButtonClick={
+					props.headerActions
+						? undefined
+						: (props.onNewButtonClick ??
+							(() => setNewItemSheetOpen(true)))
+				}
 			/>
 
 			<div
@@ -1172,6 +1183,16 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 					detailRowIndex={detailRowIndex}
 				/>
 			)}
+
+			{/* New Item Sheet */}
+			<NewItemSheet
+				open={newItemSheetOpen}
+				onOpenChange={setNewItemSheetOpen}
+				fields={props.newItemFields}
+				columns={columnsWithIds}
+				title={props.newItemDrawerTitle ?? "Create New Item"}
+				onSave={props.onCreateItem}
+			/>
 		</div>
 	);
 }

@@ -152,6 +152,7 @@ function RouteComponent() {
 					columnOrderable
 					columnResizable
 					rowVirtualization
+					paginationType="server"
 					title="Chemical Elements"
 					rowSelectable
 					fitToParentWidth
@@ -160,6 +161,7 @@ function RouteComponent() {
 							`Action: ${action} on row with Atomic #${row.length}`,
 						);
 					}}
+					newButton
 					saveState="chemical-elements-table"
 					// isRevalidating={true}
 					// loading={true}

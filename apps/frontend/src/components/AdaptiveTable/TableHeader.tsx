@@ -44,6 +44,9 @@ interface TableHeaderProps<T> {
 	onSearchChange: (value: string) => void;
 	// Reset settings
 	onResetSettings?: () => void;
+	// New button props
+	newButton?: ReactNode | boolean;
+	onNewButtonClick?: () => void;
 }
 
 export function TableHeader<T>({
@@ -75,6 +78,8 @@ export function TableHeader<T>({
 	search,
 	searchValue,
 	onSearchChange,
+	newButton = true,
+	onNewButtonClick,
 }: TableHeaderProps<T>) {
 	if (!showHeader) return null;
 
@@ -222,8 +227,15 @@ export function TableHeader<T>({
 					)}
 					{headerActions ? (
 						headerActions
+					) : newButton === false ? null : typeof newButton ===
+						"boolean" ? (
+						<Button size="sm" onClick={onNewButtonClick}>
+							New
+						</Button>
 					) : (
-						<Button size="sm">New</Button>
+						// biome-ignore lint/a11y/useKeyWithClickEvents: onClick wrapper for custom ReactNode
+						// biome-ignore lint/a11y/noStaticElementInteractions: onClick wrapper for custom ReactNode
+						<span onClick={onNewButtonClick}>{newButton}</span>
 					)}
 				</div>
 			</div>
