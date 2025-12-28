@@ -25,6 +25,14 @@ export function saveTableState(saveKey: string, state: TableState): void {
 	}
 }
 
+export function resetTableState(saveKey: string): void {
+	try {
+		localStorage.removeItem(getStorageKey(saveKey));
+	} catch (error) {
+		console.error("Failed to reset table state:", error);
+	}
+}
+
 export function ensureColumnIds<T>(
 	columns: AdaptiveColumnDef<T>[],
 ): AdaptiveColumnDef<T>[] {

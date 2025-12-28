@@ -80,6 +80,7 @@ export interface TableSettingsLabels {
 	sort?: string;
 	moreOptions?: string;
 	filter?: string;
+	resetSettings?: string;
 }
 
 export type AdaptiveTableProps<T> = {
@@ -155,6 +156,11 @@ export type AdaptiveTableProps<T> = {
 	 * @default "client"
 	 */
 	paginationType?: "client" | "server";
+	/**
+	 * Options for page size selector
+	 * @default [10, 20, 50, 100]
+	 */
+	pageSizeOptions?: number[];
 	/** Callback when pagination changes (perPage or page) */
 	onPaginationChange?: (perPage: number, currentPage: number) => void;
 	/** Current page number (for server-side pagination) */
@@ -172,6 +178,16 @@ export type AdaptiveTableProps<T> = {
 	 * @deprecated Use isLoading instead
 	 */
 	loading?: boolean;
+	/**
+	 * Error object to display when data fetching fails
+	 * If provided, replaces the table with an elegant error display
+	 */
+	error?: Error | null;
+	/**
+	 * Callback function to retry fetching data when error occurs
+	 * If provided, shows a "Retry" button in the error display
+	 */
+	onRetry?: () => void;
 	/**
 	 * Show "Updating..." indicator while revalidating (stale-while-revalidate pattern)
 	 * @default false
@@ -220,7 +236,55 @@ export type AdaptiveTableProps<T> = {
 	fitToParentHeight?: boolean;
 	/** Custom labels for table settings menu */
 	labels?: Partial<TableSettingsLabels>;
+	/**
+	 * Control the "New" button display
+	 * - false: Hide the button
+	 * - true: Show default "New" button
+	 * - ReactNode: Custom button content
+	 * @default true
+	 */
+	newButton?: ReactNode | boolean;
+	/**
+	 * Callback when the "New" button is clicked.
+	 * If not provided, default behavior is to show a drawer for creating new item.
+	 */
+	onNewButtonClick?: () => void;
+	/**
+	 * Callback when creating a new item from the default drawer.
+	 * Only used when onNewButtonClick is not provided.
+	 * Should return a promise that resolves on success or throws on error.
+	 * @param data - The form data from the drawer
+	 */
+	onCreateItem?: (data: Record<string, unknown>) => Promise<void>;
+	/**
+	 * Field definitions for the "New" item drawer form.
+	 * If not provided, fields are auto-generated from column definitions.
+	 * Columns with `editable: true` or `editType` will be included.
+	 */
+	newItemFields?: NewItemField[];
+	/**
+	 * Title for the "New" item drawer
+	 * @default "Create New Item"
+	 */
+	newItemDrawerTitle?: string;
 };
+
+export interface NewItemField {
+	/** Field name/key */
+	name: string;
+	/** Field label */
+	label: string;
+	/** Field type */
+	type: "text" | "number" | "select" | "checkbox" | "textarea" | "password";
+	/** Whether the field is required */
+	required?: boolean;
+	/** Placeholder text */
+	placeholder?: string;
+	/** Default value */
+	defaultValue?: unknown;
+	/** Options for select type */
+	options?: Array<{ label: string; value: string | number }>;
+}
 
 export interface TableState {
 	columnOrder?: string[];

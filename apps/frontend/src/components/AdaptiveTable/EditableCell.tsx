@@ -85,7 +85,10 @@ const EditableCellComponent = <T,>({
 				<PopoverTrigger asChild>
 					<button
 						type="button"
-						onClick={() => setIsEditing(true)}
+						onClick={(e) => {
+							e.stopPropagation();
+							setIsEditing(true);
+						}}
 						className="cursor-pointer hover:bg-accent/50 py-1 flex items-center justify-between w-full text-left group"
 					>
 						<Badge
@@ -153,6 +156,9 @@ const EditableCellComponent = <T,>({
 				onChange={(e) => setEditValue(e.target.value)}
 				onBlur={handleSave}
 				onKeyDown={handleKeyDown}
+				onClick={(e) => e.stopPropagation()}
+				// biome-ignore lint/a11y/noAutofocus: Editable cell needs autoFocus for better UX when entering edit mode
+				autoFocus
 				className="w-full bg-transparent py-1 text-sm outline-none focus:outline-none focus:ring-0 leading-normal"
 			/>
 		);
@@ -163,7 +169,10 @@ const EditableCellComponent = <T,>({
 		// biome-ignore lint/a11y/noStaticElementInteractions: Editable cell needs onClick for editing
 		// biome-ignore lint/a11y/useKeyWithClickEvents: Editable cell needs onClick for editing
 		<div
-			onClick={() => setIsEditing(true)}
+			onClick={(e) => {
+				e.stopPropagation();
+				setIsEditing(true);
+			}}
 			className="cursor-text py-1 w-full text-sm leading-normal"
 		>
 			{displayValue}

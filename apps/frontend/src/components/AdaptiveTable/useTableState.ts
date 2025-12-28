@@ -2,7 +2,7 @@ import type { SortingState } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import type { FilterState } from "./filterEngine";
 import type { TableState } from "./types";
-import { loadTableState, saveTableState } from "./utils";
+import { loadTableState, resetTableState, saveTableState } from "./utils";
 
 interface UseTableStateOptions {
 	saveStateKey?: string;
@@ -43,6 +43,7 @@ interface UseTableStateReturn {
 	setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
 	searchQuery: string;
 	setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+	resetSettings: () => void;
 }
 
 export function useTableState({
@@ -295,6 +296,24 @@ export function useTableState({
 		enableSearch,
 	]);
 
+	const resetSettings = () => {
+		if (saveStateKey) {
+			// Reset all states to default
+			setColumnOrder(defaultColumnOrder);
+			setColumnSizing({});
+			setColumnVisibility({});
+			setGroupBy(null);
+			setExpandedGroups({});
+			setPerPage(10);
+			setSorting([]);
+			setFilters([]);
+			setSearchQuery("");
+
+			// Clear from localStorage
+			resetTableState(saveStateKey);
+		}
+	};
+
 	return {
 		columnOrder,
 		setColumnOrder,
@@ -314,5 +333,6 @@ export function useTableState({
 		setFilters,
 		searchQuery,
 		setSearchQuery,
+		resetSettings,
 	};
 }

@@ -23,13 +23,15 @@ import {
 	useReactTable,
 } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { ChevronRight, Loader2 } from "lucide-react";
+import { AlertCircle, ChevronRight, Loader2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import FormResponseError from "@/errors/FormResponseError";
 import { DetailSheet } from "./DetailSheet";
 import DragAlongCell from "./DragAlongCell";
 import EditableCell from "./EditableCell";
 import type { FilterType } from "./filterEngine";
 import IndeterminateCheckbox from "./IndeterminateCheckbox";
+import { NewItemSheet } from "./NewItemSheet";
 import { TableHeader } from "./TableHeader";
 import TableHeaderCell from "./TableHeaderCell";
 import { TablePagination } from "./TablePagination";
@@ -61,6 +63,8 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	const fitToParentWidth = props.fitToParentWidth ?? false;
 	const filterable = props.filterable ?? true;
 	const search = props.search ?? true;
+	const error = props.error;
+	const onRetry = props.onRetry;
 
 	// Reference for the scrollable container
 	const tableContainerRef = useRef<HTMLDivElement>(null);
@@ -88,6 +92,9 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 
 	// State for detail view
 	const [detailRowIndex, setDetailRowIndex] = useState<number | null>(null);
+
+	// State for new item sheet
+	const [newItemSheetOpen, setNewItemSheetOpen] = useState(false);
 
 	// State for row selection
 	const [rowSelection, setRowSelection] = useState<Record<string, boolean>>(
@@ -195,6 +202,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		setFilters,
 		searchQuery: searchValue,
 		setSearchQuery: setSearchValue,
+		resetSettings,
 	} = useTableState({
 		saveStateKey: props.saveState,
 		defaultColumnOrder: columnsWithDetail.map((c) => c.id as string),
@@ -559,7 +567,8 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		if (props.onSortingChange) {
 			props.onSortingChange(sorting);
 		}
-	}, [sorting, props]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [sorting]);
 
 	/**
 	 * Calculate all column sizes at once at the root table level in a useMemo
@@ -751,330 +760,486 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	};
 
 	// Render table content (unified for both orderable and regular tables)
-	const renderTableContent = () => (
-		<table
-			className="border-collapse table-themed"
-			style={{
-				...columnSizeVars,
-				...(rowVirtualization && !loading && !groupBy
-					? { display: "grid" }
-					: {}),
-				// table-layout: fixed is required for column resizing to work properly
-				// Without it, browser auto-calculates widths and ignores explicit width settings
-				tableLayout:
-					props.columnResizable || fitToParentWidth
-						? "fixed"
-						: undefined,
-				// Set explicit table width to the sum of all column sizes for precise resizing
-				width: props.columnResizable
-					? table.getTotalSize()
-					: fitToParentWidth
-						? "100%"
-						: undefined,
-				minWidth: props.columnResizable
-					? table.getTotalSize()
-					: undefined,
-			}}
-		>
-			<thead
-				style={
-					rowVirtualization && !loading && !groupBy
-						? {
-								display: "grid",
-								position: "sticky",
-								top: 0,
-								zIndex: 1,
-								backgroundColor: "white",
-							}
-						: undefined
-				}
-			>
-				{table.getHeaderGroups().map((headerGroup) => (
-					<tr
-						key={headerGroup.id}
-						style={
-							rowVirtualization && !loading && !groupBy
-								? { display: "flex", width: "100%" }
-								: undefined
-						}
-					>
-						{props.columnOrderable ? (
-							<SortableContext
-								items={columnOrder}
-								strategy={horizontalListSortingStrategy}
-							>
-								{headerGroup.headers.map((header) => (
-									<TableHeaderCell
-										key={header.id}
-										header={header}
-										draggable={true}
-										columnResizable={props.columnResizable}
-										columnVisibilityToggle={
-											columnVisibilityToggle
-										}
-										groupable={groupable}
-										groupBy={groupBy}
-										onGroupByChange={setGroupBy}
-										paginationType={paginationType}
-										sortable={sortable}
-										virtualized={
-											rowVirtualization &&
-											!loading &&
-											!groupBy
-										}
-										fitToParentWidth={fitToParentWidth}
-										proportionalWidth={getProportionalWidth(
-											header.column.id,
-											header.getSize(),
+	const renderTableContent = () => {
+		// Show error display in place of table content while keeping headers/footers
+		if (error) {
+			return (
+				<div className="flex items-center justify-center min-h-[400px] p-8">
+					<div className="max-w-md w-full">
+						<div className="bg-white dark:bg-gray-900 rounded-lg border-2 border-red-200 dark:border-red-900/50 shadow-lg p-6">
+							<div className="flex items-start gap-4">
+								<div className="flex-shrink-0">
+									<div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
+										<AlertCircle className="h-6 w-6 text-red-600 dark:text-red-400" />
+									</div>
+								</div>
+								<div className="flex-1 min-w-0">
+									<h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+										Failed to Load Data
+									</h3>
+									<p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+										{error.message}
+									</p>
+									{(error as { errorCode?: string })
+										.errorCode && (
+										<div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 mb-3">
+											Error Code:{" "}
+											{
+												(
+													error as {
+														errorCode?: string;
+													}
+												).errorCode
+											}
+										</div>
+									)}
+									{error instanceof FormResponseError &&
+										error.formErrors && (
+											<div className="mt-3 p-3 bg-red-50 dark:bg-red-900/10 rounded-md border border-red-200 dark:border-red-900/30">
+												<p className="text-xs font-medium text-red-900 dark:text-red-200 mb-2">
+													Validation Errors:
+												</p>
+												<ul className="space-y-1.5">
+													{Object.entries(
+														error.formErrors,
+													).map(
+														([field, message]) => (
+															<li
+																key={field}
+																className="text-xs text-red-800 dark:text-red-300"
+															>
+																<span className="font-semibold">
+																	{field}:
+																</span>{" "}
+																{message}
+															</li>
+														),
+													)}
+												</ul>
+											</div>
 										)}
-									/>
-								))}
-							</SortableContext>
-						) : (
-							headerGroup.headers.map((header) => (
-								<TableHeaderCell
-									key={header.id}
-									header={header}
-									draggable={false}
-									columnResizable={props.columnResizable}
-									columnVisibilityToggle={
-										columnVisibilityToggle
-									}
-									groupable={groupable}
-									groupBy={groupBy}
-									onGroupByChange={setGroupBy}
-									paginationType={paginationType}
-									sortable={sortable}
-									virtualized={
+									{onRetry && (
+										<div className="mt-4 flex gap-2">
+											<button
+												type="button"
+												onClick={onRetry}
+												className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
+											>
+												<svg
+													className="-ml-0.5 mr-2 h-4 w-4"
+													fill="none"
+													viewBox="0 0 24 24"
+													stroke="currentColor"
+													aria-hidden="true"
+												>
+													<title>Retry Icon</title>
+													<path
+														strokeLinecap="round"
+														strokeLinejoin="round"
+														strokeWidth={2}
+														d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+													/>
+												</svg>
+												Try Again
+											</button>
+										</div>
+									)}
+									{!onRetry && (
+										<p className="mt-4 text-xs text-gray-500">
+											Please try changing filters, search,
+											or pagination settings above to
+											resolve the issue.
+										</p>
+									)}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			);
+		}
+
+		// Normal table rendering
+		return (
+			<div className="relative">
+				{/* Sticky Header Table */}
+				<div
+					className="sticky top-0 z-10 bg-background"
+					style={{
+						boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+					}}
+				>
+					<table
+						className="border-collapse table-themed w-full"
+						style={{
+							...columnSizeVars,
+							tableLayout:
+								props.columnResizable || fitToParentWidth
+									? "fixed"
+									: undefined,
+							width: props.columnResizable
+								? table.getTotalSize()
+								: fitToParentWidth
+									? "100%"
+									: undefined,
+							minWidth: props.columnResizable
+								? table.getTotalSize()
+								: undefined,
+						}}
+					>
+						<thead>
+							{table.getHeaderGroups().map((headerGroup) => (
+								<tr
+									key={headerGroup.id}
+									style={
 										rowVirtualization &&
 										!loading &&
 										!groupBy
+											? { display: "flex", width: "100%" }
+											: undefined
 									}
-									fitToParentWidth={fitToParentWidth}
-									proportionalWidth={getProportionalWidth(
-										header.column.id,
-										header.getSize(),
-									)}
-								/>
-							))
-						)}
-					</tr>
-				))}
-			</thead>
-			<tbody
-				className="border-b"
-				style={
-					rowVirtualization && !loading && !groupBy
-						? {
-								display: "grid",
-								height: `${rowVirtualizer.getTotalSize()}px`,
-								position: "relative",
-							}
-						: undefined
-				}
-			>
-				{loading ? (
-					// Render skeleton loader
-					renderSkeletonRows(
-						table.getHeaderGroups()[0]?.headers.length ?? 1,
-					)
-				) : rowVirtualization && !groupBy ? (
-					// Render virtualized rows - wrap in SortableContext for column ordering
-					props.columnOrderable ? (
-						<SortableContext
-							items={columnOrder}
-							strategy={horizontalListSortingStrategy}
-						>
-							{rowVirtualizer
-								.getVirtualItems()
-								.map((virtualRow) => {
-									const row = rows[virtualRow.index];
-									if (!row) return null;
-
-									return (
-										<tr
-											key={row.id}
-											data-index={virtualRow.index}
-											data-selected={row.getIsSelected()}
-											className={`group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""} ${showDetail ? "cursor-pointer" : ""}`}
-											onClick={(e) =>
-												handleRowClick(
-													e,
-													row.original,
-													virtualRow.index,
-												)
-											}
-											style={{
-												display: "flex",
-												position: "absolute",
-												top: 0,
-												left: 0,
-												width: "100%",
-												height: `${rowHeight}px`,
-												transform: `translateY(${virtualRow.start}px)`,
-												contain: "layout style paint",
-												willChange: "transform",
-											}}
-										>
-											{row
-												.getVisibleCells()
-												.map((cell) =>
-													renderCell(
-														cell,
-														virtualRow.index,
-														true,
-													),
-												)}
-										</tr>
-									);
-								})}
-						</SortableContext>
-					) : (
-						rowVirtualizer.getVirtualItems().map((virtualRow) => {
-							const row = rows[virtualRow.index];
-							if (!row) return null;
-
-							return (
-								<tr
-									key={row.id}
-									data-index={virtualRow.index}
-									data-selected={row.getIsSelected()}
-									className={`group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""} ${showDetail ? "cursor-pointer" : ""}`}
-									onClick={(e) =>
-										handleRowClick(
-											e,
-											row.original,
-											virtualRow.index,
-										)
-									}
-									style={{
-										display: "flex",
-										position: "absolute",
-										top: 0,
-										left: 0,
-										width: "100%",
-										height: `${rowHeight}px`,
-										transform: `translateY(${virtualRow.start}px)`,
-										contain: "layout style paint",
-										willChange: "transform",
-									}}
 								>
-									{row
-										.getVisibleCells()
-										.map((cell) =>
-											renderCell(
-												cell,
-												virtualRow.index,
-												true,
-											),
-										)}
-								</tr>
-							);
-						})
-					)
-				) : groupedData && groupBy ? (
-					// Render grouped rows
-					Array.from(groupedData.entries()).map(
-						([groupValue, groupItems]) => {
-							const isExpanded =
-								expandedGroups[groupValue] ?? true;
-							const columnCount =
-								table.getHeaderGroups()[0]?.headers.length ?? 1;
-
-							return (
-								<>
-									<tr
-										key={`group-${groupValue}`}
-										className="bg-muted/50 hover:bg-muted/70 transition-colors"
-									>
-										<td
-											colSpan={columnCount}
-											className="border-t border-x px-3 py-2"
+									{props.columnOrderable ? (
+										<SortableContext
+											items={columnOrder}
+											strategy={
+												horizontalListSortingStrategy
+											}
 										>
-											<button
-												type="button"
-												onClick={() =>
-													toggleGroup(groupValue)
+											{headerGroup.headers.map(
+												(header) => (
+													<TableHeaderCell
+														key={header.id}
+														header={header}
+														draggable={true}
+														columnResizable={
+															props.columnResizable
+														}
+														columnVisibilityToggle={
+															columnVisibilityToggle
+														}
+														groupable={groupable}
+														groupBy={groupBy}
+														onGroupByChange={
+															setGroupBy
+														}
+														paginationType={
+															paginationType
+														}
+														sortable={sortable}
+														virtualized={
+															rowVirtualization &&
+															!loading &&
+															!groupBy
+														}
+														fitToParentWidth={
+															fitToParentWidth
+														}
+														proportionalWidth={getProportionalWidth(
+															header.column.id,
+															header.getSize(),
+														)}
+													/>
+												),
+											)}
+										</SortableContext>
+									) : (
+										headerGroup.headers.map((header) => (
+											<TableHeaderCell
+												key={header.id}
+												header={header}
+												draggable={false}
+												columnResizable={
+													props.columnResizable
 												}
-												className="flex items-center gap-2 w-full text-left font-medium text-sm"
-											>
-												<ChevronRight
-													className={`text-primary h-4 w-4 text-sm transition-transform ${
-														isExpanded
-															? "rotate-90"
-															: ""
-													}`}
-												/>
-												<span className="text-sm">
-													{groupValue} (
-													{groupItems.length})
-												</span>
-											</button>
-										</td>
-									</tr>
-									{isExpanded &&
-										groupItems.map((item) => {
-											// Find the original index in props.data
-											const originalIndex =
-												props.data.indexOf(item);
-											const rows =
-												table.getRowModel().rows;
-											const row = rows[originalIndex];
+												columnVisibilityToggle={
+													columnVisibilityToggle
+												}
+												groupable={groupable}
+												groupBy={groupBy}
+												onGroupByChange={setGroupBy}
+												paginationType={paginationType}
+												sortable={sortable}
+												virtualized={
+													rowVirtualization &&
+													!loading &&
+													!groupBy
+												}
+												fitToParentWidth={
+													fitToParentWidth
+												}
+												proportionalWidth={getProportionalWidth(
+													header.column.id,
+													header.getSize(),
+												)}
+											/>
+										))
+									)}
+								</tr>
+							))}
+						</thead>
+					</table>
+				</div>
+
+				{/* Body Table */}
+				<table
+					className="border-collapse table-themed"
+					style={{
+						...columnSizeVars,
+						...(rowVirtualization && !loading && !groupBy
+							? { display: "grid" }
+							: {}),
+						tableLayout:
+							props.columnResizable || fitToParentWidth
+								? "fixed"
+								: undefined,
+						width: props.columnResizable
+							? table.getTotalSize()
+							: fitToParentWidth
+								? "100%"
+								: undefined,
+						minWidth: props.columnResizable
+							? table.getTotalSize()
+							: undefined,
+					}}
+				>
+					<tbody
+						className="border-b"
+						style={
+							rowVirtualization && !loading && !groupBy
+								? {
+										display: "grid",
+										height: `${rowVirtualizer.getTotalSize()}px`,
+										position: "relative",
+									}
+								: undefined
+						}
+					>
+						{loading ? (
+							// Render skeleton loader
+							renderSkeletonRows(
+								table.getHeaderGroups()[0]?.headers.length ?? 1,
+							)
+						) : rowVirtualization && !groupBy ? (
+							// Render virtualized rows - wrap in SortableContext for column ordering
+							props.columnOrderable ? (
+								<SortableContext
+									items={columnOrder}
+									strategy={horizontalListSortingStrategy}
+								>
+									{rowVirtualizer
+										.getVirtualItems()
+										.map((virtualRow) => {
+											const row = rows[virtualRow.index];
 											if (!row) return null;
 
 											return (
 												<tr
 													key={row.id}
+													data-index={
+														virtualRow.index
+													}
 													data-selected={row.getIsSelected()}
 													className={`group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""} ${showDetail ? "cursor-pointer" : ""}`}
 													onClick={(e) =>
 														handleRowClick(
 															e,
 															row.original,
-															originalIndex,
+															virtualRow.index,
 														)
 													}
+													style={{
+														display: "flex",
+														position: "absolute",
+														top: 0,
+														left: 0,
+														width: "100%",
+														height: `${rowHeight}px`,
+														transform: `translateY(${virtualRow.start}px)`,
+														contain:
+															"layout style paint",
+														willChange: "transform",
+													}}
 												>
 													{row
 														.getVisibleCells()
 														.map((cell) =>
 															renderCell(
 																cell,
-																originalIndex,
-																false,
+																virtualRow.index,
+																true,
 															),
 														)}
 												</tr>
 											);
 										})}
-								</>
-							);
-						},
-					)
-				) : (
-					// Render ungrouped rows
-					table
-						.getRowModel()
-						.rows.map((row, rowIndex) => (
-							<tr
-								key={row.id}
-								data-selected={row.getIsSelected()}
-								className={`group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""} ${showDetail ? "cursor-pointer" : ""}`}
-								onClick={(e) =>
-									handleRowClick(e, row.original, rowIndex)
-								}
-							>
-								{row
-									.getVisibleCells()
-									.map((cell) =>
-										renderCell(cell, rowIndex, false),
-									)}
-							</tr>
-						))
-				)}
-			</tbody>
-		</table>
-	);
+								</SortableContext>
+							) : (
+								rowVirtualizer
+									.getVirtualItems()
+									.map((virtualRow) => {
+										const row = rows[virtualRow.index];
+										if (!row) return null;
+
+										return (
+											<tr
+												key={row.id}
+												data-index={virtualRow.index}
+												data-selected={row.getIsSelected()}
+												className={`group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""} ${showDetail ? "cursor-pointer" : ""}`}
+												onClick={(e) =>
+													handleRowClick(
+														e,
+														row.original,
+														virtualRow.index,
+													)
+												}
+												style={{
+													display: "flex",
+													position: "absolute",
+													top: 0,
+													left: 0,
+													width: "100%",
+													height: `${rowHeight}px`,
+													transform: `translateY(${virtualRow.start}px)`,
+													contain:
+														"layout style paint",
+													willChange: "transform",
+												}}
+											>
+												{row
+													.getVisibleCells()
+													.map((cell) =>
+														renderCell(
+															cell,
+															virtualRow.index,
+															true,
+														),
+													)}
+											</tr>
+										);
+									})
+							)
+						) : groupedData && groupBy ? (
+							// Render grouped rows
+							Array.from(groupedData.entries()).map(
+								([groupValue, groupItems]) => {
+									const isExpanded =
+										expandedGroups[groupValue] ?? true;
+									const columnCount =
+										table.getHeaderGroups()[0]?.headers
+											.length ?? 1;
+
+									return (
+										<>
+											<tr
+												key={`group-${groupValue}`}
+												className="bg-muted/50 hover:bg-muted/70 transition-colors"
+											>
+												<td
+													colSpan={columnCount}
+													className="border-t border-x px-3 py-2"
+												>
+													<button
+														type="button"
+														onClick={() =>
+															toggleGroup(
+																groupValue,
+															)
+														}
+														className="flex items-center gap-2 w-full text-left font-medium text-sm"
+													>
+														<ChevronRight
+															className={`text-primary h-4 w-4 text-sm transition-transform ${
+																isExpanded
+																	? "rotate-90"
+																	: ""
+															}`}
+														/>
+														<span className="text-sm">
+															{groupValue} (
+															{groupItems.length})
+														</span>
+													</button>
+												</td>
+											</tr>
+											{isExpanded &&
+												groupItems.map((item) => {
+													// Find the original index in props.data
+													const originalIndex =
+														props.data.indexOf(
+															item,
+														);
+													const rows =
+														table.getRowModel()
+															.rows;
+													const row =
+														rows[originalIndex];
+													if (!row) return null;
+
+													return (
+														<tr
+															key={row.id}
+															data-selected={row.getIsSelected()}
+															className={`group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""} ${showDetail ? "cursor-pointer" : ""}`}
+															onClick={(e) =>
+																handleRowClick(
+																	e,
+																	row.original,
+																	originalIndex,
+																)
+															}
+														>
+															{row
+																.getVisibleCells()
+																.map((cell) =>
+																	renderCell(
+																		cell,
+																		originalIndex,
+																		false,
+																	),
+																)}
+														</tr>
+													);
+												})}
+										</>
+									);
+								},
+							)
+						) : (
+							// Render ungrouped rows
+							table
+								.getRowModel()
+								.rows.map((row, rowIndex) => (
+									<tr
+										key={row.id}
+										data-selected={row.getIsSelected()}
+										className={`group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""} ${showDetail ? "cursor-pointer" : ""}`}
+										onClick={(e) =>
+											handleRowClick(
+												e,
+												row.original,
+												rowIndex,
+											)
+										}
+									>
+										{row
+											.getVisibleCells()
+											.map((cell) =>
+												renderCell(
+													cell,
+													rowIndex,
+													false,
+												),
+											)}
+									</tr>
+								))
+						)}
+					</tbody>
+				</table>
+			</div>
+		);
+	};
 
 	// Unified render
 	return (
@@ -1120,11 +1285,20 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 				search={search}
 				searchValue={searchValue}
 				onSearchChange={setSearchValue}
+				onResetSettings={props.saveState ? resetSettings : undefined}
+				newButton={props.headerActions ? false : props.newButton}
+				onNewButtonClick={
+					props.headerActions
+						? undefined
+						: (props.onNewButtonClick ??
+							(() => setNewItemSheetOpen(true)))
+				}
 			/>
 
 			<div
 				ref={tableContainerRef}
 				className="flex-1 min-h-0 overflow-auto relative"
+				style={{ overflow: "auto" }}
 			>
 				{props.columnOrderable ? (
 					<DndContext
@@ -1155,6 +1329,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 					loading={loading}
 					onPageChange={handlePageChange}
 					onPerPageChange={handlePaginationChange}
+					pageSizeOptions={props.pageSizeOptions}
 				/>
 			)}
 
@@ -1170,6 +1345,16 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 					detailRowIndex={detailRowIndex}
 				/>
 			)}
+
+			{/* New Item Sheet */}
+			<NewItemSheet
+				open={newItemSheetOpen}
+				onOpenChange={setNewItemSheetOpen}
+				fields={props.newItemFields}
+				columns={columnsWithIds}
+				title={props.newItemDrawerTitle ?? "Create New Item"}
+				onSave={props.onCreateItem}
+			/>
 		</div>
 	);
 }

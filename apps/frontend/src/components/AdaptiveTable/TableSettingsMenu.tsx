@@ -18,6 +18,7 @@ import {
 	Eye,
 	Group,
 	Minus,
+	RotateCcw,
 	Settings,
 	X,
 } from "lucide-react";
@@ -34,6 +35,7 @@ interface TableSettingsMenuProps<T> {
 	sorting: SortingState;
 	onSortingChange: (sorting: SortingState) => void;
 	labels?: Partial<TableSettingsLabels>;
+	onResetSettings?: () => void;
 }
 
 export function TableSettingsMenu<T>({
@@ -47,6 +49,7 @@ export function TableSettingsMenu<T>({
 	sorting,
 	onSortingChange,
 	labels,
+	onResetSettings,
 }: TableSettingsMenuProps<T>) {
 	const getColumnLabel = (
 		column: ReturnType<Table<T>["getAllLeafColumns"]>[0],
@@ -325,6 +328,22 @@ export function TableSettingsMenu<T>({
 							})}
 						</DropdownMenuSubContent>
 					</DropdownMenuSub>
+				)}
+
+				{/* Reset Settings */}
+				{onResetSettings && (
+					<>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem
+							className="gap-2 text-destructive"
+							onSelect={() => onResetSettings()}
+						>
+							<RotateCcw className="h-4 w-4" />
+							<span>
+								{labels?.resetSettings || "Reset Settings"}
+							</span>
+						</DropdownMenuItem>
+					</>
 				)}
 			</DropdownMenuContent>
 		</DropdownMenu>

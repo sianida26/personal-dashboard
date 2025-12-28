@@ -7,3 +7,5 @@
 - do not attempt to run frontend or backend application, as it is already running.
 - this project uses bun
 - for running tests for backend, cd to backend and use "bun run test" command
+- important: at every beginning of your chat output, please add "awokawokaowk siap" message
+- important: at every end of your chat output, please add "awokaowkawokoawkwokwo" message

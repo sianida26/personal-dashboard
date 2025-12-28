@@ -1,34 +1,25 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
 	type AdaptiveColumnDef,
-	AdaptiveTable,
+	ServerDataTable,
 } from "@/components/AdaptiveTable";
+import client from "@/honoClient";
 import { usePermissions } from "@/hooks/useAuth";
-import {
-	type ChemicalElement,
-	chemicalElements,
-} from "@/utils/tempChemicalElements";
+import fetchRPC from "@/utils/fetchRPC";
+import type { ChemicalElement } from "@/utils/tempChemicalElements";
 
 export const Route = createFileRoute("/_dashboardLayout/dev")({
 	component: RouteComponent,
 });
 
-// TODO: Make this page inacessible
+const SAVE_STATE_KEY = "chemical-elements-table";
 
 function RouteComponent() {
 	usePermissions("dev-routes");
 
-	const [data, setData] = useState(chemicalElements);
-
 	const handleEdit = (rowIndex: number, columnId: string, value: unknown) => {
-		setData((prevData) => {
-			const newData = [...prevData];
-			// biome-ignore lint/suspicious/noExplicitAny: Dynamic property access
-			(newData[rowIndex] as any)[columnId] = value;
-			return newData;
-		});
-		alert("Updated!");
+		alert(`Edit row ${rowIndex}, column ${columnId} to ${value}`);
 	};
 
 	const columns = useMemo<AdaptiveColumnDef<ChemicalElement>[]>(
@@ -142,27 +133,35 @@ function RouteComponent() {
 
 	return (
 		<div className="p-4 h-full flex flex-col overflow-hidden">
-			<h1 className="text-2xl font-bold mb-4 flex-shrink-0">
-				Chemical Elements Table
-			</h1>
 			<div className="flex-1 min-h-0">
-				<AdaptiveTable
+				<ServerDataTable
+					// Data fetching
+					endpoint={client.dev.$get}
+					queryKey={["dev-chemical-elements"]}
+					fetchFn={fetchRPC}
+					// Table configuration
 					columns={columns}
-					data={data}
+					saveState={SAVE_STATE_KEY}
+					title="Chemical Elements"
+					// Pagination
+					pagination
+					pageSizeOptions={[10, 25, 50, 100, 250]}
+					// Features
 					columnOrderable
 					columnResizable
 					rowVirtualization
-					title="Chemical Elements"
+					sortable
+					filterable
+					search
 					rowSelectable
 					fitToParentWidth
+					newButton
+					// Callbacks
 					onSelectAction={(row, action) => {
 						alert(
 							`Action: ${action} on row with Atomic #${row.length}`,
 						);
 					}}
-					saveState="chemical-elements-table"
-					// isRevalidating={true}
-					// loading={true}
 				/>
 			</div>
 		</div>
