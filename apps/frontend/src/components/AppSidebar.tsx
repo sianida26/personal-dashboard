@@ -343,7 +343,7 @@ export default function AppSidebar() {
 								<DropdownMenuItem asChild>
 									<Link
 										// biome-ignore lint/suspicious/noExplicitAny: <>
-										to={"/dashboard/personal-data" as any}
+										to={"/personal-data" as any}
 										className="dropdown-item"
 									>
 										<TbUser className="h-4 w-4" />
