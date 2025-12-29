@@ -11,11 +11,12 @@ import {
 	Textarea,
 } from "@repo/ui";
 import type { updateUjianSchema } from "@repo/validation";
-import { useIsMutating, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useIsMutating, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { TbPlus, TbTrash } from "react-icons/tb";
 import type { z } from "zod";
+import { AddQuestionModal } from "@/components/AddQuestionModal";
 import client from "@/honoClient";
 import fetchRPC from "@/utils/fetchRPC";
 
@@ -30,6 +31,7 @@ function RouteComponent() {
 	const navigate = useNavigate();
 	const queryClient = useQueryClient();
 	const { ujianId: id } = Route.useParams();
+	const [isAddQuestionOpen, setIsAddQuestionOpen] = useState(false);
 	const isMutating = useIsMutating({
 		mutationKey: ["edit-ujian", id],
 	});
@@ -39,6 +41,19 @@ function RouteComponent() {
 	const { data: ujianData, isLoading } = useQuery({
 		queryKey: ["ujian", { id }],
 		queryFn: () => fetchRPC(detailEndpoint({ param: { id } })),
+	});
+
+	const deleteQuestionMutation = useMutation({
+		mutationFn: async (questionId: string) => {
+			await fetchRPC(
+				client.ujian.questions[":id"].$delete({
+					param: { id: questionId },
+				}),
+			);
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["ujian", { id }] });
+		},
 	});
 
 	const form = useForm<z.infer<typeof updateUjianSchema>>({
@@ -275,8 +290,7 @@ function RouteComponent() {
 						</div>
 						<Button
 							onClick={() => {
-								// TODO: Implement add question modal or navigate to question form
-								alert("Add question functionality to be implemented");
+								setIsAddQuestionOpen(true);
 							}}
 						>
 							<TbPlus className="h-4 w-4 mr-2" />
@@ -326,18 +340,18 @@ function RouteComponent() {
 											size="sm"
 											variant="ghost"
 											className="text-destructive hover:text-destructive"
-											onClick={() => {
+											onClick={async () => {
 												if (
 													confirm(
 														"Are you sure you want to delete this question?",
 													)
 												) {
-													// TODO: Delete question
-													alert(
-														"Delete question functionality to be implemented",
+													await deleteQuestionMutation.mutateAsync(
+														question.id,
 													);
 												}
 											}}
+											disabled={deleteQuestionMutation.isPending}
 										>
 											<TbTrash className="h-4 w-4" />
 										</Button>
@@ -352,7 +366,7 @@ function RouteComponent() {
 							</p>
 							<Button
 								onClick={() => {
-									alert("Add question functionality to be implemented");
+									setIsAddQuestionOpen(true);
 								}}
 							>
 								<TbPlus className="h-4 w-4 mr-2" />
@@ -362,6 +376,13 @@ function RouteComponent() {
 					)}
 				</CardContent>
 			</Card>
+
+			<AddQuestionModal
+				open={isAddQuestionOpen}
+				onOpenChange={setIsAddQuestionOpen}
+				ujianId={id}
+				nextOrderIndex={ujianData?.questions?.length || 0}
+			/>
 		</div>
 	);
 }
