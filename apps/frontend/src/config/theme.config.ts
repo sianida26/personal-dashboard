@@ -1,5 +1,4 @@
 import type { ColorScheme, ThemeMode } from "@repo/validation";
-import { color } from "bun";
 
 /**
  * Default theme configuration
