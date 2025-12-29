@@ -16,6 +16,10 @@ export const permissions = [
 	"observability.read",
 	"observability.write",
 	"observability.delete",
+	"ujian.read",
+	"ujian.create",
+	"ujian.update",
+	"ujian.delete",
 ] as const;
 
 export const generalPermissions = ["authenticated-only", "guest-only"] as const;

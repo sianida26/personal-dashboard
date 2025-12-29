@@ -15,6 +15,7 @@ import notificationPreferencesRoute from "./routes/notificationPreferences/route
 import notificationsRoute from "./routes/notifications/route";
 import permissionRoutes from "./routes/permissions/route";
 import rolesRoute from "./routes/roles/route";
+import ujianRoute from "./routes/ujian/route";
 import usersRoute from "./routes/users/route";
 import { jobQueueManager } from "./services/jobs";
 import type HonoEnv from "./types/HonoEnv";
@@ -55,6 +56,7 @@ export const appRoutes = app
 	.route("/permissions", permissionRoutes)
 	.route("/dashboard", dashboardRoutes)
 	.route("/roles", rolesRoute)
+	.route("/ujian", ujianRoute)
 	.route("/dev", devRoutes)
 	.route("/app-settings", appSettingsRoutes)
 	.route("/notifications", notificationsRoute)
