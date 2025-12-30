@@ -62,17 +62,39 @@ function TakeUjianPage() {
 	const [answers, setAnswers] = useState<Map<string, Answer>>(new Map());
 	const [currentAnswer, setCurrentAnswer] = useState<string | string[]>("");
 
-	const { data: attemptData, isLoading } = useQuery({
-		queryKey: ["ujian-attempt", attemptId],
+	// First, get the attempt to find the ujianId
+	const { data: attemptInfo } = useQuery({
+		queryKey: ["attempt-info", attemptId],
 		queryFn: async () => {
+			const response = await client.ujian["my-attempts"].$get({
+				query: { page: "1", limit: "100", status: "all" },
+			});
+			if (!response.ok) {
+				throw new Error("Failed to load attempts");
+			}
+			const data = await response.json();
+			const attempt = data.data?.find((a: any) => a.id === attemptId);
+			if (!attempt) {
+				throw new Error("Attempt not found");
+			}
+			return attempt;
+		},
+		retry: false,
+	});
+
+	const { data: attemptData, isLoading } = useQuery({
+		queryKey: ["ujian-attempt", attemptId, attemptInfo?.ujianId],
+		queryFn: async () => {
+			if (!attemptInfo?.ujianId) return null;
 			const response = await client.ujian[":id"].start.$post({
-				param: { id: attemptId },
+				param: { id: attemptInfo.ujianId },
 			});
 			if (!response.ok) {
 				throw new Error("Failed to load ujian");
 			}
 			return response.json();
 		},
+		enabled: !!attemptInfo?.ujianId,
 		retry: false,
 	});
 
