@@ -43,12 +43,26 @@ interface Question {
 	options: QuestionOption[] | null;
 	points: number | null;
 	userAnswer?: string | string[];
+	isCorrect?: boolean | null;
+	correctAnswer?: string | string[];
+}
+
+interface AttemptData {
+	attemptId: string;
+	ujian: {
+		id: string;
+		title: string;
+		description: string | null;
+		practiceMode: boolean | null;
+	};
+	questions: Question[];
+	isResuming: boolean;
 }
 
 interface Answer {
 	questionId: string;
 	userAnswer: string | string[];
-	isCorrect?: boolean;
+	isCorrect?: boolean | null;
 	correctAnswer?: string | string[];
 }
 
@@ -82,7 +96,7 @@ function TakeUjianPage() {
 		retry: false,
 	});
 
-	const { data: attemptData, isLoading } = useQuery({
+	const { data: attemptData, isLoading } = useQuery<AttemptData | null>({
 		queryKey: ["ujian-attempt", attemptId, attemptInfo?.ujianId],
 		queryFn: async () => {
 			if (!attemptInfo?.ujianId) return null;
@@ -143,6 +157,37 @@ function TakeUjianPage() {
 	const questions = (attemptData?.questions ?? []) as Question[];
 	const currentQuestion = questions[currentQuestionIndex];
 	const practiceMode = attemptData?.ujian?.practiceMode ?? false;
+
+	// Initialize answers from loaded data when attempt data is available
+	useEffect(() => {
+		if (attemptData?.questions && answers.size === 0) {
+			console.log("🔄 Initializing answers from loaded data...");
+			console.log("Questions with userAnswer:", attemptData.questions.filter(q => q.userAnswer).length);
+			
+			const initialAnswers = new Map<string, Answer>();
+			for (const question of attemptData.questions) {
+				if (question.userAnswer) {
+					console.log(`  ✅ Loading answer for question ${question.id}:`, {
+						userAnswer: question.userAnswer,
+						isCorrect: question.isCorrect,
+						correctAnswer: question.correctAnswer,
+					});
+					initialAnswers.set(question.id, {
+						questionId: question.id,
+						userAnswer: question.userAnswer,
+						isCorrect: question.isCorrect,
+						correctAnswer: question.correctAnswer,
+					});
+				}
+			}
+			if (initialAnswers.size > 0) {
+				console.log(`📊 Loaded ${initialAnswers.size} existing answers`);
+				setAnswers(initialAnswers);
+			} else {
+				console.log("ℹ️  No existing answers found");
+			}
+		}
+	}, [attemptData, answers.size]);
 
 	// Load saved answer when question changes
 	useEffect(() => {

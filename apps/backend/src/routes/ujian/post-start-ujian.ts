@@ -110,7 +110,12 @@ const postStartUjianRoute = createHonoRoute()
 				}
 
 				// Remove correct answers from response
-				const sanitizedQuestions = questions.map((q) => ({
+			const sanitizedQuestions = questions.map((q) => {
+				const existingAnswer = existingInProgressAttempt.answers.find(
+					(a) => a.questionId === q.id,
+				);
+				
+				return {
 					id: q.id,
 					questionText: q.questionText,
 					questionType: q.questionType,
@@ -121,11 +126,14 @@ const postStartUjianRoute = createHonoRoute()
 						: q.options,
 					points: q.points,
 					orderIndex: q.orderIndex,
-					userAnswer: existingInProgressAttempt.answers.find(
-						(a) => a.questionId === q.id,
-					)?.userAnswer,
-				}));
-
+					userAnswer: existingAnswer?.userAnswer,
+					// Include answer feedback for practice mode
+					...(ujianData.practiceMode && existingAnswer ? {
+						isCorrect: existingAnswer.isCorrect,
+						correctAnswer: q.correctAnswer,
+					} : {}),
+				};
+			});
 				return c.json({
 					attemptId: existingInProgressAttempt.id,
 					ujian: {
