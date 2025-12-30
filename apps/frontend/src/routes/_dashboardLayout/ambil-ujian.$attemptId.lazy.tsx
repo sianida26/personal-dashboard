@@ -20,6 +20,8 @@ import {
 	TbCircleCheck,
 	TbCircleX,
 	TbFlag,
+	TbLayoutGrid,
+	TbLayoutGridFilled,
 } from "react-icons/tb";
 import client from "@/honoClient";
 import { usePermissions } from "@/hooks/useAuth";
@@ -75,6 +77,7 @@ function TakeUjianPage() {
 	const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 	const [answers, setAnswers] = useState<Map<string, Answer>>(new Map());
 	const [currentAnswer, setCurrentAnswer] = useState<string | string[]>("");
+	const [showQuestionMap, setShowQuestionMap] = useState(true);
 
 	// First, get the attempt to find the ujianId
 	const { data: attemptInfo } = useQuery({
@@ -258,7 +261,13 @@ function TakeUjianPage() {
 		if (!currentQuestion) return null;
 
 		switch (currentQuestion.questionType) {
-			case "mcq":
+			case "mcq": {
+				const correctAnswerArray = Array.isArray(currentSavedAnswer?.correctAnswer)
+					? currentSavedAnswer.correctAnswer
+					: currentSavedAnswer?.correctAnswer
+					? [currentSavedAnswer.correctAnswer]
+					: [];
+				
 				return (
 					<RadioGroup
 						value={currentAnswer as string}
@@ -266,42 +275,46 @@ function TakeUjianPage() {
 						disabled={isAnswered && practiceMode}
 						className="space-y-3"
 					>
-						{currentQuestion.options?.map((option, idx) => (
-							<div
-								key={option.id}
-								className={`flex items-center space-x-3 p-3 rounded-lg border ${
-									isAnswered && practiceMode
-										? option.id === currentSavedAnswer?.correctAnswer
-											? "bg-green-50 border-green-500 dark:bg-green-900/20"
-											: option.id === currentSavedAnswer?.userAnswer &&
-											  !currentSavedAnswer?.isCorrect
-											? "bg-red-50 border-red-500 dark:bg-red-900/20"
-											: ""
-										: "hover:bg-muted"
-								}`}
-							>
-								<RadioGroupItem value={option.id} id={`option-${idx}`} />
-								<label
-									htmlFor={`option-${idx}`}
-									className="flex-1 cursor-pointer"
+						{currentQuestion.options?.map((option, idx) => {
+							const isCorrectOption = correctAnswerArray.includes(option.id);
+							const isUserAnswer = option.id === currentSavedAnswer?.userAnswer;
+
+							return (
+								<div
+									key={option.id}
+									className={`flex items-center space-x-3 p-3 rounded-lg border ${
+										isAnswered && practiceMode
+											? isCorrectOption
+												? "bg-green-50 border-green-500 dark:bg-green-900/20"
+												: isUserAnswer && !currentSavedAnswer?.isCorrect
+												? "bg-red-50 border-red-500 dark:bg-red-900/20"
+												: ""
+											: "hover:bg-muted"
+									}`}
 								>
-									{option.text}
-								</label>
-								{isAnswered && practiceMode && (
-									<>
-										{option.id === currentSavedAnswer?.correctAnswer && (
-											<TbCircleCheck className="h-5 w-5 text-green-600" />
-										)}
-										{option.id === currentSavedAnswer?.userAnswer &&
-											!currentSavedAnswer?.isCorrect && (
+									<RadioGroupItem value={option.id} id={`option-${idx}`} />
+									<label
+										htmlFor={`option-${idx}`}
+										className="flex-1 cursor-pointer"
+									>
+										{option.text}
+									</label>
+									{isAnswered && practiceMode && (
+										<>
+											{isCorrectOption && (
+												<TbCircleCheck className="h-5 w-5 text-green-600" />
+											)}
+											{isUserAnswer && !currentSavedAnswer?.isCorrect && (
 												<TbCircleX className="h-5 w-5 text-red-600" />
 											)}
-									</>
-								)}
-							</div>
-						))}
+										</>
+									)}
+								</div>
+							);
+						})}
 					</RadioGroup>
 				);
+			}
 
 			case "multiple_select":
 				return (
@@ -425,30 +438,53 @@ function TakeUjianPage() {
 			</div>
 
 			{/* Question Navigation */}
-			<div className="flex flex-wrap gap-2">
-				{questions.map((q, idx) => {
-					const answer = answers.get(q.id);
-					return (
+			<Card>
+				<CardHeader className="pb-3">
+					<div className="flex items-center justify-between">
+						<CardTitle className="text-sm font-medium">Navigasi Soal</CardTitle>
 						<Button
-							key={q.id}
-							variant={idx === currentQuestionIndex ? "default" : "outline"}
+							variant="ghost"
 							size="sm"
-							className={`w-10 h-10 ${
-								answer
-									? practiceMode
-										? answer.isCorrect
-											? "bg-green-600 hover:bg-green-700 text-white"
-											: "bg-red-600 hover:bg-red-700 text-white"
-										: "bg-blue-600 hover:bg-blue-700 text-white"
-									: ""
-							}`}
-							onClick={() => setCurrentQuestionIndex(idx)}
+							onClick={() => setShowQuestionMap(!showQuestionMap)}
+							className="h-8 w-8 p-0"
 						>
-							{idx + 1}
+							{showQuestionMap ? (
+								<TbLayoutGridFilled className="h-4 w-4" />
+							) : (
+								<TbLayoutGrid className="h-4 w-4" />
+							)}
 						</Button>
-					);
-				})}
-			</div>
+					</div>
+				</CardHeader>
+				{showQuestionMap && (
+					<CardContent className="pt-0">
+						<div className="flex flex-wrap gap-2">
+							{questions.map((q, idx) => {
+								const answer = answers.get(q.id);
+								return (
+									<Button
+										key={q.id}
+										variant={idx === currentQuestionIndex ? "default" : "outline"}
+										size="sm"
+										className={`w-10 h-10 ${
+											answer
+												? practiceMode
+													? answer.isCorrect
+														? "bg-green-600 hover:bg-green-700 text-white"
+														: "bg-red-600 hover:bg-red-700 text-white"
+													: "bg-blue-600 hover:bg-blue-700 text-white"
+												: ""
+										}`}
+										onClick={() => setCurrentQuestionIndex(idx)}
+									>
+										{idx + 1}
+									</Button>
+								);
+							})}
+						</div>
+					</CardContent>
+				)}
+			</Card>
 
 			{/* Question Card */}
 			<Card>

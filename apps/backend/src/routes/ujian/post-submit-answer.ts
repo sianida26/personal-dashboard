@@ -27,17 +27,18 @@ const checkAnswer = (
 	switch (questionType) {
 		case "mcq":
 			// MCQ: userAnswer is a string, correctAnswer is an array with single element
+			// Handle type coercion (number vs string)
 			if (Array.isArray(correctAnswer) && correctAnswer.length === 1) {
-				return userAnswer === correctAnswer[0];
+				return String(userAnswer) === String(correctAnswer[0]);
 			}
-			return userAnswer === correctAnswer;
+			return String(userAnswer) === String(correctAnswer);
 
 		case "multiple_select":
 			if (!Array.isArray(userAnswer) || !Array.isArray(correctAnswer)) {
 				return false;
 			}
-			const sortedUser = [...userAnswer].sort();
-			const sortedCorrect = [...correctAnswer].sort();
+			const sortedUser = [...userAnswer].map(String).sort();
+			const sortedCorrect = [...correctAnswer].map(String).sort();
 			return (
 				sortedUser.length === sortedCorrect.length &&
 				sortedUser.every((val, idx) => val === sortedCorrect[idx])
