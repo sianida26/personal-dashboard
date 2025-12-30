@@ -181,18 +181,28 @@ export function ServerDataTable<T>({
 			params.q = searchQuery;
 		}
 
-		// Add sorting parameters (format: "column:asc" or "column:desc")
+
+		// Add sorting parameters
 		if (sorting.length > 0) {
-			params.sort = sorting
-				.map((s) => `${s.id}:${s.desc ? "desc" : "asc"}`)
-				.join(",");
+			params.sort = JSON.stringify(sorting);
 		}
 
-		// Add filter parameters (format: "column:value")
+		// Add filter parameters as JSON string
 		if (filters.length > 0) {
-			params.filter = filters
-				.map((f) => `${f.columnId}:${f.value}`)
-				.join(",");
+			// Ensure value is defined and filter out empty values unless it is boolean false or number 0
+			const validFilters = filters
+				.filter(
+					(f) =>
+						f.value !== undefined && f.value !== null && f.value !== "",
+				)
+				.map((f) => ({
+					id: f.columnId,
+					value: String(f.value),
+				}));
+
+			if (validFilters.length > 0) {
+				params.filter = JSON.stringify(validFilters);
+			}
 		}
 
 		// Add any additional params

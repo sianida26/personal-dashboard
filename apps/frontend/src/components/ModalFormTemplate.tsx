@@ -6,6 +6,7 @@ export type ModalFormTemplateProps<TForm> = FormTemplateProps<TForm> & {
 	title: React.ReactNode;
 	isOpen?: boolean;
 	onClose?: () => void;
+	className?: string;
 };
 
 export default function ModalFormTemplate<TForm>(
@@ -18,7 +19,10 @@ export default function ModalFormTemplate<TForm>(
 
 	return (
 		<Dialog open={props.isOpen ?? true}>
-			<DialogContent onClose={handleCloseModal}>
+			<DialogContent
+				onClose={handleCloseModal}
+				className={props.className}
+			>
 				<DialogHeader>
 					<DialogTitle>{props.title}</DialogTitle>
 				</DialogHeader>
