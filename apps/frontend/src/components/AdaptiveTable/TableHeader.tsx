@@ -167,7 +167,7 @@ export function TableHeader<T>({
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					{title && (
-						<h2 className="text-lg font-semibold">{title}</h2>
+						<h2 className="text-lg font-semibold pl-4">{title}</h2>
 					)}
 					{rowSelectable && selectedRowsCount > 0 && (
 						<>
