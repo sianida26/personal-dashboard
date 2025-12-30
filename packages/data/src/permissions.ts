@@ -5,6 +5,7 @@ export const permissions = [
 	"users.update",
 	"users.delete",
 	"users.restore",
+	"users.assignPermissions",
 	"permissions.read",
 	"roles.read",
 	"roles.create",
