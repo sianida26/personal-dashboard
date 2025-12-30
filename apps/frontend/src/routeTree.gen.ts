@@ -152,7 +152,7 @@ const DashboardLayoutUsersCreateRoute =
   DashboardLayoutUsersCreateRouteImport.update({
     id: '/create',
     path: '/create',
-    getParentRoute: () => DashboardLayoutUsersLazyRoute,
+    getParentRoute: () => DashboardLayoutUsersRoute,
   } as any)
 const DashboardLayoutRolesCreateRoute =
   DashboardLayoutRolesCreateRouteImport.update({
@@ -180,19 +180,19 @@ const DashboardLayoutUsersEditUserIdRoute =
   DashboardLayoutUsersEditUserIdRouteImport.update({
     id: '/edit/$userId',
     path: '/edit/$userId',
-    getParentRoute: () => DashboardLayoutUsersLazyRoute,
+    getParentRoute: () => DashboardLayoutUsersRoute,
   } as any)
 const DashboardLayoutUsersDetailUserIdRoute =
   DashboardLayoutUsersDetailUserIdRouteImport.update({
     id: '/detail/$userId',
     path: '/detail/$userId',
-    getParentRoute: () => DashboardLayoutUsersLazyRoute,
+    getParentRoute: () => DashboardLayoutUsersRoute,
   } as any)
 const DashboardLayoutUsersDeleteUserIdRoute =
   DashboardLayoutUsersDeleteUserIdRouteImport.update({
     id: '/delete/$userId',
     path: '/delete/$userId',
-    getParentRoute: () => DashboardLayoutUsersLazyRoute,
+    getParentRoute: () => DashboardLayoutUsersRoute,
   } as any)
 const DashboardLayoutRolesViewRoleIdRoute =
   DashboardLayoutRolesViewRoleIdRouteImport.update({
@@ -213,7 +213,7 @@ export interface FileRoutesByFullPath {
   '/not-found': typeof NotFoundRoute
   '/dev': typeof DashboardLayoutDevRoute
   '/graph-admin': typeof DashboardLayoutGraphAdminRoute
-  '/users': typeof DashboardLayoutUsersRoute
+  '/users': typeof DashboardLayoutUsersRouteWithChildren
   '/oauth/google-callback': typeof OauthGoogleCallbackLazyRoute
   '/oauth/microsoft-admin-callback': typeof OauthMicrosoftAdminCallbackLazyRoute
   '/oauth/microsoft-callback': typeof OauthMicrosoftCallbackLazyRoute
@@ -239,7 +239,7 @@ export interface FileRoutesByTo {
   '/not-found': typeof NotFoundRoute
   '/dev': typeof DashboardLayoutDevRoute
   '/graph-admin': typeof DashboardLayoutGraphAdminRoute
-  '/users': typeof DashboardLayoutUsersRoute
+  '/users': typeof DashboardLayoutUsersRouteWithChildren
   '/oauth/google-callback': typeof OauthGoogleCallbackLazyRoute
   '/oauth/microsoft-admin-callback': typeof OauthMicrosoftAdminCallbackLazyRoute
   '/oauth/microsoft-callback': typeof OauthMicrosoftCallbackLazyRoute
@@ -267,7 +267,7 @@ export interface FileRoutesById {
   '/not-found': typeof NotFoundRoute
   '/_dashboardLayout/dev': typeof DashboardLayoutDevRoute
   '/_dashboardLayout/graph-admin': typeof DashboardLayoutGraphAdminRoute
-  '/_dashboardLayout/users': typeof DashboardLayoutUsersRoute
+  '/_dashboardLayout/users': typeof DashboardLayoutUsersRouteWithChildren
   '/oauth/google-callback': typeof OauthGoogleCallbackLazyRoute
   '/oauth/microsoft-admin-callback': typeof OauthMicrosoftAdminCallbackLazyRoute
   '/oauth/microsoft-callback': typeof OauthMicrosoftCallbackLazyRoute
@@ -500,7 +500,7 @@ declare module '@tanstack/react-router' {
       path: '/create'
       fullPath: '/users/create'
       preLoaderRoute: typeof DashboardLayoutUsersCreateRouteImport
-      parentRoute: typeof DashboardLayoutUsersLazyRoute
+      parentRoute: typeof DashboardLayoutUsersRoute
     }
     '/_dashboardLayout/roles/create': {
       id: '/_dashboardLayout/roles/create'
@@ -528,21 +528,21 @@ declare module '@tanstack/react-router' {
       path: '/edit/$userId'
       fullPath: '/users/edit/$userId'
       preLoaderRoute: typeof DashboardLayoutUsersEditUserIdRouteImport
-      parentRoute: typeof DashboardLayoutUsersLazyRoute
+      parentRoute: typeof DashboardLayoutUsersRoute
     }
     '/_dashboardLayout/users/detail/$userId': {
       id: '/_dashboardLayout/users/detail/$userId'
       path: '/detail/$userId'
       fullPath: '/users/detail/$userId'
       preLoaderRoute: typeof DashboardLayoutUsersDetailUserIdRouteImport
-      parentRoute: typeof DashboardLayoutUsersLazyRoute
+      parentRoute: typeof DashboardLayoutUsersRoute
     }
     '/_dashboardLayout/users/delete/$userId': {
       id: '/_dashboardLayout/users/delete/$userId'
       path: '/delete/$userId'
       fullPath: '/users/delete/$userId'
       preLoaderRoute: typeof DashboardLayoutUsersDeleteUserIdRouteImport
-      parentRoute: typeof DashboardLayoutUsersLazyRoute
+      parentRoute: typeof DashboardLayoutUsersRoute
     }
     '/_dashboardLayout/roles/view/$roleId': {
       id: '/_dashboardLayout/roles/view/$roleId'
@@ -561,10 +561,27 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface DashboardLayoutUsersRouteChildren {
+  DashboardLayoutUsersCreateRoute: typeof DashboardLayoutUsersCreateRoute
+  DashboardLayoutUsersDeleteUserIdRoute: typeof DashboardLayoutUsersDeleteUserIdRoute
+  DashboardLayoutUsersDetailUserIdRoute: typeof DashboardLayoutUsersDetailUserIdRoute
+  DashboardLayoutUsersEditUserIdRoute: typeof DashboardLayoutUsersEditUserIdRoute
+}
+
+const DashboardLayoutUsersRouteChildren: DashboardLayoutUsersRouteChildren = {
+  DashboardLayoutUsersCreateRoute: DashboardLayoutUsersCreateRoute,
+  DashboardLayoutUsersDeleteUserIdRoute: DashboardLayoutUsersDeleteUserIdRoute,
+  DashboardLayoutUsersDetailUserIdRoute: DashboardLayoutUsersDetailUserIdRoute,
+  DashboardLayoutUsersEditUserIdRoute: DashboardLayoutUsersEditUserIdRoute,
+}
+
+const DashboardLayoutUsersRouteWithChildren =
+  DashboardLayoutUsersRoute._addFileChildren(DashboardLayoutUsersRouteChildren)
+
 interface DashboardLayoutRouteChildren {
   DashboardLayoutDevRoute: typeof DashboardLayoutDevRoute
   DashboardLayoutGraphAdminRoute: typeof DashboardLayoutGraphAdminRoute
-  DashboardLayoutUsersRoute: typeof DashboardLayoutUsersRoute
+  DashboardLayoutUsersRoute: typeof DashboardLayoutUsersRouteWithChildren
   DashboardLayoutPersonalNotificationsRoute: typeof DashboardLayoutPersonalNotificationsRoute
   DashboardLayoutRolesCreateRoute: typeof DashboardLayoutRolesCreateRoute
   DashboardLayoutDashboardIndexRoute: typeof DashboardLayoutDashboardIndexRoute
@@ -579,7 +596,7 @@ interface DashboardLayoutRouteChildren {
 const DashboardLayoutRouteChildren: DashboardLayoutRouteChildren = {
   DashboardLayoutDevRoute: DashboardLayoutDevRoute,
   DashboardLayoutGraphAdminRoute: DashboardLayoutGraphAdminRoute,
-  DashboardLayoutUsersRoute: DashboardLayoutUsersRoute,
+  DashboardLayoutUsersRoute: DashboardLayoutUsersRouteWithChildren,
   DashboardLayoutPersonalNotificationsRoute:
     DashboardLayoutPersonalNotificationsRoute,
   DashboardLayoutRolesCreateRoute: DashboardLayoutRolesCreateRoute,
