@@ -52,7 +52,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Type check ${{ matrix.name }}
-        run: bun run tsc --noEmit
+        run: bun run check
         working-directory: ${{ matrix.working-directory }}
 
       - name: Calculate duration and send success notification
