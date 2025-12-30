@@ -150,7 +150,7 @@ function DashboardLayout() {
 			</SidebarErrorBoundary>
 			<SidebarInset className="relative flex flex-1 flex-col min-w-0 overflow-hidden">
 				<AppHeader />
-				<main className="flex-1 min-h-0 overflow-hidden">
+				<main className="flex-1 min-h-0 overflow-y-auto">
 					<ContentErrorBoundary>
 						<Outlet />
 					</ContentErrorBoundary>

@@ -26,6 +26,10 @@ const checkAnswer = (
 ): boolean => {
 	switch (questionType) {
 		case "mcq":
+			// MCQ: userAnswer is a string, correctAnswer is an array with single element
+			if (Array.isArray(correctAnswer) && correctAnswer.length === 1) {
+				return userAnswer === correctAnswer[0];
+			}
 			return userAnswer === correctAnswer;
 
 		case "multiple_select":
@@ -40,9 +44,15 @@ const checkAnswer = (
 			);
 
 		case "input":
+			// Input: userAnswer is a string, correctAnswer could be array or string
 			// Case-insensitive string comparison for input type
 			const userStr = String(userAnswer).toLowerCase().trim();
-			const correctStr = String(correctAnswer).toLowerCase().trim();
+			let correctStr: string;
+			if (Array.isArray(correctAnswer) && correctAnswer.length > 0) {
+				correctStr = String(correctAnswer[0]).toLowerCase().trim();
+			} else {
+				correctStr = String(correctAnswer).toLowerCase().trim();
+			}
 			return userStr === correctStr;
 
 		default:

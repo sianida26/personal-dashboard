@@ -1,0 +1,1613 @@
+[
+  {
+    "question": "Which command can provide investigators with details of all the loaded modules on a Linux-based system?",
+    "options": [
+      { "value": "lsmod", "isCorrect": true },
+      { "value": "plist mod -a", "isCorrect": false },
+      { "value": "list modules -a", "isCorrect": false },
+      { "value": "lsof -m", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "An investigator uploads a suspicious executable file to VirusTotal to confirm whether it is malicious and to understand its functionality. What type of malware analysis was performed?",
+    "options": [
+      { "value": "Volatile", "isCorrect": false },
+      { "value": "Static", "isCorrect": true },
+      { "value": "Dynamic", "isCorrect": false },
+      { "value": "Hybrid", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "While auditing web application logs, several login attempts contain a script that steals cookies using JavaScript. What kind of attack has occurred?",
+    "options": [
+      { "value": "Cross-site scripting", "isCorrect": true },
+      { "value": "Buffer overflow", "isCorrect": false },
+      { "value": "Cross-site request forgery", "isCorrect": false },
+      { "value": "SQL injection", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which layer in the iOS architecture provides frameworks for iOS app development?",
+    "options": [
+      { "value": "Cocoa Touch", "isCorrect": true },
+      { "value": "Core OS", "isCorrect": false },
+      { "value": "Media services", "isCorrect": false },
+      { "value": "Core services", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which set of anti-forensic tools or techniques allows a program to compress or encrypt an executable to hide attack tools from detection?",
+    "options": [
+      { "value": "Password crackers", "isCorrect": false },
+      { "value": "Packers", "isCorrect": true },
+      { "value": "Botnets", "isCorrect": false },
+      { "value": "Emulators", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "In the command sqlcmd -S WIN-CQQMK62867E -e -s,\"\" -E, what does \"WIN-CQQMK62867E\" represent?",
+    "options": [
+      { "value": "Operating system of the system", "isCorrect": false },
+      { "value": "Name of the database", "isCorrect": false },
+      { "value": "Name of the SQL server", "isCorrect": true },
+      { "value": "Network credentials of the database", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which “Standards and Criteria” under SWDGE states that the agency must use hardware and software that are appropriate and effective for the seizure or examination procedure?",
+    "options": [
+      { "value": "Standards and Criteria 1.5", "isCorrect": true },
+      { "value": "Standards and Criteria 1.4", "isCorrect": false },
+      { "value": "Standards and Criteria 1.7", "isCorrect": false },
+      { "value": "Standards and Criteria 1.6", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Assume there is a file named myfile.txt in the C: drive that contains hidden data streams. Which command would display the contents of a data stream?",
+    "options": [
+      { "value": "myfile.dat:stream1", "isCorrect": false },
+      { "value": "C:\\MORE < myfile.txt:stream1", "isCorrect": true },
+      { "value": "C:\\>ECHO text_message > myfile.txt:stream1", "isCorrect": false },
+      { "value": "echo text > program:source_file", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Smith is the first responder at a suspected cybercrime scene involving compromised computers. What should be his first action to maintain evidence integrity?",
+    "options": [
+      { "value": "Switch off the systems and transport them to the laboratory", "isCorrect": false },
+      { "value": "Record the system state by taking photographs of the physical system and display", "isCorrect": true },
+      { "value": "Open the systems, remove the hard disk, and secure it", "isCorrect": false },
+      { "value": "Perform data acquisition without disturbing system state", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Data density of a disk drive is calculated using which parameters?",
+    "options": [
+      { "value": "Track density, areal density, and slack density", "isCorrect": false },
+      { "value": "Track space, bit area, and slack space", "isCorrect": false },
+      { "value": "Slack space, bit density, and slack density", "isCorrect": false },
+      { "value": "Track density, areal density, and bit density", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Which type of copy is required to ensure complete and admissible forensic evidence, including deleted files and file fragments?",
+    "options": [
+      { "value": "Bit-stream copy", "isCorrect": true },
+      { "value": "Full backup copy", "isCorrect": false },
+      { "value": "Incremental backup copy", "isCorrect": false },
+      { "value": "Robust copy", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which cloud service model allows an investigator to acquire a virtual machine instance for forensic examination?",
+    "options": [
+      { "value": "SaaS model", "isCorrect": false },
+      { "value": "IaaS model", "isCorrect": true },
+      { "value": "PaaS model", "isCorrect": false },
+      { "value": "SECaaS model", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "On a Windows XP system, where are deleted files stored if they are not permanently deleted?",
+    "options": [
+      { "value": "C:\\$RECYCLER", "isCorrect": false },
+      { "value": "C:\\$Recycled.Bin", "isCorrect": false },
+      { "value": "C:\\RECYCLER", "isCorrect": true },
+      { "value": "C:\\$Recycle.Bin", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "ISO/IEC 17025 accreditation applies to which of the following?",
+    "options": [
+      { "value": "CHFI issuing agency", "isCorrect": false },
+      { "value": "Encryption", "isCorrect": false },
+      { "value": "Chain of custody", "isCorrect": false },
+      { "value": "Forensics lab licensing", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Which mobile device data acquisition method captures all data, including deleted data and unallocated space?",
+    "options": [
+      { "value": "Direct acquisition", "isCorrect": false },
+      { "value": "Physical acquisition", "isCorrect": true },
+      { "value": "Manual acquisition", "isCorrect": false },
+      { "value": "Logical acquisition", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Planning and budgeting for a forensics lab belongs to which phase of the computer forensics investigation process?",
+    "options": [
+      { "value": "Investigation phase", "isCorrect": false },
+      { "value": "Reporting phase", "isCorrect": false },
+      { "value": "Pre-investigation phase", "isCorrect": true },
+      { "value": "Post-investigation phase", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which law sets the rules for commercial email and gives recipients the right to stop unwanted emails?",
+    "options": [
+      { "value": "The CAN-SPAM Act", "isCorrect": true },
+      { "value": "Federal Spam Act", "isCorrect": false },
+      { "value": "Telemarketing Act", "isCorrect": false },
+      { "value": "European Anti-Spam Act", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "A file uses 10 KB but is stored in a 32 KB cluster. What is the remaining unused 22 KB called?",
+    "options": [
+      { "value": "Swap space", "isCorrect": false },
+      { "value": "Sector space", "isCorrect": false },
+      { "value": "Slack space", "isCorrect": true },
+      { "value": "Cluster space", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "During a forensic investigation, an investigator identifies attributes such as author name, organization name, and network name to determine file ownership. Which term describes these attributes?",
+    "options": [
+      { "value": "Metadata", "isCorrect": true },
+      { "value": "Data index", "isCorrect": false },
+      { "value": "Metabase", "isCorrect": false },
+      { "value": "Data header", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which of the following is a requirement for senders under the CAN-SPAM Act?",
+    "options": [
+      { "value": "Senders should never share their physical postal address in the email", "isCorrect": false },
+      { "value": "Senders must use deceptive subject lines", "isCorrect": false },
+      { "value": "Senders cannot use misleading or false header information", "isCorrect": true },
+      { "value": "Emails must not contain information on how to stop receiving emails", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which protocol is used to synchronize clocks across network devices when analyzing logs?",
+    "options": [
+      { "value": "UCT", "isCorrect": false },
+      { "value": "UTC", "isCorrect": false },
+      { "value": "PTP", "isCorrect": false },
+      { "value": "NTP", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Which attack involves the unintentional download of malicious software by merely visiting a malicious website?",
+    "options": [
+      { "value": "Phishing", "isCorrect": false },
+      { "value": "Drive-by downloads", "isCorrect": true },
+      { "value": "Malvertising", "isCorrect": false },
+      { "value": "Internet relay chats", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "An investigator reviews logs showing malicious database queries causing service disruption. What type of attack was performed?",
+    "options": [
+      { "value": "SQL injection", "isCorrect": true },
+      { "value": "Log tampering", "isCorrect": false },
+      { "value": "Directory traversal", "isCorrect": false },
+      { "value": "Unvalidated input", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "A statement made outside the court and offered as evidence to prove the truth of the matter asserted is known as what?",
+    "options": [
+      { "value": "Rule 1001", "isCorrect": false },
+      { "value": "Testimony by the accused", "isCorrect": false },
+      { "value": "Hearsay rule", "isCorrect": true },
+      { "value": "Limited admissibility", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "What does Locard's Exchange Principle state?",
+    "options": [
+      { "value": "Anyone or anything entering a crime scene takes something of the scene with them and leaves something of themselves behind", "isCorrect": true },
+      { "value": "Digital evidence must always be encrypted", "isCorrect": false },
+      { "value": "All evidence must be volatile", "isCorrect": false },
+      { "value": "Only physical evidence is admissible in court", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which malware targets Android devices and installs a backdoor to remotely install applications from an attacker-controlled server?",
+    "options": [
+      { "value": "xHelper", "isCorrect": true },
+      { "value": "Unflod", "isCorrect": false },
+      { "value": "Felix", "isCorrect": false },
+      { "value": "XcodeGhost", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which principle states that law enforcement actions should not alter data that may be relied upon in court?",
+    "options": [
+      { "value": "Locard’s Exchange Principle", "isCorrect": false },
+      { "value": "FBI Cyber Division guidelines", "isCorrect": false },
+      { "value": "Scientific Working Group on Imaging Technology (SWGIT)", "isCorrect": false },
+      { "value": "ACPO Principles of Digital Evidence", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Which tool can be used onsite to acquire a memory dump of a Windows 10 system involved in a DDoS attack?",
+    "options": [
+      { "value": "Volatility", "isCorrect": false },
+      { "value": "Memcheck", "isCorrect": false },
+      { "value": "RAMMapper", "isCorrect": true },
+      { "value": "Autopsy", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which Android libraries are used to render 2D (SGL) or 3D (OpenGL/ES) graphics to the screen?",
+    "options": [
+      { "value": "WebKit", "isCorrect": false },
+      { "value": "OpenGL/ES and SGL", "isCorrect": true },
+      { "value": "Surface Manager", "isCorrect": false },
+      { "value": "Media framework", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "After creating and storing an Azure VM OS disk snapshot for forensic purposes, what should be done next as a security measure?",
+    "options": [
+      { "value": "Create another VM using the snapshot", "isCorrect": false },
+      { "value": "Delete the OS disk of the affected VM", "isCorrect": false },
+      { "value": "Recommend changing access policies", "isCorrect": false },
+      { "value": "Delete the snapshot from the source resource group", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Which tool enables read-only access to storage media during data acquisition to preserve integrity?",
+    "options": [
+      { "value": "BitLocker", "isCorrect": false },
+      { "value": "Backup tool", "isCorrect": false },
+      { "value": "Data duplication tool", "isCorrect": false },
+      { "value": "Write blocker", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Which packet sniffing tool should be used on a Linux-based system to monitor network traffic?",
+    "options": [
+      { "value": "Tcpdump", "isCorrect": true },
+      { "value": "DumpIt", "isCorrect": false },
+      { "value": "Balbuzard", "isCorrect": false },
+      { "value": "CurrPorts", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which constitutional compliance issue was overlooked, leading to charges of unlawful search and seizure?",
+    "options": [
+      { "value": "Second Amendment", "isCorrect": false },
+      { "value": "Fourth Amendment", "isCorrect": true },
+      { "value": "Third Amendment", "isCorrect": false },
+      { "value": "None of these", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "If a suspect deleted browsing history, cookies, and downloaded images, what is the most feasible way to prove policy violation?",
+    "options": [
+      { "value": "Image the disk and attempt to recover deleted files", "isCorrect": true },
+      { "value": "Check the Windows Registry for connection data", "isCorrect": false },
+      { "value": "Approach the website administrator", "isCorrect": false },
+      { "value": "Seek eyewitness testimony from co-workers", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which attack allows access to restricted directories and execution of commands outside the web server root?",
+    "options": [
+      { "value": "Parameter/Form tampering", "isCorrect": false },
+      { "value": "Security misconfiguration", "isCorrect": false },
+      { "value": "Unvalidated input", "isCorrect": false },
+      { "value": "Directory traversal", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Harry has collected a suspicious executable file from an infected system and seeks to reverse its machine code to instructions written in assembly language. Which tool should he use for this purpose?",
+    "options": [
+      { "value": "HashCalc", "isCorrect": false },
+      { "value": "BinText", "isCorrect": false },
+      { "value": "Ollydbg", "isCorrect": true },
+      { "value": "oledump", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which among the following web application threats is resulted when developers expose various internal implementation objects, such as files, directories, database records, or key-through references?",
+    "options": [
+      { "value": "Cross-site scripting", "isCorrect": false },
+      { "value": "Remote file inclusion", "isCorrect": false },
+      { "value": "Cross-site request forgery", "isCorrect": false },
+      { "value": "Insecure direct object references", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Consider a scenario where a forensic investigator is performing malware analysis on a memory dump acquired from a victim’s computer. The investigator uses Volatility Framework to analyze RAM contents; which plugin helps investigator to identify hidden processes or injected code/DLL in the memory dump?",
+    "options": [
+      { "value": "malfind", "isCorrect": true },
+      { "value": "malscan", "isCorrect": false },
+      { "value": "pslist", "isCorrect": false },
+      { "value": "mallist", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which OWASP IoT vulnerability talks about security flaws such as lack of firmware validation, lack of secure delivery, and lack of anti-rollback mechanisms on IoT devices?",
+    "options": [
+      { "value": "Lack of secure update mechanism", "isCorrect": true },
+      { "value": "Use of insecure or outdated components", "isCorrect": false },
+      { "value": "Insecure default settings", "isCorrect": false },
+      { "value": "Insecure data transfer and storage", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which of the following statements pertaining to First Response is true?",
+    "options": [
+      { "value": "First Response is a part of the post-investigation phase", "isCorrect": false },
+      { "value": "First Response is a part of the pre-investigation phase", "isCorrect": false },
+      { "value": "First Response is a part of the investigation phase", "isCorrect": false },
+      { "value": "First Response is neither a part of pre-investigation phase nor a part of investigation phase. It only involves attending to a crime scene first and taking measures that assist forensic investigators in executing their tasks in the investigation phase more efficiently", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Examination of a computer by a technically unauthorized person will almost always result in:",
+    "options": [
+      { "value": "Completely accurate results of the examination", "isCorrect": false },
+      { "value": "Rendering any evidence found inadmissible in a court of law", "isCorrect": true },
+      { "value": "Rendering any evidence found admissible in a court of law", "isCorrect": false },
+      { "value": "The chain of custody being fully maintained", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "What command-line tool enables forensic investigator to establish communication between an Android device and a forensic workstation in order to perform data acquisition from the device?",
+    "options": [
+      { "value": "SDK Manager", "isCorrect": false },
+      { "value": "Android Debug Bridge", "isCorrect": true },
+      { "value": "Xcode", "isCorrect": false },
+      { "value": "APK Analyzer", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "An investigator is checking a Cisco firewall log that reads as follows:\nAug 21 2019 09:16:44: %ASA-1-106021: Deny ICMP reverse path check from 10.0.0.44 to 10.0.0.33 on interface outside\nWhat does %ASA-1-106021 denote?",
+    "options": [
+      { "value": "Type of traffic", "isCorrect": false },
+      { "value": "Type of request", "isCorrect": false },
+      { "value": "Mnemonic message", "isCorrect": true },
+      { "value": "Firewall action", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "While collecting active transaction logs using SQL Server Management Studio, the query Select * from ::fn_dblog(NULL, NULL) displays the active portion of the transaction log file. Here, what does assigning NULL values imply?",
+    "options": [
+      { "value": "Start and end points for log files are not specified", "isCorrect": false },
+      { "value": "Start and end points for log files are zero", "isCorrect": false },
+      { "value": "Start and end points for log sequence numbers are zero", "isCorrect": false },
+      { "value": "Start and end points for log sequence numbers are not specified", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Which of the following event correlation approach is an advanced correlation method that assumes and predicts what an attacker can do next after the attack by studying the statistics and probability and uses only two variables?",
+    "options": [
+      { "value": "Route correlation", "isCorrect": false },
+      { "value": "Bayesian correlation", "isCorrect": true },
+      { "value": "Vulnerability-based approach", "isCorrect": false },
+      { "value": "Rule-based approach", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "“In exceptional circumstances, where a person finds it necessary to access original data held on a computer or on storage media, that person must be competent to do so and be able to explain his/her actions and the impact of those actions on the evidence, in the court.” Which ACPO principle states this?",
+    "options": [
+      { "value": "Principle 2", "isCorrect": true },
+      { "value": "Principle 4", "isCorrect": false },
+      { "value": "Principle 1", "isCorrect": false },
+      { "value": "Principle 3", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "On NTFS file system, which of the following tools can a forensic investigator use in order to identify timestomping of evidence files?",
+    "options": [
+      { "value": "wbStego", "isCorrect": false },
+      { "value": "analyzeMFT", "isCorrect": true },
+      { "value": "Exiv2", "isCorrect": false },
+      { "value": "Timestomp", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which tool allows dumping the contents of process memory without stopping the process?",
+    "options": [
+      { "value": "pdump.exe", "isCorrect": false },
+      { "value": "pmdump.exe", "isCorrect": false },
+      { "value": "psdump.exe", "isCorrect": false },
+      { "value": "processdump.exe", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "In which IoT attack does the attacker use multiple forged identities to create a strong illusion of traffic congestion, affecting communication between neighboring nodes and networks?",
+    "options": [
+      { "value": "Replay attack", "isCorrect": false },
+      { "value": "Jamming attack", "isCorrect": false },
+      { "value": "Blueborne attack", "isCorrect": false },
+      { "value": "Sybil attack", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Consider a scenario where the perpetrator of a dark web crime has uninstalled Tor browser from their computer after committing the crime. The computer has been seized by law enforcement so they can investigate it for artifacts of Tor browser usage. Which of the following should the investigators examine to establish the use of Tor browser on the suspect machine?",
+    "options": [
+      { "value": "Prefetch files", "isCorrect": true },
+      { "value": "Files in Recycle Bin", "isCorrect": false },
+      { "value": "Swap files", "isCorrect": false },
+      { "value": "Security logs", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which of the following applications will allow a forensic investigator to track the user login sessions and user transactions that have occurred on an MS SQL Server?",
+    "options": [
+      { "value": "netcat", "isCorrect": false },
+      { "value": "Notepad++", "isCorrect": false },
+      { "value": "ApexSQL Audit", "isCorrect": true },
+      { "value": "Event Log Explorer", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "_________ allows a forensic investigator to identify the missing links during investigation.",
+    "options": [
+      { "value": "Exhibit numbering", "isCorrect": false },
+      { "value": "Chain of custody", "isCorrect": false },
+      { "value": "Evidence preservation", "isCorrect": false },
+      { "value": "Evidence reconstruction", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Sally accessed the computer system that holds trade secrets of the company where she is employed. She knows she accessed it without authorization and all access (authorized and unauthorized) to this computer is monitored.To cover her tracks, Sally deleted the log entries on this computer. What among the following best describes her action?",
+    "options": [
+      { "value": "Brute-force attack", "isCorrect": false },
+      { "value": "Anti-forensics", "isCorrect": true },
+      { "value": "Network intrusion", "isCorrect": false },
+      { "value": "Password sniffing", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "An EC2 instance storing critical data of a company got infected with malware. The forensics team took the EBS volume snapshot of the affected instance to perform further analysis and collected other data of evidentiary value. What should be their next step?",
+    "options": [
+      { "value": "They should keep the instance running as it stores critical data", "isCorrect": false },
+      { "value": "They should pause the running instance", "isCorrect": false },
+      { "value": "They should terminate all instances connected via the same VPC", "isCorrect": false },
+      { "value": "They should terminate the instance after taking necessary backup", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Fred, a cybercrime investigator for the FBI, finished storing a solid-state drive in a static\nresistant bag and filled out the chain of custody form. Two days later, John grabbed the\nsolid-state drive and created a clone of it (with write blockers enabled) in order to\ninvestigate the drive. He did not document the chain of custody though. When John was\nfinished, he put the solid-state drive back in the static resistant and placed it back in the\nevidence locker. A day later, the court trial began and upon presenting the evidence and\nthe supporting documents, the chief justice outright rejected them. Which of the following\nstatements strongly support the reason for rejecting the evidence?",
+    "options": [
+      { "value": "John did not document the chain of custody", "isCorrect": true },
+      { "value": "John investigated the clone instead of the original evidence itself", "isCorrect": false },
+      { "value": "Blck clones cannot be created with solid-state drives", "isCorrect": false },
+      { "value": "Write blockers were used while cloning the evidence", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Frank, a cloud administrator in his company, needs to take backup of the OS disks of two\nAzure VMs that store business-critical data. Which type of Azure blob storage can he use\nfor this purpose?",
+    "options": [
+      { "value": "Medium blob", "isCorrect": false },
+      { "value": "Block blob", "isCorrect": false },
+      { "value": "Append blob", "isCorrect": false },
+      { "value": "Page blob", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Self-monitoring, analysis, and reporting technology (SMART) system is built into hard\ndrives to monitor and report system activity. Which of the following is included in the\nreport generated by SMART?",
+    "options": [
+      { "value": "A log of high temperatures that the drive has reached", "isCorrect": true },
+      { "value": "List of running processes", "isCorrect": false },
+      { "value": "Power-off time", "isCorrect": false },
+      { "value": "All the states (running and discontinued) associated with the OS", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Amber, a black hat hacker, has embedded a malware into a small enticing advertisement\nand posted it on a popular ad-network that displays across various websites. What is she\ndoing?",
+    "options": [
+      { "value": "Click-jacking", "isCorrect": false },
+      { "value": "Malvertising", "isCorrect": true },
+      { "value": "Compromising a legitimate site", "isCorrect": false },
+      { "value": "Spearphishing", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Storage location of Recycle Bin for NTFS file systems (Windows Vista and later) is located\nat:",
+    "options": [
+      { "value": "Drive:\\RECYCLE.BIN", "isCorrect": false },
+      { "value": "Drive:\\REYCLED", "isCorrect": false },
+      { "value": "Drive:\\$Recycle.Bin", "isCorrect": true },
+      { "value": "Drive:\\RECYCLER", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which Federal Rule of Evidence speaks about the Hearsay exception where the\navailability of the declarant is immaterial and certain characteristics of the declarant such\nas present sense impression, excited utterance, and recorded recollection are also\nobserved while giving their testimony?",
+    "options": [
+      { "value": "Rule 804", "isCorrect": false },
+      { "value": "Rule 801", "isCorrect": false },
+      { "value": "Rule 802", "isCorrect": false },
+      { "value": "Rule 803", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Which of the following statements is true with respect to SSDs (solid-state drives)?",
+    "options": [
+      { "value": "SSDs contain tracks, clusters, and sectors to store data", "isCorrect": false },
+      { "value": "SSDs cannot store non-volatile data", "isCorrect": false },
+      { "value": "Faster data access, lower power usage, and higher reliability are some of the major\nadvantages of SSDs over HDDs", "isCorrect": true },
+      { "value": "Like HDDs, SSDs also have moving parts", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Data is striped at a byte level across multiple drives, and parity information is distributed\namong all member drives. What RAID level is represented here?",
+    "options": [
+      { "value": "RAID Level 0", "isCorrect": false },
+      { "value": "RAID Level 5", "isCorrect": true },
+      { "value": "RAID Level 1", "isCorrect": false },
+      { "value": "RAID Level 3", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "An investigator is examining a file to identify any potentially malicious content. To avoid\ncode execution and still be able to uncover hidden indicators of compromise (IOC), which\ntype of examination should the investigator perform:",
+    "options": [
+      { "value": "Threat analysis", "isCorrect": false },
+      { "value": "Dynamic analysis", "isCorrect": false },
+      { "value": "Threat hunting", "isCorrect": false },
+      { "value": "Static analysis", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "What do you call the process of studying the changes that have taken place across a\nsystem or a machine after a series of actions or incidents?",
+    "options": [
+      { "value": "Host integrity monitoring", "isCorrect": true },
+      { "value": "Windows services monitoring", "isCorrect": false },
+      { "value": "Start-up programs monitoring", "isCorrect": false },
+      { "value": "System baselining", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "BMP (Bitmap) is a standard file format for computers running the Windows OS. BMP\nimages can range from black and white (1 bit per pixel) up to 24 bit color (16.7 million\ncolors). Each bitmap file contains a header, the RGBQUAD array, information header, and\nimage data. Which of the following element specifies the dimensions, compression type,\nand color format for the bitmap?",
+    "options": [
+      { "value": "The RGBQUAD array", "isCorrect": false },
+      { "value": "Information header", "isCorrect": true },
+      { "value": "Header", "isCorrect": false },
+      { "value": "Image data", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Web browsers can store relevant information from user activities. Forensic investigators\nmay retrieve files, lists, access history, cookies, among other digital footprints. Which\ntool can contribute to this task?",
+    "options": [
+      { "value": "Task Manager", "isCorrect": false },
+      { "value": "Most Recently Used (MRU) list", "isCorrect": false },
+      { "value": "MZCacheView", "isCorrect": true },
+      { "value": "Google Chrome Recovery Utility", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Mark works for a government agency as a cyber-forensic investigator. He has been given\nthe task of restoring data from a hard drive. The partition of the hard drive was deleted by\na disgruntled employee in order to hide their nefarious actions. What tool should Mark\nuse to restore the data?",
+    "options": [
+      { "value": "Diskmon", "isCorrect": false },
+      { "value": "EFSDump", "isCorrect": false },
+      { "value": "Diskview", "isCorrect": false },
+      { "value": "R-Studio", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "According to RFC 3227, which of the following is considered as the most volatile item on\na typical system?",
+    "options": [
+      { "value": "Temporary system files", "isCorrect": false },
+      { "value": "Archival media", "isCorrect": false },
+      { "value": "Kernel statistics and memory", "isCorrect": false },
+      { "value": "Registers and cache", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Which among the following acts has been passed by the U.S. Congress to protect investors\nfrom the possibility of fraudulent accounting activities by corporations?",
+    "options": [
+      { "value": "Gramm-Leach-Bliley act", "isCorrect": false },
+      { "value": "Sarbanes-Oxley act of 2002", "isCorrect": true },
+      { "value": "Federal Information Security Management act of 2002", "isCorrect": false },
+      { "value": "Health Insurance Probability and Accountability act of 1996", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "A breach resulted from a malware attack that evaded detection and compromised the\nmachine memory without installing any software or accessing the hard drive. What\ntechnique did the adversaries use to deliver the attack?",
+    "options": [
+      { "value": "Fileless", "isCorrect": true },
+      { "value": "Trojan", "isCorrect": false },
+      { "value": "JavaScript", "isCorrect": false },
+      { "value": "Spyware", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "William is examining a log entry that reads 192.168.0.1 - - [18/Jan/2020:12:42:29 +0000]\n“GET / HTTP/1.1” 200 1861. Which of the following logs does the log entry belong to?",
+    "options": [
+      { "value": "Apache error log", "isCorrect": false },
+      { "value": "IIS log", "isCorrect": false },
+      { "value": "The combined log format of Apache access log", "isCorrect": false },
+      { "value": "The common log format of Apache access log", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "You are an information security analyst for a national retain chain. The organization has a\nweb server which provides customer reports to internal users for marketing purposes.\nYou are analyzing IIS logs on the web server and find the following log entry:\n#Software: Microsoft Internet Information Services 7.5\n#Version 1.0\n#Date 2020-04-28 11:50:54\n#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip\ncs(User-Agent) sc-status sc-substatus sc-win32-status time-taken\n2020-04-28 11:50:54 192.168.1.39 GET /Data/Files/customer_report.xlsx 80 -\n192.168.1.200/Mozilla/5.0+(Macintosh;+Intel+Mac+OS+X+10_7_2)\n+AppleWebKit/535.51.22+(KHTML,+like+Gecko)+Version/5.1.1\n+Safari/534.51.22 200 0 0 54\nBased on the contents of this log entry, what occurred?",
+    "options": [
+      { "value": "A user at IP address 192.168.1.39 requested the customer_report.xlsx file and the web\nserver at IP address 192.168.1.200 processed the request", "isCorrect": false },
+      { "value": "A user at IP address 192.168.1.200 requested the customer_report.xlsx file and the web\nserver at IP address 192.168.1.39 failed to process the request", "isCorrect": false },
+      { "value": "A user at IP address 192.168.1.39 requested the customer_report.xlsx file and the web\nserver at IP address 192.168.1.200 failed to process the request", "isCorrect": false },
+      { "value": "A user at IP address 192.168.1.200 requested the customer_report.xlsx file and the\nweb server at IP address 192.168.1.39 processed the request", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Which of the following registry components (cells) contains registry key information and\nincludes offsets to other cells as well as the LastWrite time for the key?",
+    "options": [
+      { "value": "Value list cell", "isCorrect": false },
+      { "value": "Key cell", "isCorrect": true },
+      { "value": "Value cell", "isCorrect": false },
+      { "value": "Security descriptor cell", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "The information security manager at a national legal firm has received several alerts from\nthe intrusion detection system that a known attack signature was detected against the\norganization’s file server. What should the information security manager do first?",
+    "options": [
+      { "value": "Disconnect the file server from the network", "isCorrect": false },
+      { "value": "Update the anti-virus definitions on the file server", "isCorrect": false },
+      { "value": "Manually investigate to verify that an incident has occurred", "isCorrect": true },
+      { "value": "Report the incident to senior management", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which of the following directory contains the binary files or executables required for\nsystem maintenance and administrative tasks on a Linux system?",
+    "options": [
+      { "value": "/lib", "isCorrect": false },
+      { "value": "/sbin", "isCorrect": true },
+      { "value": "/usr", "isCorrect": false },
+      { "value": "/bin", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Maria has executed a suspicious executable file in a controlled environment and wants to\nsee if the file adds/modifies any registry value after execution via Windows Event Viewer.\nWhich of the following event ID should she look for in this scenario?",
+    "options": [
+      { "value": "Event ID 7040", "isCorrect": false },
+      { "value": "Event ID 4657", "isCorrect": true },
+      { "value": "Event ID 4688", "isCorrect": false },
+      { "value": "Event ID 4624", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "In forensics, _________ are used to view stored or deleted data from both files and disk\nsectors.",
+    "options": [
+      { "value": "SIEM tools", "isCorrect": false },
+      { "value": "Hex editors", "isCorrect": true },
+      { "value": "Hash algorithms", "isCorrect": false },
+      { "value": "Host interfaces", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "A computer forensics investigator or forensic analyst is a specially trained professional\nwho works with law enforcement as well as private businesses to retrieve information from\ncomputers and other types of data storage devices. For this, the analyst should have an\nexcellent working knowledge of all aspects of the computer. Which of the following is not\na duty of the analyst during a criminal investigation?",
+    "options": [
+      { "value": "To recover data from suspect devices", "isCorrect": false },
+      { "value": "To dismantle and rebuild the system when the data is damaged", "isCorrect": true },
+      { "value": "To fill the chain of custody", "isCorrect": false },
+      { "value": "To enforce the security of all devices and software in the scene", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Report writing is a crucial stage in the outcome of an investigation. Which information\nshould not be included in the report section?",
+    "options": [
+      { "value": "Incident summary", "isCorrect": false },
+      { "value": "Author of the report", "isCorrect": false },
+      { "value": "Purpose of the report", "isCorrect": false },
+      { "value": "Speculation or opinion as to the cause of the incident", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "For the purpose of preserving the evidentiary chain of custody, which of the following\nlabels is not appropriate?",
+    "options": [
+      { "value": "General description of the evidence", "isCorrect": false },
+      { "value": "Relevant circumstances surrounding the collection", "isCorrect": false },
+      { "value": "SSN of the person collecting the evidence", "isCorrect": true },
+      { "value": "Exact location the evidence was collected from", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which Linux command displays kernel ring buffers or information about device drivers\nloaded into the kernel?",
+    "options": [
+      { "value": "dmesg", "isCorrect": true },
+      { "value": "pgrep", "isCorrect": false },
+      { "value": "grep", "isCorrect": false },
+      { "value": "fsck", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "You are assigned a task to examine the log files pertaining to MyISAM storage engine.\nWhile examining, you are asked to perform a recovery operation on a MyISAM log file.\nWhich among the following MySQL utilities can you use?",
+    "options": [
+      { "value": "myisamlog", "isCorrect": false },
+      { "value": "myisamaccess", "isCorrect": false },
+      { "value": "mysqldump", "isCorrect": false },
+      { "value": "Myisamchk", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Netstat is a tool for collecting information regarding network connections. It provides a\nsimple view of TCP and UDP connections, and their state and network traffic statistics.\nWhich of the following commands shows you the TCP and UDP network connections,\nlistening ports, and the identifiers?",
+    "options": [
+      { "value": "netstat – r", "isCorrect": false },
+      { "value": "netstat – s", "isCorrect": false },
+      { "value": "netstat – b", "isCorrect": false },
+      { "value": "netstat - ano", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Cloud forensic investigations impose challenges related to multi-jurisdiction and multitenancy aspects. To have a better understanding of the roles and responsibilities\nbetween the cloud service provider (CSP) and the client, which document should the\nforensic investigator review?",
+    "options": [
+      { "value": "Key performance indicator", "isCorrect": false },
+      { "value": "Service level agreement", "isCorrect": true },
+      { "value": "Service level management", "isCorrect": false },
+      { "value": "National and local regulation", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "What is the extension used by Windows OS for shortcut files present on the machine?",
+    "options": [
+      { "value": ".dat", "isCorrect": false },
+      { "value": ".log", "isCorrect": false },
+      { "value": ".lnk", "isCorrect": true },
+      { "value": ".pf", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "During an investigation, Noel found a SIM card from the suspect's mobile. The ICCID on\nthe card is 8944245252001451548.\nWhat does the first four digits (89 and 44) in the ICCID represent?",
+    "options": [
+      { "value": "Issuer identifier number and TAC", "isCorrect": false },
+      { "value": "Industry identifier and country code", "isCorrect": true },
+      { "value": "Country code and industry identifier", "isCorrect": false },
+      { "value": "TAC and industry identifier", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "You are asked to build a forensic lab and your manager has specifically informed you to\nuse copper for lining the walls, ceilings, and floor. What is the main purpose of lining the\nwalls, ceilings, and floor with copper?",
+    "options": [
+      { "value": "To avoid electromagnetic emanations", "isCorrect": true },
+      { "value": "To strengthen the walls, ceiling, and floor", "isCorrect": false },
+      { "value": "To make the lab soundproof", "isCorrect": false },
+      { "value": "To control the room temperature", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "You are a forensic investigator who is analyzing a hard drive that was recently collected\nas evidence. You have been unsuccessful at locating any meaningful evidence within the\nfile system and suspect a drive wiping utility may have been used. You have reviewed the\nkeys within the software hive of the Windows registry and did not find any drive wiping\nutilities. How can you verify that drive wiping software was used on the hard drive?",
+    "options": [
+      { "value": "Check the list of installed programs", "isCorrect": false },
+      { "value": "Look for distinct repeating patterns on the hard drive at the bit level", "isCorrect": true },
+      { "value": "Document in your report that you suspect a drive wiping utility was used, but no evidence was found", "isCorrect": false },
+      { "value": "Load various drive wiping utilities offline, and export previous run reports", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "An investigator seized a notebook device installed with a Microsoft Windows OS. Which\ntype of files would support an investigation of the data size and structure in the device?",
+    "options": [
+      { "value": "NTFS and FAT", "isCorrect": true },
+      { "value": "HFS and GNUC", "isCorrect": false },
+      { "value": "Ext2 and Ext4", "isCorrect": false },
+      { "value": "APFS and HFS", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "A forensic examiner encounters a computer with a failed OS installation and the master\nboot record (MBR) or partition sector damaged. Which of the following tools can find\nand restore files and information in the disk?",
+    "options": [
+      { "value": "R-Studio", "isCorrect": true },
+      { "value": "Wireshark", "isCorrect": false },
+      { "value": "NetCat", "isCorrect": false },
+      { "value": "Helix", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Cybercriminals sometimes use compromised computers to commit other crimes, which\nmay involve using computers or networks to spread malware or illegal information. Which\ntype of cybercrime stops users from using a device or network, or prevents a company\nfrom providing a software service to its customers?",
+    "options": [
+      { "value": "Ransomware attack", "isCorrect": false },
+      { "value": "Denial-of-Service (DoS) attack", "isCorrect": true },
+      { "value": "Phishing", "isCorrect": false },
+      { "value": "Malware attack", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "When investigating a system, the forensics analyst discovers that malicious scripts were\ninjected into benign and trusted websites. The attacker used a web application to send\nmalicious code, in the form of a browser side script, to a different end-user. What attack\nwas performed here?",
+    "options": [
+      { "value": "SQL injection attack", "isCorrect": false },
+      { "value": "Brute-force attack", "isCorrect": false },
+      { "value": "Cookie poisoning attack", "isCorrect": false },
+      { "value": "Cross-site scripting attack", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Identify the term that refers to individuals who, by virtue of their knowledge and expertise,\nexpress an independent opinion on a matter related to a case based on the information\nthat is provided.",
+    "options": [
+      { "value": "Forensic examiner", "isCorrect": false },
+      { "value": "Expert witness", "isCorrect": true },
+      { "value": "Defense witness", "isCorrect": false },
+      { "value": "Evidence examiner", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Robert needs to copy an OS disk snapshot of a compromised VM to a storage account in\ndifferent region for further investigation. Which of the following should he use in this\nscenario?",
+    "options": [
+      { "value": "Azure Active Directory", "isCorrect": false },
+      { "value": "Azure Portal", "isCorrect": false },
+      { "value": "Azure CLI", "isCorrect": true },
+      { "value": "Azure Monitor", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Robert is a regional manager working in a reputed organization. One day, he suspected a\nmalware attack after unwanted programs started popping up after logging into his\ncomputer. The network administrator was called upon to trace out any intrusion on the\ncomputer and he/she finds that suspicious activity has taken place within Autostart\nlocations. In this situation, which of the following tools is used by the network administrator\nto detect any intrusion on a system?",
+    "options": [
+      { "value": "Internet Evidence Finder", "isCorrect": false },
+      { "value": "Report Viewer", "isCorrect": false },
+      { "value": "Process Monitor", "isCorrect": true },
+      { "value": "Hex Editor", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Fill in the missing Master Boot Record component.\n1. Master boot code\n2. Partition table\n3. _____________________",
+    "options": [
+      { "value": "Boot loader", "isCorrect": false },
+      { "value": "Disk signature", "isCorrect": false },
+      { "value": "Signature word", "isCorrect": true },
+      { "value": "Volume boot record", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Gary is checking for the devices connected to USB ports of a suspect system during an\ninvestigation. Select the appropriate tool that will help him document all the connected\ndevices.",
+    "options": [
+      { "value": "Devscan", "isCorrect": false },
+      { "value": "fsutil", "isCorrect": false },
+      { "value": "Devcon", "isCorrect": true },
+      { "value": "Reg.exe", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which of the following is the most effective tool for acquiring volatile data from a Windowsbased system?",
+    "options": [
+      { "value": "Coreography", "isCorrect": false },
+      { "value": "Helix Live", "isCorrect": true },
+      { "value": "Datagrab", "isCorrect": false },
+      { "value": "Ethereal", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "James, a hacker, identifies a vulnerability in a website. To exploit the vulnerability, he\nvisits the login page and notes down the session ID that is created. He appends this\nsession ID to the login URL and shares the link with a victim. Once the victim logs into\nthe website using the shared URL, James reloads the web page (containing the URL with\nthe session ID appended) and now, he can browse the active session of the victim. Which\nattack did James successfully execute?",
+    "options": [
+      { "value": "Cross-site request forgery", "isCorrect": false },
+      { "value": "Parameter tampering", "isCorrect": false },
+      { "value": "Session fixation attack", "isCorrect": true },
+      { "value": "Cookie tampering", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which of these Windows utility help you to repair logical file system errors?",
+    "options": [
+      { "value": "CHKDSK", "isCorrect": true },
+      { "value": "Resource Monitor", "isCorrect": false },
+      { "value": "Disk defragmenter", "isCorrect": false },
+      { "value": "Disk cleanup", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Jacky encrypts her documents using a password. It is known that she uses her\ndaughter’s year of birth as part of the password. Which password cracking technique\nwould be optimal to crack her password?",
+    "options": [
+      { "value": "Brute-force attack", "isCorrect": false },
+      { "value": "Hybrid attack", "isCorrect": true },
+      { "value": "Rule-based attack", "isCorrect": false },
+      { "value": "Syllable attack", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Brian has the job of analyzing malware for a software security company. Brian has setup a\nvirtual environment that includes virtual machines running various versions of OSes.\nAdditionally, Brian has setup separated virtual networks within this environment. The\nvirtual environment does not connect to the company’s intranet nor does it connect to the\nexternal Internet. With everything setup, Brian now received an executable file from client\nthat has undergone a cyberattack. Brian ran the executable file in the virtual environment\nto see what it would do. What type of analysis did Brian perform?",
+    "options": [
+      { "value": "Static OS analysis", "isCorrect": false },
+      { "value": "Static malware analysis", "isCorrect": false },
+      { "value": "Status malware analysis", "isCorrect": false },
+      { "value": "Dynamic malware analysis", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "An attacker successfully gained access to a remote Windows system and plans to install\npersistent backdoors on it. Before that, to avoid getting detected in future, he wants to\ncover his tracks by disabling the last-accessed timestamps of the machine. What would\nhe do to achieve this?",
+    "options": [
+      { "value": "Run the command fsutil behavior set enablelastaccess 0", "isCorrect": false },
+      { "value": "Run the command fsutil behavior set disablelastaccess 0", "isCorrect": false },
+      {
+        "value": "Set the registry value of\nHKLM\\SYSTEM\\CurrentControlSet\\Control\\FileSystem\\NtfsDisableLastAccessUpdate to 0",
+        "isCorrect": false
+      },
+      {
+        "value": "Set the registry value of\nHKLM\\SYSTEM\\CurrentControlSet\\Control\\FileSystem\\NtfsDisableLastAccessUpdate to\n1",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "question": "Which layer in the IoT architecture is comprised of hardware parts such as sensors, RFID\ntags, and devices that play an important role in data collection?",
+    "options": [
+      { "value": "Middleware layer", "isCorrect": false },
+      { "value": "Application layer", "isCorrect": false },
+      { "value": "Edge technology layer", "isCorrect": true },
+      { "value": "Access gateway layer", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "A call detail record (CDR) provides metadata about calls made over a phone service. From\nthe following data fields, which one is not contained in a CDR.",
+    "options": [
+      { "value": "A unique sequence number identifying the record", "isCorrect": false },
+      { "value": "The language of the call", "isCorrect": true },
+      { "value": "Phone number receiving the call", "isCorrect": false },
+      { "value": "The call duration", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "You have been asked to investigate the possibility of computer fraud in the finance\ndepartment of a company. It is suspected that a staff member has been committing\nfinance fraud by printing cheques that have not been authorized. You have exhaustively\nsearched all data files on a bitmap image of the target computer but have found no\nevidence. You suspect the files may not have been saved. What should you examine next\nin this case?",
+    "options": [
+      { "value": "The swap file", "isCorrect": true },
+      { "value": "The Recycle Bin", "isCorrect": false },
+      { "value": "The registry", "isCorrect": false },
+      { "value": "The metadata", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Jack is reviewing file headers to verify the file format and hopefully find more information\nof the file. After a careful review of the data chunks through a hex editor; Jack finds the\nbinary value 0xffd8ff. Based on the above information, what type of format is the\nfile/image saved as?",
+    "options": [
+      { "value": "JPEG", "isCorrect": true },
+      { "value": "GIF", "isCorrect": false },
+      { "value": "ASCII", "isCorrect": false },
+      { "value": "BMP", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which of the following statements is true regarding SMTP Server?",
+    "options": [
+      {
+        "value": "SMTP server breaks the recipient's address into recipient's name and domain name\nbefore passing it to the DNS server",
+        "isCorrect": true
+      },
+      {
+        "value": "SMTP server breaks the recipient's address into recipient's name and his/her initial before\npassing it to the DNS server",
+        "isCorrect": false
+      },
+      {
+        "value": "SMTP server breaks the recipient's address into recipient's name and his/her designation\nbefore passing it to the DNS server",
+        "isCorrect": false
+      },
+      {
+        "value": "SMTP server breaks the recipient's address into recipient's name and recipient's address\nbefore passing it to the DNS server",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which of the following statements is true about SQL Server error logs?",
+    "options": [
+      {
+        "value": "SQL Server error logs record all the events that have occurred on the SQL Server and its\ndatabases",
+        "isCorrect": false
+      },
+      {
+        "value": "Error logs contain IP address of SQL Server client connections",
+        "isCorrect": false
+      },
+      {
+        "value": "Forensic investigator uses SQL Server Profiler to view error log files",
+        "isCorrect": false
+      },
+      {
+        "value": "Trace files record, user-defined events, and specific system events",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "question": "A clothing company has recently deployed a website on its latest product line to increase\nits conversion rate and base of customers. Andrew, the network administrator recently\nappointed by the company, has been assigned with the task of protecting the website\nfrom intrusion and vulnerabilities. Which of the following tool should Andrew consider\ndeploying in this scenario?",
+    "options": [
+      { "value": "ModSecurity", "isCorrect": true },
+      { "value": "CryptaPix", "isCorrect": false },
+      { "value": "Kon-Boot", "isCorrect": false },
+      { "value": "Recuva", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "You are an information security analyst at a large pharmaceutical company. While\nperforming a routine review of audit logs, you have noticed a significant amount of\negress traffic to various IP addresses on destination port 22 during off-peak hours. You\nresearched some of the IP addresses and found that many of them are in Eastern Europe.\nWhat is the most likely cause of this traffic?",
+    "options": [
+      {
+        "value": "The organization’s primary internal DNS server has been compromised and is performing\nDNS zone transfers to malicious external entities",
+        "isCorrect": false
+      },
+      {
+        "value": "Malicious software on internal system is downloading research data from partner\nSFTP servers in Eastern Europe",
+        "isCorrect": false
+      },
+      {
+        "value": "Data is being exfiltrated by an advanced persistent threat (APT)",
+        "isCorrect": true
+      },
+      {
+        "value": "Internal systems are downloading automatic Windows updates",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In Java, when multiple applications are launched, multiple Dalvik Virtual Machine\ninstances occur that consume memory and time. To avoid that, Android implements a\nprocess that enables low memory consumption and quick start-up time. What is the\nprocess called?",
+    "options": [
+      { "value": "Daemon", "isCorrect": false },
+      { "value": "Media server", "isCorrect": false },
+      { "value": "Init", "isCorrect": false },
+      { "value": "Zygote", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Consider that you are investigating a machine running a Windows OS released prior to\nWindows Vista. You are trying to gather information about the deleted files by examining\nthe master database file named INFO2 located at C:\\Recycler\\<USER SID>\\. You read an\nentry named “Dd5.exe.” What does Dd5.exe mean?",
+    "options": [
+      { "value": "D drive, fourth file restored, a .exe file", "isCorrect": false },
+      { "value": "D drive, sixth file deleted, a .exe file", "isCorrect": false },
+      { "value": "D drive, fourth file deleted, a .exe file", "isCorrect": false },
+      { "value": "D drive, fifth file deleted, a .exe file", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Which of the following tools is used to dump the memory of a running process, either\nimmediately or when an error condition occurs?",
+    "options": [
+      { "value": "CacheInf", "isCorrect": false },
+      { "value": "Belkasoft Live RAM Capturer", "isCorrect": true },
+      { "value": "Coreography", "isCorrect": false },
+      { "value": "FATKit", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Edgar is part of the FBI’s forensic media and malware analysis team; he is analyzing a\ncurrent malware and is conducting a thorough examination of the suspect system, network,\nand other connected devices. Edgar’s approach is to execute the malware code to know\nhow it interacts with the host system and its impacts on it. He is also using a virtual machine\nand a sandbox environment.\nWhat type of malware analysis is Edgar performing?",
+    "options": [
+      { "value": "Malware disassembly", "isCorrect": false },
+      { "value": "Static analysis", "isCorrect": false },
+      { "value": "VirusTotal analysis", "isCorrect": false },
+      { "value": "Dynamic malware analysis/behavioral analysis", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Steve thought it would be funny to make some changes on Tom’s computer at their office.\nSteve went into the Microsoft Windows registry and changed the keyboard mapping\nconfiguration on Tom’s computer. Now Tom is unable to log into his computer because of\nthe changes. Could Steve’s actions warrant a cybercrime investigation?",
+    "options": [
+      { "value": "Yes, because modifying computer software is always treated as a federal offense", "isCorrect": false },
+      { "value": "No, because this scenario describes a corporate investigation", "isCorrect": false },
+      { "value": "No, because there is no company policy that prohibits computer pranks on co-workers", "isCorrect": false },
+      { "value": "Yes, because Steve performed a denial-of-service attack on Tom’s computer", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "\"To ensure that the digital evidence is collected, preserved, examined, or transferred in a\nmanner safeguarding the accuracy and reliability of the evidence, law enforcement, and\nforensics organizations must establish and maintain an effective quality system\" is a\nprinciple established by:",
+    "options": [
+      { "value": "NCIS", "isCorrect": false },
+      { "value": "SWGDE", "isCorrect": true },
+      { "value": "EC-Council", "isCorrect": false },
+      { "value": "NIST", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "The Recycle Bin exists as a metaphor for throwing files away, but it also allows a user to\nretrieve and restore files. Once the file is moved to the Recycle Bin, a record is added to\nthe log file that exists in the Recycle Bin. Which of the following files contains records\nthat correspond to each deleted file in the Recycle Bin?",
+    "options": [
+      { "value": "LOGINFO1", "isCorrect": false },
+      { "value": "INFO1", "isCorrect": false },
+      { "value": "INFO2", "isCorrect": true },
+      { "value": "LOGINFO2", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Adam is thinking of establishing a hospital in the US and approaches John, a software\ndeveloper to build a site and host it for him on one of the servers, which would be used to\nstore patient health records. He has learned from his legal advisors that he needs to have\nthe server’s log data reviewed and managed according to certain standards and\nregulations. Which of the following regulations are the legal advisors referring to?",
+    "options": [
+      {
+        "value": "Health Insurance Portability and Accountability Act of 1996 (HIPAA)",
+        "isCorrect": true
+      },
+      { "value": "Electronic Communications Privacy Act", "isCorrect": false },
+      { "value": "Data Protection Act of 2018", "isCorrect": false },
+      { "value": "Payment Card Industry Data Security Standard (PCI DSS)", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "After a successful data exfiltration attack against your organization, you are conducting an\ninternal investigation and suspect a significant portion of evidence exists on an end-user’s\npersonal laptop. You want to be sure not to tip-off the laptop’s owner that an investigation\nis being conducted. What is the best option to obtain the evidence?",
+    "options": [
+      { "value": "Request the laptop owner to voluntarily surrender it", "isCorrect": false },
+      { "value": "Confiscate the laptop", "isCorrect": false },
+      { "value": "Obtain a search warrant", "isCorrect": true },
+      { "value": "Obtain a subpoena", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Tony, an email marketing professional, is accused of enticing people to reveal their\npersonal information such as banking credentials, credit card details, bank balance, etc.,\nvia phishing emails. What type of investigation will apply to Tony’s case?",
+    "options": [
+      { "value": "Criminal", "isCorrect": true },
+      { "value": "Administrative", "isCorrect": false },
+      { "value": "None of these", "isCorrect": false },
+      { "value": "Civil", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Ronald, a forensic investigator, has been hired by a financial services organization to\ninvestigate an attack on their MySQL database server, which is hosted on a Windows\nmachine named WIN-DTRAI83202X. Ronald wants to retrieve information on the changes\nthat have been made to the database. Which of the following files should Ronald examine\nfor this task?",
+    "options": [
+      { "value": "WIN-DTRAI83202Xslow.log", "isCorrect": false },
+      { "value": "WIN-DTRAI83202Xrelay-bin.index", "isCorrect": false },
+      { "value": "relay-log.info", "isCorrect": false },
+      { "value": "WIN-DTRAI83202X-bin.nnnnnn", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Which of the following Windows event logs record events related to device drives and\nhardware changes?",
+    "options": [
+      { "value": "Forwarded events log", "isCorrect": false },
+      { "value": "Application log", "isCorrect": false },
+      { "value": "Security log", "isCorrect": false },
+      { "value": "System log", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Simona has written a regular expression for the detection of web application-specific\nattack attempt that reads as /((\\%3C)|<)((\\%2F)|\\/)*[a-z0-9\\%]+((\\%3E)|>)/ix. Which of the\nfollowing does the part ((\\%3E)|>) look for?",
+    "options": [
+      { "value": "Opening angle bracket or its hex equivalent", "isCorrect": false },
+      { "value": "Alphanumeric string or its hex equivalent", "isCorrect": false },
+      { "value": "Closing angle bracket or its hex equivalent", "isCorrect": true },
+      { "value": "Forward slash for a closing tag or its hex equivalent", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "POP3 is an Internet protocol used to retrieve emails from a mail server. Through which\nport does an email client connect with a POP3 server?",
+    "options": [
+      { "value": "993", "isCorrect": false },
+      { "value": "25", "isCorrect": false },
+      { "value": "110", "isCorrect": true },
+      { "value": "143", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "At a trading organization, three employees received email from a senior official at ABC bank\nasking them to urgently fill customer-specific details at the bank’s website. As the\norganization already has a partnership with the bank, all the employees visited the website\nand updated customer-related information, such as their bank account details, confidential\ndocuments, and credit card information. After a day, all the concerned customers\ncomplained that large amount of money has been spent using their credit cards and they\ncannot log into their bank accounts. What kind of attack is this?",
+    "options": [
+      { "value": "Spear phishing", "isCorrect": true },
+      { "value": "Email spamming", "isCorrect": false },
+      { "value": "Mail bombing", "isCorrect": false },
+      { "value": "Whaling", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Smith, an employee of a reputed forensic investigation firm, has been hired by a private\norganization to investigate a laptop that is suspected to be involved in the hacking of the\norganization's DC server. Smith wants to find all the values typed in the Run box in\nWindows. Which of the following registry keys will Smith check to find the above\ninformation?",
+    "options": [
+      { "value": "TypedURLs key", "isCorrect": false },
+      { "value": "RunMRU key", "isCorrect": true },
+      { "value": "MountedDevices key", "isCorrect": false },
+      { "value": "UserAssist key", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Matthew has been assigned the task of analyzing a suspicious MS Office document via\nstatic analysis over an Ubuntu-based forensic machine. He wants to see what type of\ndocument it is, whether it is encrypted, or contains any flash objects/VBA macros. Which of\nthe following python-based script should he run to get relevant information?",
+    "options": [
+      { "value": "oleform.py", "isCorrect": false },
+      { "value": "pdfid.py", "isCorrect": false },
+      { "value": "oleid.py", "isCorrect": true },
+      { "value": "oledir.py", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "An investigator wants to extract passwords from SAM and System Files. Which tool can\nthe investigator use to obtain a list of users, passwords, and their hashes in this case?",
+    "options": [
+      { "value": "FileMerlin", "isCorrect": false },
+      { "value": "HashKey", "isCorrect": false },
+      { "value": "Nuix", "isCorrect": false },
+      { "value": "PWdump7", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "You are a digital forensic investigator at a large pharmaceutical company. You are\nresponding to a security incident where you have found a computer on the scene, and\nyou believe the computer contains evidence that is valuable to the case. The computer is\nrunning, but the screen is blank. What should you do first?",
+    "options": [
+      { "value": "Press a single key on the keyboard, and document which key was pressed", "isCorrect": false },
+      { "value": "Gather the appropriate report forms, pens, and memory capture tools", "isCorrect": true },
+      { "value": "Move the mouse slightly to wake the computer up", "isCorrect": false },
+      { "value": "Unplug the computer", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "During an investigation, the first responders stored mobile devices in specific containers\nto provide network isolation. All the following are examples of such pieces of equipment,\nexcept for:",
+    "options": [
+      { "value": "Faraday bag", "isCorrect": false },
+      { "value": "VirtualBox", "isCorrect": true },
+      { "value": "Wireless StrongHold bag", "isCorrect": false },
+      { "value": "RF shield box", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which of the following tools will allow a forensic investigator to acquire the memory dump\nof a suspect machine so that it may be investigated on a forensic workstation to collect\nevidentiary data like processes and Tor browser artifacts?",
+    "options": [
+      { "value": "Bulk Extractor", "isCorrect": false },
+      { "value": "Hex Editor", "isCorrect": false },
+      { "value": "DB Browser SQLite", "isCorrect": false },
+      { "value": "Belkasoft Live RAM Capturer and AccessData FTK Imager", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Jacob is a computer forensics investigator with over 10 years of experience in\ninvestigations and has written over 50 articles on computer forensics. He has been called\nupon as a qualified witness to testify the accuracy and integrity of the technical log files\ngathered in a computer fraud investigation. What is the term used for Jacob’s testimony\nin this case?",
+    "options": [
+      { "value": "Authentication", "isCorrect": true },
+      { "value": "Certification", "isCorrect": false },
+      { "value": "Justification", "isCorrect": false },
+      { "value": "Reiteration", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "When installed on a Windows machine, which port does the Tor browser use to establish\na network connection via Tor nodes?",
+    "options": [
+      { "value": "9150/9151", "isCorrect": true },
+      { "value": "7680", "isCorrect": false },
+      { "value": "49664/49665", "isCorrect": false },
+      { "value": "49667/49668", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which standard is used during a judicial trial to assess whether an expert witness’s\nscientific testimony is based on scientifically valid reasoning that can adequately be\napplied (admissible) to the facts under consideration?",
+    "options": [
+      { "value": "Joiner Standard", "isCorrect": false },
+      { "value": "Carmichael Standard", "isCorrect": false },
+      { "value": "Dunn Standard", "isCorrect": false },
+      { "value": "Daubert Standard", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "A cybercriminal is attempting to remove evidence from a Windows computer. He deletes\nthe file evidence1.doc, sending it to Windows Recycle Bin. The cybercriminal then\nempties the Recycle Bin. After having been removed from the Recycle Bin, what will\nhappen to the data?",
+    "options": [
+      { "value": "The data will be moved to new clusters in unallocated space", "isCorrect": false },
+      { "value": "The data will become corrupted, making it unrecoverable", "isCorrect": false },
+      { "value": "The data will remain in its original clusters until it is overwritten", "isCorrect": true },
+      { "value": "The data will be overwritten with zeroes", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Rule 1002 of Federal Rules of Evidence (US) talks about ______",
+    "options": [
+      { "value": "Admissibility of other evidence of contents", "isCorrect": false },
+      { "value": "Admissibility of duplicates", "isCorrect": false },
+      { "value": "Requirement of original", "isCorrect": true },
+      { "value": "Admissibility of original", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "To understand the impact of a malicious program after the booting process and to collect\nrecent information from the disk partition, an investigator should evaluate the content of the:",
+    "options": [
+      { "value": "UEFI", "isCorrect": false },
+      { "value": "GRUB", "isCorrect": false },
+      { "value": "MBR", "isCorrect": true },
+      { "value": "BIOS", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Before accessing digital evidence from victims, witnesses, or suspects, on their electronic devices, what should the investigator do first to respect legal privacy requirements?",
+    "options": [
+      { "value": "Obtain a formal written consent to search", "isCorrect": true },
+      { "value": "Notify the fact to the local authority or employer", "isCorrect": false },
+      { "value": "Protect the device against external communication", "isCorrect": false },
+      { "value": "Remove the battery or turn-off the device", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which of the following is considered as the starting point of a database and stores user data and database objects in an MS SQL server?",
+    "options": [
+      { "value": "ibdata1", "isCorrect": false },
+      { "value": "Primary data files (MDF)", "isCorrect": true },
+      { "value": "Application data files (ADF)", "isCorrect": false },
+      { "value": "Transaction log data files (LDF)", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "The working of the Tor browser is based on which of the following concepts?",
+    "options": [
+      { "value": "Onion routing", "isCorrect": true },
+      { "value": "Default routing", "isCorrect": false },
+      { "value": "Both static and default routing", "isCorrect": false },
+      { "value": "Static routing", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which following forensic tool allows investigator to detect and extract hidden streams on NTFS drive?",
+    "options": [
+      { "value": "TimeStomp", "isCorrect": false },
+      { "value": "Autopsy", "isCorrect": false },
+      { "value": "Stream Detector", "isCorrect": true },
+      { "value": "analyzeMFT", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Williamson is a forensic investigator. While investigating a case of data breach at a company, he is maintaining a document that records details such as the forensic processes applied on the collected evidence, particulars of people handling it, the dates and times when it is being handled, and the place of storage of the evidence. What do you call this document?",
+    "options": [
+      { "value": "Consent form", "isCorrect": false },
+      { "value": "Authorization form", "isCorrect": false },
+      { "value": "Chain of custody", "isCorrect": true },
+      { "value": "Log book", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "An International Mobile Equipment Identifier (IMEI) is a 15-digit number that indicates the manufacturer, model type, and country of approval for GSM devices. The first eight digits of an IMEI number, which provide information about the model and origin of the mobile device, are also known as:",
+    "options": [
+      { "value": "Device origin code (DOC)", "isCorrect": false },
+      { "value": "Integrated circuit code (ICC)", "isCorrect": false },
+      { "value": "Type allocation code (TAC)", "isCorrect": true },
+      { "value": "Manufacturer identification code (MIC)", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which ISO standard enables laboratories to demonstrate that they comply with quality assurance and provide valid results?",
+    "options": [
+      { "value": "ISO/IEC 19025", "isCorrect": false },
+      { "value": "ISO/IEC 17025", "isCorrect": true },
+      { "value": "ISO/IEC 16025", "isCorrect": false },
+      { "value": "ISO/IEC 18025", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "One technique for hiding information is to change the file extension from the correct one to the one that might not be noticed by an investigator. For example, changing a .jpg extension to a .doc extension so that a picture file appears to be a document. What can an investigator examine to verify that a file has the correct extension?",
+    "options": [
+      { "value": "The sector map", "isCorrect": false },
+      { "value": "The file footer", "isCorrect": false },
+      { "value": "The file allocation table", "isCorrect": false },
+      { "value": "The file header", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Chloe is a forensic examiner who is currently cracking hashed passwords for a crucial mission and hopefully solve the case. She is using a lookup table used for recovering a plain text password from cipher text; it contains word list and brute-force list along with their computed hash values. Chloe is also using a graphical generator that supports SHA1. a. What password technique is being used? b. What tool is Chloe using?",
+    "options": [
+      { "value": "a. Brute-force b. MScache", "isCorrect": false },
+      { "value": "a. Dictionary attack b. Cisco PIX", "isCorrect": false },
+      { "value": "a. Cain & Able b. Rten", "isCorrect": false },
+      { "value": "a. Rainbow Tables b. Winrtgen", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Place the following in order of volatility from most volatile to the least volatile.",
+    "options": [
+      { "value": "Registers and cache, routing tables, temporary file systems, archival media, disk storage", "isCorrect": false },
+      { "value": "Archival media, temporary file systems, disk storage, archival media, register and cache", "isCorrect": false },
+      { "value": "Register and cache, temporary file systems, routing tables, disk storage, archival media", "isCorrect": false },
+      { "value": "Registers and cache, routing tables, temporary file systems, disk storage, archival media", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Recently, an internal web app that a government agency utilizes has become unresponsive. Betty, a network engineer for the government agency, has been tasked to determine the cause of the web application’s unresponsiveness. Betty launches Wireshark and begins capturing the traffic on the local network. While analyzing the results, Betty noticed that a syn flood attack was underway. How did Betty know a syn flood attack was occurring?",
+    "options": [
+      { "value": "Wireshark capture shows multiple ACK requests and SYN responses from single/multiple IP address(es)", "isCorrect": false },
+      { "value": "Wireshark capture shows multiple SYN requests and RST responses from single/multiple IP address(es)", "isCorrect": true },
+      { "value": "Wireshark capture does not show anything unusual and the issue is related to the web application", "isCorrect": false },
+      { "value": "Wireshark capture shows multiple SYN requests and ACK responses from single/multiple IP address(es)", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Debbie has obtained a warrant to search a known pedophile’s house. Debbie went to the house and executed the search warrant to seize digital devices that have been recorded as being used for downloading illicit images. She seized all digital devices except a digital camera. Why did she not collect the digital camera?",
+    "options": [
+      { "value": "The digital camera was not listed as one of the digital devices in the warrant", "isCorrect": true },
+      { "value": "Debbie overlooked the digital camera because it is not a computer system", "isCorrect": false },
+      { "value": "The digital camera was old, had a cracked screen, and did not have batteries. Therefore, it could not have been used in a crime.", "isCorrect": false },
+      { "value": "The vehicle Debbie was using to transport the evidence was already full and could not carry more items", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "In Java, when multiple applications are launched, multiple Dalvik Virtual Machine instances occur that consume memory and time. To avoid that, Android implements a process that enables low memory consumption and quick start-up time. What is the process called?",
+    "options": [
+      { "value": "Media server", "isCorrect": false },
+      { "value": "Init", "isCorrect": false },
+      { "value": "Daemon", "isCorrect": false },
+      { "value": "Zygote", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Sally accessed the computer system that holds trade secrets of the company where she is employed. She knows she accessed it without authorization and all access (authorized and unauthorized) to this computer is monitored.To cover her tracks, Sally deleted the log entries on this computer. What among the following best describes her action?",
+    "options": [
+      { "value": "Network intrusion", "isCorrect": false },
+      { "value": "Password sniffing", "isCorrect": false },
+      { "value": "Brute-force attack", "isCorrect": false },
+      { "value": "Anti-forensics", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "An International Mobile Equipment Identifier (IMEI) is a 15-digit number that indicates the manufacturer, model type, and country of approval for GSM devices. The first eight digits of an IMEI number, which provide information about the model and origin of the mobile device, are also known as:",
+    "options": [
+      { "value": "Manufacturer identification code (MIC)", "isCorrect": false },
+      { "value": "Integrated circuit code (ICC)", "isCorrect": false },
+      { "value": "Type allocation code (TAC)", "isCorrect": true },
+      { "value": "Device origin code (DOC)", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "According to RFC 3227, which of the following is considered as the most volatile item on a typical system?",
+    "options": [
+      { "value": "Archival media", "isCorrect": false },
+      { "value": "Temporary system files", "isCorrect": false },
+      { "value": "Kernel statistics and memory", "isCorrect": false },
+      { "value": "Registers and cache", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Which part of Metasploit framework helps users to hide the data related to a\npreviously deleted file or currently unused by the allocated file.",
+    "options": [
+      { "value": "RuneFS", "isCorrect": false },
+      { "value": "Waffen FS", "isCorrect": false },
+      { "value": "Slacker", "isCorrect": true },
+      { "value": "FragFS", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "The Recycle Bin exists as a metaphor for throwing files away, but it also allows a\nuser to retrieve and restore files. Once the file is moved to the Recycle Bin, a record is\nadded to the log file that exists in the Recycle Bin. Which of the following files contains\nrecords that correspond to each deleted file in the Recycle Bin?",
+    "options": [
+      { "value": "LOGINFO1", "isCorrect": true },
+      { "value": "LOGINFO2", "isCorrect": false },
+      { "value": "INFO1", "isCorrect": false },
+      { "value": "INFO2", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which of the following are small pieces of data sent from a website and stored on the\nuser's computer by the user's web browser to track, validate, and maintain specific user\ninformation?",
+    "options": [
+      { "value": "Temporary Files", "isCorrect": false },
+      { "value": "Cookies", "isCorrect": true },
+      { "value": "Open files", "isCorrect": false },
+      { "value": "Web Browser Cache", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Which of the following files stores information about a local Google Drive installation\nsuch as User email ID, Local Sync Root Path, and Client version installed?",
+    "options": [
+      { "value": "config.db", "isCorrect": true },
+      { "value": "sigstore.db", "isCorrect": false },
+      { "value": "Sync_config.db", "isCorrect": false },
+      { "value": "filecache.db", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Depending upon the jurisdictional areas, different laws apply to different incidents.\nWhich of the following law is related to fraud and related activity in connection with\ncomputers?",
+    "options": [
+      { "value": "18 USC §1030", "isCorrect": true },
+      { "value": "18 USC §1361", "isCorrect": false },
+      { "value": "18 USC §1029", "isCorrect": false },
+      { "value": "18 USC §1371", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "What malware analysis operation can the investigator perform using the jv16 tool?",
+    "options": [
+      { "value": "Registry Analysis/Monitoring", "isCorrect": true },
+      { "value": "Installation Monitor", "isCorrect": false },
+      { "value": "Files and Folder Monitor", "isCorrect": false },
+      { "value": "Network Traffic Monitoring/Analysis", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "A Linux system is undergoing investigation. In which directory should the\ninvestigators look for its current state data if the system is in powered on state?",
+    "options": [
+      { "value": "/proc", "isCorrect": true },
+      { "value": "/var/spool/cron/", "isCorrect": false },
+      { "value": "/var/log/debug", "isCorrect": false },
+      { "value": "/auth", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Charles has accidentally deleted an important file while working on his Mac computer.\nHe wants to recover the deleted file as it contains some of his crucial business secrets.\nWhich of the following tool will help Charles?",
+    "options": [
+      { "value": "Colasoft's Capsa", "isCorrect": false },
+      { "value": "Xplico", "isCorrect": false },
+      { "value": "DriveSpy", "isCorrect": false },
+      { "value": "FileSalvage", "isCorrect": true }
+    ]
+  },
+  {
+    "question": "Identify the Apache error log from the following logs.",
+    "options": [
+      { "value": "http: // victim.com/scripts/..%c0%af../ ..%c0%af.. / ..%c0%af.. / ..%c0%af../ ..%c0%af.. /..%c0%af../ ..%c0%af../ ..%c0%af.. /", "isCorrect": false },
+      { "value": "winnt/system32/cmd.exe?/c+dir+C:\\Winnt\\system32\\Logfiles\\W3SVC1", "isCorrect": false },
+      { "value": "[Wed Oct 11 14:32:52 2000] [error] [client 127.0.0.1] client denied by server configuration: /export/ home/ live/ap/htdocs/test", "isCorrect": true },
+      { "value": "127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700]\"GET / apache_pb.gif HTTP/ 1.0\" 200 2326", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Jason discovered a file named $RIYG6VR.doc in the C:\\ $Recycle.Bin < USER SID > \\\nwhile analyzing a hard disk image for the deleted data. What inferences can he make from\nthe file name?",
+    "options": [
+      { "value": "It is a deleted doc file", "isCorrect": true },
+      { "value": "RIYG6VR.doc is the name of the doc file deleted from the system", "isCorrect": false },
+      { "value": "It is file deleted from R drive", "isCorrect": false },
+      { "value": "It is a doc file deleted in seventh sequential order", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "An expert witness is a ____________ who is normally appointed by a party to assist\nthe formulation and preparation of a party's claim or defense.",
+    "options": [
+      { "value": "Expert in criminal investigation", "isCorrect": false },
+      { "value": "Expert law graduate appointed by attorney", "isCorrect": false },
+      { "value": "Subject matter specialist", "isCorrect": true },
+      { "value": "Witness present at the crime scene", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Billy, a computer forensics expert, has recovered a large number of DBX files during\nthe forensic investigation of a laptop. Which of the following email clients can he use to\nanalyze the DBX files?",
+    "options": [
+      { "value": "Eudora", "isCorrect": false },
+      { "value": "Microsoft Outlook Express", "isCorrect": true },
+      { "value": "Mozilla Thunderbird", "isCorrect": false },
+      { "value": "Microsoft Outlook", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Event correlation is the process of finding relevance between the events that produce\na final result. What type of correlation will help an organization to correlate events across\na set of servers, systems, routers and network?",
+    "options": [
+      { "value": "Multiple-platform correlation", "isCorrect": false },
+      { "value": "Same-platform correlation", "isCorrect": false },
+      { "value": "Cross-platform correlation", "isCorrect": true },
+      { "value": "Network-platform correlation", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "An investigator seized a notebook device installed with a Microsoft Windows OS.\nWhich type of files would support an investigation of the data size and structure in the\ndevice?",
+    "options": [
+      { "value": "HFS and GNUC", "isCorrect": false },
+      { "value": "Ext2 and Ext4", "isCorrect": false },
+      { "value": "NTFS and FAT", "isCorrect": true },
+      { "value": "APFS and HFS", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "In a Filesystem Hierarchy Standard (FHS), which of the following directories contains\nthe binary files required for working?",
+    "options": [
+      { "value": "/mnt", "isCorrect": false },
+      { "value": "/sbin", "isCorrect": true },
+      { "value": "/proc", "isCorrect": false },
+      { "value": "/media", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Identify the data acquisition method employed by Derrick in the above scenario.",
+    "options": [
+      { "value": "Static data acquisition", "isCorrect": false },
+      { "value": "Live data acquisition", "isCorrect": true },
+      { "value": "Non-volatile data acquisition", "isCorrect": false },
+      { "value": "Dead data acquisition", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Identify the location of Recycle Bin on a Windows 7 machine that uses NTFS file\nsystem to store and retrieve files on the hard disk.",
+    "options": [
+      { "value": "Drive:\\$Recycle.Bin", "isCorrect": true },
+      { "value": "Drive:\\RECYCLER", "isCorrect": false },
+      { "value": "Drive:\\RECYCLED", "isCorrect": false },
+      { "value": "C:\\RECYCLED", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Identify the location of Recycle Bin in Windows XP system.",
+    "options": [
+      { "value": "local/share/Trash", "isCorrect": false },
+      { "value": "Drive:\\$Recycle.Bin\\", "isCorrect": false },
+      { "value": "Drive:\\RECYCLER\\", "isCorrect": true },
+      { "value": "Drive:\\RECYCLED", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "Identify the type of external attack performed by the attacker in the above scenario?",
+    "options": [
+      { "value": "Tailgating", "isCorrect": false },
+      { "value": "Phishing", "isCorrect": true },
+      { "value": "Brute-force", "isCorrect": false },
+      { "value": "Espionage", "isCorrect": false }
+    ]
+  },
+  {
+    "question": "What happens to the header of the file once it is deleted from the Windows OS file\nsystems?",
+    "options": [
+      { "value": "The OS replaces the first letter of a deleted file name with a hex byte code: E5h", "isCorrect": true },
+      { "value": "The hex byte coding of the file remains the same, but the file location differs", "isCorrect": false },
+      { "value": "The OS replaces the second letter of a deleted file name with a hex byte code: Eh5", "isCorrect": false },
+      { "value": "The OS replaces the entire hex byte coding of the file", "isCorrect": false }
+    ]
+  }
+]
