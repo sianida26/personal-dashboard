@@ -39,6 +39,13 @@ const sidebarMenus: SidebarMenu[] = [
 				link: "/ujian",
 				color: "blue",
 			},
+			{
+				label: "Ambil Ujian",
+				icon: { tb: "TbWriting" },
+				allowedPermissions: ["ujian.take"],
+				link: "/ambil-ujian",
+				color: "green",
+			},
 		],
 	},
 	{

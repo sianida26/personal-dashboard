@@ -20,6 +20,7 @@ export const permissions = [
 	"ujian.create",
 	"ujian.update",
 	"ujian.delete",
+	"ujian.take",
 ] as const;
 
 export const generalPermissions = ["authenticated-only", "guest-only"] as const;
