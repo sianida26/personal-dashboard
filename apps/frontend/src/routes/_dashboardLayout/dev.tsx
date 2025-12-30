@@ -36,8 +36,9 @@ function RouteComponent() {
 			{
 				accessorKey: "name",
 				header: "Name",
-				editable: true,
+				// editable: true,
 				editType: "text",
+				enableHiding:true
 			},
 			{
 				accessorKey: "atomicMass",
@@ -51,6 +52,7 @@ function RouteComponent() {
 			{
 				accessorKey: "category",
 				header: "Category",
+				enableHiding:false,
 				// Auto-detects as "text" filter since no options and not numeric
 			},
 			{
@@ -161,6 +163,11 @@ function RouteComponent() {
 						alert(
 							`Action: ${action} on row with Atomic #${row.length}`,
 						);
+					}}
+					initialState={{
+						columnVisibility: {
+							name: false,
+						},
 					}}
 				/>
 			</div>

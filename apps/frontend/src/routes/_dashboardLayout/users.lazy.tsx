@@ -3,18 +3,14 @@ import {
 	Button,
 	Card,
 } from "@repo/ui";
-import { useQuery } from "@tanstack/react-query";
 import { createLazyFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
-import type { SortingState } from "@tanstack/react-table";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { TbPencil, TbPlus, TbTrash } from "react-icons/tb";
 import {
 	type AdaptiveColumnDef,
-	AdaptiveTable,
-	type FilterState,
 } from "@/components/AdaptiveTable";
+import ServerDataTable from "@/components/ServerDataTable";
 import client from "@/honoClient";
-import fetchRPC from "@/utils/fetchRPC";
 
 export const Route = createLazyFileRoute("/_dashboardLayout/users")({
 	component: UsersPage,
@@ -35,107 +31,13 @@ interface User {
 export default function UsersPage() {
 	const navigate = useNavigate();
 
-	// Pagination state
-	const [page, setPage] = useState(1);
-	const [perPage, setPerPage] = useState(10);
-
-	// Sorting state
-	const [sorting, setSorting] = useState<SortingState>([]);
-
-	// Filter state
-	const [filters, setFilters] = useState<FilterState>([]);
-
-	// Search state
-	const [searchQuery, setSearchQuery] = useState("");
-
-	// Build query parameters for API
-	const queryParams = useMemo(() => {
-		const params: {
-			page: string;
-			limit: string;
-			q?: string;
-			sort?: string;
-			filter?: string;
-		} = {
-			page: page.toString(),
-			limit: perPage.toString(),
-		};
-
-		// Add search query
-		if (searchQuery) {
-			params.q = searchQuery;
-		}
-
-		// Add sorting parameters (format: "column:asc" or "column:desc")
-		if (sorting.length > 0) {
-			params.sort = sorting
-				.map((s) => `${s.id}:${s.desc ? "desc" : "asc"}`)
-				.join(",");
-		}
-
-		// Add filter parameters (format: "column:value")
-		if (filters.length > 0) {
-			params.filter = filters
-				.map((f) => `${f.columnId}:${f.value}`)
-				.join(",");
-		}
-
-		return params;
-	}, [page, perPage, sorting, filters, searchQuery]);
-
-	// Fetch users data
-	const { data, isLoading, isFetching } = useQuery({
-		queryKey: ["users", queryParams],
-		queryFn: async () => {
-			const response = await fetchRPC(
-				client.users.$get({
-					query: queryParams,
-				}),
-			);
-			return response;
-		},
-		placeholderData: (previousData) => previousData,
-	});
-
-	// Handlers
-	const handlePaginationChange = useCallback(
-		(newPerPage: number, newPage: number) => {
-			setPerPage(newPerPage);
-			setPage(newPage);
-		},
-		[],
-	);
-
-	const handleSortingChange = useCallback((newSorting: SortingState) => {
-		setSorting(newSorting);
-		setPage(1); // Reset to first page when sorting changes
-	}, []);
-
-	const handleFiltersChange = useCallback((newFilters: FilterState) => {
-		setFilters(newFilters);
-		setPage(1); // Reset to first page when filters change
-	}, []);
-
-	const handleSearchChange = useCallback((value: string) => {
-		setSearchQuery(value);
-		setPage(1); // Reset to first page when search changes
-	}, []);
-
-	// Handle user detail click - NAVIGATE TO DETAIL ROUTE
-	const handleDetailClick = useCallback((user: User) => {
-		navigate({
-			to: "/users/detail/$userId",
-			params: { userId: user.id },
-		});
-	}, [navigate]);
-
 	// Column definitions
 	const columns = useMemo<AdaptiveColumnDef<User>[]>(
 		() => [
 			{
 				id: "rowNumber",
 				header: "#",
-				cell: ({ row }) => (page - 1) * perPage + row.index + 1,
+				cell: ({ row }) => row.index + 1,
 				size: 60,
 				minSize: 60,
 				maxSize: 80,
@@ -158,6 +60,7 @@ export default function UsersPage() {
 				sortable: true,
 				size: 150,
 				minSize: 120,
+				enableHiding:true
 			},
 			{
 				accessorKey: "isEnabled",
@@ -174,8 +77,8 @@ export default function UsersPage() {
 					),
 				filterType: "select",
 				options: [
-					{ label: "Active", value: "Active" },
-					{ label: "Inactive", value: "Inactive" },
+					{ label: "Active", value: "true" },
+					{ label: "Inactive", value: "false" },
 				],
 				sortable: true,
 				size: 120,
@@ -268,47 +171,32 @@ export default function UsersPage() {
 				),
 			},
 		],
-		[page, perPage, navigate],
+		[navigate],
 	);
-
-	const users = data?.data ?? [];
-	const metadata = data?._metadata;
-	const totalPages = metadata?.totalPages ?? 1;
-	const totalItems = metadata?.totalItems ?? 0;
 
 	return (
 		<div className="p-6 h-full flex flex-col overflow-hidden">
 			<Card className="flex-1 p-6 flex flex-col overflow-hidden">
-				<AdaptiveTable
+				<ServerDataTable
 					columns={columns}
-					data={users}
+					endpoint={client.users.$get}
+					queryKey={["users"]}
 					title="Users"
-					// Server-side pagination
-					pagination
-					paginationType="server"
-					currentPage={page}
-					maxPage={totalPages}
-					recordsTotal={totalItems}
-					onPaginationChange={handlePaginationChange}
-					// Server-side sorting
-					sortable
-					onSortingChange={handleSortingChange}
-					// Server-side filtering
-					filterable
-					onFiltersChange={handleFiltersChange}
-					// Server-side search
-					search
-					onSearchChange={handleSearchChange}
-					// Loading states
-					isLoading={isLoading}
-					isRevalidating={isFetching && !isLoading}
-					// Table features
-					columnOrderable
-					columnResizable
-					rowVirtualization
-					showDetail
-					onDetailClick={handleDetailClick}
 					saveState="users-table"
+					// Hide username by default as requested
+					initialState={{
+						columnVisibility: {
+							username: false,
+						},
+					}}
+					// Row detail navigation
+					showDetail
+					onDetailClick={(user: User) => {
+						navigate({
+							to: "/users/detail/$userId",
+							params: { userId: user.id },
+						});
+					}}
 					// Header action
 					headerActions={
 						<Link to="/users/create">
@@ -317,6 +205,10 @@ export default function UsersPage() {
 							</Button>
 						</Link>
 					}
+					// Enable features
+					columnOrderable
+					columnResizable
+					rowVirtualization
 				/>
 			</Card>
 
