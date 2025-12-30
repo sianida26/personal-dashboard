@@ -204,6 +204,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		setSearchQuery: setSearchValue,
 		resetSettings,
 	} = useTableState({
+		initialState: props.initialState,
 		saveStateKey: props.saveState,
 		defaultColumnOrder: columnsWithDetail.map((c) => c.id as string),
 		enableColumnOrderable: props.columnOrderable,
