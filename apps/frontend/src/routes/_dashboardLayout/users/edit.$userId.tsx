@@ -155,9 +155,9 @@ function RouteComponent() {
 			onSuccess={() => navigate({ to: "/users" })}
 			mutationKey={["edit-user"]}
 			invalidateQueries={["users"]}
-			className="max-w-7xl h-[85vh] p-0"
+			className="max-w-7xl h-[95vh]"
 		>
-			<div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full p-6">
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-[90%] p-2">
 				{/* --- KOLOM KIRI (STATIC) --- */}
 				<div className="flex flex-col gap-4 h-full overflow-y-auto pr-2">
 					<Card className="p-4 border rounded-md">

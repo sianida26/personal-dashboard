@@ -1,29 +1,13 @@
 import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
 	Badge,
 	Button,
 	Card,
-	Input,
-	Label,
-	Sheet,
-	SheetContent,
-	SheetHeader,
-	SheetTitle,
-	Switch,
 } from "@repo/ui";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createLazyFileRoute, Link, Outlet } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { createLazyFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
 import type { SortingState } from "@tanstack/react-table";
 import { useCallback, useMemo, useState } from "react";
 import { TbPencil, TbPlus, TbTrash } from "react-icons/tb";
-import { toast } from "sonner";
 import {
 	type AdaptiveColumnDef,
 	AdaptiveTable,
@@ -49,7 +33,7 @@ interface User {
 }
 
 export default function UsersPage() {
-	const queryClient = useQueryClient();
+	const navigate = useNavigate();
 
 	// Pagination state
 	const [page, setPage] = useState(1);
@@ -63,23 +47,6 @@ export default function UsersPage() {
 
 	// Search state
 	const [searchQuery, setSearchQuery] = useState("");
-
-	// Detail sheet state
-	const [selectedUser, setSelectedUser] = useState<User | null>(null);
-	const [sheetMode, setSheetMode] = useState<"view" | "edit">("view");
-	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-
-	// Edit form state
-	const [editForm, setEditForm] = useState({
-		name: "",
-		username: "",
-		email: "",
-		isEnabled: true,
-		password: "",
-	});
-
-	// Check if selected user is superadmin
-	const isSuperAdmin = selectedUser?.username === "superadmin";
 
 	// Build query parameters for API
 	const queryParams = useMemo(() => {
@@ -154,119 +121,13 @@ export default function UsersPage() {
 		setPage(1); // Reset to first page when search changes
 	}, []);
 
-	// Handle user detail click
+	// Handle user detail click - NAVIGATE TO DETAIL ROUTE
 	const handleDetailClick = useCallback((user: User) => {
-		setSelectedUser(user);
-		setSheetMode("view");
-		setEditForm({
-			name: user.name,
-			username: user.username,
-			email: user.email || "",
-			isEnabled: user.isEnabled ?? true,
-			password: "",
+		navigate({
+			to: "/users/detail/$userId",
+			params: { userId: user.id },
 		});
-	}, []);
-
-	// Handle edit mode
-	const handleEditClick = useCallback(() => {
-		setSheetMode("edit");
-	}, []);
-
-	// Handle delete confirmation
-	const handleDeleteClick = useCallback(() => {
-		setShowDeleteDialog(true);
-	}, []);
-
-	// Delete mutation
-	const deleteMutation = useMutation({
-		mutationFn: async (userId: string) => {
-			const response = await fetch(
-				`${import.meta.env.VITE_BACKEND_BASE_URL}/users/${userId}`,
-				{
-					method: "DELETE",
-					credentials: "include",
-					headers: {
-						"Content-Type": "application/x-www-form-urlencoded",
-					},
-					body: new URLSearchParams({ skipTrash: "false" }),
-				},
-			);
-			if (!response.ok) {
-				throw new Error("Failed to delete user");
-			}
-			return response.json();
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["users"] });
-			toast.success("User deleted successfully");
-			setSelectedUser(null);
-			setShowDeleteDialog(false);
-		},
-		onError: () => {
-			toast.error("Failed to delete user");
-		},
-	});
-
-	// Update mutation
-	const updateMutation = useMutation({
-		mutationFn: async (data: { id: string; updates: typeof editForm }) => {
-			// Only include password if it's provided
-			const payload: {
-				name: string;
-				username: string;
-				email: string;
-				isEnabled: boolean;
-				password?: string;
-			} = {
-				name: data.updates.name,
-				username: data.updates.username,
-				email: data.updates.email,
-				isEnabled: data.updates.isEnabled,
-			};
-			if (data.updates.password) {
-				payload.password = data.updates.password;
-			}
-			const response = await fetchRPC(
-				client.users[":id"].$patch({
-					param: { id: data.id },
-					json: payload,
-				}),
-			);
-			return response;
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["users"] });
-			toast.success("User updated successfully");
-			setSheetMode("view");
-			// Refresh selected user data
-			if (selectedUser) {
-				setSelectedUser({
-					...selectedUser,
-					...editForm,
-				});
-			}
-		},
-		onError: () => {
-			toast.error("Failed to update user");
-		},
-	});
-
-	// Handle save edit
-	const handleSaveEdit = useCallback(() => {
-		if (selectedUser) {
-			updateMutation.mutate({
-				id: selectedUser.id,
-				updates: editForm,
-			});
-		}
-	}, [selectedUser, editForm, updateMutation]);
-
-	// Handle confirm delete
-	const handleConfirmDelete = useCallback(() => {
-		if (selectedUser) {
-			deleteMutation.mutate(selectedUser.id);
-		}
-	}, [selectedUser, deleteMutation]);
+	}, [navigate]);
 
 	// Column definitions
 	const columns = useMemo<AdaptiveColumnDef<User>[]>(
@@ -369,8 +230,45 @@ export default function UsersPage() {
 				size: 150,
 				minSize: 120,
 			},
+			{
+				id: "actions",
+				header: "Actions",
+				size: 120,
+				minSize: 120,
+				cell: ({ row }) => (
+					<div className="flex gap-2">
+						<Button
+							size="icon"
+							variant="ghost"
+							onClick={(e) => {
+								e.stopPropagation();
+								navigate({
+									to: "/users/edit/$userId",
+									params: { userId: row.original.id },
+								});
+							}}
+						>
+							<TbPencil />
+						</Button>
+						<Button
+							size="icon"
+							variant="ghost"
+							className="text-destructive hover:text-destructive"
+							onClick={(e) => {
+								e.stopPropagation();
+								navigate({
+									to: "/users/delete/$userId",
+									params: { userId: row.original.id },
+								});
+							}}
+						>
+							<TbTrash />
+						</Button>
+					</div>
+				),
+			},
 		],
-		[page, perPage],
+		[page, perPage, navigate],
 	);
 
 	const users = data?.data ?? [];
@@ -421,270 +319,6 @@ export default function UsersPage() {
 					}
 				/>
 			</Card>
-
-			{/* User Detail/Edit Sheet */}
-			<Sheet
-				open={selectedUser !== null}
-				onOpenChange={(open) => {
-					if (!open) {
-						setSelectedUser(null);
-						setSheetMode("view");
-					}
-				}}
-			>
-				<SheetContent
-					side="right"
-					className="w-[400px] sm:w-[540px] overflow-y-auto"
-				>
-					<SheetHeader>
-						<SheetTitle>
-							{sheetMode === "view"
-								? "User Details"
-								: "Edit User"}
-						</SheetTitle>
-					</SheetHeader>
-
-					{selectedUser && sheetMode === "view" && (
-						<div className="mt-6 space-y-6">
-							<div className="space-y-4">
-								<div>
-									<Label className="text-sm font-medium text-muted-foreground">
-										Name
-									</Label>
-									<p className="mt-1 text-sm">
-										{selectedUser.name}
-									</p>
-								</div>
-								<div>
-									<Label className="text-sm font-medium text-muted-foreground">
-										Username
-									</Label>
-									<p className="mt-1 text-sm">
-										{selectedUser.username}
-									</p>
-								</div>
-								<div>
-									<Label className="text-sm font-medium text-muted-foreground">
-										Email
-									</Label>
-									<p className="mt-1 text-sm">
-										{selectedUser.email || "-"}
-									</p>
-								</div>
-								<div>
-									<Label className="text-sm font-medium text-muted-foreground">
-										Status
-									</Label>
-									<div className="mt-1">
-										{selectedUser.isEnabled ? (
-											<Badge className="text-green-500 bg-green-100">
-												Active
-											</Badge>
-										) : (
-											<Badge className="text-gray-500 bg-gray-100">
-												Inactive
-											</Badge>
-										)}
-									</div>
-								</div>
-								<div>
-									<Label className="text-sm font-medium text-muted-foreground">
-										Roles
-									</Label>
-									<div className="mt-1 flex flex-wrap gap-2">
-										{selectedUser.roles?.length > 0 ? (
-											selectedUser.roles.map((role) => (
-												<Badge
-													key={role.id}
-													variant="secondary"
-												>
-													{role.name}
-												</Badge>
-											))
-										) : (
-											<span className="text-sm text-gray-400">
-												No roles
-											</span>
-										)}
-									</div>
-								</div>
-								<div>
-									<Label className="text-sm font-medium text-muted-foreground">
-										Created At
-									</Label>
-									<p className="mt-1 text-sm">
-										{selectedUser.createdAt
-											? new Date(
-													selectedUser.createdAt,
-												).toLocaleString("en-US", {
-													year: "numeric",
-													month: "long",
-													day: "numeric",
-													hour: "2-digit",
-													minute: "2-digit",
-												})
-											: "-"}
-									</p>
-								</div>
-							</div>
-
-							<div className="flex gap-2 pt-4 border-t">
-								<Button
-									onClick={handleEditClick}
-									className="flex-1"
-									variant="outline"
-								>
-									<TbPencil className="mr-2 h-4 w-4" />
-									Edit
-								</Button>
-								<Button
-									onClick={handleDeleteClick}
-									variant="destructive"
-									className="flex-1"
-								>
-									<TbTrash className="mr-2 h-4 w-4" />
-									Delete
-								</Button>
-							</div>
-						</div>
-					)}
-
-					{selectedUser && sheetMode === "edit" && (
-						<div className="mt-6 space-y-4">
-							<div className="space-y-2">
-								<Label htmlFor="name">Name</Label>
-								<Input
-									id="name"
-									value={editForm.name}
-									onChange={(e) =>
-										setEditForm({
-											...editForm,
-											name: e.target.value,
-										})
-									}
-								/>
-							</div>
-							<div className="space-y-2">
-								<Label htmlFor="username">
-									Username
-									{isSuperAdmin && (
-										<span className="text-xs text-muted-foreground ml-2">
-											(Cannot be changed for superadmin)
-										</span>
-									)}
-								</Label>
-								<Input
-									id="username"
-									value={editForm.username}
-									onChange={(e) =>
-										setEditForm({
-											...editForm,
-											username: e.target.value,
-										})
-									}
-									disabled={isSuperAdmin}
-								/>
-							</div>
-							<div className="space-y-2">
-								<Label htmlFor="email">Email</Label>
-								<Input
-									id="email"
-									type="email"
-									value={editForm.email}
-									onChange={(e) =>
-										setEditForm({
-											...editForm,
-											email: e.target.value,
-										})
-									}
-								/>
-							</div>
-							<div className="space-y-2">
-								<Label htmlFor="password">
-									Password
-									<span className="text-xs text-muted-foreground ml-2">
-										(Optional - leave blank to keep current)
-									</span>
-								</Label>
-								<Input
-									id="password"
-									type="password"
-									value={editForm.password}
-									onChange={(e) =>
-										setEditForm({
-											...editForm,
-											password: e.target.value,
-										})
-									}
-									placeholder="Enter new password"
-								/>
-							</div>
-							<div className="flex items-center space-x-2">
-								<Switch
-									id="enabled"
-									checked={editForm.isEnabled}
-									onCheckedChange={(checked) =>
-										setEditForm({
-											...editForm,
-											isEnabled: checked,
-										})
-									}
-								/>
-								<Label htmlFor="enabled">Enabled</Label>
-							</div>
-							<div className="flex gap-2 pt-4 border-t">
-								<Button
-									onClick={() => setSheetMode("view")}
-									variant="outline"
-									className="flex-1"
-								>
-									Cancel
-								</Button>
-								<Button
-									onClick={handleSaveEdit}
-									className="flex-1"
-									disabled={updateMutation.isPending}
-								>
-									{updateMutation.isPending
-										? "Saving..."
-										: "Save"}
-								</Button>
-							</div>
-						</div>
-					)}
-				</SheetContent>
-			</Sheet>
-
-			{/* Delete Confirmation Dialog */}
-			<AlertDialog
-				open={showDeleteDialog}
-				onOpenChange={setShowDeleteDialog}
-			>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>
-							Are you sure you want to delete this user?
-						</AlertDialogTitle>
-						<AlertDialogDescription>
-							This action will soft delete the user "
-							{selectedUser?.name}". The user can be restored
-							later.
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction
-							onClick={handleConfirmDelete}
-							disabled={deleteMutation.isPending}
-							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-						>
-							{deleteMutation.isPending
-								? "Deleting..."
-								: "Delete"}
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
 
 			<Outlet />
 		</div>
