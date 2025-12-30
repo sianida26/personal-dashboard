@@ -32,6 +32,8 @@ interface Role {
 	permissions: string[];
 }
 
+import { cn } from "@repo/ui/utils";
+
 interface PermissionMatrixProps {
 	permissions: Permission[];
 	roles: Role[];
@@ -40,6 +42,7 @@ interface PermissionMatrixProps {
 	onChange: (ids: string[]) => void;
 	disabled?: boolean;
 	assignPermissions?: React.ReactNode;
+	className?: string;
 }
 
 export default function PermissionMatrix({
@@ -50,6 +53,7 @@ export default function PermissionMatrix({
 	onChange,
 	disabled = false,
 	assignPermissions,
+	className,
 }: PermissionMatrixProps) {
 	const [search, setSearch] = useState("");
 
@@ -96,7 +100,7 @@ export default function PermissionMatrix({
 	};
 
 	return (
-		<Card className="overflow-hidden bg-gray-50/50 p-0 border rounded-md">
+		<Card className={cn("overflow-hidden h-full bg-gray-50/50 p-0 border rounded-md", className)}>
 			{/* Header Section */}
 			<div className="p-4 border-b bg-white flex flex-col sm:flex-row gap-4 justify-between items-center">
 				<div>
@@ -132,7 +136,7 @@ export default function PermissionMatrix({
 			</div>
 
 			{/* Accordion List */}
-			<div className="p-4">
+			<div className="p-4 overflow-y-auto h-full">
 				{Object.keys(groupedPermissions).length === 0 ? (
 					<div className="text-muted-foreground text-sm text-center py-10">
 						No permissions found matching {search && search}
@@ -157,7 +161,7 @@ export default function PermissionMatrix({
 									<AccordionItem
 										key={group}
 										value={group}
-										className="bg-white border rounded-md px-3"
+										className="bg-white border rounded-md px-3 "
 									>
 										<AccordionTrigger className="hover:no-underline py-3">
 											<div className="flex justify-between w-full mr-2">
@@ -293,6 +297,7 @@ export default function PermissionMatrix({
 						)}
 					</Accordion>
 				)}
+                <div className="h-24" />
 			</div>
 		</Card>
 	);

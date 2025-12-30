@@ -46,10 +46,45 @@ function RouteComponent() {
 		},
 	});
 
-	const { data: metadata } = useQuery({
-		queryKey: ["form-metadata"],
-		queryFn: () => fetchRPC(client.users["form-metadata"].$get()),
+	// Fetch permissions
+	const { data: permissionsList } = useQuery({
+		queryKey: ["permissions"],
+		queryFn: async () => {
+			const res = await fetchRPC(client.permissions.$get());
+			return res;
+		},
 	});
+
+	// Fetch roles
+	const { data: rolesResponse } = useQuery({
+		queryKey: ["roles"],
+		queryFn: async () => {
+			const res = await fetchRPC(
+				client.roles.$get({
+					query: {
+						page: "1",
+						limit: "100", // Fetch enough for dropdown
+					},
+				}),
+			);
+			return res;
+		},
+	});
+
+	const permissionsData = permissionsList ?? [];
+
+	// Map role permission codes to IDs
+	const rolesData = (rolesResponse?.data ?? []).map((role) => {
+		const rolePermissionIds = role.permissions
+			.map((code) => permissionsData.find((p) => p.code === code)?.id)
+			.filter((id): id is string => Boolean(id));
+		
+		return {
+			...role,
+			permissions: rolePermissionIds,
+		};
+	});
+
 
 	const { data: userData } = useQuery({
 		queryKey: ["users", { id }],
@@ -74,10 +109,7 @@ function RouteComponent() {
 				permissions: userData.permissions ?? [],
 			});
 		}
-	}, [userData]); 
-
-	const rolesData = metadata?.roles ?? [];
-	const permissionsData = metadata?.permissions ?? [];
+	}, [userData]);
 
 	const roleOptions = rolesData.map((role) => ({
 		value: role.id,
@@ -123,9 +155,9 @@ function RouteComponent() {
 			onSuccess={() => navigate({ to: "/users" })}
 			mutationKey={["edit-user"]}
 			invalidateQueries={["users"]}
-			className="max-w-7xl"
+			className="max-w-7xl h-[85vh] p-0"
 		>
-			<div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full items-start">
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full p-6">
 				{/* --- KOLOM KIRI (STATIC) --- */}
 				<div className="flex flex-col gap-4 h-full overflow-y-auto pr-2">
 					<Card className="p-4 border rounded-md">
@@ -281,6 +313,7 @@ function RouteComponent() {
 								Boolean(isMutating) ||
 								!canAssignPermissions
 							}
+							className="border-0 bg-transparent shadow-none"
 						/>
 					</div>
 				</Card>
