@@ -16,21 +16,22 @@ import postUjianRoute from "./post-ujian";
 import postUjianQuestionRoute from "./post-ujian-question";
 
 const ujianRoute = new Hono<HonoEnv>()
-	// Admin routes
-	.route("/", getUjianRoute)
-	.route("/", postUjianRoute)
-	.route("/", getUjianByIdRoute)
-	.route("/", patchUjianByIdRoute)
-	.route("/", deleteUjianByIdRoute)
-	.route("/", postUjianQuestionRoute)
-	.route("/", patchUjianQuestionRoute)
-	.route("/", deleteUjianQuestionRoute)
-	// Peserta routes
+	// Peserta routes (must come before /:id routes)
 	.route("/", getAvailableUjianRoute)
 	.route("/", getMyAttemptsRoute)
 	.route("/", postStartUjianRoute)
 	.route("/", postSubmitAnswerRoute)
 	.route("/", postCompleteUjianRoute)
-	.route("/", getAttemptResultsRoute);
+	.route("/", getAttemptResultsRoute)
+	// Admin routes
+	.route("/", getUjianRoute)
+	.route("/", postUjianRoute)
+	.route("/", postUjianQuestionRoute)
+	.route("/", patchUjianQuestionRoute)
+	.route("/", deleteUjianQuestionRoute)
+	// Routes with :id parameter (must come last)
+	.route("/", getUjianByIdRoute)
+	.route("/", patchUjianByIdRoute)
+	.route("/", deleteUjianByIdRoute);
 
 export default ujianRoute;
