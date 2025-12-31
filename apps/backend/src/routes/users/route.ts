@@ -20,6 +20,8 @@ import { sendToRoles } from "../../utils/notifications/notification-helpers";
 import { hashPassword } from "../../utils/passwordUtils";
 import requestValidator from "../../utils/requestValidator";
 import themeRoute from "./theme";
+import { permissionsSchema } from "../../drizzle/schema/permissions";
+import { permissionsToUsers } from "../../drizzle/schema/permissionsToUsers";
 
 export interface DateRange {
 	from?: Date;
@@ -253,7 +255,7 @@ const usersRoute = new Hono<HonoEnv>()
 		requestValidator(
 			"query",
 			z.object({
-				includeTrashed: z.string().default("false"),
+				includeTrashed: z.string().prefault("false"),
 			}),
 		),
 		async (c) => {
@@ -298,15 +300,51 @@ const usersRoute = new Hono<HonoEnv>()
 				return prev;
 			}, new Map<string, string>()); //Map<id, name>
 
+			const userPermissions = await db
+				.select({
+					permissionId: permissionsToUsers.permissionId,
+				})
+				.from(permissionsToUsers)
+				.where(eq(permissionsToUsers.userId, userId));
+
 			const userData = {
 				...queryResult[0],
 				role: undefined,
 				roles: Array.from(roles, ([id, name]) => ({ id, name })),
+				permissions: userPermissions.map((p) => p.permissionId),
 			};
 
 			return c.json(userData);
 		},
 	)
+	
+	.get("/form-metadata", checkPermission("users.readAll"), async (c) => {
+		// Ambil semua permission
+		const allPermissions = await db.select().from(permissionsSchema);
+
+		// Ambil semua roles beserta permission-nya (untuk inheritance logic)
+		const allRoles = await db.query.rolesSchema.findMany({
+			with: {
+				permissionsToRoles: {
+					with: {
+						permission: true,
+					},
+				},
+			},
+		});
+
+		return c.json({
+			permissions: allPermissions,
+			roles: allRoles.map((r) => ({
+				id: r.id,
+				name: r.name,
+				// Flatten permission codes untuk validasi frontend
+				permissions: r.permissionsToRoles.map(
+					(ptr) => ptr.permission.id,
+				),
+			})),
+		});
+	})
 	//create user
 	.post(
 		"/",

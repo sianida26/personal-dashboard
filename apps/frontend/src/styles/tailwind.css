@@ -825,9 +825,9 @@
 	}
 
 	/* Table cell accent on first column */
-	.table-themed tbody td:first-child {
+	/* .table-themed tbody td:first-child {
 		border-left: 2px solid hsl(var(--primary) / 0.15);
-	}
+	} */
 
 	/* Table Components */
 	.table {

@@ -119,11 +119,13 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 			id: "_actions",
 			header: rowSelectable
 				? ({ table }) => (
-						<IndeterminateCheckbox
+						<div className="pl-4">
+							<IndeterminateCheckbox
 							checked={table.getIsAllRowsSelected()}
 							indeterminate={table.getIsSomeRowsSelected()}
 							onChange={table.getToggleAllRowsSelectedHandler()}
 						/>
+						</div>
 					)
 				: "",
 			cell: ({ row }) => {
@@ -132,7 +134,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 					<div className="flex items-center justify-center gap-0.5">
 						{rowSelectable && (
 							<div
-								className={`${isSelected ? "opacity-100" : "opacity-0 group-hover/row:opacity-100"}`}
+								className={`pl-4 ${isSelected ? "opacity-100" : "opacity-0 group-hover/row:opacity-100 group-hover/row:pl-4"}`}
 							>
 								<IndeterminateCheckbox
 									checked={isSelected}
@@ -204,6 +206,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		setSearchQuery: setSearchValue,
 		resetSettings,
 	} = useTableState({
+		initialState: props.initialState,
 		saveStateKey: props.saveState,
 		defaultColumnOrder: columnsWithDetail.map((c) => c.id as string),
 		enableColumnOrderable: props.columnOrderable,
@@ -864,10 +867,8 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 			<div className="relative">
 				{/* Sticky Header Table */}
 				<div
-					className="sticky top-0 z-10 bg-background"
-					style={{
-						boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
-					}}
+					className="sticky top-0 z-10 bg-background border-b"
+					style={{}}
 				>
 					<table
 						className="border-collapse table-themed w-full"
