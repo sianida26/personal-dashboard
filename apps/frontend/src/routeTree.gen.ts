@@ -16,17 +16,21 @@ import { Route as NoAccessRouteImport } from './routes/no-access'
 import { Route as DashboardLayoutRouteImport } from './routes/_dashboardLayout'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
 import { Route as DashboardLayoutUsersRouteImport } from './routes/_dashboardLayout/users'
+import { Route as DashboardLayoutUjianRouteImport } from './routes/_dashboardLayout/ujian'
 import { Route as DashboardLayoutGraphAdminRouteImport } from './routes/_dashboardLayout/graph-admin'
 import { Route as DashboardLayoutDevRouteImport } from './routes/_dashboardLayout/dev'
+import { Route as DashboardLayoutUjianIndexRouteImport } from './routes/_dashboardLayout/ujian/index'
 import { Route as DashboardLayoutRolesIndexRouteImport } from './routes/_dashboardLayout/roles/index'
 import { Route as DashboardLayoutNotificationsIndexRouteImport } from './routes/_dashboardLayout/notifications/index'
 import { Route as DashboardLayoutDashboardIndexRouteImport } from './routes/_dashboardLayout/dashboard/index'
 import { Route as DashboardLayoutUsersCreateRouteImport } from './routes/_dashboardLayout/users/create'
+import { Route as DashboardLayoutUjianCreateRouteImport } from './routes/_dashboardLayout/ujian.create'
 import { Route as DashboardLayoutRolesCreateRouteImport } from './routes/_dashboardLayout/roles/create'
 import { Route as DashboardLayoutPersonalNotificationsRouteImport } from './routes/_dashboardLayout/personal/notifications'
 import { Route as DashboardLayoutUsersEditUserIdRouteImport } from './routes/_dashboardLayout/users/edit.$userId'
 import { Route as DashboardLayoutUsersDetailUserIdRouteImport } from './routes/_dashboardLayout/users/detail.$userId'
 import { Route as DashboardLayoutUsersDeleteUserIdRouteImport } from './routes/_dashboardLayout/users/delete.$userId'
+import { Route as DashboardLayoutUjianEditUjianIdRouteImport } from './routes/_dashboardLayout/ujian.edit.$ujianId'
 import { Route as DashboardLayoutRolesViewRoleIdRouteImport } from './routes/_dashboardLayout/roles/view.$roleId'
 import { Route as DashboardLayoutRolesEditRoleIdRouteImport } from './routes/_dashboardLayout/roles/edit.$roleId'
 
@@ -41,12 +45,26 @@ const OauthMicrosoftAdminCallbackLazyRouteImport = createFileRoute(
 const OauthGoogleCallbackLazyRouteImport = createFileRoute(
   '/oauth/google-callback',
 )()
+const DashboardLayoutAmbilUjianLazyRouteImport = createFileRoute(
+  '/_dashboardLayout/ambil-ujian',
+)()
 const DashboardLayoutAppSettingsIndexLazyRouteImport = createFileRoute(
   '/_dashboardLayout/app-settings/',
+)()
+const DashboardLayoutAmbilUjianRiwayatLazyRouteImport = createFileRoute(
+  '/_dashboardLayout/ambil-ujian/riwayat',
+)()
+const DashboardLayoutAmbilUjianAttemptIdLazyRouteImport = createFileRoute(
+  '/_dashboardLayout/ambil-ujian/$attemptId',
 )()
 const DashboardLayoutAppSettingsEditIdLazyRouteImport = createFileRoute(
   '/_dashboardLayout/app-settings/edit/$id',
 )()
+const DashboardLayoutAmbilUjianStartUjianIdLazyRouteImport = createFileRoute(
+  '/_dashboardLayout/ambil-ujian/start/$ujianId',
+)()
+const DashboardLayoutAmbilUjianResultsAttemptIdLazyRouteImport =
+  createFileRoute('/_dashboardLayout/ambil-ujian/results/$attemptId')()
 
 const NotFoundRoute = NotFoundRouteImport.update({
   id: '/not-found',
@@ -100,6 +118,14 @@ const OauthGoogleCallbackLazyRoute = OauthGoogleCallbackLazyRouteImport.update({
 } as any).lazy(() =>
   import('./routes/oauth/google-callback.lazy').then((d) => d.Route),
 )
+const DashboardLayoutAmbilUjianLazyRoute =
+  DashboardLayoutAmbilUjianLazyRouteImport.update({
+    id: '/ambil-ujian',
+    path: '/ambil-ujian',
+    getParentRoute: () => DashboardLayoutRoute,
+  } as any).lazy(() =>
+    import('./routes/_dashboardLayout/ambil-ujian.lazy').then((d) => d.Route),
+  )
 const DashboardLayoutUsersRoute = DashboardLayoutUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -107,6 +133,11 @@ const DashboardLayoutUsersRoute = DashboardLayoutUsersRouteImport.update({
 } as any).lazy(() =>
   import('./routes/_dashboardLayout/users.lazy').then((d) => d.Route),
 )
+const DashboardLayoutUjianRoute = DashboardLayoutUjianRouteImport.update({
+  id: '/ujian',
+  path: '/ujian',
+  getParentRoute: () => DashboardLayoutRoute,
+} as any)
 const DashboardLayoutGraphAdminRoute =
   DashboardLayoutGraphAdminRouteImport.update({
     id: '/graph-admin',
@@ -128,6 +159,14 @@ const DashboardLayoutAppSettingsIndexLazyRoute =
       (d) => d.Route,
     ),
   )
+const DashboardLayoutUjianIndexRoute =
+  DashboardLayoutUjianIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => DashboardLayoutUjianRoute,
+  } as any).lazy(() =>
+    import('./routes/_dashboardLayout/ujian/index.lazy').then((d) => d.Route),
+  )
 const DashboardLayoutRolesIndexRoute =
   DashboardLayoutRolesIndexRouteImport.update({
     id: '/roles/',
@@ -148,11 +187,37 @@ const DashboardLayoutDashboardIndexRoute =
     path: '/dashboard/',
     getParentRoute: () => DashboardLayoutRoute,
   } as any)
+const DashboardLayoutAmbilUjianRiwayatLazyRoute =
+  DashboardLayoutAmbilUjianRiwayatLazyRouteImport.update({
+    id: '/ambil-ujian/riwayat',
+    path: '/ambil-ujian/riwayat',
+    getParentRoute: () => DashboardLayoutRoute,
+  } as any).lazy(() =>
+    import('./routes/_dashboardLayout/ambil-ujian.riwayat.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+const DashboardLayoutAmbilUjianAttemptIdLazyRoute =
+  DashboardLayoutAmbilUjianAttemptIdLazyRouteImport.update({
+    id: '/ambil-ujian/$attemptId',
+    path: '/ambil-ujian/$attemptId',
+    getParentRoute: () => DashboardLayoutRoute,
+  } as any).lazy(() =>
+    import('./routes/_dashboardLayout/ambil-ujian.$attemptId.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 const DashboardLayoutUsersCreateRoute =
   DashboardLayoutUsersCreateRouteImport.update({
     id: '/create',
     path: '/create',
-    getParentRoute: () => DashboardLayoutUsersLazyRoute,
+    getParentRoute: () => DashboardLayoutUsersRoute,
+  } as any)
+const DashboardLayoutUjianCreateRoute =
+  DashboardLayoutUjianCreateRouteImport.update({
+    id: '/create',
+    path: '/create',
+    getParentRoute: () => DashboardLayoutUjianRoute,
   } as any)
 const DashboardLayoutRolesCreateRoute =
   DashboardLayoutRolesCreateRouteImport.update({
@@ -176,23 +241,49 @@ const DashboardLayoutAppSettingsEditIdLazyRoute =
       (d) => d.Route,
     ),
   )
+const DashboardLayoutAmbilUjianStartUjianIdLazyRoute =
+  DashboardLayoutAmbilUjianStartUjianIdLazyRouteImport.update({
+    id: '/ambil-ujian/start/$ujianId',
+    path: '/ambil-ujian/start/$ujianId',
+    getParentRoute: () => DashboardLayoutRoute,
+  } as any).lazy(() =>
+    import('./routes/_dashboardLayout/ambil-ujian.start.$ujianId.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+const DashboardLayoutAmbilUjianResultsAttemptIdLazyRoute =
+  DashboardLayoutAmbilUjianResultsAttemptIdLazyRouteImport.update({
+    id: '/ambil-ujian/results/$attemptId',
+    path: '/ambil-ujian/results/$attemptId',
+    getParentRoute: () => DashboardLayoutRoute,
+  } as any).lazy(() =>
+    import('./routes/_dashboardLayout/ambil-ujian.results.$attemptId.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 const DashboardLayoutUsersEditUserIdRoute =
   DashboardLayoutUsersEditUserIdRouteImport.update({
     id: '/edit/$userId',
     path: '/edit/$userId',
-    getParentRoute: () => DashboardLayoutUsersLazyRoute,
+    getParentRoute: () => DashboardLayoutUsersRoute,
   } as any)
 const DashboardLayoutUsersDetailUserIdRoute =
   DashboardLayoutUsersDetailUserIdRouteImport.update({
     id: '/detail/$userId',
     path: '/detail/$userId',
-    getParentRoute: () => DashboardLayoutUsersLazyRoute,
+    getParentRoute: () => DashboardLayoutUsersRoute,
   } as any)
 const DashboardLayoutUsersDeleteUserIdRoute =
   DashboardLayoutUsersDeleteUserIdRouteImport.update({
     id: '/delete/$userId',
     path: '/delete/$userId',
-    getParentRoute: () => DashboardLayoutUsersLazyRoute,
+    getParentRoute: () => DashboardLayoutUsersRoute,
+  } as any)
+const DashboardLayoutUjianEditUjianIdRoute =
+  DashboardLayoutUjianEditUjianIdRouteImport.update({
+    id: '/edit/$ujianId',
+    path: '/edit/$ujianId',
+    getParentRoute: () => DashboardLayoutUjianRoute,
   } as any)
 const DashboardLayoutRolesViewRoleIdRoute =
   DashboardLayoutRolesViewRoleIdRouteImport.update({
@@ -213,7 +304,9 @@ export interface FileRoutesByFullPath {
   '/not-found': typeof NotFoundRoute
   '/dev': typeof DashboardLayoutDevRoute
   '/graph-admin': typeof DashboardLayoutGraphAdminRoute
-  '/users': typeof DashboardLayoutUsersRoute
+  '/ujian': typeof DashboardLayoutUjianRouteWithChildren
+  '/users': typeof DashboardLayoutUsersRouteWithChildren
+  '/ambil-ujian': typeof DashboardLayoutAmbilUjianLazyRoute
   '/oauth/google-callback': typeof OauthGoogleCallbackLazyRoute
   '/oauth/microsoft-admin-callback': typeof OauthMicrosoftAdminCallbackLazyRoute
   '/oauth/microsoft-callback': typeof OauthMicrosoftCallbackLazyRoute
@@ -221,16 +314,23 @@ export interface FileRoutesByFullPath {
   '/logout': typeof LogoutIndexLazyRoute
   '/personal/notifications': typeof DashboardLayoutPersonalNotificationsRoute
   '/roles/create': typeof DashboardLayoutRolesCreateRoute
+  '/ujian/create': typeof DashboardLayoutUjianCreateRoute
   '/users/create': typeof DashboardLayoutUsersCreateRoute
+  '/ambil-ujian/$attemptId': typeof DashboardLayoutAmbilUjianAttemptIdLazyRoute
+  '/ambil-ujian/riwayat': typeof DashboardLayoutAmbilUjianRiwayatLazyRoute
   '/dashboard': typeof DashboardLayoutDashboardIndexRoute
   '/notifications': typeof DashboardLayoutNotificationsIndexRoute
   '/roles': typeof DashboardLayoutRolesIndexRoute
+  '/ujian/': typeof DashboardLayoutUjianIndexRoute
   '/app-settings': typeof DashboardLayoutAppSettingsIndexLazyRoute
   '/roles/edit/$roleId': typeof DashboardLayoutRolesEditRoleIdRoute
   '/roles/view/$roleId': typeof DashboardLayoutRolesViewRoleIdRoute
+  '/ujian/edit/$ujianId': typeof DashboardLayoutUjianEditUjianIdRoute
   '/users/delete/$userId': typeof DashboardLayoutUsersDeleteUserIdRoute
   '/users/detail/$userId': typeof DashboardLayoutUsersDetailUserIdRoute
   '/users/edit/$userId': typeof DashboardLayoutUsersEditUserIdRoute
+  '/ambil-ujian/results/$attemptId': typeof DashboardLayoutAmbilUjianResultsAttemptIdLazyRoute
+  '/ambil-ujian/start/$ujianId': typeof DashboardLayoutAmbilUjianStartUjianIdLazyRoute
   '/app-settings/edit/$id': typeof DashboardLayoutAppSettingsEditIdLazyRoute
 }
 export interface FileRoutesByTo {
@@ -239,7 +339,8 @@ export interface FileRoutesByTo {
   '/not-found': typeof NotFoundRoute
   '/dev': typeof DashboardLayoutDevRoute
   '/graph-admin': typeof DashboardLayoutGraphAdminRoute
-  '/users': typeof DashboardLayoutUsersRoute
+  '/users': typeof DashboardLayoutUsersRouteWithChildren
+  '/ambil-ujian': typeof DashboardLayoutAmbilUjianLazyRoute
   '/oauth/google-callback': typeof OauthGoogleCallbackLazyRoute
   '/oauth/microsoft-admin-callback': typeof OauthMicrosoftAdminCallbackLazyRoute
   '/oauth/microsoft-callback': typeof OauthMicrosoftCallbackLazyRoute
@@ -247,16 +348,23 @@ export interface FileRoutesByTo {
   '/logout': typeof LogoutIndexLazyRoute
   '/personal/notifications': typeof DashboardLayoutPersonalNotificationsRoute
   '/roles/create': typeof DashboardLayoutRolesCreateRoute
+  '/ujian/create': typeof DashboardLayoutUjianCreateRoute
   '/users/create': typeof DashboardLayoutUsersCreateRoute
+  '/ambil-ujian/$attemptId': typeof DashboardLayoutAmbilUjianAttemptIdLazyRoute
+  '/ambil-ujian/riwayat': typeof DashboardLayoutAmbilUjianRiwayatLazyRoute
   '/dashboard': typeof DashboardLayoutDashboardIndexRoute
   '/notifications': typeof DashboardLayoutNotificationsIndexRoute
   '/roles': typeof DashboardLayoutRolesIndexRoute
+  '/ujian': typeof DashboardLayoutUjianIndexRoute
   '/app-settings': typeof DashboardLayoutAppSettingsIndexLazyRoute
   '/roles/edit/$roleId': typeof DashboardLayoutRolesEditRoleIdRoute
   '/roles/view/$roleId': typeof DashboardLayoutRolesViewRoleIdRoute
+  '/ujian/edit/$ujianId': typeof DashboardLayoutUjianEditUjianIdRoute
   '/users/delete/$userId': typeof DashboardLayoutUsersDeleteUserIdRoute
   '/users/detail/$userId': typeof DashboardLayoutUsersDetailUserIdRoute
   '/users/edit/$userId': typeof DashboardLayoutUsersEditUserIdRoute
+  '/ambil-ujian/results/$attemptId': typeof DashboardLayoutAmbilUjianResultsAttemptIdLazyRoute
+  '/ambil-ujian/start/$ujianId': typeof DashboardLayoutAmbilUjianStartUjianIdLazyRoute
   '/app-settings/edit/$id': typeof DashboardLayoutAppSettingsEditIdLazyRoute
 }
 export interface FileRoutesById {
@@ -267,7 +375,9 @@ export interface FileRoutesById {
   '/not-found': typeof NotFoundRoute
   '/_dashboardLayout/dev': typeof DashboardLayoutDevRoute
   '/_dashboardLayout/graph-admin': typeof DashboardLayoutGraphAdminRoute
-  '/_dashboardLayout/users': typeof DashboardLayoutUsersRoute
+  '/_dashboardLayout/ujian': typeof DashboardLayoutUjianRouteWithChildren
+  '/_dashboardLayout/users': typeof DashboardLayoutUsersRouteWithChildren
+  '/_dashboardLayout/ambil-ujian': typeof DashboardLayoutAmbilUjianLazyRoute
   '/oauth/google-callback': typeof OauthGoogleCallbackLazyRoute
   '/oauth/microsoft-admin-callback': typeof OauthMicrosoftAdminCallbackLazyRoute
   '/oauth/microsoft-callback': typeof OauthMicrosoftCallbackLazyRoute
@@ -275,16 +385,23 @@ export interface FileRoutesById {
   '/logout/': typeof LogoutIndexLazyRoute
   '/_dashboardLayout/personal/notifications': typeof DashboardLayoutPersonalNotificationsRoute
   '/_dashboardLayout/roles/create': typeof DashboardLayoutRolesCreateRoute
+  '/_dashboardLayout/ujian/create': typeof DashboardLayoutUjianCreateRoute
   '/_dashboardLayout/users/create': typeof DashboardLayoutUsersCreateRoute
+  '/_dashboardLayout/ambil-ujian/$attemptId': typeof DashboardLayoutAmbilUjianAttemptIdLazyRoute
+  '/_dashboardLayout/ambil-ujian/riwayat': typeof DashboardLayoutAmbilUjianRiwayatLazyRoute
   '/_dashboardLayout/dashboard/': typeof DashboardLayoutDashboardIndexRoute
   '/_dashboardLayout/notifications/': typeof DashboardLayoutNotificationsIndexRoute
   '/_dashboardLayout/roles/': typeof DashboardLayoutRolesIndexRoute
+  '/_dashboardLayout/ujian/': typeof DashboardLayoutUjianIndexRoute
   '/_dashboardLayout/app-settings/': typeof DashboardLayoutAppSettingsIndexLazyRoute
   '/_dashboardLayout/roles/edit/$roleId': typeof DashboardLayoutRolesEditRoleIdRoute
   '/_dashboardLayout/roles/view/$roleId': typeof DashboardLayoutRolesViewRoleIdRoute
+  '/_dashboardLayout/ujian/edit/$ujianId': typeof DashboardLayoutUjianEditUjianIdRoute
   '/_dashboardLayout/users/delete/$userId': typeof DashboardLayoutUsersDeleteUserIdRoute
   '/_dashboardLayout/users/detail/$userId': typeof DashboardLayoutUsersDetailUserIdRoute
   '/_dashboardLayout/users/edit/$userId': typeof DashboardLayoutUsersEditUserIdRoute
+  '/_dashboardLayout/ambil-ujian/results/$attemptId': typeof DashboardLayoutAmbilUjianResultsAttemptIdLazyRoute
+  '/_dashboardLayout/ambil-ujian/start/$ujianId': typeof DashboardLayoutAmbilUjianStartUjianIdLazyRoute
   '/_dashboardLayout/app-settings/edit/$id': typeof DashboardLayoutAppSettingsEditIdLazyRoute
 }
 export interface FileRouteTypes {
@@ -295,7 +412,9 @@ export interface FileRouteTypes {
     | '/not-found'
     | '/dev'
     | '/graph-admin'
+    | '/ujian'
     | '/users'
+    | '/ambil-ujian'
     | '/oauth/google-callback'
     | '/oauth/microsoft-admin-callback'
     | '/oauth/microsoft-callback'
@@ -303,16 +422,23 @@ export interface FileRouteTypes {
     | '/logout'
     | '/personal/notifications'
     | '/roles/create'
+    | '/ujian/create'
     | '/users/create'
+    | '/ambil-ujian/$attemptId'
+    | '/ambil-ujian/riwayat'
     | '/dashboard'
     | '/notifications'
     | '/roles'
+    | '/ujian/'
     | '/app-settings'
     | '/roles/edit/$roleId'
     | '/roles/view/$roleId'
+    | '/ujian/edit/$ujianId'
     | '/users/delete/$userId'
     | '/users/detail/$userId'
     | '/users/edit/$userId'
+    | '/ambil-ujian/results/$attemptId'
+    | '/ambil-ujian/start/$ujianId'
     | '/app-settings/edit/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -322,6 +448,7 @@ export interface FileRouteTypes {
     | '/dev'
     | '/graph-admin'
     | '/users'
+    | '/ambil-ujian'
     | '/oauth/google-callback'
     | '/oauth/microsoft-admin-callback'
     | '/oauth/microsoft-callback'
@@ -329,16 +456,23 @@ export interface FileRouteTypes {
     | '/logout'
     | '/personal/notifications'
     | '/roles/create'
+    | '/ujian/create'
     | '/users/create'
+    | '/ambil-ujian/$attemptId'
+    | '/ambil-ujian/riwayat'
     | '/dashboard'
     | '/notifications'
     | '/roles'
+    | '/ujian'
     | '/app-settings'
     | '/roles/edit/$roleId'
     | '/roles/view/$roleId'
+    | '/ujian/edit/$ujianId'
     | '/users/delete/$userId'
     | '/users/detail/$userId'
     | '/users/edit/$userId'
+    | '/ambil-ujian/results/$attemptId'
+    | '/ambil-ujian/start/$ujianId'
     | '/app-settings/edit/$id'
   id:
     | '__root__'
@@ -348,7 +482,9 @@ export interface FileRouteTypes {
     | '/not-found'
     | '/_dashboardLayout/dev'
     | '/_dashboardLayout/graph-admin'
+    | '/_dashboardLayout/ujian'
     | '/_dashboardLayout/users'
+    | '/_dashboardLayout/ambil-ujian'
     | '/oauth/google-callback'
     | '/oauth/microsoft-admin-callback'
     | '/oauth/microsoft-callback'
@@ -356,16 +492,23 @@ export interface FileRouteTypes {
     | '/logout/'
     | '/_dashboardLayout/personal/notifications'
     | '/_dashboardLayout/roles/create'
+    | '/_dashboardLayout/ujian/create'
     | '/_dashboardLayout/users/create'
+    | '/_dashboardLayout/ambil-ujian/$attemptId'
+    | '/_dashboardLayout/ambil-ujian/riwayat'
     | '/_dashboardLayout/dashboard/'
     | '/_dashboardLayout/notifications/'
     | '/_dashboardLayout/roles/'
+    | '/_dashboardLayout/ujian/'
     | '/_dashboardLayout/app-settings/'
     | '/_dashboardLayout/roles/edit/$roleId'
     | '/_dashboardLayout/roles/view/$roleId'
+    | '/_dashboardLayout/ujian/edit/$ujianId'
     | '/_dashboardLayout/users/delete/$userId'
     | '/_dashboardLayout/users/detail/$userId'
     | '/_dashboardLayout/users/edit/$userId'
+    | '/_dashboardLayout/ambil-ujian/results/$attemptId'
+    | '/_dashboardLayout/ambil-ujian/start/$ujianId'
     | '/_dashboardLayout/app-settings/edit/$id'
   fileRoutesById: FileRoutesById
 }
@@ -446,11 +589,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OauthGoogleCallbackLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_dashboardLayout/ambil-ujian': {
+      id: '/_dashboardLayout/ambil-ujian'
+      path: '/ambil-ujian'
+      fullPath: '/ambil-ujian'
+      preLoaderRoute: typeof DashboardLayoutAmbilUjianLazyRouteImport
+      parentRoute: typeof DashboardLayoutRoute
+    }
     '/_dashboardLayout/users': {
       id: '/_dashboardLayout/users'
       path: '/users'
       fullPath: '/users'
       preLoaderRoute: typeof DashboardLayoutUsersRouteImport
+      parentRoute: typeof DashboardLayoutRoute
+    }
+    '/_dashboardLayout/ujian': {
+      id: '/_dashboardLayout/ujian'
+      path: '/ujian'
+      fullPath: '/ujian'
+      preLoaderRoute: typeof DashboardLayoutUjianRouteImport
       parentRoute: typeof DashboardLayoutRoute
     }
     '/_dashboardLayout/graph-admin': {
@@ -474,6 +631,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutAppSettingsIndexLazyRouteImport
       parentRoute: typeof DashboardLayoutRoute
     }
+    '/_dashboardLayout/ujian/': {
+      id: '/_dashboardLayout/ujian/'
+      path: '/'
+      fullPath: '/ujian/'
+      preLoaderRoute: typeof DashboardLayoutUjianIndexRouteImport
+      parentRoute: typeof DashboardLayoutUjianRoute
+    }
     '/_dashboardLayout/roles/': {
       id: '/_dashboardLayout/roles/'
       path: '/roles'
@@ -495,12 +659,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutDashboardIndexRouteImport
       parentRoute: typeof DashboardLayoutRoute
     }
+    '/_dashboardLayout/ambil-ujian/riwayat': {
+      id: '/_dashboardLayout/ambil-ujian/riwayat'
+      path: '/ambil-ujian/riwayat'
+      fullPath: '/ambil-ujian/riwayat'
+      preLoaderRoute: typeof DashboardLayoutAmbilUjianRiwayatLazyRouteImport
+      parentRoute: typeof DashboardLayoutRoute
+    }
+    '/_dashboardLayout/ambil-ujian/$attemptId': {
+      id: '/_dashboardLayout/ambil-ujian/$attemptId'
+      path: '/ambil-ujian/$attemptId'
+      fullPath: '/ambil-ujian/$attemptId'
+      preLoaderRoute: typeof DashboardLayoutAmbilUjianAttemptIdLazyRouteImport
+      parentRoute: typeof DashboardLayoutRoute
+    }
     '/_dashboardLayout/users/create': {
       id: '/_dashboardLayout/users/create'
       path: '/create'
       fullPath: '/users/create'
       preLoaderRoute: typeof DashboardLayoutUsersCreateRouteImport
-      parentRoute: typeof DashboardLayoutUsersLazyRoute
+      parentRoute: typeof DashboardLayoutUsersRoute
+    }
+    '/_dashboardLayout/ujian/create': {
+      id: '/_dashboardLayout/ujian/create'
+      path: '/create'
+      fullPath: '/ujian/create'
+      preLoaderRoute: typeof DashboardLayoutUjianCreateRouteImport
+      parentRoute: typeof DashboardLayoutUjianRoute
     }
     '/_dashboardLayout/roles/create': {
       id: '/_dashboardLayout/roles/create'
@@ -523,26 +708,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutAppSettingsEditIdLazyRouteImport
       parentRoute: typeof DashboardLayoutRoute
     }
+    '/_dashboardLayout/ambil-ujian/start/$ujianId': {
+      id: '/_dashboardLayout/ambil-ujian/start/$ujianId'
+      path: '/ambil-ujian/start/$ujianId'
+      fullPath: '/ambil-ujian/start/$ujianId'
+      preLoaderRoute: typeof DashboardLayoutAmbilUjianStartUjianIdLazyRouteImport
+      parentRoute: typeof DashboardLayoutRoute
+    }
+    '/_dashboardLayout/ambil-ujian/results/$attemptId': {
+      id: '/_dashboardLayout/ambil-ujian/results/$attemptId'
+      path: '/ambil-ujian/results/$attemptId'
+      fullPath: '/ambil-ujian/results/$attemptId'
+      preLoaderRoute: typeof DashboardLayoutAmbilUjianResultsAttemptIdLazyRouteImport
+      parentRoute: typeof DashboardLayoutRoute
+    }
     '/_dashboardLayout/users/edit/$userId': {
       id: '/_dashboardLayout/users/edit/$userId'
       path: '/edit/$userId'
       fullPath: '/users/edit/$userId'
       preLoaderRoute: typeof DashboardLayoutUsersEditUserIdRouteImport
-      parentRoute: typeof DashboardLayoutUsersLazyRoute
+      parentRoute: typeof DashboardLayoutUsersRoute
     }
     '/_dashboardLayout/users/detail/$userId': {
       id: '/_dashboardLayout/users/detail/$userId'
       path: '/detail/$userId'
       fullPath: '/users/detail/$userId'
       preLoaderRoute: typeof DashboardLayoutUsersDetailUserIdRouteImport
-      parentRoute: typeof DashboardLayoutUsersLazyRoute
+      parentRoute: typeof DashboardLayoutUsersRoute
     }
     '/_dashboardLayout/users/delete/$userId': {
       id: '/_dashboardLayout/users/delete/$userId'
       path: '/delete/$userId'
       fullPath: '/users/delete/$userId'
       preLoaderRoute: typeof DashboardLayoutUsersDeleteUserIdRouteImport
-      parentRoute: typeof DashboardLayoutUsersLazyRoute
+      parentRoute: typeof DashboardLayoutUsersRoute
+    }
+    '/_dashboardLayout/ujian/edit/$ujianId': {
+      id: '/_dashboardLayout/ujian/edit/$ujianId'
+      path: '/edit/$ujianId'
+      fullPath: '/ujian/edit/$ujianId'
+      preLoaderRoute: typeof DashboardLayoutUjianEditUjianIdRouteImport
+      parentRoute: typeof DashboardLayoutUjianRoute
     }
     '/_dashboardLayout/roles/view/$roleId': {
       id: '/_dashboardLayout/roles/view/$roleId'
@@ -561,28 +767,72 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface DashboardLayoutUjianRouteChildren {
+  DashboardLayoutUjianCreateRoute: typeof DashboardLayoutUjianCreateRoute
+  DashboardLayoutUjianIndexRoute: typeof DashboardLayoutUjianIndexRoute
+  DashboardLayoutUjianEditUjianIdRoute: typeof DashboardLayoutUjianEditUjianIdRoute
+}
+
+const DashboardLayoutUjianRouteChildren: DashboardLayoutUjianRouteChildren = {
+  DashboardLayoutUjianCreateRoute: DashboardLayoutUjianCreateRoute,
+  DashboardLayoutUjianIndexRoute: DashboardLayoutUjianIndexRoute,
+  DashboardLayoutUjianEditUjianIdRoute: DashboardLayoutUjianEditUjianIdRoute,
+}
+
+const DashboardLayoutUjianRouteWithChildren =
+  DashboardLayoutUjianRoute._addFileChildren(DashboardLayoutUjianRouteChildren)
+
+interface DashboardLayoutUsersRouteChildren {
+  DashboardLayoutUsersCreateRoute: typeof DashboardLayoutUsersCreateRoute
+  DashboardLayoutUsersDeleteUserIdRoute: typeof DashboardLayoutUsersDeleteUserIdRoute
+  DashboardLayoutUsersDetailUserIdRoute: typeof DashboardLayoutUsersDetailUserIdRoute
+  DashboardLayoutUsersEditUserIdRoute: typeof DashboardLayoutUsersEditUserIdRoute
+}
+
+const DashboardLayoutUsersRouteChildren: DashboardLayoutUsersRouteChildren = {
+  DashboardLayoutUsersCreateRoute: DashboardLayoutUsersCreateRoute,
+  DashboardLayoutUsersDeleteUserIdRoute: DashboardLayoutUsersDeleteUserIdRoute,
+  DashboardLayoutUsersDetailUserIdRoute: DashboardLayoutUsersDetailUserIdRoute,
+  DashboardLayoutUsersEditUserIdRoute: DashboardLayoutUsersEditUserIdRoute,
+}
+
+const DashboardLayoutUsersRouteWithChildren =
+  DashboardLayoutUsersRoute._addFileChildren(DashboardLayoutUsersRouteChildren)
+
 interface DashboardLayoutRouteChildren {
   DashboardLayoutDevRoute: typeof DashboardLayoutDevRoute
   DashboardLayoutGraphAdminRoute: typeof DashboardLayoutGraphAdminRoute
-  DashboardLayoutUsersRoute: typeof DashboardLayoutUsersRoute
+  DashboardLayoutUjianRoute: typeof DashboardLayoutUjianRouteWithChildren
+  DashboardLayoutUsersRoute: typeof DashboardLayoutUsersRouteWithChildren
+  DashboardLayoutAmbilUjianLazyRoute: typeof DashboardLayoutAmbilUjianLazyRoute
   DashboardLayoutPersonalNotificationsRoute: typeof DashboardLayoutPersonalNotificationsRoute
   DashboardLayoutRolesCreateRoute: typeof DashboardLayoutRolesCreateRoute
+  DashboardLayoutAmbilUjianAttemptIdLazyRoute: typeof DashboardLayoutAmbilUjianAttemptIdLazyRoute
+  DashboardLayoutAmbilUjianRiwayatLazyRoute: typeof DashboardLayoutAmbilUjianRiwayatLazyRoute
   DashboardLayoutDashboardIndexRoute: typeof DashboardLayoutDashboardIndexRoute
   DashboardLayoutNotificationsIndexRoute: typeof DashboardLayoutNotificationsIndexRoute
   DashboardLayoutRolesIndexRoute: typeof DashboardLayoutRolesIndexRoute
   DashboardLayoutAppSettingsIndexLazyRoute: typeof DashboardLayoutAppSettingsIndexLazyRoute
   DashboardLayoutRolesEditRoleIdRoute: typeof DashboardLayoutRolesEditRoleIdRoute
   DashboardLayoutRolesViewRoleIdRoute: typeof DashboardLayoutRolesViewRoleIdRoute
+  DashboardLayoutAmbilUjianResultsAttemptIdLazyRoute: typeof DashboardLayoutAmbilUjianResultsAttemptIdLazyRoute
+  DashboardLayoutAmbilUjianStartUjianIdLazyRoute: typeof DashboardLayoutAmbilUjianStartUjianIdLazyRoute
   DashboardLayoutAppSettingsEditIdLazyRoute: typeof DashboardLayoutAppSettingsEditIdLazyRoute
 }
 
 const DashboardLayoutRouteChildren: DashboardLayoutRouteChildren = {
   DashboardLayoutDevRoute: DashboardLayoutDevRoute,
   DashboardLayoutGraphAdminRoute: DashboardLayoutGraphAdminRoute,
-  DashboardLayoutUsersRoute: DashboardLayoutUsersRoute,
+  DashboardLayoutUjianRoute: DashboardLayoutUjianRouteWithChildren,
+  DashboardLayoutUsersRoute: DashboardLayoutUsersRouteWithChildren,
+  DashboardLayoutAmbilUjianLazyRoute: DashboardLayoutAmbilUjianLazyRoute,
   DashboardLayoutPersonalNotificationsRoute:
     DashboardLayoutPersonalNotificationsRoute,
   DashboardLayoutRolesCreateRoute: DashboardLayoutRolesCreateRoute,
+  DashboardLayoutAmbilUjianAttemptIdLazyRoute:
+    DashboardLayoutAmbilUjianAttemptIdLazyRoute,
+  DashboardLayoutAmbilUjianRiwayatLazyRoute:
+    DashboardLayoutAmbilUjianRiwayatLazyRoute,
   DashboardLayoutDashboardIndexRoute: DashboardLayoutDashboardIndexRoute,
   DashboardLayoutNotificationsIndexRoute:
     DashboardLayoutNotificationsIndexRoute,
@@ -591,6 +841,10 @@ const DashboardLayoutRouteChildren: DashboardLayoutRouteChildren = {
     DashboardLayoutAppSettingsIndexLazyRoute,
   DashboardLayoutRolesEditRoleIdRoute: DashboardLayoutRolesEditRoleIdRoute,
   DashboardLayoutRolesViewRoleIdRoute: DashboardLayoutRolesViewRoleIdRoute,
+  DashboardLayoutAmbilUjianResultsAttemptIdLazyRoute:
+    DashboardLayoutAmbilUjianResultsAttemptIdLazyRoute,
+  DashboardLayoutAmbilUjianStartUjianIdLazyRoute:
+    DashboardLayoutAmbilUjianStartUjianIdLazyRoute,
   DashboardLayoutAppSettingsEditIdLazyRoute:
     DashboardLayoutAppSettingsEditIdLazyRoute,
 }

@@ -29,6 +29,26 @@ const sidebarMenus: SidebarMenu[] = [
 		],
 	},
 	{
+		label: "Assessment",
+		type: "group",
+		children: [
+			{
+				label: "Ujian",
+				icon: { tb: "TbFileCheck" },
+				allowedPermissions: ["ujian.read"],
+				link: "/ujian",
+				color: "blue",
+			},
+			{
+				label: "Ambil Ujian",
+				icon: { tb: "TbWriting" },
+				allowedPermissions: ["ujian.take"],
+				link: "/ambil-ujian",
+				color: "green",
+			},
+		],
+	},
+	{
 		label: "System",
 		type: "group",
 		children: [

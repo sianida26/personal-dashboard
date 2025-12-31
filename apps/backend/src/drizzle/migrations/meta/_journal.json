@@ -127,6 +127,13 @@
       "when": 1766380117689,
       "tag": "0017_fuzzy_thunderbird",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1766950018560,
+      "tag": "0018_calm_george_stacy",
+      "breakpoints": true
     }
   ]
 }

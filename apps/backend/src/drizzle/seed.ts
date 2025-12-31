@@ -3,6 +3,7 @@ import notificationPreferencesSeeder from "./seeds/notificationPreferences";
 import notificationsSeeder from "./seeds/notifications";
 import permissionSeeder from "./seeds/permissionSeeder";
 import roleSeeder from "./seeds/rolesSeeder";
+import ujianSeeder from "./seeds/ujianSeeder";
 import userSeeder from "./seeds/userSeeder";
 
 const seeder = async () => {
@@ -13,6 +14,7 @@ const seeder = async () => {
 	await appSettingsSeeder();
 	await notificationsSeeder();
 	await notificationPreferencesSeeder();
+	await ujianSeeder();
 	console.timeEnd("Done seeding");
 };
 
