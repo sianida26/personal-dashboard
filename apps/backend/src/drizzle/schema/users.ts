@@ -7,6 +7,11 @@ import {
 	timestamp,
 	varchar,
 } from "drizzle-orm/pg-core";
+import { moneyAccounts } from "./moneyAccounts";
+import { moneyBudgets } from "./moneyBudgets";
+import { moneyCategories } from "./moneyCategories";
+import { moneySavings } from "./moneySavings";
+import { moneyTransactions } from "./moneyTransactions";
 import { oauthGoogle } from "./oauthGoogle";
 import { oauthMicrosoft } from "./oauthMicrosoft";
 import { permissionsToUsers } from "./permissionsToUsers";
@@ -46,4 +51,9 @@ export const usersRelations = relations(users, ({ many, one }) => ({
 	refreshTokens: many(refreshTokens),
 	createdUjian: many(ujian),
 	ujianAttempts: many(ujianAttempts),
+	moneyAccounts: many(moneyAccounts),
+	moneyCategories: many(moneyCategories),
+	moneyTransactions: many(moneyTransactions),
+	moneySavings: many(moneySavings),
+	moneyBudgets: many(moneyBudgets),
 }));

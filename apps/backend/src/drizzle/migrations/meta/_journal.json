@@ -134,6 +134,13 @@
       "when": 1766950018560,
       "tag": "0018_calm_george_stacy",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1767206069858,
+      "tag": "0019_minor_cyclops",
+      "breakpoints": true
     }
   ]
 }
