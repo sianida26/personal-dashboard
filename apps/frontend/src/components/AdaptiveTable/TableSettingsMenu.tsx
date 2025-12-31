@@ -23,7 +23,6 @@ import {
 	X,
 } from "lucide-react";
 import type { AdaptiveColumnDef, TableSettingsLabels } from "./types";
-import { getValueByDataKey } from "node_modules/recharts/types/util/ChartUtils";
 
 interface TableSettingsMenuProps<T> {
 	table: Table<T>;
