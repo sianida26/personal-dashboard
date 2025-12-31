@@ -515,9 +515,11 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		getRowId: (originalRow, index) => {
 			// Try to use a unique identifier from the row data, fallback to stringified content + index
 			const row = originalRow as Record<string, unknown>;
-			if (row.id !== undefined) return String(row.id);
-			if (row._id !== undefined) return String(row._id);
-			if (row.key !== undefined) return String(row.key);
+			// Include updatedAt in the ID to force re-render when data changes
+			const updatedSuffix = row.updatedAt ? `-${String(row.updatedAt)}` : "";
+			if (row.id !== undefined) return `${String(row.id)}${updatedSuffix}`;
+			if (row._id !== undefined) return `${String(row._id)}${updatedSuffix}`;
+			if (row.key !== undefined) return `${String(row.key)}${updatedSuffix}`;
 			// Fallback: use first few values + index to create a unique-ish ID
 			const values = Object.values(row).slice(0, 3).join("-");
 			return `${values}-${index}`;
