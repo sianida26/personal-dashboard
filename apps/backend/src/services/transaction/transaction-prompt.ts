@@ -66,6 +66,12 @@ INDONESIAN CULTURE CONTEXT:
 - "laundry", "cuci baju" = laundry service → expense "Layanan"
 - "potong rambut", "barbershop", "salon" = haircut → expense "Perawatan Diri"
 
+COMMON INDONESIAN SNACKS/FOOD:
+- "pringles", "chitato", "lays" = chips → "Makanan dan Minuman"
+- "regal", "oreo", "khong guan" = biscuits → "Makanan dan Minuman"
+- "milo", "teh kotak", "fruit tea" = drinks → "Makanan dan Minuman"
+- "indomie", "mie sedaap", "pop mie" = instant noodles → "Makanan dan Minuman"
+
 IMPORTANT RULES:
 1. Default currency is IDR unless specified
 2. Amounts should be numeric (no currency symbols)
@@ -75,6 +81,9 @@ IMPORTANT RULES:
 6. Only classify as INCOME if you're 90%+ confident (e.g., "gaji", "dapat hadiah", "terima transferan", "bonus", "THR", "menang arisan")
 7. Common income indicators: "gaji", "dapat", "terima", "dapet", "dikasih", "menang", "bonus"
 8. Common expense indicators: "beli", "bayar", "buwuh", "kasih", "traktir", "transfer ke"
+9. **CRITICAL**: When an item name is followed by an amount (e.g., "pringles 30k"), this is ALWAYS a transaction, even without explicit verbs like "beli"
+10. Multi-line inputs with "item + amount" pattern should each be treated as separate expense transactions
+11. Amount formats: "30k" = 30000, "1.5jt" or "1.5juta" = 1500000, "500rb" or "500ribu" = 500000
 
 OUTPUT FORMAT (array of transactions):
 [
@@ -90,6 +99,12 @@ OUTPUT FORMAT (array of transactions):
 EXAMPLES:
 Input: "Beli nasi goreng 25rb"
 Output: [{"name":"Nasi goreng","amount":25000,"currency":"IDR","type":"expense","category":"Makanan dan Minuman"}]
+
+Input: "pringles 30k\nregal 20k\nmilo 10k"
+Output: [{"name":"Pringles","amount":30000,"currency":"IDR","type":"expense","category":"Makanan dan Minuman"},{"name":"Regal","amount":20000,"currency":"IDR","type":"expense","category":"Makanan dan Minuman"},{"name":"Milo","amount":10000,"currency":"IDR","type":"expense","category":"Makanan dan Minuman"}]
+
+Input: "indomie 5rb, teh kotak 3rb"
+Output: [{"name":"Indomie","amount":5000,"currency":"IDR","type":"expense","category":"Makanan dan Minuman"},{"name":"Teh kotak","amount":3000,"currency":"IDR","type":"expense","category":"Makanan dan Minuman"}]
 
 Input: "Gaji bulan ini 5jt, bonus 1.5jt"
 Output: [{"name":"Gaji","amount":5000000,"currency":"IDR","type":"income","category":"Gaji"},{"name":"Bonus","amount":1500000,"currency":"IDR","type":"income","category":"Bonus"}]
