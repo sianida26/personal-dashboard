@@ -199,7 +199,7 @@ export async function transactionWahaHandler(
 		// Use AI to parse transaction details from the message
 		appLogger.info("[Transaction] Parsing transaction with AI...");
 		const { text } = await generateText({
-			model: openai("gpt-4o-mini"),
+			model: openai("gpt-5-mini"),
 			prompt: await buildTransactionPrompt(context.body, userId),
 			temperature: 0.1,
 		});
