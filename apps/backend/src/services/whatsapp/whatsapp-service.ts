@@ -2,6 +2,7 @@ import appLogger from "../../utils/logger";
 import normalizePhoneNumber from "../../utils/normalizePhoneNumber";
 import type {
 	NotificationParams,
+	ReactionParams,
 	SendSeenParams,
 	SendTextParams,
 	TypingParams,
@@ -341,6 +342,79 @@ export class WhatsAppService {
 			linkPreviewHighQuality: params.linkPreviewHighQuality,
 			session: params.session,
 		});
+	}
+
+	/**
+	 * Send a reaction to a message
+	 *
+	 * @param params - Reaction parameters
+	 * @param params.messageId - Message ID to react to
+	 * @param params.reaction - Emoji reaction (e.g., "👍", "❤️")
+	 * @param params.session - WAHA session name (default: from env)
+	 * @returns Response object with success status
+	 *
+	 * @example
+	 * ```typescript
+	 * const result = await whatsappService.sendReaction({
+	 *   messageId: "false_628123456789@c.us_AAAAAAAA",
+	 *   reaction: "👍"
+	 * });
+	 * ```
+	 */
+	async sendReaction(params: ReactionParams): Promise<WhatsAppResponse> {
+		const sessionToUse = params.session || this.defaultSession;
+		const payload = {
+			messageId: params.messageId,
+			reaction: params.reaction,
+			session: sessionToUse,
+		};
+
+		if (!this.apiKey) {
+			return {
+				success: false,
+				message: "WhatsApp API key not configured",
+			};
+		}
+
+		try {
+			const response = await fetch(`${this.baseUrl}/api/reaction`, {
+				method: "PUT",
+				headers: {
+					accept: "application/json",
+					"X-Api-Key": this.apiKey,
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(payload),
+			});
+
+			if (!response.ok) {
+				const errorText = await response.text();
+				return {
+					success: false,
+					message: `Failed to send reaction: ${response.status} ${errorText}`,
+				};
+			}
+
+			const result = await response.json();
+			return {
+				success: true,
+				message: "Reaction sent successfully",
+				data: result,
+			};
+		} catch (error) {
+			appLogger.error(
+				new Error(
+					`Error sending reaction: ${error instanceof Error ? error.message : "Unknown error"}`,
+				),
+			);
+			return {
+				success: false,
+				message:
+					error instanceof Error
+						? error.message
+						: "Unknown error occurred",
+			};
+		}
 	}
 
 	/**

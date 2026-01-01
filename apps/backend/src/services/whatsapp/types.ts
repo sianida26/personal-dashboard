@@ -58,6 +58,16 @@ interface TypingParams {
 	session?: string;
 }
 
+/** Parameters for reacting to a message */
+interface ReactionParams {
+	/** Message ID to react to */
+	messageId: string;
+	/** Emoji reaction (e.g., "👍", "❤️") */
+	reaction: string;
+	/** WAHA session name */
+	session?: string;
+}
+
 /** Raw webhook payload structure from WAHA */
 export interface WhatsAppWebhookPayload {
 	/** Event type (e.g., "message", "message.ack") */
@@ -118,4 +128,4 @@ export type WhatsAppMessageHandler = (
 	context: WhatsAppMessageContext,
 ) => Promise<void> | void;
 
-export type { SendTextParams, SendSeenParams, TypingParams };
+export type { SendTextParams, SendSeenParams, TypingParams, ReactionParams };
