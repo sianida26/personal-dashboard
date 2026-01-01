@@ -103,6 +103,63 @@ interface ParsedTransaction {
 	category: string;
 }
 
+/** Stored transaction result for response formatting */
+interface StoredTransaction extends ParsedTransaction {
+	success: boolean;
+	error?: string;
+}
+
+/**
+ * Format currency amount in Indonesian style
+ * @param amount - The amount to format
+ * @param currency - The currency code (default: IDR)
+ * @returns Formatted currency string
+ */
+function formatCurrency(amount: number, currency = "IDR"): string {
+	if (currency === "IDR") {
+		return `Rp ${amount.toLocaleString("id-ID")}`;
+	}
+	return `${currency} ${amount.toLocaleString()}`;
+}
+
+/**
+ * Format success response message for WhatsApp
+ * @param transactions - Array of stored transactions
+ * @returns Formatted WhatsApp message
+ */
+function formatSuccessMessage(transactions: StoredTransaction[]): string {
+	const successful = transactions.filter((tx) => tx.success);
+	const failed = transactions.filter((tx) => !tx.success);
+
+	let message = "✅ *Transaksi Tercatat*\n\n";
+
+	for (const tx of successful) {
+		const emoji = tx.type === "income" ? "💰" : "💸";
+		const typeLabel = tx.type === "income" ? "Pemasukan" : "Pengeluaran";
+		message += `${emoji} *${tx.name}*\n`;
+		message += `   ${typeLabel}: ${formatCurrency(tx.amount, tx.currency)}\n`;
+		message += `   Kategori: ${tx.category}\n\n`;
+	}
+
+	if (failed.length > 0) {
+		message += "⚠️ *Gagal dicatat:*\n";
+		for (const tx of failed) {
+			message += `   ❌ ${tx.name}: ${tx.error || "Unknown error"}\n`;
+		}
+	}
+
+	return message.trim();
+}
+
+/**
+ * Format failure response message for WhatsApp
+ * @param error - The error message
+ * @returns Formatted WhatsApp error message
+ */
+function formatFailureMessage(error: string): string {
+	return `❌ *Gagal memproses transaksi*\n\n${error}`;
+}
+
 /**
  * Handler for transaction-related messages from specific WhatsApp group
  * Reacts with 👍 emoji and uses AI to parse transaction details
@@ -189,8 +246,9 @@ export async function transactionWahaHandler(
 		// Convert Unix timestamp (seconds) to Date for the transaction date
 		const transactionDate = new Date(context.timestamp * 1000);
 
-		// Store transactions in database
-		let successCount = 0;
+		// Store transactions in database and track results
+		const storedTransactions: StoredTransaction[] = [];
+
 		for (const tx of parsed) {
 			try {
 				// Find category ID
@@ -233,44 +291,100 @@ export async function transactionWahaHandler(
 						.where(eq(moneyAccounts.id, accountId));
 				});
 
-				successCount++;
+				storedTransactions.push({ ...tx, success: true });
 				appLogger.info(
 					`[Transaction] Stored transaction: ${tx.name} (${tx.type}) - ${tx.amount} ${tx.currency}`,
 				);
 			} catch (txError) {
+				const errorMessage =
+					txError instanceof Error
+						? txError.message
+						: "Unknown error";
+				storedTransactions.push({
+					...tx,
+					success: false,
+					error: errorMessage,
+				});
 				appLogger.error(
 					new Error(
-						`[Transaction] Failed to store transaction "${tx.name}": ${txError instanceof Error ? txError.message : "Unknown error"}`,
+						`[Transaction] Failed to store transaction "${tx.name}": ${errorMessage}`,
 					),
 				);
 			}
 		}
 
-		// React with 👍 only if at least one transaction was stored successfully
+		const successCount = storedTransactions.filter(
+			(tx) => tx.success,
+		).length;
+
+		// Send response based on results
 		if (successCount > 0) {
-			const result = await whatsappService.sendReaction({
+			// React with 👍 for successful transactions
+			const reactionResult = await whatsappService.sendReaction({
 				messageId: context.messageId,
 				reaction: "👍",
 				session: context.session,
 			});
 
-			if (result.success) {
+			if (reactionResult.success) {
 				appLogger.info(
-					`[Transaction] Successfully reacted to message ${context.messageId} - stored ${successCount}/${parsed.length} transactions`,
+					`[Transaction] Successfully reacted to message ${context.messageId}`,
+				);
+			}
+
+			// Send formatted success message as reply
+			const successMessage = formatSuccessMessage(storedTransactions);
+			const replyResult = await whatsappService.sendText({
+				chatId: context.chatId,
+				text: successMessage,
+				session: context.session,
+				reply_to: context.messageId,
+			});
+
+			if (replyResult.success) {
+				appLogger.info(
+					`[Transaction] Sent success reply - stored ${successCount}/${parsed.length} transactions`,
 				);
 			} else {
 				appLogger.error(
 					new Error(
-						`[Transaction] Failed to react: ${result.message}`,
+						`[Transaction] Failed to send success reply: ${replyResult.message}`,
 					),
 				);
 			}
+		} else if (storedTransactions.length > 0) {
+			// All transactions failed - send failure message
+			const failureMessage = formatFailureMessage(
+				"Semua transaksi gagal disimpan. Silakan coba lagi.",
+			);
+			await whatsappService.sendText({
+				chatId: context.chatId,
+				text: failureMessage,
+				session: context.session,
+				reply_to: context.messageId,
+			});
 		}
 	} catch (error) {
+		const errorMessage =
+			error instanceof Error ? error.message : "Unknown error";
 		appLogger.error(
 			new Error(
-				`[Transaction] Error processing message: ${error instanceof Error ? error.message : "Unknown error"}`,
+				`[Transaction] Error processing message: ${errorMessage}`,
 			),
 		);
+
+		// Send error message to chat
+		try {
+			await whatsappService.sendText({
+				chatId: context.chatId,
+				text: formatFailureMessage(errorMessage),
+				session: context.session,
+				reply_to: context.messageId,
+			});
+		} catch (_replyError) {
+			appLogger.error(
+				new Error("[Transaction] Failed to send error reply"),
+			);
+		}
 	}
 }

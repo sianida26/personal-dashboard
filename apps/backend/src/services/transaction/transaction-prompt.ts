@@ -50,11 +50,31 @@ CATEGORIES:
 - Income: ${incomeCategories.join(", ")}
 - Expense: ${expenseCategories.join(", ")}
 
-RULES:
+INDONESIAN CULTURE CONTEXT:
+- "buwuh", "kondangan", "sumbangan nikahan" = giving money at weddings → category "Hadiah" (expense, you give money)
+- "arisan" = social gathering with money pooling → usually expense when paying, income when winning
+- "THR" = Tunjangan Hari Raya (holiday bonus) → income
+- "angpao" = monetary gift, usually received → income if received, expense if given
+- "zakat", "infaq", "sedekah", "shodaqoh" = religious charity → expense
+- "parkir", "tukang parkir" = parking fee → expense "Transportasi"
+- "ojol", "gojek", "grab" = ride-hailing → expense "Transportasi"
+- "warteg", "warung", "makan di luar" = eating out → expense "Makanan dan Minuman"
+- "kopi", "ngopi", "starbucks", "janji jiwa" = coffee → expense "Makanan dan Minuman"
+- "pulsa", "kuota", "paket data" = phone credit/data → expense "Utilitas"
+- "listrik", "PLN", "token listrik" = electricity → expense "Utilitas"
+- "bensin", "pertamax", "pertalite", "solar" = fuel → expense "Transportasi"
+- "laundry", "cuci baju" = laundry service → expense "Layanan"
+- "potong rambut", "barbershop", "salon" = haircut → expense "Perawatan Diri"
+
+IMPORTANT RULES:
 1. Default currency is IDR unless specified
 2. Amounts should be numeric (no currency symbols)
 3. Choose the most appropriate category from the lists above
 4. Each transaction must have: name, amount, currency, type, category
+5. **DEFAULT TO EXPENSE** if you're unsure whether it's income or expense
+6. Only classify as INCOME if you're 90%+ confident (e.g., "gaji", "dapat hadiah", "terima transferan", "bonus", "THR", "menang arisan")
+7. Common income indicators: "gaji", "dapat", "terima", "dapet", "dikasih", "menang", "bonus"
+8. Common expense indicators: "beli", "bayar", "buwuh", "kasih", "traktir", "transfer ke"
 
 OUTPUT FORMAT (array of transactions):
 [
@@ -73,6 +93,24 @@ Output: [{"name":"Nasi goreng","amount":25000,"currency":"IDR","type":"expense",
 
 Input: "Gaji bulan ini 5jt, bonus 1.5jt"
 Output: [{"name":"Gaji","amount":5000000,"currency":"IDR","type":"income","category":"Gaji"},{"name":"Bonus","amount":1500000,"currency":"IDR","type":"income","category":"Bonus"}]
+
+Input: "Buwuh nikahan temen 500rb"
+Output: [{"name":"Buwuh nikahan temen","amount":500000,"currency":"IDR","type":"expense","category":"Hadiah"}]
+
+Input: "Kondangan mas andi 300k"
+Output: [{"name":"Kondangan mas andi","amount":300000,"currency":"IDR","type":"expense","category":"Hadiah"}]
+
+Input: "Dapat angpao 100rb"
+Output: [{"name":"Angpao","amount":100000,"currency":"IDR","type":"income","category":"Hadiah"}]
+
+Input: "THR dari kantor 2jt"
+Output: [{"name":"THR dari kantor","amount":2000000,"currency":"IDR","type":"income","category":"Bonus"}]
+
+Input: "Zakat 500rb"
+Output: [{"name":"Zakat","amount":500000,"currency":"IDR","type":"expense","category":"Donasi"}]
+
+Input: "Ngopi di starbucks 75rb"
+Output: [{"name":"Ngopi di starbucks","amount":75000,"currency":"IDR","type":"expense","category":"Makanan dan Minuman"}]
 
 Input: "Hari ini cerah"
 Output: []
