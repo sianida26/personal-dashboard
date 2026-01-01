@@ -3,10 +3,10 @@
  */
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import appLogger from "../utils/logger";
 import db from "../drizzle";
 import { ujian } from "../drizzle/schema/ujian";
 import { ujianQuestions } from "../drizzle/schema/ujianQuestions";
+import appLogger from "../utils/logger";
 
 type CHFIQuestion = {
 	question: string;
@@ -50,7 +50,9 @@ async function uploadCHFI() {
 				isActive: true,
 			})
 			.returning();
-
+		if (!insertedUjian) {
+			throw new Error("Failed to create ujian entry");
+		}
 		appLogger.info(`Created ujian with ID: ${insertedUjian.id}`);
 
 		// Prepare questions data
@@ -63,7 +65,9 @@ async function uploadCHFI() {
 
 			// Find correct answer(s)
 			const correctAnswer = q.options
-				.map((opt, optIndex) => (opt.isCorrect ? (optIndex + 1).toString() : null))
+				.map((opt, optIndex) =>
+					opt.isCorrect ? (optIndex + 1).toString() : null,
+				)
 				.filter((id): id is string => id !== null);
 
 			return {
@@ -85,7 +89,9 @@ async function uploadCHFI() {
 			const batch = questionsData.slice(i, i + batchSize);
 			await db.insert(ujianQuestions).values(batch);
 			insertedCount += batch.length;
-			appLogger.info(`Inserted ${insertedCount}/${questionsData.length} questions`);
+			appLogger.info(
+				`Inserted ${insertedCount}/${questionsData.length} questions`,
+			);
 		}
 
 		appLogger.info("✅ CHFI upload completed successfully!");
@@ -98,7 +104,9 @@ async function uploadCHFI() {
 			questionsCount: insertedCount,
 		};
 	} catch (error) {
-		appLogger.error("❌ Error uploading CHFI questions:", error);
+		appLogger.error(
+			error instanceof Error ? error : new Error(String(error)),
+		);
 		throw error;
 	}
 }
@@ -111,7 +119,9 @@ if (require.main === module) {
 			process.exit(0);
 		})
 		.catch((error) => {
-			appLogger.error("Upload process failed:", error);
+			appLogger.error(
+				error instanceof Error ? error : new Error(String(error)),
+			);
 			process.exit(1);
 		});
 }

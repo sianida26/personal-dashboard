@@ -142,6 +142,10 @@ const postTransactionRoute = createHonoRoute()
 			return newTransaction;
 		});
 
+		if (!result) {
+			return c.json({ error: "Failed to create transaction" }, 500);
+		}
+
 		// Get full transaction with relations
 		const transaction = await db.query.moneyTransactions.findFirst({
 			where: eq(moneyTransactions.id, result.id),
