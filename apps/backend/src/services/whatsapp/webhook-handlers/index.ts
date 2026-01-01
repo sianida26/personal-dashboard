@@ -1,11 +1,16 @@
 import appLogger from "../../../utils/logger";
+import { transactionWahaHandler } from "../../transaction/waha-handler";
 import whatsappService from "../whatsapp-service";
+
 /**
  * Register all WhatsApp message handlers
  * This should be called when webhook receives first request
  */
 export function registerWhatsAppHandlers(): void {
 	appLogger.info("Registering WhatsApp message handlers");
+
+	// Register transaction handler
+	whatsappService.registerHandler("transaction", transactionWahaHandler);
 
 	// Register example handlers
 	// whatsappService.registerHandler("greeting", greetingHandler);
