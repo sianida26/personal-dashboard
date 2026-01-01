@@ -17,6 +17,7 @@ import { Route as DashboardLayoutRouteImport } from './routes/_dashboardLayout'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
 import { Route as DashboardLayoutUsersRouteImport } from './routes/_dashboardLayout/users'
 import { Route as DashboardLayoutUjianRouteImport } from './routes/_dashboardLayout/ujian'
+import { Route as DashboardLayoutTransactionsRouteImport } from './routes/_dashboardLayout/transactions'
 import { Route as DashboardLayoutGraphAdminRouteImport } from './routes/_dashboardLayout/graph-admin'
 import { Route as DashboardLayoutDevRouteImport } from './routes/_dashboardLayout/dev'
 import { Route as DashboardLayoutUjianIndexRouteImport } from './routes/_dashboardLayout/ujian/index'
@@ -25,12 +26,15 @@ import { Route as DashboardLayoutNotificationsIndexRouteImport } from './routes/
 import { Route as DashboardLayoutDashboardIndexRouteImport } from './routes/_dashboardLayout/dashboard/index'
 import { Route as DashboardLayoutUsersCreateRouteImport } from './routes/_dashboardLayout/users/create'
 import { Route as DashboardLayoutUjianCreateRouteImport } from './routes/_dashboardLayout/ujian.create'
+import { Route as DashboardLayoutTransactionsCreateRouteImport } from './routes/_dashboardLayout/transactions/create'
 import { Route as DashboardLayoutRolesCreateRouteImport } from './routes/_dashboardLayout/roles/create'
 import { Route as DashboardLayoutPersonalNotificationsRouteImport } from './routes/_dashboardLayout/personal/notifications'
 import { Route as DashboardLayoutUsersEditUserIdRouteImport } from './routes/_dashboardLayout/users/edit.$userId'
 import { Route as DashboardLayoutUsersDetailUserIdRouteImport } from './routes/_dashboardLayout/users/detail.$userId'
 import { Route as DashboardLayoutUsersDeleteUserIdRouteImport } from './routes/_dashboardLayout/users/delete.$userId'
 import { Route as DashboardLayoutUjianEditUjianIdRouteImport } from './routes/_dashboardLayout/ujian.edit.$ujianId'
+import { Route as DashboardLayoutTransactionsEditTransactionIdRouteImport } from './routes/_dashboardLayout/transactions/edit.$transactionId'
+import { Route as DashboardLayoutTransactionsDeleteTransactionIdRouteImport } from './routes/_dashboardLayout/transactions/delete.$transactionId'
 import { Route as DashboardLayoutRolesViewRoleIdRouteImport } from './routes/_dashboardLayout/roles/view.$roleId'
 import { Route as DashboardLayoutRolesEditRoleIdRouteImport } from './routes/_dashboardLayout/roles/edit.$roleId'
 
@@ -138,6 +142,14 @@ const DashboardLayoutUjianRoute = DashboardLayoutUjianRouteImport.update({
   path: '/ujian',
   getParentRoute: () => DashboardLayoutRoute,
 } as any)
+const DashboardLayoutTransactionsRoute =
+  DashboardLayoutTransactionsRouteImport.update({
+    id: '/transactions',
+    path: '/transactions',
+    getParentRoute: () => DashboardLayoutRoute,
+  } as any).lazy(() =>
+    import('./routes/_dashboardLayout/transactions.lazy').then((d) => d.Route),
+  )
 const DashboardLayoutGraphAdminRoute =
   DashboardLayoutGraphAdminRouteImport.update({
     id: '/graph-admin',
@@ -219,6 +231,12 @@ const DashboardLayoutUjianCreateRoute =
     path: '/create',
     getParentRoute: () => DashboardLayoutUjianRoute,
   } as any)
+const DashboardLayoutTransactionsCreateRoute =
+  DashboardLayoutTransactionsCreateRouteImport.update({
+    id: '/create',
+    path: '/create',
+    getParentRoute: () => DashboardLayoutTransactionsRoute,
+  } as any)
 const DashboardLayoutRolesCreateRoute =
   DashboardLayoutRolesCreateRouteImport.update({
     id: '/roles/create',
@@ -285,6 +303,18 @@ const DashboardLayoutUjianEditUjianIdRoute =
     path: '/edit/$ujianId',
     getParentRoute: () => DashboardLayoutUjianRoute,
   } as any)
+const DashboardLayoutTransactionsEditTransactionIdRoute =
+  DashboardLayoutTransactionsEditTransactionIdRouteImport.update({
+    id: '/edit/$transactionId',
+    path: '/edit/$transactionId',
+    getParentRoute: () => DashboardLayoutTransactionsRoute,
+  } as any)
+const DashboardLayoutTransactionsDeleteTransactionIdRoute =
+  DashboardLayoutTransactionsDeleteTransactionIdRouteImport.update({
+    id: '/delete/$transactionId',
+    path: '/delete/$transactionId',
+    getParentRoute: () => DashboardLayoutTransactionsRoute,
+  } as any)
 const DashboardLayoutRolesViewRoleIdRoute =
   DashboardLayoutRolesViewRoleIdRouteImport.update({
     id: '/roles/view/$roleId',
@@ -304,6 +334,7 @@ export interface FileRoutesByFullPath {
   '/not-found': typeof NotFoundRoute
   '/dev': typeof DashboardLayoutDevRoute
   '/graph-admin': typeof DashboardLayoutGraphAdminRoute
+  '/transactions': typeof DashboardLayoutTransactionsRouteWithChildren
   '/ujian': typeof DashboardLayoutUjianRouteWithChildren
   '/users': typeof DashboardLayoutUsersRouteWithChildren
   '/ambil-ujian': typeof DashboardLayoutAmbilUjianLazyRoute
@@ -314,6 +345,7 @@ export interface FileRoutesByFullPath {
   '/logout': typeof LogoutIndexLazyRoute
   '/personal/notifications': typeof DashboardLayoutPersonalNotificationsRoute
   '/roles/create': typeof DashboardLayoutRolesCreateRoute
+  '/transactions/create': typeof DashboardLayoutTransactionsCreateRoute
   '/ujian/create': typeof DashboardLayoutUjianCreateRoute
   '/users/create': typeof DashboardLayoutUsersCreateRoute
   '/ambil-ujian/$attemptId': typeof DashboardLayoutAmbilUjianAttemptIdLazyRoute
@@ -325,6 +357,8 @@ export interface FileRoutesByFullPath {
   '/app-settings': typeof DashboardLayoutAppSettingsIndexLazyRoute
   '/roles/edit/$roleId': typeof DashboardLayoutRolesEditRoleIdRoute
   '/roles/view/$roleId': typeof DashboardLayoutRolesViewRoleIdRoute
+  '/transactions/delete/$transactionId': typeof DashboardLayoutTransactionsDeleteTransactionIdRoute
+  '/transactions/edit/$transactionId': typeof DashboardLayoutTransactionsEditTransactionIdRoute
   '/ujian/edit/$ujianId': typeof DashboardLayoutUjianEditUjianIdRoute
   '/users/delete/$userId': typeof DashboardLayoutUsersDeleteUserIdRoute
   '/users/detail/$userId': typeof DashboardLayoutUsersDetailUserIdRoute
@@ -339,6 +373,7 @@ export interface FileRoutesByTo {
   '/not-found': typeof NotFoundRoute
   '/dev': typeof DashboardLayoutDevRoute
   '/graph-admin': typeof DashboardLayoutGraphAdminRoute
+  '/transactions': typeof DashboardLayoutTransactionsRouteWithChildren
   '/users': typeof DashboardLayoutUsersRouteWithChildren
   '/ambil-ujian': typeof DashboardLayoutAmbilUjianLazyRoute
   '/oauth/google-callback': typeof OauthGoogleCallbackLazyRoute
@@ -348,6 +383,7 @@ export interface FileRoutesByTo {
   '/logout': typeof LogoutIndexLazyRoute
   '/personal/notifications': typeof DashboardLayoutPersonalNotificationsRoute
   '/roles/create': typeof DashboardLayoutRolesCreateRoute
+  '/transactions/create': typeof DashboardLayoutTransactionsCreateRoute
   '/ujian/create': typeof DashboardLayoutUjianCreateRoute
   '/users/create': typeof DashboardLayoutUsersCreateRoute
   '/ambil-ujian/$attemptId': typeof DashboardLayoutAmbilUjianAttemptIdLazyRoute
@@ -359,6 +395,8 @@ export interface FileRoutesByTo {
   '/app-settings': typeof DashboardLayoutAppSettingsIndexLazyRoute
   '/roles/edit/$roleId': typeof DashboardLayoutRolesEditRoleIdRoute
   '/roles/view/$roleId': typeof DashboardLayoutRolesViewRoleIdRoute
+  '/transactions/delete/$transactionId': typeof DashboardLayoutTransactionsDeleteTransactionIdRoute
+  '/transactions/edit/$transactionId': typeof DashboardLayoutTransactionsEditTransactionIdRoute
   '/ujian/edit/$ujianId': typeof DashboardLayoutUjianEditUjianIdRoute
   '/users/delete/$userId': typeof DashboardLayoutUsersDeleteUserIdRoute
   '/users/detail/$userId': typeof DashboardLayoutUsersDetailUserIdRoute
@@ -375,6 +413,7 @@ export interface FileRoutesById {
   '/not-found': typeof NotFoundRoute
   '/_dashboardLayout/dev': typeof DashboardLayoutDevRoute
   '/_dashboardLayout/graph-admin': typeof DashboardLayoutGraphAdminRoute
+  '/_dashboardLayout/transactions': typeof DashboardLayoutTransactionsRouteWithChildren
   '/_dashboardLayout/ujian': typeof DashboardLayoutUjianRouteWithChildren
   '/_dashboardLayout/users': typeof DashboardLayoutUsersRouteWithChildren
   '/_dashboardLayout/ambil-ujian': typeof DashboardLayoutAmbilUjianLazyRoute
@@ -385,6 +424,7 @@ export interface FileRoutesById {
   '/logout/': typeof LogoutIndexLazyRoute
   '/_dashboardLayout/personal/notifications': typeof DashboardLayoutPersonalNotificationsRoute
   '/_dashboardLayout/roles/create': typeof DashboardLayoutRolesCreateRoute
+  '/_dashboardLayout/transactions/create': typeof DashboardLayoutTransactionsCreateRoute
   '/_dashboardLayout/ujian/create': typeof DashboardLayoutUjianCreateRoute
   '/_dashboardLayout/users/create': typeof DashboardLayoutUsersCreateRoute
   '/_dashboardLayout/ambil-ujian/$attemptId': typeof DashboardLayoutAmbilUjianAttemptIdLazyRoute
@@ -396,6 +436,8 @@ export interface FileRoutesById {
   '/_dashboardLayout/app-settings/': typeof DashboardLayoutAppSettingsIndexLazyRoute
   '/_dashboardLayout/roles/edit/$roleId': typeof DashboardLayoutRolesEditRoleIdRoute
   '/_dashboardLayout/roles/view/$roleId': typeof DashboardLayoutRolesViewRoleIdRoute
+  '/_dashboardLayout/transactions/delete/$transactionId': typeof DashboardLayoutTransactionsDeleteTransactionIdRoute
+  '/_dashboardLayout/transactions/edit/$transactionId': typeof DashboardLayoutTransactionsEditTransactionIdRoute
   '/_dashboardLayout/ujian/edit/$ujianId': typeof DashboardLayoutUjianEditUjianIdRoute
   '/_dashboardLayout/users/delete/$userId': typeof DashboardLayoutUsersDeleteUserIdRoute
   '/_dashboardLayout/users/detail/$userId': typeof DashboardLayoutUsersDetailUserIdRoute
@@ -412,6 +454,7 @@ export interface FileRouteTypes {
     | '/not-found'
     | '/dev'
     | '/graph-admin'
+    | '/transactions'
     | '/ujian'
     | '/users'
     | '/ambil-ujian'
@@ -422,6 +465,7 @@ export interface FileRouteTypes {
     | '/logout'
     | '/personal/notifications'
     | '/roles/create'
+    | '/transactions/create'
     | '/ujian/create'
     | '/users/create'
     | '/ambil-ujian/$attemptId'
@@ -433,6 +477,8 @@ export interface FileRouteTypes {
     | '/app-settings'
     | '/roles/edit/$roleId'
     | '/roles/view/$roleId'
+    | '/transactions/delete/$transactionId'
+    | '/transactions/edit/$transactionId'
     | '/ujian/edit/$ujianId'
     | '/users/delete/$userId'
     | '/users/detail/$userId'
@@ -447,6 +493,7 @@ export interface FileRouteTypes {
     | '/not-found'
     | '/dev'
     | '/graph-admin'
+    | '/transactions'
     | '/users'
     | '/ambil-ujian'
     | '/oauth/google-callback'
@@ -456,6 +503,7 @@ export interface FileRouteTypes {
     | '/logout'
     | '/personal/notifications'
     | '/roles/create'
+    | '/transactions/create'
     | '/ujian/create'
     | '/users/create'
     | '/ambil-ujian/$attemptId'
@@ -467,6 +515,8 @@ export interface FileRouteTypes {
     | '/app-settings'
     | '/roles/edit/$roleId'
     | '/roles/view/$roleId'
+    | '/transactions/delete/$transactionId'
+    | '/transactions/edit/$transactionId'
     | '/ujian/edit/$ujianId'
     | '/users/delete/$userId'
     | '/users/detail/$userId'
@@ -482,6 +532,7 @@ export interface FileRouteTypes {
     | '/not-found'
     | '/_dashboardLayout/dev'
     | '/_dashboardLayout/graph-admin'
+    | '/_dashboardLayout/transactions'
     | '/_dashboardLayout/ujian'
     | '/_dashboardLayout/users'
     | '/_dashboardLayout/ambil-ujian'
@@ -492,6 +543,7 @@ export interface FileRouteTypes {
     | '/logout/'
     | '/_dashboardLayout/personal/notifications'
     | '/_dashboardLayout/roles/create'
+    | '/_dashboardLayout/transactions/create'
     | '/_dashboardLayout/ujian/create'
     | '/_dashboardLayout/users/create'
     | '/_dashboardLayout/ambil-ujian/$attemptId'
@@ -503,6 +555,8 @@ export interface FileRouteTypes {
     | '/_dashboardLayout/app-settings/'
     | '/_dashboardLayout/roles/edit/$roleId'
     | '/_dashboardLayout/roles/view/$roleId'
+    | '/_dashboardLayout/transactions/delete/$transactionId'
+    | '/_dashboardLayout/transactions/edit/$transactionId'
     | '/_dashboardLayout/ujian/edit/$ujianId'
     | '/_dashboardLayout/users/delete/$userId'
     | '/_dashboardLayout/users/detail/$userId'
@@ -610,6 +664,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutUjianRouteImport
       parentRoute: typeof DashboardLayoutRoute
     }
+    '/_dashboardLayout/transactions': {
+      id: '/_dashboardLayout/transactions'
+      path: '/transactions'
+      fullPath: '/transactions'
+      preLoaderRoute: typeof DashboardLayoutTransactionsRouteImport
+      parentRoute: typeof DashboardLayoutRoute
+    }
     '/_dashboardLayout/graph-admin': {
       id: '/_dashboardLayout/graph-admin'
       path: '/graph-admin'
@@ -687,6 +748,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutUjianCreateRouteImport
       parentRoute: typeof DashboardLayoutUjianRoute
     }
+    '/_dashboardLayout/transactions/create': {
+      id: '/_dashboardLayout/transactions/create'
+      path: '/create'
+      fullPath: '/transactions/create'
+      preLoaderRoute: typeof DashboardLayoutTransactionsCreateRouteImport
+      parentRoute: typeof DashboardLayoutTransactionsRoute
+    }
     '/_dashboardLayout/roles/create': {
       id: '/_dashboardLayout/roles/create'
       path: '/roles/create'
@@ -750,6 +818,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutUjianEditUjianIdRouteImport
       parentRoute: typeof DashboardLayoutUjianRoute
     }
+    '/_dashboardLayout/transactions/edit/$transactionId': {
+      id: '/_dashboardLayout/transactions/edit/$transactionId'
+      path: '/edit/$transactionId'
+      fullPath: '/transactions/edit/$transactionId'
+      preLoaderRoute: typeof DashboardLayoutTransactionsEditTransactionIdRouteImport
+      parentRoute: typeof DashboardLayoutTransactionsRoute
+    }
+    '/_dashboardLayout/transactions/delete/$transactionId': {
+      id: '/_dashboardLayout/transactions/delete/$transactionId'
+      path: '/delete/$transactionId'
+      fullPath: '/transactions/delete/$transactionId'
+      preLoaderRoute: typeof DashboardLayoutTransactionsDeleteTransactionIdRouteImport
+      parentRoute: typeof DashboardLayoutTransactionsRoute
+    }
     '/_dashboardLayout/roles/view/$roleId': {
       id: '/_dashboardLayout/roles/view/$roleId'
       path: '/roles/view/$roleId'
@@ -766,6 +848,27 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface DashboardLayoutTransactionsRouteChildren {
+  DashboardLayoutTransactionsCreateRoute: typeof DashboardLayoutTransactionsCreateRoute
+  DashboardLayoutTransactionsDeleteTransactionIdRoute: typeof DashboardLayoutTransactionsDeleteTransactionIdRoute
+  DashboardLayoutTransactionsEditTransactionIdRoute: typeof DashboardLayoutTransactionsEditTransactionIdRoute
+}
+
+const DashboardLayoutTransactionsRouteChildren: DashboardLayoutTransactionsRouteChildren =
+  {
+    DashboardLayoutTransactionsCreateRoute:
+      DashboardLayoutTransactionsCreateRoute,
+    DashboardLayoutTransactionsDeleteTransactionIdRoute:
+      DashboardLayoutTransactionsDeleteTransactionIdRoute,
+    DashboardLayoutTransactionsEditTransactionIdRoute:
+      DashboardLayoutTransactionsEditTransactionIdRoute,
+  }
+
+const DashboardLayoutTransactionsRouteWithChildren =
+  DashboardLayoutTransactionsRoute._addFileChildren(
+    DashboardLayoutTransactionsRouteChildren,
+  )
 
 interface DashboardLayoutUjianRouteChildren {
   DashboardLayoutUjianCreateRoute: typeof DashboardLayoutUjianCreateRoute
@@ -802,6 +905,7 @@ const DashboardLayoutUsersRouteWithChildren =
 interface DashboardLayoutRouteChildren {
   DashboardLayoutDevRoute: typeof DashboardLayoutDevRoute
   DashboardLayoutGraphAdminRoute: typeof DashboardLayoutGraphAdminRoute
+  DashboardLayoutTransactionsRoute: typeof DashboardLayoutTransactionsRouteWithChildren
   DashboardLayoutUjianRoute: typeof DashboardLayoutUjianRouteWithChildren
   DashboardLayoutUsersRoute: typeof DashboardLayoutUsersRouteWithChildren
   DashboardLayoutAmbilUjianLazyRoute: typeof DashboardLayoutAmbilUjianLazyRoute
@@ -823,6 +927,8 @@ interface DashboardLayoutRouteChildren {
 const DashboardLayoutRouteChildren: DashboardLayoutRouteChildren = {
   DashboardLayoutDevRoute: DashboardLayoutDevRoute,
   DashboardLayoutGraphAdminRoute: DashboardLayoutGraphAdminRoute,
+  DashboardLayoutTransactionsRoute:
+    DashboardLayoutTransactionsRouteWithChildren,
   DashboardLayoutUjianRoute: DashboardLayoutUjianRouteWithChildren,
   DashboardLayoutUsersRoute: DashboardLayoutUsersRouteWithChildren,
   DashboardLayoutAmbilUjianLazyRoute: DashboardLayoutAmbilUjianLazyRoute,

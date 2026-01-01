@@ -1,8 +1,11 @@
 import { createOpenAI } from "@ai-sdk/openai";
 import { generateText } from "ai";
-import { eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import appEnv from "../../appEnv";
 import db from "../../drizzle";
+import { moneyAccounts } from "../../drizzle/schema/moneyAccounts";
+import { moneyCategories } from "../../drizzle/schema/moneyCategories";
+import { moneyTransactions } from "../../drizzle/schema/moneyTransactions";
 import { users } from "../../drizzle/schema/users";
 import appLogger from "../../utils/logger";
 import type { WhatsAppMessageContext } from "../whatsapp/types";
@@ -29,8 +32,77 @@ async function getUserIdByUsername(username: string): Promise<string | null> {
 }
 
 /**
+ * Get a default account for the user (first active account, or create one if none exists)
+ * @param userId - The user ID to get/create account for
+ * @returns Account ID
+ */
+async function getOrCreateDefaultAccount(userId: string): Promise<string> {
+	// Try to find an existing active account
+	const existingAccount = await db.query.moneyAccounts.findFirst({
+		where: and(
+			eq(moneyAccounts.userId, userId),
+			eq(moneyAccounts.isActive, true),
+		),
+		columns: { id: true },
+	});
+
+	if (existingAccount) {
+		return existingAccount.id;
+	}
+
+	// Create a default cash account
+	const [newAccount] = await db
+		.insert(moneyAccounts)
+		.values({
+			userId,
+			name: "Kas",
+			type: "cash",
+			currency: "IDR",
+		})
+		.returning({ id: moneyAccounts.id });
+
+	if (!newAccount) {
+		throw new Error("Failed to create default account");
+	}
+
+	return newAccount.id;
+}
+
+/**
+ * Find category ID by name for a user
+ * @param userId - The user ID
+ * @param categoryName - The category name to find
+ * @param type - The category type (income/expense)
+ * @returns Category ID or null
+ */
+async function findCategoryId(
+	userId: string,
+	categoryName: string,
+	type: "income" | "expense",
+): Promise<string | null> {
+	const category = await db.query.moneyCategories.findFirst({
+		where: and(
+			eq(moneyCategories.userId, userId),
+			eq(moneyCategories.name, categoryName),
+			eq(moneyCategories.type, type),
+		),
+		columns: { id: true },
+	});
+	return category?.id ?? null;
+}
+
+/** Parsed transaction from AI */
+interface ParsedTransaction {
+	name: string;
+	amount: number;
+	currency: string;
+	type: "income" | "expense";
+	category: string;
+}
+
+/**
  * Handler for transaction-related messages from specific WhatsApp group
- * Reacts with 🧪 emoji and uses AI to parse transaction details
+ * Reacts with 👍 emoji and uses AI to parse transaction details
  */
 export async function transactionWahaHandler(
 	context: WhatsAppMessageContext,
@@ -56,23 +128,6 @@ export async function transactionWahaHandler(
 			return;
 		}
 
-		// React to the message with 🧪 emoji
-		const result = await whatsappService.sendReaction({
-			messageId: context.messageId,
-			reaction: "🧪",
-			session: context.session,
-		});
-
-		if (result.success) {
-			appLogger.info(
-				`[Transaction] Successfully reacted to message ${context.messageId}`,
-			);
-		} else {
-			appLogger.error(
-				new Error(`[Transaction] Failed to react: ${result.message}`),
-			);
-		}
-
 		// Skip AI processing if OPENAI_API_KEY is not configured
 		if (!appEnv.OPENAI_API_KEY) {
 			appLogger.info(
@@ -92,27 +147,121 @@ export async function transactionWahaHandler(
 		appLogger.info(`[Transaction] AI Response: ${text}`);
 
 		// Try to parse the AI response as JSON
-		try {
-			// Strip markdown code blocks if present
-			let cleanedText = text.trim();
-			if (cleanedText.startsWith("```")) {
-				// Remove opening ```json or ``` and closing ```
-				cleanedText = cleanedText
-					.replace(/^```(?:json)?\n?/, "")
-					.replace(/\n?```$/, "")
-					.trim();
-			}
+		let cleanedText = text.trim();
+		if (cleanedText.startsWith("```")) {
+			// Remove opening ```json or ``` and closing ```
+			cleanedText = cleanedText
+				.replace(/^```(?:json)?\n?/, "")
+				.replace(/\n?```$/, "")
+				.trim();
+		}
 
-			const parsed = JSON.parse(cleanedText);
-			appLogger.info(
-				`[Transaction] Parsed transaction: ${JSON.stringify(parsed, null, 2)}`,
-			);
-		} catch (parseError) {
+		let parsed: ParsedTransaction[];
+		try {
+			parsed = JSON.parse(cleanedText);
+		} catch (_parseError) {
 			appLogger.error(
 				new Error(
 					`[Transaction] Failed to parse AI response as JSON: ${text}`,
 				),
 			);
+			return;
+		}
+
+		// Skip if no transactions parsed
+		if (!Array.isArray(parsed) || parsed.length === 0) {
+			appLogger.info(
+				"[Transaction] No transactions found in message, skipping",
+			);
+			return;
+		}
+
+		appLogger.info(
+			`[Transaction] Parsed ${parsed.length} transaction(s): ${JSON.stringify(parsed, null, 2)}`,
+		);
+
+		// Get or create default account
+		const accountId = await getOrCreateDefaultAccount(userId);
+
+		// Convert Unix timestamp (seconds) to Date for the transaction date
+		const transactionDate = new Date(context.timestamp * 1000);
+
+		// Store transactions in database
+		let successCount = 0;
+		for (const tx of parsed) {
+			try {
+				// Find category ID
+				const categoryId = await findCategoryId(
+					userId,
+					tx.category,
+					tx.type,
+				);
+
+				if (!categoryId) {
+					appLogger.info(
+						`[Transaction] Category "${tx.category}" not found for type "${tx.type}", storing without category`,
+					);
+				}
+
+				// Insert transaction with account balance update
+				await db.transaction(async (dbTx) => {
+					// Insert the transaction
+					await dbTx.insert(moneyTransactions).values({
+						userId,
+						accountId,
+						categoryId,
+						type: tx.type,
+						amount: String(tx.amount),
+						description: tx.name,
+						date: transactionDate,
+						source: "import",
+						waMessageId: context.messageId,
+					});
+
+					// Update account balance
+					const balanceChange =
+						tx.type === "income" ? tx.amount : -tx.amount;
+					await dbTx
+						.update(moneyAccounts)
+						.set({
+							balance: sql`${moneyAccounts.balance} + ${balanceChange}`,
+							updatedAt: new Date(),
+						})
+						.where(eq(moneyAccounts.id, accountId));
+				});
+
+				successCount++;
+				appLogger.info(
+					`[Transaction] Stored transaction: ${tx.name} (${tx.type}) - ${tx.amount} ${tx.currency}`,
+				);
+			} catch (txError) {
+				appLogger.error(
+					new Error(
+						`[Transaction] Failed to store transaction "${tx.name}": ${txError instanceof Error ? txError.message : "Unknown error"}`,
+					),
+				);
+			}
+		}
+
+		// React with 👍 only if at least one transaction was stored successfully
+		if (successCount > 0) {
+			const result = await whatsappService.sendReaction({
+				messageId: context.messageId,
+				reaction: "👍",
+				session: context.session,
+			});
+
+			if (result.success) {
+				appLogger.info(
+					`[Transaction] Successfully reacted to message ${context.messageId} - stored ${successCount}/${parsed.length} transactions`,
+				);
+			} else {
+				appLogger.error(
+					new Error(
+						`[Transaction] Failed to react: ${result.message}`,
+					),
+				);
+			}
 		}
 	} catch (error) {
 		appLogger.error(
