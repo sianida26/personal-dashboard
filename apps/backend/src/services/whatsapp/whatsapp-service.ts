@@ -1,7 +1,10 @@
+import appLogger from "../../utils/logger";
 import normalizePhoneNumber from "../../utils/normalizePhoneNumber";
 import type {
 	NotificationParams,
+	SendSeenParams,
 	SendTextParams,
+	TypingParams,
 	WhatsAppMessageContext,
 	WhatsAppMessageHandler,
 	WhatsAppResponse,
@@ -160,6 +163,14 @@ export class WhatsAppService {
 	/**
 	 * Send a text message to a WhatsApp chat
 	 *
+	 * This method simulates natural human behavior:
+	 * 1. Marks message as seen (if reply_to provided)
+	 * 2. Random delay (500-1500ms)
+	 * 3. Shows typing indicator
+	 * 4. Random delay (1000-3000ms)
+	 * 5. Sends message
+	 * 6. Stops typing indicator
+	 *
 	 * @param params - Message parameters
 	 * @param params.chatId - WhatsApp chat ID (e.g., "628123456789@c.us")
 	 * @param params.text - Message text content
@@ -186,14 +197,6 @@ export class WhatsAppService {
 	 */
 	async sendText(params: SendTextParams): Promise<WhatsAppResponse> {
 		const sessionToUse = params.session || this.defaultSession;
-		const payload = {
-			chatId: params.chatId,
-			reply_to: params.reply_to ?? null,
-			text: params.text,
-			linkPreview: params.linkPreview ?? true,
-			linkPreviewHighQuality: params.linkPreviewHighQuality ?? false,
-			session: sessionToUse,
-		};
 
 		if (!this.apiKey) {
 			return {
@@ -203,6 +206,42 @@ export class WhatsAppService {
 		}
 
 		try {
+			// Step 1: Send seen if replying to a message
+			const seenResult = await this.sendSeen({
+				chatId: params.chatId,
+				// messageIds: [params.chatId],
+				session: sessionToUse,
+			});
+			appLogger.info(
+				`SendSeen result: success=${seenResult.success}, message=${seenResult.message}`,
+			);
+
+			// Step 2: Random delay (500-1500ms)
+			await new Promise((resolve) =>
+				setTimeout(resolve, 500 + Math.random() * 1000),
+			);
+
+			// Step 3: Start typing
+			await this.startTyping({
+				chatId: params.chatId,
+				session: sessionToUse,
+			});
+
+			// Step 4: Random delay (1000-3000ms) - simulates typing time
+			await new Promise((resolve) =>
+				setTimeout(resolve, 1000 + Math.random() * 2000),
+			);
+
+			// Step 5: Send the message
+			const payload = {
+				chatId: params.chatId,
+				reply_to: params.reply_to ?? null,
+				text: params.text,
+				linkPreview: params.linkPreview ?? true,
+				linkPreviewHighQuality: params.linkPreviewHighQuality ?? false,
+				session: sessionToUse,
+			};
+
 			const response = await fetch(`${this.baseUrl}/api/sendText`, {
 				method: "POST",
 				headers: {
@@ -211,6 +250,12 @@ export class WhatsAppService {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify(payload),
+			});
+
+			// Step 6: Stop typing
+			await this.stopTyping({
+				chatId: params.chatId,
+				session: sessionToUse,
 			});
 
 			if (!response.ok) {
@@ -227,6 +272,16 @@ export class WhatsAppService {
 				data: result,
 			};
 		} catch (error) {
+			// Stop typing on error
+			try {
+				await this.stopTyping({
+					chatId: params.chatId,
+					session: sessionToUse,
+				});
+			} catch {
+				// Ignore error when stopping typing
+			}
+
 			return {
 				success: false,
 				message: `Internal error: ${error instanceof Error ? error.message : "Unknown error"}`,
@@ -286,6 +341,194 @@ export class WhatsAppService {
 			linkPreviewHighQuality: params.linkPreviewHighQuality,
 			session: params.session,
 		});
+	}
+
+	/**
+	 * Mark messages as seen (read)
+	 *
+	 * @param params - Parameters for marking messages as seen
+	 * @param params.chatId - WhatsApp chat ID
+	 * @param params.messageIds - Array of message IDs to mark as seen
+	 * @param params.participant - Participant ID for group chats (optional)
+	 * @param params.session - WAHA session name (default: from env)
+	 * @returns Response object with success status
+	 *
+	 * @example
+	 * ```typescript
+	 * const result = await whatsappService.sendSeen({
+	 *   chatId: "628123456789@c.us",
+	 *   messageIds: ["false_628123456789@c.us_AAAAAAAA"]
+	 * });
+	 * ```
+	 */
+	async sendSeen(params: SendSeenParams): Promise<WhatsAppResponse> {
+		const sessionToUse = params.session || this.defaultSession;
+		const payload = {
+			chatId: params.chatId,
+			messageIds: params.messageIds ?? [],
+			participant: params.participant ?? null,
+			session: sessionToUse,
+		};
+
+		if (!this.apiKey) {
+			return {
+				success: false,
+				message: "WhatsApp API key not configured",
+			};
+		}
+
+		try {
+			const response = await fetch(`${this.baseUrl}/api/sendSeen`, {
+				method: "POST",
+				headers: {
+					accept: "application/json",
+					"X-Api-Key": this.apiKey,
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(payload),
+			});
+
+			if (!response.ok) {
+				const errorText = await response.text();
+				return {
+					success: false,
+					message: `Failed to send seen: ${response.status} ${errorText}`,
+				};
+			}
+
+			const result = await response.json();
+			return {
+				success: true,
+				data: result,
+			};
+		} catch (error) {
+			return {
+				success: false,
+				message: `Internal error: ${error instanceof Error ? error.message : "Unknown error"}`,
+			};
+		}
+	}
+
+	/**
+	 * Start showing typing indicator in a chat
+	 *
+	 * @param params - Parameters for typing indicator
+	 * @param params.chatId - WhatsApp chat ID
+	 * @param params.session - WAHA session name (default: from env)
+	 * @returns Response object with success status
+	 *
+	 * @example
+	 * ```typescript
+	 * await whatsappService.startTyping({
+	 *   chatId: "628123456789@c.us"
+	 * });
+	 * ```
+	 */
+	async startTyping(params: TypingParams): Promise<WhatsAppResponse> {
+		const sessionToUse = params.session || this.defaultSession;
+		const payload = {
+			chatId: params.chatId,
+			session: sessionToUse,
+		};
+
+		if (!this.apiKey) {
+			return {
+				success: false,
+				message: "WhatsApp API key not configured",
+			};
+		}
+
+		try {
+			const response = await fetch(`${this.baseUrl}/api/startTyping`, {
+				method: "POST",
+				headers: {
+					accept: "application/json",
+					"X-Api-Key": this.apiKey,
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(payload),
+			});
+
+			if (!response.ok) {
+				const errorText = await response.text();
+				return {
+					success: false,
+					message: `Failed to start typing: ${response.status} ${errorText}`,
+				};
+			}
+
+			const result = await response.json();
+			return {
+				success: true,
+				data: result,
+			};
+		} catch (error) {
+			return {
+				success: false,
+				message: `Internal error: ${error instanceof Error ? error.message : "Unknown error"}`,
+			};
+		}
+	}
+
+	/**
+	 * Stop showing typing indicator in a chat
+	 *
+	 * @param params - Parameters for typing indicator
+	 * @param params.chatId - WhatsApp chat ID
+	 * @param params.session - WAHA session name (default: from env)
+	 * @returns Response object with success status
+	 *
+	 * @example
+	 * ```typescript
+	 * await whatsappService.stopTyping({
+	 *   chatId: "628123456789@c.us"
+	 * });
+	 * ```
+	 */
+	async stopTyping(params: TypingParams): Promise<WhatsAppResponse> {
+		const sessionToUse = params.session || this.defaultSession;
+		const payload = {
+			chatId: params.chatId,
+			session: sessionToUse,
+		};
+
+		if (!this.apiKey) {
+			return {
+				success: false,
+				message: "WhatsApp API key not configured",
+			};
+		}
+
+		try {
+			const response = await fetch(`${this.baseUrl}/api/stopTyping`, {
+				method: "POST",
+				headers: {
+					accept: "application/json",
+					"X-Api-Key": this.apiKey,
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(payload),
+			});
+
+			if (!response.ok) {
+				const errorText = await response.text();
+				return {
+					success: false,
+					message: `Failed to stop typing: ${response.status} ${errorText}`,
+				};
+			}
+
+			const result = await response.json();
+			return {
+				success: true,
+				data: result,
+			};
+		} catch (error) {
+			return {
+				success: false,
+				message: `Internal error: ${error instanceof Error ? error.message : "Unknown error"}`,
+			};
+		}
 	}
 }
 

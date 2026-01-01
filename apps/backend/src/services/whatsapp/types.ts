@@ -38,6 +38,26 @@ export interface NotificationParams {
 	linkPreviewHighQuality?: boolean;
 }
 
+/** Parameters for marking messages as seen */
+interface SendSeenParams {
+	/** WhatsApp chat ID */
+	chatId: string;
+	/** Array of message IDs to mark as seen */
+	messageIds?: string[];
+	/** Participant ID (for groups) */
+	participant?: string | null;
+	/** WAHA session name */
+	session?: string;
+}
+
+/** Parameters for typing indicators */
+interface TypingParams {
+	/** WhatsApp chat ID */
+	chatId: string;
+	/** WAHA session name */
+	session?: string;
+}
+
 /** Raw webhook payload structure from WAHA */
 export interface WhatsAppWebhookPayload {
 	/** Event type (e.g., "message", "message.ack") */
@@ -98,4 +118,4 @@ export type WhatsAppMessageHandler = (
 	context: WhatsAppMessageContext,
 ) => Promise<void> | void;
 
-export type { SendTextParams };
+export type { SendTextParams, SendSeenParams, TypingParams };

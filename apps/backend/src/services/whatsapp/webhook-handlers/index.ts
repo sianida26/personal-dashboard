@@ -21,6 +21,7 @@ export function registerWhatsAppHandlers(): void {
 			const result = await whatsappService.sendText({
 				chatId: context.chatId,
 				text: "I'm up",
+				reply_to: context.messageId, // Reply to the incoming message (triggers sendSeen)
 				session: context.session, // Use the incoming session
 			});
 			appLogger.info(`Send result: ${JSON.stringify(result)}`);
