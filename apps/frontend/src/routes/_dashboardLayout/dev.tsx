@@ -8,6 +8,7 @@ import client from "@/honoClient";
 import { usePermissions } from "@/hooks/useAuth";
 import fetchRPC from "@/utils/fetchRPC";
 import type { ChemicalElement } from "@/utils/tempChemicalElements";
+import { Card, CardContent } from "@repo/ui";
 
 export const Route = createFileRoute("/_dashboardLayout/dev")({
 	component: RouteComponent,
@@ -36,8 +37,9 @@ function RouteComponent() {
 			{
 				accessorKey: "name",
 				header: "Name",
-				editable: true,
+				// editable: true,
 				editType: "text",
+				enableHiding:true
 			},
 			{
 				accessorKey: "atomicMass",
@@ -51,6 +53,7 @@ function RouteComponent() {
 			{
 				accessorKey: "category",
 				header: "Category",
+				enableHiding:false,
 				// Auto-detects as "text" filter since no options and not numeric
 			},
 			{
@@ -134,7 +137,9 @@ function RouteComponent() {
 	return (
 		<div className="p-4 h-full flex flex-col overflow-hidden">
 			<div className="flex-1 min-h-0">
-				<ServerDataTable
+				<Card>
+					<CardContent className="px-0">
+						<ServerDataTable
 					// Data fetching
 					endpoint={client.dev.$get}
 					queryKey={["dev-chemical-elements"]}
@@ -162,7 +167,14 @@ function RouteComponent() {
 							`Action: ${action} on row with Atomic #${row.length}`,
 						);
 					}}
+					initialState={{
+						columnVisibility: {
+							name: false,
+						},
+					}}
 				/>
+					</CardContent>
+				</Card>
 			</div>
 		</div>
 	);

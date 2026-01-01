@@ -18,6 +18,7 @@ import permissionRoutes from "./routes/permissions/route";
 import rolesRoute from "./routes/roles/route";
 import ujianRoute from "./routes/ujian/route";
 import usersRoute from "./routes/users/route";
+import webhooksRoute from "./routes/webhooks";
 import { jobQueueManager } from "./services/jobs";
 import type HonoEnv from "./types/HonoEnv";
 import { recordError } from "./utils/error-tracking";
@@ -63,6 +64,7 @@ export const appRoutes = app
 	.route("/app-settings", appSettingsRoutes)
 	.route("/notifications", notificationsRoute)
 	.route("/notification-preferences", notificationPreferencesRoute)
+	.route("/webhooks", webhooksRoute)
 	.get("/test", (c) => {
 		return c.json({
 			message: "Server is up",

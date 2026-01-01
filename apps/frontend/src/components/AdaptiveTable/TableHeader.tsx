@@ -163,7 +163,7 @@ export function TableHeader<T>({
 	const hasActiveFilters = filters.length > 0;
 
 	return (
-		<div className="mb-4">
+		<div className="mb-4 px-4 pt-4">
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					{title && (

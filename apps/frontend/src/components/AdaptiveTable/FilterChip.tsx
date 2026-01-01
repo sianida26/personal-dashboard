@@ -163,149 +163,151 @@ export function FilterChip<T>({
 	};
 
 	return (
-		<Popover open={isOpen} onOpenChange={setIsOpen}>
-			<PopoverTrigger asChild>
-				<button
-					type="button"
-					className="inline-flex items-center gap-1.5 px-2 py-1 text-xs font-medium rounded-md border bg-muted/50 hover:bg-muted transition-colors group"
-				>
-					<span className="truncate max-w-48">
-						{buildDisplayText()}
-					</span>
+		<div className="inline-flex items-center gap-1.5 px-2 py-1 text-xs font-medium rounded-md border border-primary hover:bg-primary/20 transition-colors group">
+			<Popover open={isOpen} onOpenChange={setIsOpen}>
+				<PopoverTrigger asChild>
 					<button
 						type="button"
-						onClick={(e) => {
-							e.stopPropagation();
-							onRemove();
-						}}
-						className="p-0.5 -mr-1 rounded hover:bg-destructive/20 transition-colors"
-						aria-label="Remove filter"
+						className="truncate max-w-48 hover:text-foreground focus:outline-none"
 					>
-						<X className="h-3 w-3 text-muted-foreground group-hover:text-destructive" />
+						{buildDisplayText()}
 					</button>
-				</button>
-			</PopoverTrigger>
-			<PopoverContent className="w-72 p-3" align="start">
-				<div className="space-y-3">
-					{/* Column selector */}
-					<Select
-						label="Column"
-						value={filter.columnId}
-						options={columnOptions}
-						onChange={(columnId) => {
-							const filterCol = filterableColumns.find(
-								(f) => f.columnId === columnId,
-							);
-							if (filterCol) {
+				</PopoverTrigger>
+				<PopoverContent className="w-72 p-3" align="start">
+					<div className="space-y-3">
+						{/* Column selector */}
+						<Select
+							label="Column"
+							value={filter.columnId}
+							options={columnOptions}
+							onChange={(columnId) => {
+								const filterCol = filterableColumns.find(
+									(f) => f.columnId === columnId,
+								);
+								if (filterCol) {
+									onUpdate({
+										columnId,
+										filterType: filterCol.filterType,
+										// Reset operator to default for new type
+										operator:
+											filterCol.filterType ===
+											filter.filterType
+												? filter.operator
+												: operatorsByType[
+														filterCol.filterType
+													][0],
+										value: undefined,
+									});
+								}
+							}}
+							classNames={{ trigger: "h-8 text-sm" }}
+						/>
+
+						{/* Operator selector */}
+						<Select
+							label="Operator"
+							value={filter.operator}
+							options={operatorOptions}
+							onChange={(operator) =>
 								onUpdate({
-									columnId,
-									filterType: filterCol.filterType,
-									// Reset operator to default for new type
-									operator:
-										filterCol.filterType ===
-										filter.filterType
-											? filter.operator
-											: operatorsByType[
-													filterCol.filterType
-												][0],
-									value: undefined,
-								});
+									operator: operator as FilterOperator,
+									// Clear value if new operator doesn't require it
+									value: operatorRequiresValue(
+										operator as FilterOperator,
+									)
+										? filter.value
+										: undefined,
+								})
 							}
-						}}
-						classNames={{ trigger: "h-8 text-sm" }}
-					/>
+							classNames={{ trigger: "h-8 text-sm" }}
+						/>
 
-					{/* Operator selector */}
-					<Select
-						label="Operator"
-						value={filter.operator}
-						options={operatorOptions}
-						onChange={(operator) =>
-							onUpdate({
-								operator: operator as FilterOperator,
-								// Clear value if new operator doesn't require it
-								value: operatorRequiresValue(
-									operator as FilterOperator,
-								)
-									? filter.value
-									: undefined,
-							})
-						}
-						classNames={{ trigger: "h-8 text-sm" }}
-					/>
-
-					{/* Value input (conditional) */}
-					{requiresValue && (
-						<div className="space-y-1.5">
-							<span className="text-xs font-medium text-muted-foreground">
-								Value
-							</span>
-							{filter.filterType === "select" ? (
-								<Select
-									value={filter.value?.toString() ?? ""}
-									options={valueOptions}
-									onChange={handleSelectValueChange}
-									placeholder="Select a value..."
-									classNames={{ trigger: "h-8 text-sm" }}
-								/>
-							) : filter.filterType === "date" ? (
-								<Input
-									ref={inputRef}
-									type="date"
-									value={localValue}
-									onChange={(e) =>
-										handleSelectValueChange(e.target.value)
-									}
-									className="h-8 text-sm"
-								/>
-							) : (
-								<div className="space-y-2">
+						{/* Value input (conditional) */}
+						{requiresValue && (
+							<div className="space-y-1.5">
+								<span className="text-xs font-medium text-muted-foreground">
+									Value
+								</span>
+								{filter.filterType === "select" ? (
+									<Select
+										value={filter.value?.toString() ?? ""}
+										options={valueOptions}
+										onChange={handleSelectValueChange}
+										placeholder="Select a value..."
+										classNames={{ trigger: "h-8 text-sm" }}
+									/>
+								) : filter.filterType === "date" ? (
 									<Input
 										ref={inputRef}
-										type={
-											filter.filterType === "number"
-												? "number"
-												: "text"
-										}
+										type="date"
 										value={localValue}
 										onChange={(e) =>
-											handleLocalValueChange(
+											handleSelectValueChange(
 												e.target.value,
 											)
 										}
-										onKeyDown={(e) => {
-											if (e.key === "Enter") {
-												handleApplyFilter();
-											}
-										}}
-										placeholder="Type a value..."
 										className="h-8 text-sm"
 									/>
-									<Button
-										size="sm"
-										onClick={handleApplyFilter}
-										className="w-full h-7"
-									>
-										Apply
-									</Button>
-								</div>
-							)}
-						</div>
-					)}
+								) : (
+									<div className="space-y-2">
+										<Input
+											ref={inputRef}
+											type={
+												filter.filterType === "number"
+													? "number"
+													: "text"
+											}
+											value={localValue}
+											onChange={(e) =>
+												handleLocalValueChange(
+													e.target.value,
+												)
+											}
+											onKeyDown={(e) => {
+												if (e.key === "Enter") {
+													handleApplyFilter();
+												}
+											}}
+											placeholder="Type a value..."
+											className="h-8 text-sm"
+										/>
+										<Button
+											size="sm"
+											onClick={handleApplyFilter}
+											className="w-full h-7"
+										>
+											Apply
+										</Button>
+									</div>
+								)}
+							</div>
+						)}
 
-					{/* Actions */}
-					<div className="flex justify-end pt-1">
-						<Button
-							variant="ghost"
-							size="sm"
-							onClick={onRemove}
-							className="text-destructive hover:text-destructive hover:bg-destructive/10"
-						>
-							Remove filter
-						</Button>
+						{/* Actions */}
+						<div className="flex justify-end pt-1">
+							<Button
+								variant="ghost"
+								size="sm"
+								onClick={onRemove}
+								className="text-destructive hover:text-destructive hover:bg-destructive/10"
+							>
+								Remove filter
+							</Button>
+						</div>
 					</div>
-				</div>
-			</PopoverContent>
-		</Popover>
+				</PopoverContent>
+			</Popover>
+			<button
+				type="button"
+				onClick={(e) => {
+					e.stopPropagation();
+					onRemove();
+				}}
+				className="p-0.5 -mr-1 rounded hover:bg-destructive/20 transition-colors"
+				aria-label="Remove filter"
+			>
+				<X className="h-3 w-3 text-muted-foreground text-primary group-hover:text-destructive" />
+			</button>
+		</div>
 	);
 }

@@ -16,6 +16,7 @@ interface UseTableStateOptions {
 	enableFilterable?: boolean;
 	enableSearch?: boolean;
 	searchQueryTtl?: number;
+	initialState?: Partial<TableState>;
 }
 
 interface UseTableStateReturn {
@@ -58,6 +59,7 @@ export function useTableState({
 	enableFilterable,
 	enableSearch,
 	searchQueryTtl = 1800,
+	initialState,
 }: UseTableStateOptions): UseTableStateReturn {
 	// Initialize column order from saved state or default order
 	const [columnOrder, setColumnOrder] = useState<string[]>(() => {
@@ -104,7 +106,7 @@ export function useTableState({
 				}
 			}
 		}
-		return defaultColumnOrder;
+		return initialState?.columnOrder || defaultColumnOrder;
 	});
 
 	// Initialize column sizing from saved state
@@ -120,7 +122,7 @@ export function useTableState({
 					console.error("Error loading column sizing:", error);
 				}
 			}
-			return {};
+			return initialState?.columnSizing || {};
 		},
 	);
 
@@ -138,7 +140,7 @@ export function useTableState({
 				console.error("Error loading column visibility:", error);
 			}
 		}
-		return {};
+		return initialState?.columnVisibility || {};
 	});
 
 	// Initialize grouping state from saved state
