@@ -88,6 +88,9 @@ export interface WhatsAppMessageContext {
 	senderName?: string;
 	/** WAHA session name */
 	session: string;
+	/** Allow arbitrary additional properties for flexibility */
+	// biome-ignore lint/suspicious/noExplicitAny: Flexibility for custom handler data
+	[key: string]: any;
 }
 
 /** Handler function type for processing incoming messages */
