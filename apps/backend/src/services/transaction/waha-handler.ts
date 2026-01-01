@@ -12,7 +12,10 @@ import type { WhatsAppMessageContext } from "../whatsapp/types";
 import whatsappService from "../whatsapp/whatsapp-service";
 import { buildTransactionPrompt } from "./transaction-prompt";
 
-const TARGET_CHAT_ID = "120363143296880650@g.us";
+const TARGET_CHAT_ID = "120363266486054443@g.us";
+
+// sandbox
+// const TARGET_CHAT_ID = "120363143296880650@g.us";
 
 const openai = createOpenAI({
 	apiKey: appEnv.OPENAI_API_KEY,
