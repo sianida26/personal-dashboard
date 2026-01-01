@@ -10,6 +10,22 @@ export function registerWhatsAppHandlers(): void {
 	// Register example handlers
 	// whatsappService.registerHandler("greeting", greetingHandler);
 	// whatsappService.registerHandler("help", helpHandler);
+	whatsappService.registerHandler("health-check", async (context) => {
+		appLogger.info(
+			`Health-check handler: body="${context.body}", chatId="${context.chatId}", endsWith=${context.chatId.endsWith("@c.us")}`,
+		);
+
+		// Only respond to "/test" in personal chats (not groups)
+		if (context.body === "/test" && context.chatId.endsWith("@c.us")) {
+			appLogger.info("Sending reply: I'm up");
+			const result = await whatsappService.sendText({
+				chatId: context.chatId,
+				text: "I'm up",
+				session: context.session, // Use the incoming session
+			});
+			appLogger.info(`Send result: ${JSON.stringify(result)}`);
+		}
+	});
 
 	const registeredHandlers = whatsappService.getHandlerNames();
 	appLogger.info(
