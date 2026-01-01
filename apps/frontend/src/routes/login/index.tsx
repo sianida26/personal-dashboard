@@ -9,7 +9,7 @@ const DEFAULT_LOGIN_SETTINGS = {
 	enableUsernameAndPasswordLogin: true,
 };
 
-const loginSearchSchema = z.object({
+export const loginSearchSchema = z.object({
 	redirect: z.string().optional(),
 });
 

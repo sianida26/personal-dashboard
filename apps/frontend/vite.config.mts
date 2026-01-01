@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => {
 	const env = loadEnv(mode, process.cwd(), "");
 
 	return {
+		envDir: "./",
 		plugins: [
 			tanstackRouter({
 				target: "react",

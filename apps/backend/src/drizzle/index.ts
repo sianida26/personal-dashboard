@@ -4,6 +4,12 @@ import * as appSettingsSchema from "./schema/appSettingsSchema";
 import * as jobQueueSchema from "./schema/job-queue";
 import * as kvStore from "./schema/kvStore";
 import * as microsoftAdmin from "./schema/microsoftAdmin";
+import * as moneyAccountsSchema from "./schema/moneyAccounts";
+import * as moneyBudgetsSchema from "./schema/moneyBudgets";
+import * as moneyCategoriesSchema from "./schema/moneyCategories";
+import * as moneySavingLogsSchema from "./schema/moneySavingLogs";
+import * as moneySavingsSchema from "./schema/moneySavings";
+import * as moneyTransactionsSchema from "./schema/moneyTransactions";
 import * as notificationsSchema from "./schema/notifications";
 import * as oauthGoogleSchema from "./schema/oauthGoogle";
 import * as oauthMicrosoftSchema from "./schema/oauthMicrosoft";
@@ -41,6 +47,12 @@ const db = drizzle({
 		...ujianQuestionsSchema,
 		...ujianAttemptsSchema,
 		...ujianAnswersSchema,
+		...moneyAccountsSchema,
+		...moneyCategoriesSchema,
+		...moneyTransactionsSchema,
+		...moneySavingsSchema,
+		...moneySavingLogsSchema,
+		...moneyBudgetsSchema,
 	},
 	logger: new SqlLogger(),
 });

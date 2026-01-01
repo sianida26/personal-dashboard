@@ -123,6 +123,7 @@ export function TableSettingsMenu<T>({
 								<DropdownMenuItem
 									key={column.id}
 									className="gap-2 px-2 py-1"
+									disabled={!column.getCanHide()}
 									onSelect={(e) => {
 										e.preventDefault();
 										column.toggleVisibility(false);
@@ -130,6 +131,7 @@ export function TableSettingsMenu<T>({
 								>
 									<Checkbox
 										checked={true}
+										disabled={!column.getCanHide()}
 										className="h-3.5 w-3.5"
 									/>
 									<span className="text-sm truncate flex-1">
@@ -150,6 +152,7 @@ export function TableSettingsMenu<T>({
 										<DropdownMenuItem
 											key={column.id}
 											className="gap-2 px-2 py-1"
+											disabled={!column.getCanHide()}
 											onSelect={(e) => {
 												e.preventDefault();
 												column.toggleVisibility(true);
@@ -157,6 +160,7 @@ export function TableSettingsMenu<T>({
 										>
 											<Checkbox
 												checked={false}
+												disabled={!column.getCanHide()}
 												className="h-3.5 w-3.5"
 											/>
 											<span className="text-sm truncate flex-1 text-muted-foreground">

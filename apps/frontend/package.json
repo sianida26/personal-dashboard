@@ -45,7 +45,8 @@
 		"sonner": "^2.0.7",
 		"tailwindcss-animate": "^1.0.7",
 		"uuid": "^13.0.0",
-		"vite": "^7.3.0"
+		"vite": "^7.3.0",
+		"zod": "^4.2.1"
 	},
 	"devDependencies": {
 		"@tanstack/router-devtools": "^1.141.8"

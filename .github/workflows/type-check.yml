@@ -1,12 +1,13 @@
-name: TypeScript Type Check
+name: Type Check
 
 on:
   pull_request:
     paths:
-      - "apps/backend/**"
-      - "apps/frontend/**"
+      - "apps/**"
       - "packages/**"
       - "tsconfig.json"
+      - "turbo.json"
+      - "bun.lock"
       - ".github/workflows/type-check.yml"
 
 env:
@@ -16,16 +17,9 @@ env:
 
 jobs:
   type-check:
+    name: Type Check
     runs-on: dsg-owned
-    strategy:
-      matrix:
-        include:
-          - name: Backend
-            working-directory: apps/backend
-          - name: Frontend
-            working-directory: apps/frontend
 
-    name: Type Check - ${{ matrix.name }}
     steps:
       - name: Record start time
         id: start-time
@@ -40,20 +34,19 @@ jobs:
             -d '{
               "session": "${{ env.WAHA_SESSION }}",
               "chatId": "${{ env.WAHA_CHAT_ID }}",
-              "text": "🔄 *CI/CD Started*\n\n*Job:* Type Check - ${{ matrix.name }}\n*Status:* Running\n*Action:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n*Branch:* ${{ github.head_ref }}\n*Commit:* ${{ github.sha }}\n*Author:* ${{ github.actor }}"
+              "text": "🔄 *CI/CD Started*\n\n*Repository:* ${{ github.repository }}\n*Job:* Type Check\n*Status:* Running\n*Action:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n*Branch:* ${{ github.head_ref }}\n*Commit:* ${{ github.sha }}\n*Author:* ${{ github.actor }}"
             }'
 
       - uses: actions/checkout@v4
 
       - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Type check ${{ matrix.name }}
-        run: bun run tsc --noEmit
-        working-directory: ${{ matrix.working-directory }}
+      - name: Run type check
+        run: bun run check
 
       - name: Calculate duration and send success notification
         if: success()
@@ -71,7 +64,7 @@ jobs:
             -d '{
               "session": "${{ env.WAHA_SESSION }}",
               "chatId": "${{ env.WAHA_CHAT_ID }}",
-              "text": "✅ *CI/CD Success*\n\n*Job:* Type Check - ${{ matrix.name }}\n*Status:* Success\n*Duration:* '"${MINUTES}m ${SECONDS}s"'\n*Action:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n*Branch:* ${{ github.head_ref }}\n*Commit:* ${{ github.sha }}\n*Author:* ${{ github.actor }}"
+              "text": "✅ *CI/CD Success*\n\n*Repository:* ${{ github.repository }}\n*Job:* Type Check\n*Status:* Success\n*Duration:* '"${MINUTES}m ${SECONDS}s"'\n*Action:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n*Branch:* ${{ github.head_ref }}\n*Commit:* ${{ github.sha }}\n*Author:* ${{ github.actor }}"
             }'
 
       - name: Calculate duration and send failure notification
@@ -90,5 +83,5 @@ jobs:
             -d '{
               "session": "${{ env.WAHA_SESSION }}",
               "chatId": "${{ env.WAHA_CHAT_ID }}",
-              "text": "❌ *CI/CD Failed*\n\n*Job:* Type Check - ${{ matrix.name }}\n*Status:* Failed\n*Duration:* '"${MINUTES}m ${SECONDS}s"'\n*Action:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n*Branch:* ${{ github.head_ref }}\n*Commit:* ${{ github.sha }}\n*Author:* ${{ github.actor }}"
+              "text": "❌ *CI/CD Failed*\n\n*Repository:* ${{ github.repository }}\n*Job:* Type Check\n*Status:* Failed\n*Duration:* '"${MINUTES}m ${SECONDS}s"'\n*Action:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n*Branch:* ${{ github.head_ref }}\n*Commit:* ${{ github.sha }}\n*Author:* ${{ github.actor }}"
             }'

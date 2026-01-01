@@ -49,6 +49,19 @@ const sidebarMenus: SidebarMenu[] = [
 		],
 	},
 	{
+		label: "Keuangan",
+		type: "group",
+		children: [
+			{
+				label: "Transaksi",
+				icon: { tb: "TbReceipt" },
+				allowedPermissions: ["*"],
+				link: "/transactions",
+				color: "green",
+			},
+		],
+	},
+	{
 		label: "System",
 		type: "group",
 		children: [

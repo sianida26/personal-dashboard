@@ -1,25 +1,29 @@
-import { type HTMLProps, useEffect, useRef } from "react";
+import { Checkbox } from "@repo/ui";
+import type { HTMLProps } from "react";
 
 // IndeterminateCheckbox component for row selection
+// Adapts HTML input props to @repo/ui Checkbox (Shadcn/Radix)
 export function IndeterminateCheckbox({
 	indeterminate,
 	className = "",
 	...rest
 }: { indeterminate?: boolean } & HTMLProps<HTMLInputElement>) {
-	const ref = useRef<HTMLInputElement>(null);
-
-	useEffect(() => {
-		if (typeof indeterminate === "boolean" && ref.current) {
-			ref.current.indeterminate = !rest.checked && indeterminate;
-		}
-	}, [ref, indeterminate, rest.checked]);
-
 	return (
-		<input
-			type="checkbox"
-			ref={ref}
-			className={`cursor-pointer ${className}`}
-			{...rest}
+		<Checkbox
+			className={className}
+			// Radix UI Checkbox supports 'indeterminate' state
+			checked={indeterminate ? "indeterminate" : rest.checked} // @ts-ignore - checked type mismatch is common with React Table
+			onCheckedChange={(checked) => {
+				if (rest.onChange) {
+					// Adapter to match React's ChangeEvent<HTMLInputElement> expected by React Table
+					rest.onChange({
+						target: {
+							checked: checked === true,
+						},
+					} as any);
+				}
+			}}
+			disabled={rest.disabled}
 		/>
 	);
 }

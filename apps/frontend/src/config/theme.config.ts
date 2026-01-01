@@ -13,15 +13,20 @@ export const DEFAULT_THEME_CONFIG = {
 	/**
 	 * Default theme mode
 	 * Options: "light" | "dark" | "system"
+	 * themeMode: "light" as ThemeMode,
 	 */
-	themeMode: "light" as ThemeMode,
+	themeMode:
+		(import.meta.env.VITE_THEME_MODE as ThemeMode) ||
+		("light" as ThemeMode) /* 
 
 	/**
 	 * Default color scheme
 	 * Options: "default" | "blue" | "purple" | "green" | "orange" | "red" |
 	 *          "pink" | "teal" | "yellow" | "cyan" | "indigo" | "rose" | "navy"
-	 */
-	colorScheme: "default" as ColorScheme,
+	 */,
+	colorScheme:
+		(import.meta.env.VITE_COLOR_SCHEME as ColorScheme) ||
+		("default" as ColorScheme),
 } as const;
 
 /**

@@ -8,6 +8,7 @@ import type { FilterState } from "./AdaptiveTable/filterEngine";
 import type {
 	AdaptiveColumnDef,
 	AdaptiveTableProps,
+	TableState,
 } from "./AdaptiveTable/types";
 import { loadTableState } from "./AdaptiveTable/utils";
 
@@ -82,6 +83,11 @@ export interface ServerDataTableProps<T>
 	/** Custom fetch function (defaults to built-in fetcher) */
 	// biome-ignore lint/suspicious/noExplicitAny: Allow any fetch function signature
 	fetchFn?: (promise: Promise<ClientResponse<any>>) => Promise<any>;
+	/**
+	 * Initial state of the table (if not loaded from storage)
+	 * Useful for setting default filters, visibility, etc.
+	 */
+	initialState?: Partial<TableState>;
 }
 
 // Default fetchRPC implementation
@@ -136,28 +142,31 @@ export function ServerDataTable<T>({
 	sortable = true,
 	filterable = true,
 	search = true,
+	initialState,
 	...tableProps
 }: ServerDataTableProps<T>) {
 	// Initialize state from localStorage if saveState is provided
-	const initialState = saveState ? loadTableState(saveState) : null;
+	const persistedState = saveState ? loadTableState(saveState) : null;
 
 	// Pagination state
 	const [page, setPage] = useState(1);
-	const [perPage, setPerPage] = useState(() => initialState?.perPage ?? 10);
+	const [perPage, setPerPage] = useState(
+		() => persistedState?.perPage ?? initialState?.perPage ?? 10,
+	);
 
 	// Sorting state
 	const [sorting, setSorting] = useState<SortingState>(
-		() => initialState?.sorting ?? [],
+		() => persistedState?.sorting ?? initialState?.sorting ?? [],
 	);
 
 	// Filter state
 	const [filters, setFilters] = useState<FilterState>(
-		() => initialState?.filters ?? [],
+		() => persistedState?.filters ?? initialState?.filters ?? [],
 	);
 
 	// Search state
 	const [searchQuery, setSearchQuery] = useState(
-		() => initialState?.searchQuery ?? "",
+		() => persistedState?.searchQuery ?? initialState?.searchQuery ?? "",
 	);
 
 	// Build query parameters for API
@@ -172,18 +181,28 @@ export function ServerDataTable<T>({
 			params.q = searchQuery;
 		}
 
-		// Add sorting parameters (format: "column:asc" or "column:desc")
+
+		// Add sorting parameters
 		if (sorting.length > 0) {
-			params.sort = sorting
-				.map((s) => `${s.id}:${s.desc ? "desc" : "asc"}`)
-				.join(",");
+			params.sort = JSON.stringify(sorting);
 		}
 
-		// Add filter parameters (format: "column:value")
+		// Add filter parameters as JSON string
 		if (filters.length > 0) {
-			params.filter = filters
-				.map((f) => `${f.columnId}:${f.value}`)
-				.join(",");
+			// Ensure value is defined and filter out empty values unless it is boolean false or number 0
+			const validFilters = filters
+				.filter(
+					(f) =>
+						f.value !== undefined && f.value !== null && f.value !== "",
+				)
+				.map((f) => ({
+					id: f.columnId,
+					value: String(f.value),
+				}));
+
+			if (validFilters.length > 0) {
+				params.filter = JSON.stringify(validFilters);
+			}
 		}
 
 		// Add any additional params
@@ -270,6 +289,7 @@ export function ServerDataTable<T>({
 			// Server-side search
 			search={search}
 			onSearchChange={handleSearchChange}
+			initialState={initialState}
 			// Loading states
 			isLoading={isLoading}
 			isRevalidating={isFetching && !isLoading}

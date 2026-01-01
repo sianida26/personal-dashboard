@@ -105,6 +105,11 @@ export type AdaptiveTableProps<T> = {
 	/** Unique key to save/load table state to localStorage */
 	saveState?: string;
 	/**
+	 * Initial state of the table (if not loaded from storage)
+	 * Useful for setting default filters, visibility, etc.
+	 */
+	initialState?: Partial<TableState>;
+	/**
 	 * Enable column sorting
 	 * @default true
 	 */

@@ -1,4 +1,5 @@
 import appSettingsSeeder from "./seeds/appSettingsSeed";
+import moneyCategoriesSeeder from "./seeds/moneyCategoriesSeeder";
 import notificationPreferencesSeeder from "./seeds/notificationPreferences";
 import notificationsSeeder from "./seeds/notifications";
 import permissionSeeder from "./seeds/permissionSeeder";
@@ -15,6 +16,7 @@ const seeder = async () => {
 	await notificationsSeeder();
 	await notificationPreferencesSeeder();
 	await ujianSeeder();
+	await moneyCategoriesSeeder();
 	console.timeEnd("Done seeding");
 };
 
