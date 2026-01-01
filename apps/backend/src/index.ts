@@ -11,6 +11,7 @@ import microsoftAdminRouter from "./routes/auth/microsoft/admin";
 import authRouter from "./routes/auth/route";
 import dashboardRoutes from "./routes/dashboard/routes";
 import devRoutes from "./routes/dev/route";
+import moneyRoute from "./routes/money/route";
 import notificationPreferencesRoute from "./routes/notificationPreferences/route";
 import notificationsRoute from "./routes/notifications/route";
 import permissionRoutes from "./routes/permissions/route";
@@ -57,6 +58,7 @@ export const appRoutes = app
 	.route("/dashboard", dashboardRoutes)
 	.route("/roles", rolesRoute)
 	.route("/ujian", ujianRoute)
+	.route("/money", moneyRoute)
 	.route("/dev", devRoutes)
 	.route("/app-settings", appSettingsRoutes)
 	.route("/notifications", notificationsRoute)
