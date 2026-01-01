@@ -243,8 +243,8 @@ export async function transactionWahaHandler(
 		// Get or create default account
 		const accountId = await getOrCreateDefaultAccount(userId);
 
-		// Convert Unix timestamp (seconds) to Date for the transaction date
-		const transactionDate = new Date(context.timestamp * 1000);
+		// Use current server time for transaction date
+		const transactionDate = new Date();
 
 		// Store transactions in database and track results
 		const storedTransactions: StoredTransaction[] = [];

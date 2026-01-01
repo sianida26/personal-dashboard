@@ -42,13 +42,6 @@ const putTransactionRoute = createHonoRoute()
 				notFound({ message: "Transaction not found" });
 			}
 
-			// Only allow updating manual transactions
-			if (existingTransaction?.source !== "manual") {
-				badRequest({
-					message: "Only manual transactions can be updated",
-				});
-			}
-
 			// Validate category if provided
 			if (data.categoryId !== undefined && data.categoryId !== null) {
 				const category = await db.query.moneyCategories.findFirst({
