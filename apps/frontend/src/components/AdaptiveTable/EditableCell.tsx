@@ -27,7 +27,12 @@ const EditableCellComponent = <T,>({
 
 	const handleSave = () => {
 		if (columnDef.onEdited) {
-			columnDef.onEdited(rowIndex, cell.column.id, editValue);
+			columnDef.onEdited(
+				rowIndex,
+				cell.column.id,
+				editValue,
+				cell.row.original,
+			);
 		}
 		setIsEditing(false);
 	};
@@ -44,7 +49,12 @@ const EditableCellComponent = <T,>({
 	const handleSelectOption = (optionValue: string | number) => {
 		setEditValue(optionValue);
 		if (columnDef.onEdited) {
-			columnDef.onEdited(rowIndex, cell.column.id, optionValue);
+			columnDef.onEdited(
+				rowIndex,
+				cell.column.id,
+				optionValue,
+				cell.row.original,
+			);
 		}
 		setIsEditing(false);
 	};
@@ -80,6 +90,10 @@ const EditableCellComponent = <T,>({
 
 	// For select type, use Popover with menu
 	if (columnDef.editType === "select") {
+		// If there's a custom cell renderer, use it for display when not editing
+		const hasCustomCell =
+			columnDef.cell && typeof columnDef.cell === "function";
+
 		return (
 			<Popover open={isEditing} onOpenChange={setIsEditing}>
 				<PopoverTrigger asChild>
@@ -91,21 +105,27 @@ const EditableCellComponent = <T,>({
 						}}
 						className="cursor-pointer hover:bg-accent/50 py-1 flex items-center justify-between w-full text-left group"
 					>
-						<Badge
-							variant="secondary"
-							className={`text-sm flex justify-between item-start gap-2 w-full ${columnDef.cellClassName || ""}`}
-							style={
-								cellColor
-									? {
-											backgroundColor: cellColor,
-											color: "white",
-										}
-									: undefined
-							}
-						>
-							<span className="clamp-1">{displayValue}</span>
-							<ChevronDown className="h-3 w-3 opacity-50 group-hover:opacity-100 transition-opacity" />
-						</Badge>
+						{hasCustomCell ? (
+							<div className="w-full">
+								{flexRender(columnDef.cell, cell.getContext())}
+							</div>
+						) : (
+							<Badge
+								variant="secondary"
+								className={`text-sm flex justify-between item-start gap-2 w-full ${columnDef.cellClassName || ""}`}
+								style={
+									cellColor
+										? {
+												backgroundColor: cellColor,
+												color: "white",
+											}
+										: undefined
+								}
+							>
+								<span className="clamp-1">{displayValue}</span>
+								<ChevronDown className="h-3 w-3 opacity-50 group-hover:opacity-100 transition-opacity" />
+							</Badge>
+						)}
 					</button>
 				</PopoverTrigger>
 				<PopoverContent

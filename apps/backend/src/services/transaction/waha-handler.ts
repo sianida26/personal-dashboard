@@ -177,6 +177,20 @@ export async function transactionWahaHandler(
 			`[Transaction] Message received from ${TARGET_CHAT_ID}: ${context.body}`,
 		);
 
+		// Check if this message has already been processed
+		const existingTransaction = await db
+			.select({ id: moneyTransactions.id })
+			.from(moneyTransactions)
+			.where(eq(moneyTransactions.waMessageId, context.messageId))
+			.limit(1);
+
+		if (existingTransaction.length > 0) {
+			appLogger.info(
+				`[Transaction] Message ${context.messageId} already processed, skipping`,
+			);
+			return;
+		}
+
 		// Get user ID from username
 		const userId = await getUserIdByUsername("superadmin");
 		if (!userId) {

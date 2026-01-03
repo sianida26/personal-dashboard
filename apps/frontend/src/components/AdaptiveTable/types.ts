@@ -6,7 +6,12 @@ export type AdaptiveColumnDef<T> = ColumnDef<T> & {
 	/** Enable inline editing for this column */
 	editable?: boolean;
 	/** Callback when cell value is edited */
-	onEdited?: (rowIndex: number, columnId: string, value: unknown) => void;
+	onEdited?: (
+		rowIndex: number,
+		columnId: string,
+		value: unknown,
+		rowData?: T,
+	) => void;
 	/**
 	 * Type of editor to use for inline editing
 	 * @default "text"

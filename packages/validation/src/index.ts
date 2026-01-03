@@ -1,5 +1,6 @@
 export * from "./appSettings";
 export * from "./schemas/authSchema";
+export * from "./schemas/moneyAnalyticsSchema";
 export * from "./schemas/moneyTrackerSchema";
 export * from "./schemas/notifications";
 export * from "./schemas/observabilitySchema";

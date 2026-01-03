@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import type HonoEnv from "../../types/HonoEnv";
 import deleteCategoryRoute from "./delete-category";
 import deleteTransactionRoute from "./delete-transaction";
+import getAnalyticsRoute from "./get-analytics";
 import getCategoriesRoute from "./get-categories";
 import getCategoriesTreeRoute from "./get-categories-tree";
 import getTransactionByIdRoute from "./get-transaction-by-id";
@@ -13,6 +14,8 @@ import putCategoryRoute from "./put-category";
 import putTransactionRoute from "./put-transaction";
 
 const moneyRoute = new Hono<HonoEnv>()
+	// Analytics routes
+	.route("/analytics", getAnalyticsRoute)
 	// Category routes
 	.route("/categories", getCategoriesTreeRoute) // Must come before getCategoriesRoute due to /tree path
 	.route("/categories", getCategoriesRoute)

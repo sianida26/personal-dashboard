@@ -1,4 +1,5 @@
 import { Badge, Button, Card } from "@repo/ui";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
 	createLazyFileRoute,
 	Link,
@@ -6,10 +7,12 @@ import {
 	useNavigate,
 } from "@tanstack/react-router";
 import { useMemo } from "react";
-import { TbPencil, TbPlus, TbTrash } from "react-icons/tb";
+import { TbChartBar, TbPencil, TbPlus, TbTrash } from "react-icons/tb";
+import { toast } from "sonner";
 import type { AdaptiveColumnDef } from "@/components/AdaptiveTable";
 import ServerDataTable from "@/components/ServerDataTable";
 import client from "@/honoClient";
+import fetchRPC from "@/utils/fetchRPC";
 
 export const Route = createLazyFileRoute("/_dashboardLayout/transactions")({
 	component: TransactionsPage,
@@ -57,6 +60,66 @@ interface Transaction {
 
 export default function TransactionsPage() {
 	const navigate = useNavigate();
+	const queryClient = useQueryClient();
+
+	// Fetch categories
+	const { data: categoriesResponse } = useQuery({
+		queryKey: ["categories"],
+		queryFn: async () => {
+			const res = await fetchRPC(
+				client.money.categories.$get({
+					query: {},
+				}),
+			);
+			return res;
+		},
+	});
+
+	// Fetch accounts
+	const { data: accountsResponse } = useQuery({
+		queryKey: ["accounts"],
+		queryFn: async () => {
+			const res = await fetchRPC(
+				client.money.accounts.$get({
+					query: {},
+				}),
+			);
+			return res;
+		},
+	});
+
+	const categories = categoriesResponse?.data ?? [];
+	const accounts = accountsResponse?.data ?? [];
+
+	// Handler untuk update transaksi
+	const handleUpdateTransaction = async (
+		transactionId: string,
+		field: string,
+		value: unknown,
+	) => {
+		try {
+			// Prepare update payload
+			const payload: Record<string, unknown> = {
+				[field]: value,
+			};
+
+			// Update transaction via API
+			await fetchRPC(
+				client.money.transactions[":id"].$put({
+					param: { id: transactionId },
+					json: payload as never,
+				}),
+			);
+
+			// Invalidate queries to refetch data
+			queryClient.invalidateQueries({ queryKey: ["transactions"] });
+
+			toast.success("Transaksi berhasil diperbarui");
+		} catch (error) {
+			console.error("Failed to update transaction:", error);
+			toast.error("Gagal memperbarui transaksi");
+		}
+	};
 
 	// Column definitions
 	const columns = useMemo<AdaptiveColumnDef<Transaction>[]>(
@@ -135,6 +198,17 @@ export default function TransactionsPage() {
 				sortable: true,
 				size: 200,
 				minSize: 150,
+				editable: true,
+				editType: "text",
+				onEdited: (_rowIndex, _columnId, value, rowData) => {
+					if (rowData) {
+						handleUpdateTransaction(
+							rowData.id,
+							"description",
+							value,
+						);
+					}
+				},
 			},
 			{
 				id: "category",
@@ -155,6 +229,39 @@ export default function TransactionsPage() {
 				enableSorting: false,
 				size: 150,
 				minSize: 120,
+				editable: true,
+				editType: "select",
+				accessorFn: (row) => row.category?.id,
+				options: categories.map(
+					(cat: {
+						id: string;
+						name: string;
+						icon: string | null;
+					}) => ({
+						label: cat.name,
+						value: cat.id,
+					}),
+				),
+				customOptionComponent: (option) => {
+					const category = categories.find(
+						(c: { id: string }) => c.id === option.value,
+					);
+					return (
+						<div className="flex items-center gap-2">
+							{category?.icon && <span>{category.icon}</span>}
+							<span>{option.label}</span>
+						</div>
+					);
+				},
+				onEdited: (_rowIndex, _columnId, value, rowData) => {
+					if (rowData) {
+						handleUpdateTransaction(
+							rowData.id,
+							"categoryId",
+							value,
+						);
+					}
+				},
 			},
 			{
 				accessorKey: "amount",
@@ -190,6 +297,18 @@ export default function TransactionsPage() {
 				enableSorting: false,
 				size: 130,
 				minSize: 100,
+				editable: true,
+				editType: "select",
+				accessorFn: (row) => row.account?.id,
+				options: accounts.map((acc: { id: string; name: string }) => ({
+					label: acc.name,
+					value: acc.id,
+				})),
+				onEdited: (_rowIndex, _columnId, value, rowData) => {
+					if (rowData) {
+						handleUpdateTransaction(rowData.id, "accountId", value);
+					}
+				},
 			},
 			{
 				accessorKey: "source",
@@ -250,7 +369,7 @@ export default function TransactionsPage() {
 				),
 			},
 		],
-		[navigate],
+		[navigate, categories, accounts, queryClient],
 	);
 
 	return (
@@ -269,11 +388,21 @@ export default function TransactionsPage() {
 						sorting: [{ id: "date", desc: true }],
 					}}
 					headerActions={
-						<Link to="/transactions/create">
-							<Button leftSection={<TbPlus />}>
-								Tambah Transaksi
-							</Button>
-						</Link>
+						<div className="flex gap-2">
+							<Link to="/transactions/analytics">
+								<Button
+									variant="outline"
+									leftSection={<TbChartBar />}
+								>
+									Analisis
+								</Button>
+							</Link>
+							<Link to="/transactions/create">
+								<Button leftSection={<TbPlus />}>
+									Tambah Transaksi
+								</Button>
+							</Link>
+						</div>
 					}
 					columnOrderable
 					columnResizable

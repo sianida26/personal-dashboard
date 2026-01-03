@@ -27,6 +27,7 @@ import { Route as DashboardLayoutDashboardIndexRouteImport } from './routes/_das
 import { Route as DashboardLayoutUsersCreateRouteImport } from './routes/_dashboardLayout/users/create'
 import { Route as DashboardLayoutUjianCreateRouteImport } from './routes/_dashboardLayout/ujian.create'
 import { Route as DashboardLayoutTransactionsCreateRouteImport } from './routes/_dashboardLayout/transactions/create'
+import { Route as DashboardLayoutTransactionsAnalyticsRouteImport } from './routes/_dashboardLayout/transactions/analytics'
 import { Route as DashboardLayoutRolesCreateRouteImport } from './routes/_dashboardLayout/roles/create'
 import { Route as DashboardLayoutPersonalNotificationsRouteImport } from './routes/_dashboardLayout/personal/notifications'
 import { Route as DashboardLayoutUsersEditUserIdRouteImport } from './routes/_dashboardLayout/users/edit.$userId'
@@ -237,6 +238,16 @@ const DashboardLayoutTransactionsCreateRoute =
     path: '/create',
     getParentRoute: () => DashboardLayoutTransactionsRoute,
   } as any)
+const DashboardLayoutTransactionsAnalyticsRoute =
+  DashboardLayoutTransactionsAnalyticsRouteImport.update({
+    id: '/analytics',
+    path: '/analytics',
+    getParentRoute: () => DashboardLayoutTransactionsRoute,
+  } as any).lazy(() =>
+    import('./routes/_dashboardLayout/transactions/analytics.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 const DashboardLayoutRolesCreateRoute =
   DashboardLayoutRolesCreateRouteImport.update({
     id: '/roles/create',
@@ -345,6 +356,7 @@ export interface FileRoutesByFullPath {
   '/logout': typeof LogoutIndexLazyRoute
   '/personal/notifications': typeof DashboardLayoutPersonalNotificationsRoute
   '/roles/create': typeof DashboardLayoutRolesCreateRoute
+  '/transactions/analytics': typeof DashboardLayoutTransactionsAnalyticsRoute
   '/transactions/create': typeof DashboardLayoutTransactionsCreateRoute
   '/ujian/create': typeof DashboardLayoutUjianCreateRoute
   '/users/create': typeof DashboardLayoutUsersCreateRoute
@@ -383,6 +395,7 @@ export interface FileRoutesByTo {
   '/logout': typeof LogoutIndexLazyRoute
   '/personal/notifications': typeof DashboardLayoutPersonalNotificationsRoute
   '/roles/create': typeof DashboardLayoutRolesCreateRoute
+  '/transactions/analytics': typeof DashboardLayoutTransactionsAnalyticsRoute
   '/transactions/create': typeof DashboardLayoutTransactionsCreateRoute
   '/ujian/create': typeof DashboardLayoutUjianCreateRoute
   '/users/create': typeof DashboardLayoutUsersCreateRoute
@@ -424,6 +437,7 @@ export interface FileRoutesById {
   '/logout/': typeof LogoutIndexLazyRoute
   '/_dashboardLayout/personal/notifications': typeof DashboardLayoutPersonalNotificationsRoute
   '/_dashboardLayout/roles/create': typeof DashboardLayoutRolesCreateRoute
+  '/_dashboardLayout/transactions/analytics': typeof DashboardLayoutTransactionsAnalyticsRoute
   '/_dashboardLayout/transactions/create': typeof DashboardLayoutTransactionsCreateRoute
   '/_dashboardLayout/ujian/create': typeof DashboardLayoutUjianCreateRoute
   '/_dashboardLayout/users/create': typeof DashboardLayoutUsersCreateRoute
@@ -465,6 +479,7 @@ export interface FileRouteTypes {
     | '/logout'
     | '/personal/notifications'
     | '/roles/create'
+    | '/transactions/analytics'
     | '/transactions/create'
     | '/ujian/create'
     | '/users/create'
@@ -503,6 +518,7 @@ export interface FileRouteTypes {
     | '/logout'
     | '/personal/notifications'
     | '/roles/create'
+    | '/transactions/analytics'
     | '/transactions/create'
     | '/ujian/create'
     | '/users/create'
@@ -543,6 +559,7 @@ export interface FileRouteTypes {
     | '/logout/'
     | '/_dashboardLayout/personal/notifications'
     | '/_dashboardLayout/roles/create'
+    | '/_dashboardLayout/transactions/analytics'
     | '/_dashboardLayout/transactions/create'
     | '/_dashboardLayout/ujian/create'
     | '/_dashboardLayout/users/create'
@@ -755,6 +772,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutTransactionsCreateRouteImport
       parentRoute: typeof DashboardLayoutTransactionsRoute
     }
+    '/_dashboardLayout/transactions/analytics': {
+      id: '/_dashboardLayout/transactions/analytics'
+      path: '/analytics'
+      fullPath: '/transactions/analytics'
+      preLoaderRoute: typeof DashboardLayoutTransactionsAnalyticsRouteImport
+      parentRoute: typeof DashboardLayoutTransactionsRoute
+    }
     '/_dashboardLayout/roles/create': {
       id: '/_dashboardLayout/roles/create'
       path: '/roles/create'
@@ -850,6 +874,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface DashboardLayoutTransactionsRouteChildren {
+  DashboardLayoutTransactionsAnalyticsRoute: typeof DashboardLayoutTransactionsAnalyticsRoute
   DashboardLayoutTransactionsCreateRoute: typeof DashboardLayoutTransactionsCreateRoute
   DashboardLayoutTransactionsDeleteTransactionIdRoute: typeof DashboardLayoutTransactionsDeleteTransactionIdRoute
   DashboardLayoutTransactionsEditTransactionIdRoute: typeof DashboardLayoutTransactionsEditTransactionIdRoute
@@ -857,6 +882,8 @@ interface DashboardLayoutTransactionsRouteChildren {
 
 const DashboardLayoutTransactionsRouteChildren: DashboardLayoutTransactionsRouteChildren =
   {
+    DashboardLayoutTransactionsAnalyticsRoute:
+      DashboardLayoutTransactionsAnalyticsRoute,
     DashboardLayoutTransactionsCreateRoute:
       DashboardLayoutTransactionsCreateRoute,
     DashboardLayoutTransactionsDeleteTransactionIdRoute:
