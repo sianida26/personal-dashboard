@@ -127,7 +127,7 @@ export const TableHeaderCell = <T,>({
 					colSpan={header.colSpan}
 					ref={sortableHook?.setNodeRef}
 					style={style}
-					className={`border-b relative p-1 hover:bg-muted/50 transition-colors ${draggable && !isActionsColumn && isOrderable && !isResizing ? "cursor-grab active:cursor-grabbing" : ""}`}
+					className={`border-b relative p-1 hover:bg-muted/50 transition-colors ${draggable && !isActionsColumn && isOrderable && !isResizing ? "cursor-grab active:cursor-grabbing" : ""} ${isSortable ? "cursor-pointer" : ""}`}
 					{...(draggable &&
 					!isActionsColumn &&
 					isOrderable &&
@@ -138,6 +138,32 @@ export const TableHeaderCell = <T,>({
 								...sortableHook.listeners,
 							}
 						: {})}
+					onClick={(e) => {
+						// Handle sorting on click if sortable
+						if (isSortable) {
+							// Don't trigger if clicking on resize handle
+							const target = e.target as HTMLElement;
+							const isResizeHandle = target.closest(
+								'[aria-label="Resize column"]',
+							);
+							if (isResizeHandle) return;
+
+							// Prevent default drag behavior during sort click
+							e.stopPropagation();
+
+							// Cycle through: no sort → asc → desc → no sort
+							if (!sortedState) {
+								// No sort → ascending
+								header.column.toggleSorting(false);
+							} else if (sortedState === "asc") {
+								// Ascending → descending
+								header.column.toggleSorting(true);
+							} else {
+								// Descending → no sort (reset)
+								header.column.clearSorting();
+							}
+						}
+					}}
 				>
 					<div className="flex items-center text-sm font-semibold leading-normal">
 						{header.isPlaceholder
