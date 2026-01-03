@@ -1,0 +1,1 @@
+ALTER TABLE "money_transactions" ALTER COLUMN "date" SET DATA TYPE timestamp;

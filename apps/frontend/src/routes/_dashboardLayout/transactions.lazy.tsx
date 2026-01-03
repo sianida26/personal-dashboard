@@ -140,15 +140,17 @@ export default function TransactionsPage() {
 				header: "Tanggal",
 				cell: (info) => {
 					const date = info.getValue() as string;
-					return new Date(date).toLocaleDateString("id-ID", {
+					return new Date(date).toLocaleString("id-ID", {
 						year: "numeric",
 						month: "short",
 						day: "numeric",
+						hour: "2-digit",
+						minute: "2-digit",
 					});
 				},
 				sortable: true,
-				size: 130,
-				minSize: 110,
+				size: 160,
+				minSize: 140,
 			},
 			{
 				accessorKey: "type",

@@ -148,6 +148,13 @@
       "when": 1767286677200,
       "tag": "0020_brave_dragon_lord",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1767463635079,
+      "tag": "0021_strange_jean_grey",
+      "breakpoints": true
     }
   ]
 }

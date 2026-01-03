@@ -1,7 +1,6 @@
 import { createId } from "@paralleldrive/cuid2";
 import { relations } from "drizzle-orm";
 import {
-	date,
 	index,
 	jsonb,
 	numeric,
@@ -43,7 +42,7 @@ export const moneyTransactions = pgTable(
 		type: transactionTypeEnum("type").notNull(),
 		amount: numeric("amount", { precision: 15, scale: 2 }).notNull(),
 		description: text("description"),
-		date: date("date", { mode: "date" }).notNull(),
+		date: timestamp("date", { mode: "date" }).notNull(),
 		toAccountId: text("to_account_id").references(() => moneyAccounts.id, {
 			onDelete: "set null",
 		}),

@@ -16,6 +16,7 @@ const EditableCellComponent = <T,>({
 	const columnDef = cell.column.columnDef as AdaptiveColumnDef<T>;
 	const [isEditing, setIsEditing] = useState(false);
 	const [editValue, setEditValue] = useState(cell.getValue());
+	const [searchQuery, setSearchQuery] = useState("");
 
 	// Get the current cell value directly (not from state)
 	const currentValue = cell.getValue();
@@ -24,6 +25,13 @@ const EditableCellComponent = <T,>({
 	useEffect(() => {
 		setEditValue(currentValue);
 	}, [currentValue]);
+
+	// Reset search query when popover closes
+	useEffect(() => {
+		if (!isEditing) {
+			setSearchQuery("");
+		}
+	}, [isEditing]);
 
 	const handleSave = () => {
 		if (columnDef.onEdited) {
@@ -129,38 +137,78 @@ const EditableCellComponent = <T,>({
 					</button>
 				</PopoverTrigger>
 				<PopoverContent
-					className="w-auto min-w-[120px] p-0.5"
+					className="w-auto min-w-[200px] p-2"
 					align="start"
 				>
-					<div className="flex flex-col gap-0.5">
-						{columnDef.options?.map((option) => (
-							<button
-								key={option.value}
-								type="button"
-								onClick={() => handleSelectOption(option.value)}
-								className="text-left px-2 py-1 hover:bg-accent rounded-sm text-sm transition-colors"
-							>
-								{columnDef.customOptionComponent ? (
-									columnDef.customOptionComponent(option)
-								) : (
-									<Badge
-										variant="secondary"
-										className="text-sm"
-										style={
-											option.color
-												? {
-														backgroundColor:
-															option.color,
-														color: "white",
-													}
-												: undefined
+					<div className="flex flex-col gap-2">
+						{/* Search input */}
+						{columnDef.options && columnDef.options.length > 5 && (
+							<input
+								type="text"
+								placeholder="Cari..."
+								value={searchQuery}
+								onChange={(e) => setSearchQuery(e.target.value)}
+								onClick={(e) => e.stopPropagation()}
+								className="w-full px-2 py-1.5 text-sm border rounded-md outline-none focus:ring-2 focus:ring-primary"
+							/>
+						)}
+
+						{/* Scrollable options container */}
+						<div className="flex flex-col gap-0.5 max-h-[300px] overflow-y-auto">
+							{columnDef.options
+								?.filter((option) =>
+									searchQuery
+										? option.label
+												.toLowerCase()
+												.includes(
+													searchQuery.toLowerCase(),
+												)
+										: true,
+								)
+								.map((option) => (
+									<button
+										key={option.value}
+										type="button"
+										onClick={() =>
+											handleSelectOption(option.value)
 										}
+										className="text-left px-2 py-1 hover:bg-accent rounded-sm text-sm transition-colors"
 									>
-										{option.label}
-									</Badge>
-								)}
-							</button>
-						))}
+										{columnDef.customOptionComponent ? (
+											columnDef.customOptionComponent(
+												option,
+											)
+										) : (
+											<Badge
+												variant="secondary"
+												className="text-sm"
+												style={
+													option.color
+														? {
+																backgroundColor:
+																	option.color,
+																color: "white",
+															}
+														: undefined
+												}
+											>
+												{option.label}
+											</Badge>
+										)}
+									</button>
+								))}
+							{columnDef.options?.filter((option) =>
+								searchQuery
+									? option.label
+											.toLowerCase()
+											.includes(searchQuery.toLowerCase())
+									: true,
+							).length === 0 && (
+								<div className="text-sm text-gray-500 text-center py-2">
+									Tidak ada hasil
+								</div>
+							)}
+						</div>
 					</div>
 				</PopoverContent>
 			</Popover>

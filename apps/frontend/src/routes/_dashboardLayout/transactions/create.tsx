@@ -177,11 +177,11 @@ function RouteComponent() {
 					<Label htmlFor="date">Tanggal</Label>
 					<Input
 						id="date"
-						type="date"
+						type="datetime-local"
 						value={
 							form.values.date instanceof Date
-								? form.values.date.toISOString().split("T")[0]
-								: new Date().toISOString().split("T")[0]
+								? form.values.date.toISOString().slice(0, 16)
+								: new Date().toISOString().slice(0, 16)
 						}
 						onChange={(e) =>
 							form.setFieldValue("date", new Date(e.target.value))
