@@ -56,6 +56,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	const pagination = props.pagination ?? false;
 	const paginationType = props.paginationType ?? "client";
 	const loading = props.isLoading ?? props.loading ?? false;
+	const sequenceNumbering = props.sequenceNumbering ?? false;
 	const rowSelectable = props.rowSelectable ?? false;
 	const sortable = props.sortable ?? true;
 	const rowVirtualization = props.rowVirtualization ?? true;
@@ -121,10 +122,10 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 				? ({ table }) => (
 						<div className="pl-4">
 							<IndeterminateCheckbox
-							checked={table.getIsAllRowsSelected()}
-							indeterminate={table.getIsSomeRowsSelected()}
-							onChange={table.getToggleAllRowsSelectedHandler()}
-						/>
+								checked={table.getIsAllRowsSelected()}
+								indeterminate={table.getIsSomeRowsSelected()}
+								onChange={table.getToggleAllRowsSelectedHandler()}
+							/>
 						</div>
 					)
 				: "",
@@ -490,6 +491,59 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 		onSortingChange: props.onSortingChange,
 	});
 
+	// Add sequence numbering column if enabled
+	const columnsWithSequence = useMemo(() => {
+		if (!sequenceNumbering) return columnsWithDetail;
+
+		const sequenceColumn: AdaptiveColumnDef<T> = {
+			id: "_sequence",
+			header: "#",
+			cell: ({ row }) => {
+				// Calculate the sequence number based on pagination
+				let sequenceNumber = row.index + 1;
+				if (
+					pagination &&
+					paginationType === "server" &&
+					props.currentPage
+				) {
+					sequenceNumber =
+						(props.currentPage - 1) * perPage + row.index + 1;
+				} else if (pagination && paginationType === "client") {
+					sequenceNumber =
+						(currentPage - 1) * perPage + row.index + 1;
+				}
+				return (
+					<div className="text-center text-muted-foreground">
+						{sequenceNumber}
+					</div>
+				);
+			},
+			size: 50,
+			minSize: 40,
+			enableResizing: false,
+			enableHiding: false,
+			enableSorting: false,
+			// Column-level overrides
+			orderable: false,
+			resizable: false,
+			visibilityToggle: false,
+		};
+
+		// Insert sequence column at the beginning
+		return [sequenceColumn, ...columnsWithDetail];
+	}, [
+		sequenceNumbering,
+		columnsWithDetail,
+		pagination,
+		paginationType,
+		props.currentPage,
+		perPage,
+		currentPage,
+	]);
+
+	// Final columns for rendering
+	const finalColumns = columnsWithSequence;
+
 	// Determine which data to use
 	// When grouped (client-side), always use full data regardless of pagination
 	const tableData = useMemo(() => {
@@ -507,7 +561,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 
 	const table = useReactTable({
 		data: tableData,
-		columns: columnsWithDetail,
+		columns: finalColumns,
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		// Generate unique row IDs based on data content to ensure proper re-rendering
@@ -516,10 +570,15 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 			// Try to use a unique identifier from the row data, fallback to stringified content + index
 			const row = originalRow as Record<string, unknown>;
 			// Include updatedAt in the ID to force re-render when data changes
-			const updatedSuffix = row.updatedAt ? `-${String(row.updatedAt)}` : "";
-			if (row.id !== undefined) return `${String(row.id)}${updatedSuffix}`;
-			if (row._id !== undefined) return `${String(row._id)}${updatedSuffix}`;
-			if (row.key !== undefined) return `${String(row.key)}${updatedSuffix}`;
+			const updatedSuffix = row.updatedAt
+				? `-${String(row.updatedAt)}`
+				: "";
+			if (row.id !== undefined)
+				return `${String(row.id)}${updatedSuffix}`;
+			if (row._id !== undefined)
+				return `${String(row._id)}${updatedSuffix}`;
+			if (row.key !== undefined)
+				return `${String(row.key)}${updatedSuffix}`;
 			// Fallback: use first few values + index to create a unique-ish ID
 			const values = Object.values(row).slice(0, 3).join("-");
 			return `${values}-${index}`;

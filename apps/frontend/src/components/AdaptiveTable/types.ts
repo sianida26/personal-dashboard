@@ -204,6 +204,11 @@ export type AdaptiveTableProps<T> = {
 	 */
 	revalidatingText?: string;
 	/**
+	 * Enable sequence numbering column (#)
+	 * @default false
+	 */
+	sequenceNumbering?: boolean;
+	/**
 	 * Enable row selection with checkboxes
 	 * @default false
 	 */
