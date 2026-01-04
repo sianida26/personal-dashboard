@@ -7,7 +7,7 @@ import {
 	notifications,
 } from "../../src/drizzle/schema/notifications";
 import { users } from "../../src/drizzle/schema/users";
-import createNotificationRepository from "../../src/modules/notifications/notification-repository";
+import createNotificationRepository from "../../src/services/notifications/notification-repository";
 
 const repository = createNotificationRepository();
 

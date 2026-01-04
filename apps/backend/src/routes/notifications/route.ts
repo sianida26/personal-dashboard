@@ -9,7 +9,7 @@ import { Hono } from "hono";
 import { z } from "zod";
 import { forbidden, unauthorized } from "../../errors/DashboardError";
 import authInfo from "../../middlewares/authInfo";
-import NotificationOrchestrator from "../../modules/notifications/notification-orchestrator";
+import NotificationOrchestrator from "../../services/notifications/notification-orchestrator";
 import type HonoEnv from "../../types/HonoEnv";
 import { sendToUsersAndRoles } from "../../utils/notifications/notification-helpers";
 import requestValidator from "../../utils/requestValidator";

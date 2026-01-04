@@ -14,7 +14,7 @@ import {
 	Card,
 	Label,
 } from "@repo/ui";
-import PermissionMatrix from "@/modules/users/components/PermissionMatrix";
+import PermissionMatrix from "@/components/users/PermissionMatrix";
 import { TbPencil, TbUser, TbShield, TbMail } from "react-icons/tb";
 
 export const Route = createFileRoute("/_dashboardLayout/users/detail/$userId")({

@@ -1,9 +1,54 @@
 import client from "@/honoClient";
-import type {
-	Notification,
-	NotificationStatus,
-	PaginatedNotificationsResponse,
-} from "./types";
+
+// Types
+export type NotificationType = "informational" | "approval";
+export type NotificationStatus = "unread" | "read";
+
+export interface NotificationAction {
+	id: string;
+	notificationId: string;
+	actionKey: string;
+	label: string;
+	requiresComment: boolean;
+	createdAt: string;
+}
+
+export interface NotificationActionLog {
+	id: string;
+	notificationId: string;
+	actionKey: string;
+	actedBy: string;
+	comment?: string | null;
+	actedAt: string;
+}
+
+export interface Notification {
+	id: string;
+	userId: string;
+	type: NotificationType;
+	title: string;
+	message: string;
+	metadata: Record<string, unknown>;
+	status: NotificationStatus;
+	category?: string | null;
+	createdAt: string;
+	readAt?: string | null;
+	expiresAt?: string | null;
+	actions: NotificationAction[];
+	actionLogs: NotificationActionLog[];
+}
+
+export interface NotificationGroup {
+	key: "today" | "yesterday" | "thisWeek" | "earlier";
+	title: string;
+	notifications: Notification[];
+}
+
+export interface PaginatedNotificationsResponse {
+	items: Notification[];
+	groups: NotificationGroup[];
+	nextCursor?: string;
+}
 
 export interface NotificationListQuery {
 	status?: NotificationStatus;
@@ -14,6 +59,14 @@ export interface NotificationListQuery {
 	includeRead?: boolean;
 }
 
+// Query Keys
+export const notificationQueryKeys = {
+	all: ["notifications"] as const,
+	list: (filter: string) => ["notifications", "list", filter] as const,
+	unreadCount: ["notifications", "unread-count"] as const,
+};
+
+// API Helpers
 const ensureOk = async (response: Response) => {
 	if (!response.ok) {
 		const message = await response.text();
@@ -39,6 +92,7 @@ const serializeQuery = (query: NotificationListQuery) =>
 			]),
 	);
 
+// API Functions
 export const fetchNotifications = async (
 	queryParams: NotificationListQuery = {},
 ): Promise<PaginatedNotificationsResponse> => {

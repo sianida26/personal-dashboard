@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
-import type { ChannelDeliveryRequest } from "../../src/modules/notifications/channels/types";
-import { WhatsAppChannelAdapter } from "../../src/modules/notifications/channels/whatsapp-adapter";
+import type { ChannelDeliveryRequest } from "../../src/services/notifications/channels/types";
+import { WhatsAppChannelAdapter } from "../../src/services/notifications/channels/whatsapp-adapter";
 import jobQueueManager from "../../src/services/jobs/queue-manager";
 import whatsappService from "../../src/services/whatsapp/whatsapp-service";
 
