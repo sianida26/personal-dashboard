@@ -315,6 +315,87 @@ describe("Money Tracker - Categories API", () => {
 		});
 	});
 
+	describe("GET /money/categories/:id", () => {
+		test("should return a single category by id", async () => {
+			const categoryId = createdCategoryIds[0];
+			if (!categoryId) throw new Error("No category created");
+
+			const response = await client.money.categories[":id"].$get(
+				{
+					param: { id: categoryId },
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${testUser.accessToken}`,
+					},
+				},
+			);
+
+			expect(response.status).toBe(200);
+			const result = await response.json();
+			expect(result.data).toHaveProperty("id");
+			expect(result.data?.id).toBe(categoryId);
+			expect(result.data).toHaveProperty("name");
+			expect(result.data).toHaveProperty("type");
+			expect(result.data).toHaveProperty("isActive");
+		});
+
+		test("should return 404 for non-existent category", async () => {
+			const response = await client.money.categories[":id"].$get(
+				{
+					param: { id: "non-existent-id" },
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${testUser.accessToken}`,
+					},
+				},
+			);
+
+			expect(response.status).toBe(404);
+		});
+
+		test("should fail without authentication", async () => {
+			const categoryId = createdCategoryIds[0];
+			if (!categoryId) throw new Error("No category created");
+
+			const response = await client.money.categories[":id"].$get({
+				param: { id: categoryId },
+			});
+
+			expect([401, 500]).toContain(response.status);
+		});
+
+		test("should not return another user's category", async () => {
+			// Create a second test user
+			const secondUser = await createUserForTesting({
+				name: "Second Money Test User",
+				username: `money-categories-test-other-${Date.now()}`,
+				permissions: [],
+			});
+
+			const categoryId = createdCategoryIds[0];
+			if (!categoryId) throw new Error("No category created");
+
+			const response = await client.money.categories[":id"].$get(
+				{
+					param: { id: categoryId },
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${secondUser.accessToken}`,
+					},
+				},
+			);
+
+			// Should return 404 because the category doesn't belong to this user
+			expect(response.status).toBe(404);
+
+			// Cleanup second user
+			await cleanupTestUser(secondUser.user.id);
+		});
+	});
+
 	describe("PUT /money/categories/:id", () => {
 		test("should update category name", async () => {
 			const categoryId = createdCategoryIds[0];

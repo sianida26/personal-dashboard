@@ -255,549 +255,609 @@ export default function AnalyticsPage() {
 	}
 
 	return (
-		<div className="p-6 h-full flex flex-col gap-6 overflow-auto">
-			{/* Header */}
-			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-				<div className="flex items-center gap-4">
-					<Link to="/transactions">
-						<Button variant="ghost" size="icon">
-							<TbArrowLeft className="h-5 w-5" />
-						</Button>
-					</Link>
-					<div>
-						<h1 className="text-2xl font-bold">
-							Analisis Keuangan
-						</h1>
-						<p className="text-muted-foreground">
-							Lihat tren dan breakdown transaksi Anda
-						</p>
+		<div className="h-full flex flex-col">
+			<div className="flex-1 overflow-y-auto">
+				<div className="p-6 flex flex-col gap-6">
+					{/* Header */}
+					<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+						<div className="flex items-center gap-4">
+							<Link to="/transactions">
+								<Button variant="ghost" size="icon">
+									<TbArrowLeft className="h-5 w-5" />
+								</Button>
+							</Link>
+							<div>
+								<h1 className="text-2xl font-bold">
+									Analisis Keuangan
+								</h1>
+								<p className="text-muted-foreground">
+									Lihat tren dan breakdown transaksi Anda
+								</p>
+							</div>
+						</div>
+
+						{/* Date Range Filter */}
+						<div className="flex flex-col sm:flex-row gap-2">
+							<Select
+								value={quickRange}
+								onChange={setQuickRange}
+								options={DATE_RANGE_OPTIONS}
+								className="w-[180px]"
+							/>
+
+							{quickRange === "custom" && (
+								<DatePickerInput
+									mode="range"
+									value={customDateRange}
+									onChange={setCustomDateRange}
+									placeholder="Pilih rentang tanggal"
+									className="w-[280px]"
+								/>
+							)}
+						</div>
+					</div>
+
+					{/* Summary Cards */}
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+						<SummaryCard
+							title="Total Pemasukan"
+							value={data?.summary.totalIncome ?? 0}
+							icon={TbArrowNarrowUp}
+							isLoading={isLoading}
+							variant="income"
+						/>
+						<SummaryCard
+							title="Total Pengeluaran"
+							value={data?.summary.totalExpense ?? 0}
+							icon={TbArrowNarrowDown}
+							isLoading={isLoading}
+							variant="expense"
+						/>
+						<SummaryCard
+							title="Saldo Bersih"
+							value={data?.summary.netFlow ?? 0}
+							icon={
+								(data?.summary.netFlow ?? 0) >= 0
+									? TbTrendingUp
+									: TbTrendingDown
+							}
+							isLoading={isLoading}
+							variant={
+								(data?.summary.netFlow ?? 0) >= 0
+									? "income"
+									: "expense"
+							}
+						/>
+						<SummaryCard
+							title="Total Transaksi"
+							value={data?.summary.transactionCount ?? 0}
+							icon={TbReceipt}
+							isLoading={isLoading}
+							variant="neutral"
+							isCurrency={false}
+						/>
+					</div>
+
+					{/* Daily/Monthly Trend Charts */}
+					<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+						{/* Daily Trend Chart */}
+						<Card>
+							<CardHeader>
+								<CardTitle>Tren Harian</CardTitle>
+								<CardDescription>
+									Pemasukan vs Pengeluaran per hari
+								</CardDescription>
+							</CardHeader>
+							<CardContent>
+								{isLoading ? (
+									<Skeleton className="h-[300px] w-full" />
+								) : data?.dailyTrends &&
+									data.dailyTrends.length > 0 ? (
+									<ChartContainer
+										config={trendChartConfig}
+										className="h-[300px] w-full"
+									>
+										<BarChart data={data.dailyTrends}>
+											<CartesianGrid strokeDasharray="3 3" />
+											<XAxis
+												dataKey="date"
+												tickFormatter={(value) => {
+													const date = new Date(
+														value,
+													);
+													return date.toLocaleDateString(
+														"id-ID",
+														{
+															day: "numeric",
+															month: "short",
+														},
+													);
+												}}
+												fontSize={12}
+											/>
+											<YAxis
+												tickFormatter={
+													formatShortCurrency
+												}
+												fontSize={12}
+											/>
+											<ChartTooltip
+												content={
+													<ChartTooltipContent
+														formatter={(
+															value,
+															name,
+														) => (
+															<span>
+																{name ===
+																"income"
+																	? "Pemasukan"
+																	: "Pengeluaran"}
+																:{" "}
+																{formatCurrency(
+																	Number(
+																		value,
+																	),
+																)}
+															</span>
+														)}
+													/>
+												}
+											/>
+											<ChartLegend
+												content={<ChartLegendContent />}
+											/>
+											<Bar
+												dataKey="income"
+												fill="var(--color-income)"
+												radius={[4, 4, 0, 0]}
+											/>
+											<Bar
+												dataKey="expense"
+												fill="var(--color-expense)"
+												radius={[4, 4, 0, 0]}
+											/>
+										</BarChart>
+									</ChartContainer>
+								) : (
+									<div className="h-[300px] flex items-center justify-center text-muted-foreground">
+										Tidak ada data untuk periode ini
+									</div>
+								)}
+							</CardContent>
+						</Card>
+
+						{/* Net Flow Chart */}
+						<Card>
+							<CardHeader>
+								<CardTitle>Saldo Bersih Harian</CardTitle>
+								<CardDescription>
+									Selisih pemasukan dan pengeluaran per hari
+								</CardDescription>
+							</CardHeader>
+							<CardContent>
+								{isLoading ? (
+									<Skeleton className="h-[300px] w-full" />
+								) : data?.dailyTrends &&
+									data.dailyTrends.length > 0 ? (
+									<ChartContainer
+										config={netChartConfig}
+										className="h-[300px] w-full"
+									>
+										<BarChart data={data.dailyTrends}>
+											<CartesianGrid strokeDasharray="3 3" />
+											<XAxis
+												dataKey="date"
+												tickFormatter={(value) => {
+													const date = new Date(
+														value,
+													);
+													return date.toLocaleDateString(
+														"id-ID",
+														{
+															day: "numeric",
+															month: "short",
+														},
+													);
+												}}
+												fontSize={12}
+											/>
+											<YAxis
+												tickFormatter={
+													formatShortCurrency
+												}
+												fontSize={12}
+											/>
+											<ChartTooltip
+												content={
+													<ChartTooltipContent
+														formatter={(value) => (
+															<span>
+																Saldo:{" "}
+																{formatCurrency(
+																	Number(
+																		value,
+																	),
+																)}
+															</span>
+														)}
+													/>
+												}
+											/>
+											<Bar
+												dataKey="net"
+												radius={[4, 4, 0, 0]}
+											>
+												{data.dailyTrends.map(
+													(entry) => (
+														<Cell
+															key={`cell-${entry.date}`}
+															fill={
+																entry.net >= 0
+																	? "hsl(142, 76%, 36%)"
+																	: "hsl(0, 84%, 60%)"
+															}
+														/>
+													),
+												)}
+											</Bar>
+										</BarChart>
+									</ChartContainer>
+								) : (
+									<div className="h-[300px] flex items-center justify-center text-muted-foreground">
+										Tidak ada data untuk periode ini
+									</div>
+								)}
+							</CardContent>
+						</Card>
+					</div>
+
+					{/* Monthly Trends (for longer periods) */}
+					{data?.monthlyTrends && data.monthlyTrends.length > 1 && (
+						<Card>
+							<CardHeader>
+								<CardTitle>Tren Bulanan</CardTitle>
+								<CardDescription>
+									Ringkasan pemasukan dan pengeluaran per
+									bulan
+								</CardDescription>
+							</CardHeader>
+							<CardContent>
+								<ChartContainer
+									config={trendChartConfig}
+									className="h-[300px] w-full"
+								>
+									<BarChart data={data.monthlyTrends}>
+										<CartesianGrid strokeDasharray="3 3" />
+										<XAxis
+											dataKey="month"
+											tickFormatter={(value) => {
+												const [year, month] =
+													value.split("-");
+												const date = new Date(
+													Number(year),
+													Number(month) - 1,
+												);
+												return date.toLocaleDateString(
+													"id-ID",
+													{
+														month: "short",
+														year: "2-digit",
+													},
+												);
+											}}
+											fontSize={12}
+										/>
+										<YAxis
+											tickFormatter={formatShortCurrency}
+											fontSize={12}
+										/>
+										<ChartTooltip
+											content={
+												<ChartTooltipContent
+													formatter={(
+														value,
+														name,
+													) => (
+														<span>
+															{name === "income"
+																? "Pemasukan"
+																: "Pengeluaran"}
+															:{" "}
+															{formatCurrency(
+																Number(value),
+															)}
+														</span>
+													)}
+												/>
+											}
+										/>
+										<ChartLegend
+											content={<ChartLegendContent />}
+										/>
+										<Bar
+											dataKey="income"
+											fill="var(--color-income)"
+											radius={[4, 4, 0, 0]}
+										/>
+										<Bar
+											dataKey="expense"
+											fill="var(--color-expense)"
+											radius={[4, 4, 0, 0]}
+										/>
+									</BarChart>
+								</ChartContainer>
+							</CardContent>
+						</Card>
+					)}
+
+					{/* Category Breakdown Charts */}
+					<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+						{/* Expense Breakdown */}
+						<Card>
+							<CardHeader>
+								<CardTitle className="flex items-center gap-2">
+									<TbCash className="text-red-500" />
+									Pengeluaran per Kategori
+								</CardTitle>
+								<CardDescription>
+									Distribusi pengeluaran berdasarkan kategori
+								</CardDescription>
+							</CardHeader>
+							<CardContent>
+								{isLoading ? (
+									<Skeleton className="h-[300px] w-full" />
+								) : data?.expenseBreakdown &&
+									data.expenseBreakdown.length > 0 ? (
+									<div className="flex flex-col lg:flex-row gap-4">
+										<ChartContainer
+											config={expenseChartConfig}
+											className="h-[300px] w-full lg:w-1/2"
+										>
+											<PieChart>
+												<ChartTooltip
+													content={
+														<ChartTooltipContent
+															formatter={(
+																value,
+																name,
+															) => (
+																<span>
+																	{name}:{" "}
+																	{formatCurrency(
+																		Number(
+																			value,
+																		),
+																	)}
+																</span>
+															)}
+														/>
+													}
+												/>
+												<Pie
+													data={data.expenseBreakdown}
+													dataKey="total"
+													nameKey="categoryName"
+													cx="50%"
+													cy="50%"
+													innerRadius={60}
+													outerRadius={100}
+													paddingAngle={2}
+												>
+													{data.expenseBreakdown.map(
+														(entry, index) => (
+															<Cell
+																key={
+																	entry.categoryId ??
+																	`uncategorized-expense-${index}`
+																}
+																fill={
+																	entry.categoryColor ||
+																	CHART_COLORS[
+																		index %
+																			CHART_COLORS.length
+																	]
+																}
+															/>
+														),
+													)}
+												</Pie>
+											</PieChart>
+										</ChartContainer>
+										<div className="flex-1 space-y-2 max-h-[300px] overflow-auto">
+											{data.expenseBreakdown.map(
+												(item, index) => (
+													<div
+														key={
+															item.categoryId ??
+															`uncategorized-${index}`
+														}
+														className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50"
+													>
+														<div className="flex items-center gap-2">
+															<div
+																className="w-3 h-3 rounded-full"
+																style={{
+																	backgroundColor:
+																		item.categoryColor ||
+																		CHART_COLORS[
+																			index %
+																				CHART_COLORS.length
+																		],
+																}}
+															/>
+															<span className="text-sm">
+																{
+																	item.categoryIcon
+																}
+															</span>
+															<span className="text-sm font-medium">
+																{
+																	item.categoryName
+																}
+															</span>
+														</div>
+														<div className="text-right">
+															<p className="text-sm font-medium">
+																{formatCurrency(
+																	item.total,
+																)}
+															</p>
+															<p className="text-xs text-muted-foreground">
+																{
+																	item.percentage
+																}
+																% • {item.count}{" "}
+																transaksi
+															</p>
+														</div>
+													</div>
+												),
+											)}
+										</div>
+									</div>
+								) : (
+									<div className="h-[300px] flex items-center justify-center text-muted-foreground">
+										Tidak ada data pengeluaran untuk periode
+										ini
+									</div>
+								)}
+							</CardContent>
+						</Card>
+
+						{/* Income Breakdown */}
+						<Card>
+							<CardHeader>
+								<CardTitle className="flex items-center gap-2">
+									<TbCash className="text-green-500" />
+									Pemasukan per Kategori
+								</CardTitle>
+								<CardDescription>
+									Distribusi pemasukan berdasarkan kategori
+								</CardDescription>
+							</CardHeader>
+							<CardContent>
+								{isLoading ? (
+									<Skeleton className="h-[300px] w-full" />
+								) : data?.incomeBreakdown &&
+									data.incomeBreakdown.length > 0 ? (
+									<div className="flex flex-col lg:flex-row gap-4">
+										<ChartContainer
+											config={incomeChartConfig}
+											className="h-[300px] w-full lg:w-1/2"
+										>
+											<PieChart>
+												<ChartTooltip
+													content={
+														<ChartTooltipContent
+															formatter={(
+																value,
+																name,
+															) => (
+																<span>
+																	{name}:{" "}
+																	{formatCurrency(
+																		Number(
+																			value,
+																		),
+																	)}
+																</span>
+															)}
+														/>
+													}
+												/>
+												<Pie
+													data={data.incomeBreakdown}
+													dataKey="total"
+													nameKey="categoryName"
+													cx="50%"
+													cy="50%"
+													innerRadius={60}
+													outerRadius={100}
+													paddingAngle={2}
+												>
+													{data.incomeBreakdown.map(
+														(entry, index) => (
+															<Cell
+																key={
+																	entry.categoryId ??
+																	`uncategorized-income-${index}`
+																}
+																fill={
+																	entry.categoryColor ||
+																	CHART_COLORS[
+																		index %
+																			CHART_COLORS.length
+																	]
+																}
+															/>
+														),
+													)}
+												</Pie>
+											</PieChart>
+										</ChartContainer>
+										<div className="flex-1 space-y-2 max-h-[300px] overflow-auto">
+											{data.incomeBreakdown.map(
+												(item, index) => (
+													<div
+														key={
+															item.categoryId ??
+															`uncategorized-${index}`
+														}
+														className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50"
+													>
+														<div className="flex items-center gap-2">
+															<div
+																className="w-3 h-3 rounded-full"
+																style={{
+																	backgroundColor:
+																		item.categoryColor ||
+																		CHART_COLORS[
+																			index %
+																				CHART_COLORS.length
+																		],
+																}}
+															/>
+															<span className="text-sm">
+																{
+																	item.categoryIcon
+																}
+															</span>
+															<span className="text-sm font-medium">
+																{
+																	item.categoryName
+																}
+															</span>
+														</div>
+														<div className="text-right">
+															<p className="text-sm font-medium">
+																{formatCurrency(
+																	item.total,
+																)}
+															</p>
+															<p className="text-xs text-muted-foreground">
+																{
+																	item.percentage
+																}
+																% • {item.count}{" "}
+																transaksi
+															</p>
+														</div>
+													</div>
+												),
+											)}
+										</div>
+									</div>
+								) : (
+									<div className="h-[300px] flex items-center justify-center text-muted-foreground">
+										Tidak ada data pemasukan untuk periode
+										ini
+									</div>
+								)}
+							</CardContent>
+						</Card>
 					</div>
 				</div>
-
-				{/* Date Range Filter */}
-				<div className="flex flex-col sm:flex-row gap-2">
-					<Select
-						value={quickRange}
-						onChange={setQuickRange}
-						options={DATE_RANGE_OPTIONS}
-						className="w-[180px]"
-					/>
-
-					{quickRange === "custom" && (
-						<DatePickerInput
-							mode="range"
-							value={customDateRange}
-							onChange={setCustomDateRange}
-							placeholder="Pilih rentang tanggal"
-							className="w-[280px]"
-						/>
-					)}
-				</div>
-			</div>
-
-			{/* Summary Cards */}
-			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-				<SummaryCard
-					title="Total Pemasukan"
-					value={data?.summary.totalIncome ?? 0}
-					icon={TbArrowNarrowUp}
-					isLoading={isLoading}
-					variant="income"
-				/>
-				<SummaryCard
-					title="Total Pengeluaran"
-					value={data?.summary.totalExpense ?? 0}
-					icon={TbArrowNarrowDown}
-					isLoading={isLoading}
-					variant="expense"
-				/>
-				<SummaryCard
-					title="Saldo Bersih"
-					value={data?.summary.netFlow ?? 0}
-					icon={
-						(data?.summary.netFlow ?? 0) >= 0
-							? TbTrendingUp
-							: TbTrendingDown
-					}
-					isLoading={isLoading}
-					variant={
-						(data?.summary.netFlow ?? 0) >= 0 ? "income" : "expense"
-					}
-				/>
-				<SummaryCard
-					title="Total Transaksi"
-					value={data?.summary.transactionCount ?? 0}
-					icon={TbReceipt}
-					isLoading={isLoading}
-					variant="neutral"
-					isCurrency={false}
-				/>
-			</div>
-
-			{/* Daily/Monthly Trend Charts */}
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-				{/* Daily Trend Chart */}
-				<Card>
-					<CardHeader>
-						<CardTitle>Tren Harian</CardTitle>
-						<CardDescription>
-							Pemasukan vs Pengeluaran per hari
-						</CardDescription>
-					</CardHeader>
-					<CardContent>
-						{isLoading ? (
-							<Skeleton className="h-[300px] w-full" />
-						) : data?.dailyTrends && data.dailyTrends.length > 0 ? (
-							<ChartContainer
-								config={trendChartConfig}
-								className="h-[300px] w-full"
-							>
-								<BarChart data={data.dailyTrends}>
-									<CartesianGrid strokeDasharray="3 3" />
-									<XAxis
-										dataKey="date"
-										tickFormatter={(value) => {
-											const date = new Date(value);
-											return date.toLocaleDateString(
-												"id-ID",
-												{
-													day: "numeric",
-													month: "short",
-												},
-											);
-										}}
-										fontSize={12}
-									/>
-									<YAxis
-										tickFormatter={formatShortCurrency}
-										fontSize={12}
-									/>
-									<ChartTooltip
-										content={
-											<ChartTooltipContent
-												formatter={(value, name) => (
-													<span>
-														{name === "income"
-															? "Pemasukan"
-															: "Pengeluaran"}
-														:{" "}
-														{formatCurrency(
-															Number(value),
-														)}
-													</span>
-												)}
-											/>
-										}
-									/>
-									<ChartLegend
-										content={<ChartLegendContent />}
-									/>
-									<Bar
-										dataKey="income"
-										fill="var(--color-income)"
-										radius={[4, 4, 0, 0]}
-									/>
-									<Bar
-										dataKey="expense"
-										fill="var(--color-expense)"
-										radius={[4, 4, 0, 0]}
-									/>
-								</BarChart>
-							</ChartContainer>
-						) : (
-							<div className="h-[300px] flex items-center justify-center text-muted-foreground">
-								Tidak ada data untuk periode ini
-							</div>
-						)}
-					</CardContent>
-				</Card>
-
-				{/* Net Flow Chart */}
-				<Card>
-					<CardHeader>
-						<CardTitle>Saldo Bersih Harian</CardTitle>
-						<CardDescription>
-							Selisih pemasukan dan pengeluaran per hari
-						</CardDescription>
-					</CardHeader>
-					<CardContent>
-						{isLoading ? (
-							<Skeleton className="h-[300px] w-full" />
-						) : data?.dailyTrends && data.dailyTrends.length > 0 ? (
-							<ChartContainer
-								config={netChartConfig}
-								className="h-[300px] w-full"
-							>
-								<BarChart data={data.dailyTrends}>
-									<CartesianGrid strokeDasharray="3 3" />
-									<XAxis
-										dataKey="date"
-										tickFormatter={(value) => {
-											const date = new Date(value);
-											return date.toLocaleDateString(
-												"id-ID",
-												{
-													day: "numeric",
-													month: "short",
-												},
-											);
-										}}
-										fontSize={12}
-									/>
-									<YAxis
-										tickFormatter={formatShortCurrency}
-										fontSize={12}
-									/>
-									<ChartTooltip
-										content={
-											<ChartTooltipContent
-												formatter={(value) => (
-													<span>
-														Saldo:{" "}
-														{formatCurrency(
-															Number(value),
-														)}
-													</span>
-												)}
-											/>
-										}
-									/>
-									<Bar dataKey="net" radius={[4, 4, 0, 0]}>
-										{data.dailyTrends.map((entry) => (
-											<Cell
-												key={`cell-${entry.date}`}
-												fill={
-													entry.net >= 0
-														? "hsl(142, 76%, 36%)"
-														: "hsl(0, 84%, 60%)"
-												}
-											/>
-										))}
-									</Bar>
-								</BarChart>
-							</ChartContainer>
-						) : (
-							<div className="h-[300px] flex items-center justify-center text-muted-foreground">
-								Tidak ada data untuk periode ini
-							</div>
-						)}
-					</CardContent>
-				</Card>
-			</div>
-
-			{/* Monthly Trends (for longer periods) */}
-			{data?.monthlyTrends && data.monthlyTrends.length > 1 && (
-				<Card>
-					<CardHeader>
-						<CardTitle>Tren Bulanan</CardTitle>
-						<CardDescription>
-							Ringkasan pemasukan dan pengeluaran per bulan
-						</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<ChartContainer
-							config={trendChartConfig}
-							className="h-[300px] w-full"
-						>
-							<BarChart data={data.monthlyTrends}>
-								<CartesianGrid strokeDasharray="3 3" />
-								<XAxis
-									dataKey="month"
-									tickFormatter={(value) => {
-										const [year, month] = value.split("-");
-										const date = new Date(
-											Number(year),
-											Number(month) - 1,
-										);
-										return date.toLocaleDateString(
-											"id-ID",
-											{
-												month: "short",
-												year: "2-digit",
-											},
-										);
-									}}
-									fontSize={12}
-								/>
-								<YAxis
-									tickFormatter={formatShortCurrency}
-									fontSize={12}
-								/>
-								<ChartTooltip
-									content={
-										<ChartTooltipContent
-											formatter={(value, name) => (
-												<span>
-													{name === "income"
-														? "Pemasukan"
-														: "Pengeluaran"}
-													:{" "}
-													{formatCurrency(
-														Number(value),
-													)}
-												</span>
-											)}
-										/>
-									}
-								/>
-								<ChartLegend content={<ChartLegendContent />} />
-								<Bar
-									dataKey="income"
-									fill="var(--color-income)"
-									radius={[4, 4, 0, 0]}
-								/>
-								<Bar
-									dataKey="expense"
-									fill="var(--color-expense)"
-									radius={[4, 4, 0, 0]}
-								/>
-							</BarChart>
-						</ChartContainer>
-					</CardContent>
-				</Card>
-			)}
-
-			{/* Category Breakdown Charts */}
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-				{/* Expense Breakdown */}
-				<Card>
-					<CardHeader>
-						<CardTitle className="flex items-center gap-2">
-							<TbCash className="text-red-500" />
-							Pengeluaran per Kategori
-						</CardTitle>
-						<CardDescription>
-							Distribusi pengeluaran berdasarkan kategori
-						</CardDescription>
-					</CardHeader>
-					<CardContent>
-						{isLoading ? (
-							<Skeleton className="h-[300px] w-full" />
-						) : data?.expenseBreakdown &&
-							data.expenseBreakdown.length > 0 ? (
-							<div className="flex flex-col lg:flex-row gap-4">
-								<ChartContainer
-									config={expenseChartConfig}
-									className="h-[300px] w-full lg:w-1/2"
-								>
-									<PieChart>
-										<ChartTooltip
-											content={
-												<ChartTooltipContent
-													formatter={(
-														value,
-														name,
-													) => (
-														<span>
-															{name}:{" "}
-															{formatCurrency(
-																Number(value),
-															)}
-														</span>
-													)}
-												/>
-											}
-										/>
-										<Pie
-											data={data.expenseBreakdown}
-											dataKey="total"
-											nameKey="categoryName"
-											cx="50%"
-											cy="50%"
-											innerRadius={60}
-											outerRadius={100}
-											paddingAngle={2}
-										>
-											{data.expenseBreakdown.map(
-												(entry, index) => (
-													<Cell
-														key={
-															entry.categoryId ??
-															`uncategorized-expense-${index}`
-														}
-														fill={
-															entry.categoryColor ||
-															CHART_COLORS[
-																index %
-																	CHART_COLORS.length
-															]
-														}
-													/>
-												),
-											)}
-										</Pie>
-									</PieChart>
-								</ChartContainer>
-								<div className="flex-1 space-y-2 max-h-[300px] overflow-auto">
-									{data.expenseBreakdown.map(
-										(item, index) => (
-											<div
-												key={
-													item.categoryId ??
-													`uncategorized-${index}`
-												}
-												className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50"
-											>
-												<div className="flex items-center gap-2">
-													<div
-														className="w-3 h-3 rounded-full"
-														style={{
-															backgroundColor:
-																item.categoryColor ||
-																CHART_COLORS[
-																	index %
-																		CHART_COLORS.length
-																],
-														}}
-													/>
-													<span className="text-sm">
-														{item.categoryIcon}
-													</span>
-													<span className="text-sm font-medium">
-														{item.categoryName}
-													</span>
-												</div>
-												<div className="text-right">
-													<p className="text-sm font-medium">
-														{formatCurrency(
-															item.total,
-														)}
-													</p>
-													<p className="text-xs text-muted-foreground">
-														{item.percentage}% •{" "}
-														{item.count} transaksi
-													</p>
-												</div>
-											</div>
-										),
-									)}
-								</div>
-							</div>
-						) : (
-							<div className="h-[300px] flex items-center justify-center text-muted-foreground">
-								Tidak ada data pengeluaran untuk periode ini
-							</div>
-						)}
-					</CardContent>
-				</Card>
-
-				{/* Income Breakdown */}
-				<Card>
-					<CardHeader>
-						<CardTitle className="flex items-center gap-2">
-							<TbCash className="text-green-500" />
-							Pemasukan per Kategori
-						</CardTitle>
-						<CardDescription>
-							Distribusi pemasukan berdasarkan kategori
-						</CardDescription>
-					</CardHeader>
-					<CardContent>
-						{isLoading ? (
-							<Skeleton className="h-[300px] w-full" />
-						) : data?.incomeBreakdown &&
-							data.incomeBreakdown.length > 0 ? (
-							<div className="flex flex-col lg:flex-row gap-4">
-								<ChartContainer
-									config={incomeChartConfig}
-									className="h-[300px] w-full lg:w-1/2"
-								>
-									<PieChart>
-										<ChartTooltip
-											content={
-												<ChartTooltipContent
-													formatter={(
-														value,
-														name,
-													) => (
-														<span>
-															{name}:{" "}
-															{formatCurrency(
-																Number(value),
-															)}
-														</span>
-													)}
-												/>
-											}
-										/>
-										<Pie
-											data={data.incomeBreakdown}
-											dataKey="total"
-											nameKey="categoryName"
-											cx="50%"
-											cy="50%"
-											innerRadius={60}
-											outerRadius={100}
-											paddingAngle={2}
-										>
-											{data.incomeBreakdown.map(
-												(entry, index) => (
-													<Cell
-														key={
-															entry.categoryId ??
-															`uncategorized-income-${index}`
-														}
-														fill={
-															entry.categoryColor ||
-															CHART_COLORS[
-																index %
-																	CHART_COLORS.length
-															]
-														}
-													/>
-												),
-											)}
-										</Pie>
-									</PieChart>
-								</ChartContainer>
-								<div className="flex-1 space-y-2 max-h-[300px] overflow-auto">
-									{data.incomeBreakdown.map((item, index) => (
-										<div
-											key={
-												item.categoryId ??
-												`uncategorized-${index}`
-											}
-											className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50"
-										>
-											<div className="flex items-center gap-2">
-												<div
-													className="w-3 h-3 rounded-full"
-													style={{
-														backgroundColor:
-															item.categoryColor ||
-															CHART_COLORS[
-																index %
-																	CHART_COLORS.length
-															],
-													}}
-												/>
-												<span className="text-sm">
-													{item.categoryIcon}
-												</span>
-												<span className="text-sm font-medium">
-													{item.categoryName}
-												</span>
-											</div>
-											<div className="text-right">
-												<p className="text-sm font-medium">
-													{formatCurrency(item.total)}
-												</p>
-												<p className="text-xs text-muted-foreground">
-													{item.percentage}% •{" "}
-													{item.count} transaksi
-												</p>
-											</div>
-										</div>
-									))}
-								</div>
-							</div>
-						) : (
-							<div className="h-[300px] flex items-center justify-center text-muted-foreground">
-								Tidak ada data pemasukan untuk periode ini
-							</div>
-						)}
-					</CardContent>
-				</Card>
 			</div>
 		</div>
 	);

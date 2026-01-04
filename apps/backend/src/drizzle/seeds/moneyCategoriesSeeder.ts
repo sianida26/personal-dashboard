@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import db from "..";
 import { moneyCategories } from "../schema/moneyCategories";
 
@@ -507,6 +508,66 @@ const moneyCategoriesSeeder = async () => {
 	console.log("Seeding money categories...");
 
 	try {
+		// First, clean up any duplicate categories
+		console.log("Checking for duplicate categories...");
+
+		// Step 1: Find duplicates and identify which to keep (oldest one)
+		// Step 2: Merge transactions from duplicates to the keeper
+		// Step 3: Delete duplicates that have no transactions
+		const duplicateCleanup = await db.execute(sql`
+			WITH duplicates AS (
+				-- Find all duplicate categories and rank them
+				SELECT 
+					id,
+					user_id,
+					name,
+					type,
+					created_at,
+					ROW_NUMBER() OVER (
+						PARTITION BY user_id, name, type 
+						ORDER BY created_at ASC
+					) as row_num
+				FROM money_categories
+			),
+			keeper_categories AS (
+				-- These are the categories we'll keep (oldest of each duplicate set)
+				SELECT id, user_id, name, type
+				FROM duplicates
+				WHERE row_num = 1
+			),
+			duplicate_categories AS (
+				-- These are the duplicates we want to remove
+				SELECT id, user_id, name, type
+				FROM duplicates
+				WHERE row_num > 1
+			),
+			merge_transactions AS (
+				-- Move all transactions from duplicates to the keeper
+				UPDATE money_transactions t
+				SET category_id = k.id
+				FROM duplicate_categories d
+				JOIN keeper_categories k 
+					ON d.user_id = k.user_id 
+					AND d.name = k.name 
+					AND d.type = k.type
+				WHERE t.category_id = d.id
+				RETURNING d.id as moved_from_category
+			)
+			-- Delete duplicate categories (they should have no transactions now)
+			DELETE FROM money_categories
+			WHERE id IN (
+				SELECT id 
+				FROM duplicate_categories
+			)
+		`);
+
+		const deletedCount = duplicateCleanup.rowCount || 0;
+		if (deletedCount > 0) {
+			console.log(
+				`Merged and deleted ${deletedCount} duplicate categories`,
+			);
+		}
+
 		// Get all users
 		const users = await db.query.users.findMany({
 			columns: { id: true },
@@ -517,25 +578,48 @@ const moneyCategoriesSeeder = async () => {
 			return;
 		}
 
-		// Create categories for each user
-		const categoriesToInsert = users.flatMap((user) =>
-			categoriesSeedData.map((category) => ({
-				userId: user.id,
-				name: category.name,
-				type: category.type,
-				icon: category.icon,
-				color: category.color,
-				isActive: true,
-			})),
-		);
+		let totalInserted = 0;
+		let totalSkipped = 0;
 
-		await db
-			.insert(moneyCategories)
-			.values(categoriesToInsert)
-			.onConflictDoNothing();
+		// Process each user separately to check for existing categories
+		for (const user of users) {
+			// Get existing categories for this user
+			const existingCategories = await db.query.moneyCategories.findMany({
+				where: (categories, { eq }) => eq(categories.userId, user.id),
+				columns: { name: true, type: true },
+			});
+
+			// Create a Set of existing category keys (name + type)
+			const existingKeys = new Set(
+				existingCategories.map((cat) => `${cat.name}|${cat.type}`),
+			);
+
+			// Filter out categories that already exist
+			const categoriesToInsert = categoriesSeedData
+				.filter((category) => {
+					const key = `${category.name}|${category.type}`;
+					return !existingKeys.has(key);
+				})
+				.map((category) => ({
+					userId: user.id,
+					name: category.name,
+					type: category.type,
+					icon: category.icon,
+					color: category.color,
+					isActive: true,
+				}));
+
+			if (categoriesToInsert.length > 0) {
+				await db.insert(moneyCategories).values(categoriesToInsert);
+				totalInserted += categoriesToInsert.length;
+			}
+
+			totalSkipped +=
+				categoriesSeedData.length - categoriesToInsert.length;
+		}
 
 		console.log(
-			`Seeded ${categoriesSeedData.length} categories for ${users.length} user(s)`,
+			`Seeded ${totalInserted} new categories, skipped ${totalSkipped} existing categories for ${users.length} user(s)`,
 		);
 	} catch (error) {
 		console.error("Error seeding money categories:", error);

@@ -5,6 +5,7 @@ import deleteTransactionRoute from "./delete-transaction";
 import getAnalyticsRoute from "./get-analytics";
 import getCategoriesRoute from "./get-categories";
 import getCategoriesTreeRoute from "./get-categories-tree";
+import getCategoryByIdRoute from "./get-category-by-id";
 import getTransactionByIdRoute from "./get-transaction-by-id";
 import getTransactionsRoute from "./get-transactions";
 import getTransactionsExportRoute from "./get-transactions-export";
@@ -20,6 +21,7 @@ const moneyRoute = new Hono<HonoEnv>()
 	.route("/categories", getCategoriesTreeRoute) // Must come before getCategoriesRoute due to /tree path
 	.route("/categories", getCategoriesRoute)
 	.route("/categories", postCategoryRoute)
+	.route("/categories", getCategoryByIdRoute) // Must come before putCategoryRoute due to :id path matching
 	.route("/categories", putCategoryRoute)
 	.route("/categories", deleteCategoryRoute)
 	// Transaction routes

@@ -20,6 +20,7 @@ import { Route as DashboardLayoutUjianRouteImport } from './routes/_dashboardLay
 import { Route as DashboardLayoutTransactionsRouteImport } from './routes/_dashboardLayout/transactions'
 import { Route as DashboardLayoutGraphAdminRouteImport } from './routes/_dashboardLayout/graph-admin'
 import { Route as DashboardLayoutDevRouteImport } from './routes/_dashboardLayout/dev'
+import { Route as DashboardLayoutCategoriesRouteImport } from './routes/_dashboardLayout/categories'
 import { Route as DashboardLayoutUjianIndexRouteImport } from './routes/_dashboardLayout/ujian/index'
 import { Route as DashboardLayoutRolesIndexRouteImport } from './routes/_dashboardLayout/roles/index'
 import { Route as DashboardLayoutNotificationsIndexRouteImport } from './routes/_dashboardLayout/notifications/index'
@@ -30,6 +31,7 @@ import { Route as DashboardLayoutTransactionsCreateRouteImport } from './routes/
 import { Route as DashboardLayoutTransactionsAnalyticsRouteImport } from './routes/_dashboardLayout/transactions/analytics'
 import { Route as DashboardLayoutRolesCreateRouteImport } from './routes/_dashboardLayout/roles/create'
 import { Route as DashboardLayoutPersonalNotificationsRouteImport } from './routes/_dashboardLayout/personal/notifications'
+import { Route as DashboardLayoutCategoriesCreateRouteImport } from './routes/_dashboardLayout/categories/create'
 import { Route as DashboardLayoutUsersEditUserIdRouteImport } from './routes/_dashboardLayout/users/edit.$userId'
 import { Route as DashboardLayoutUsersDetailUserIdRouteImport } from './routes/_dashboardLayout/users/detail.$userId'
 import { Route as DashboardLayoutUsersDeleteUserIdRouteImport } from './routes/_dashboardLayout/users/delete.$userId'
@@ -38,6 +40,9 @@ import { Route as DashboardLayoutTransactionsEditTransactionIdRouteImport } from
 import { Route as DashboardLayoutTransactionsDeleteTransactionIdRouteImport } from './routes/_dashboardLayout/transactions/delete.$transactionId'
 import { Route as DashboardLayoutRolesViewRoleIdRouteImport } from './routes/_dashboardLayout/roles/view.$roleId'
 import { Route as DashboardLayoutRolesEditRoleIdRouteImport } from './routes/_dashboardLayout/roles/edit.$roleId'
+import { Route as DashboardLayoutCategoriesViewCategoryIdRouteImport } from './routes/_dashboardLayout/categories/view.$categoryId'
+import { Route as DashboardLayoutCategoriesEditCategoryIdRouteImport } from './routes/_dashboardLayout/categories/edit.$categoryId'
+import { Route as DashboardLayoutCategoriesDeleteCategoryIdRouteImport } from './routes/_dashboardLayout/categories/delete.$categoryId'
 
 const IndexLazyRouteImport = createFileRoute('/')()
 const LogoutIndexLazyRouteImport = createFileRoute('/logout/')()
@@ -162,6 +167,14 @@ const DashboardLayoutDevRoute = DashboardLayoutDevRouteImport.update({
   path: '/dev',
   getParentRoute: () => DashboardLayoutRoute,
 } as any)
+const DashboardLayoutCategoriesRoute =
+  DashboardLayoutCategoriesRouteImport.update({
+    id: '/categories',
+    path: '/categories',
+    getParentRoute: () => DashboardLayoutRoute,
+  } as any).lazy(() =>
+    import('./routes/_dashboardLayout/categories.lazy').then((d) => d.Route),
+  )
 const DashboardLayoutAppSettingsIndexLazyRoute =
   DashboardLayoutAppSettingsIndexLazyRouteImport.update({
     id: '/app-settings/',
@@ -260,6 +273,12 @@ const DashboardLayoutPersonalNotificationsRoute =
     path: '/personal/notifications',
     getParentRoute: () => DashboardLayoutRoute,
   } as any)
+const DashboardLayoutCategoriesCreateRoute =
+  DashboardLayoutCategoriesCreateRouteImport.update({
+    id: '/create',
+    path: '/create',
+    getParentRoute: () => DashboardLayoutCategoriesRoute,
+  } as any)
 const DashboardLayoutAppSettingsEditIdLazyRoute =
   DashboardLayoutAppSettingsEditIdLazyRouteImport.update({
     id: '/app-settings/edit/$id',
@@ -338,11 +357,30 @@ const DashboardLayoutRolesEditRoleIdRoute =
     path: '/roles/edit/$roleId',
     getParentRoute: () => DashboardLayoutRoute,
   } as any)
+const DashboardLayoutCategoriesViewCategoryIdRoute =
+  DashboardLayoutCategoriesViewCategoryIdRouteImport.update({
+    id: '/view/$categoryId',
+    path: '/view/$categoryId',
+    getParentRoute: () => DashboardLayoutCategoriesRoute,
+  } as any)
+const DashboardLayoutCategoriesEditCategoryIdRoute =
+  DashboardLayoutCategoriesEditCategoryIdRouteImport.update({
+    id: '/edit/$categoryId',
+    path: '/edit/$categoryId',
+    getParentRoute: () => DashboardLayoutCategoriesRoute,
+  } as any)
+const DashboardLayoutCategoriesDeleteCategoryIdRoute =
+  DashboardLayoutCategoriesDeleteCategoryIdRouteImport.update({
+    id: '/delete/$categoryId',
+    path: '/delete/$categoryId',
+    getParentRoute: () => DashboardLayoutCategoriesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
   '/no-access': typeof NoAccessRoute
   '/not-found': typeof NotFoundRoute
+  '/categories': typeof DashboardLayoutCategoriesRouteWithChildren
   '/dev': typeof DashboardLayoutDevRoute
   '/graph-admin': typeof DashboardLayoutGraphAdminRoute
   '/transactions': typeof DashboardLayoutTransactionsRouteWithChildren
@@ -354,6 +392,7 @@ export interface FileRoutesByFullPath {
   '/oauth/microsoft-callback': typeof OauthMicrosoftCallbackLazyRoute
   '/login': typeof LoginIndexRoute
   '/logout': typeof LogoutIndexLazyRoute
+  '/categories/create': typeof DashboardLayoutCategoriesCreateRoute
   '/personal/notifications': typeof DashboardLayoutPersonalNotificationsRoute
   '/roles/create': typeof DashboardLayoutRolesCreateRoute
   '/transactions/analytics': typeof DashboardLayoutTransactionsAnalyticsRoute
@@ -367,6 +406,9 @@ export interface FileRoutesByFullPath {
   '/roles': typeof DashboardLayoutRolesIndexRoute
   '/ujian/': typeof DashboardLayoutUjianIndexRoute
   '/app-settings': typeof DashboardLayoutAppSettingsIndexLazyRoute
+  '/categories/delete/$categoryId': typeof DashboardLayoutCategoriesDeleteCategoryIdRoute
+  '/categories/edit/$categoryId': typeof DashboardLayoutCategoriesEditCategoryIdRoute
+  '/categories/view/$categoryId': typeof DashboardLayoutCategoriesViewCategoryIdRoute
   '/roles/edit/$roleId': typeof DashboardLayoutRolesEditRoleIdRoute
   '/roles/view/$roleId': typeof DashboardLayoutRolesViewRoleIdRoute
   '/transactions/delete/$transactionId': typeof DashboardLayoutTransactionsDeleteTransactionIdRoute
@@ -383,6 +425,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
   '/no-access': typeof NoAccessRoute
   '/not-found': typeof NotFoundRoute
+  '/categories': typeof DashboardLayoutCategoriesRouteWithChildren
   '/dev': typeof DashboardLayoutDevRoute
   '/graph-admin': typeof DashboardLayoutGraphAdminRoute
   '/transactions': typeof DashboardLayoutTransactionsRouteWithChildren
@@ -393,6 +436,7 @@ export interface FileRoutesByTo {
   '/oauth/microsoft-callback': typeof OauthMicrosoftCallbackLazyRoute
   '/login': typeof LoginIndexRoute
   '/logout': typeof LogoutIndexLazyRoute
+  '/categories/create': typeof DashboardLayoutCategoriesCreateRoute
   '/personal/notifications': typeof DashboardLayoutPersonalNotificationsRoute
   '/roles/create': typeof DashboardLayoutRolesCreateRoute
   '/transactions/analytics': typeof DashboardLayoutTransactionsAnalyticsRoute
@@ -406,6 +450,9 @@ export interface FileRoutesByTo {
   '/roles': typeof DashboardLayoutRolesIndexRoute
   '/ujian': typeof DashboardLayoutUjianIndexRoute
   '/app-settings': typeof DashboardLayoutAppSettingsIndexLazyRoute
+  '/categories/delete/$categoryId': typeof DashboardLayoutCategoriesDeleteCategoryIdRoute
+  '/categories/edit/$categoryId': typeof DashboardLayoutCategoriesEditCategoryIdRoute
+  '/categories/view/$categoryId': typeof DashboardLayoutCategoriesViewCategoryIdRoute
   '/roles/edit/$roleId': typeof DashboardLayoutRolesEditRoleIdRoute
   '/roles/view/$roleId': typeof DashboardLayoutRolesViewRoleIdRoute
   '/transactions/delete/$transactionId': typeof DashboardLayoutTransactionsDeleteTransactionIdRoute
@@ -424,6 +471,7 @@ export interface FileRoutesById {
   '/_dashboardLayout': typeof DashboardLayoutRouteWithChildren
   '/no-access': typeof NoAccessRoute
   '/not-found': typeof NotFoundRoute
+  '/_dashboardLayout/categories': typeof DashboardLayoutCategoriesRouteWithChildren
   '/_dashboardLayout/dev': typeof DashboardLayoutDevRoute
   '/_dashboardLayout/graph-admin': typeof DashboardLayoutGraphAdminRoute
   '/_dashboardLayout/transactions': typeof DashboardLayoutTransactionsRouteWithChildren
@@ -435,6 +483,7 @@ export interface FileRoutesById {
   '/oauth/microsoft-callback': typeof OauthMicrosoftCallbackLazyRoute
   '/login/': typeof LoginIndexRoute
   '/logout/': typeof LogoutIndexLazyRoute
+  '/_dashboardLayout/categories/create': typeof DashboardLayoutCategoriesCreateRoute
   '/_dashboardLayout/personal/notifications': typeof DashboardLayoutPersonalNotificationsRoute
   '/_dashboardLayout/roles/create': typeof DashboardLayoutRolesCreateRoute
   '/_dashboardLayout/transactions/analytics': typeof DashboardLayoutTransactionsAnalyticsRoute
@@ -448,6 +497,9 @@ export interface FileRoutesById {
   '/_dashboardLayout/roles/': typeof DashboardLayoutRolesIndexRoute
   '/_dashboardLayout/ujian/': typeof DashboardLayoutUjianIndexRoute
   '/_dashboardLayout/app-settings/': typeof DashboardLayoutAppSettingsIndexLazyRoute
+  '/_dashboardLayout/categories/delete/$categoryId': typeof DashboardLayoutCategoriesDeleteCategoryIdRoute
+  '/_dashboardLayout/categories/edit/$categoryId': typeof DashboardLayoutCategoriesEditCategoryIdRoute
+  '/_dashboardLayout/categories/view/$categoryId': typeof DashboardLayoutCategoriesViewCategoryIdRoute
   '/_dashboardLayout/roles/edit/$roleId': typeof DashboardLayoutRolesEditRoleIdRoute
   '/_dashboardLayout/roles/view/$roleId': typeof DashboardLayoutRolesViewRoleIdRoute
   '/_dashboardLayout/transactions/delete/$transactionId': typeof DashboardLayoutTransactionsDeleteTransactionIdRoute
@@ -466,6 +518,7 @@ export interface FileRouteTypes {
     | '/'
     | '/no-access'
     | '/not-found'
+    | '/categories'
     | '/dev'
     | '/graph-admin'
     | '/transactions'
@@ -477,6 +530,7 @@ export interface FileRouteTypes {
     | '/oauth/microsoft-callback'
     | '/login'
     | '/logout'
+    | '/categories/create'
     | '/personal/notifications'
     | '/roles/create'
     | '/transactions/analytics'
@@ -490,6 +544,9 @@ export interface FileRouteTypes {
     | '/roles'
     | '/ujian/'
     | '/app-settings'
+    | '/categories/delete/$categoryId'
+    | '/categories/edit/$categoryId'
+    | '/categories/view/$categoryId'
     | '/roles/edit/$roleId'
     | '/roles/view/$roleId'
     | '/transactions/delete/$transactionId'
@@ -506,6 +563,7 @@ export interface FileRouteTypes {
     | '/'
     | '/no-access'
     | '/not-found'
+    | '/categories'
     | '/dev'
     | '/graph-admin'
     | '/transactions'
@@ -516,6 +574,7 @@ export interface FileRouteTypes {
     | '/oauth/microsoft-callback'
     | '/login'
     | '/logout'
+    | '/categories/create'
     | '/personal/notifications'
     | '/roles/create'
     | '/transactions/analytics'
@@ -529,6 +588,9 @@ export interface FileRouteTypes {
     | '/roles'
     | '/ujian'
     | '/app-settings'
+    | '/categories/delete/$categoryId'
+    | '/categories/edit/$categoryId'
+    | '/categories/view/$categoryId'
     | '/roles/edit/$roleId'
     | '/roles/view/$roleId'
     | '/transactions/delete/$transactionId'
@@ -546,6 +608,7 @@ export interface FileRouteTypes {
     | '/_dashboardLayout'
     | '/no-access'
     | '/not-found'
+    | '/_dashboardLayout/categories'
     | '/_dashboardLayout/dev'
     | '/_dashboardLayout/graph-admin'
     | '/_dashboardLayout/transactions'
@@ -557,6 +620,7 @@ export interface FileRouteTypes {
     | '/oauth/microsoft-callback'
     | '/login/'
     | '/logout/'
+    | '/_dashboardLayout/categories/create'
     | '/_dashboardLayout/personal/notifications'
     | '/_dashboardLayout/roles/create'
     | '/_dashboardLayout/transactions/analytics'
@@ -570,6 +634,9 @@ export interface FileRouteTypes {
     | '/_dashboardLayout/roles/'
     | '/_dashboardLayout/ujian/'
     | '/_dashboardLayout/app-settings/'
+    | '/_dashboardLayout/categories/delete/$categoryId'
+    | '/_dashboardLayout/categories/edit/$categoryId'
+    | '/_dashboardLayout/categories/view/$categoryId'
     | '/_dashboardLayout/roles/edit/$roleId'
     | '/_dashboardLayout/roles/view/$roleId'
     | '/_dashboardLayout/transactions/delete/$transactionId'
@@ -702,6 +769,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutDevRouteImport
       parentRoute: typeof DashboardLayoutRoute
     }
+    '/_dashboardLayout/categories': {
+      id: '/_dashboardLayout/categories'
+      path: '/categories'
+      fullPath: '/categories'
+      preLoaderRoute: typeof DashboardLayoutCategoriesRouteImport
+      parentRoute: typeof DashboardLayoutRoute
+    }
     '/_dashboardLayout/app-settings/': {
       id: '/_dashboardLayout/app-settings/'
       path: '/app-settings'
@@ -793,6 +867,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutPersonalNotificationsRouteImport
       parentRoute: typeof DashboardLayoutRoute
     }
+    '/_dashboardLayout/categories/create': {
+      id: '/_dashboardLayout/categories/create'
+      path: '/create'
+      fullPath: '/categories/create'
+      preLoaderRoute: typeof DashboardLayoutCategoriesCreateRouteImport
+      parentRoute: typeof DashboardLayoutCategoriesRoute
+    }
     '/_dashboardLayout/app-settings/edit/$id': {
       id: '/_dashboardLayout/app-settings/edit/$id'
       path: '/app-settings/edit/$id'
@@ -870,8 +951,52 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardLayoutRolesEditRoleIdRouteImport
       parentRoute: typeof DashboardLayoutRoute
     }
+    '/_dashboardLayout/categories/view/$categoryId': {
+      id: '/_dashboardLayout/categories/view/$categoryId'
+      path: '/view/$categoryId'
+      fullPath: '/categories/view/$categoryId'
+      preLoaderRoute: typeof DashboardLayoutCategoriesViewCategoryIdRouteImport
+      parentRoute: typeof DashboardLayoutCategoriesRoute
+    }
+    '/_dashboardLayout/categories/edit/$categoryId': {
+      id: '/_dashboardLayout/categories/edit/$categoryId'
+      path: '/edit/$categoryId'
+      fullPath: '/categories/edit/$categoryId'
+      preLoaderRoute: typeof DashboardLayoutCategoriesEditCategoryIdRouteImport
+      parentRoute: typeof DashboardLayoutCategoriesRoute
+    }
+    '/_dashboardLayout/categories/delete/$categoryId': {
+      id: '/_dashboardLayout/categories/delete/$categoryId'
+      path: '/delete/$categoryId'
+      fullPath: '/categories/delete/$categoryId'
+      preLoaderRoute: typeof DashboardLayoutCategoriesDeleteCategoryIdRouteImport
+      parentRoute: typeof DashboardLayoutCategoriesRoute
+    }
   }
 }
+
+interface DashboardLayoutCategoriesRouteChildren {
+  DashboardLayoutCategoriesCreateRoute: typeof DashboardLayoutCategoriesCreateRoute
+  DashboardLayoutCategoriesDeleteCategoryIdRoute: typeof DashboardLayoutCategoriesDeleteCategoryIdRoute
+  DashboardLayoutCategoriesEditCategoryIdRoute: typeof DashboardLayoutCategoriesEditCategoryIdRoute
+  DashboardLayoutCategoriesViewCategoryIdRoute: typeof DashboardLayoutCategoriesViewCategoryIdRoute
+}
+
+const DashboardLayoutCategoriesRouteChildren: DashboardLayoutCategoriesRouteChildren =
+  {
+    DashboardLayoutCategoriesCreateRoute: DashboardLayoutCategoriesCreateRoute,
+    DashboardLayoutCategoriesDeleteCategoryIdRoute:
+      DashboardLayoutCategoriesDeleteCategoryIdRoute,
+    DashboardLayoutCategoriesEditCategoryIdRoute:
+      DashboardLayoutCategoriesEditCategoryIdRoute,
+    DashboardLayoutCategoriesViewCategoryIdRoute:
+      DashboardLayoutCategoriesViewCategoryIdRoute,
+  }
+
+const DashboardLayoutCategoriesRouteWithChildren =
+  DashboardLayoutCategoriesRoute._addFileChildren(
+    DashboardLayoutCategoriesRouteChildren,
+  )
 
 interface DashboardLayoutTransactionsRouteChildren {
   DashboardLayoutTransactionsAnalyticsRoute: typeof DashboardLayoutTransactionsAnalyticsRoute
@@ -930,6 +1055,7 @@ const DashboardLayoutUsersRouteWithChildren =
   DashboardLayoutUsersRoute._addFileChildren(DashboardLayoutUsersRouteChildren)
 
 interface DashboardLayoutRouteChildren {
+  DashboardLayoutCategoriesRoute: typeof DashboardLayoutCategoriesRouteWithChildren
   DashboardLayoutDevRoute: typeof DashboardLayoutDevRoute
   DashboardLayoutGraphAdminRoute: typeof DashboardLayoutGraphAdminRoute
   DashboardLayoutTransactionsRoute: typeof DashboardLayoutTransactionsRouteWithChildren
@@ -952,6 +1078,7 @@ interface DashboardLayoutRouteChildren {
 }
 
 const DashboardLayoutRouteChildren: DashboardLayoutRouteChildren = {
+  DashboardLayoutCategoriesRoute: DashboardLayoutCategoriesRouteWithChildren,
   DashboardLayoutDevRoute: DashboardLayoutDevRoute,
   DashboardLayoutGraphAdminRoute: DashboardLayoutGraphAdminRoute,
   DashboardLayoutTransactionsRoute:

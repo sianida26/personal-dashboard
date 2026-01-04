@@ -59,6 +59,13 @@ const sidebarMenus: SidebarMenu[] = [
 				link: "/transactions",
 				color: "green",
 			},
+			{
+				label: "Kategori",
+				icon: { tb: "TbCategory" },
+				allowedPermissions: ["*"],
+				link: "/categories",
+				color: "blue",
+			},
 		],
 	},
 	{
