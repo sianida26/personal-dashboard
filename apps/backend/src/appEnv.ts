@@ -33,6 +33,9 @@ const envSchema = z.object({
 	//Secrets
 	PRIVATE_KEY_PATH: z.string().default("private_key.pem"),
 	PUBLIC_KEY_PATH: z.string().default("public_key.pem"),
+	// Base64-encoded RSA keys (preferred for deployments - persists across restarts)
+	JWT_PRIVATE_KEY: z.string().optional(),
+	JWT_PUBLIC_KEY: z.string().optional(),
 
 	//Logging
 	LOG_ERROR: logSchema("true"),
