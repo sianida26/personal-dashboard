@@ -33,14 +33,12 @@ import {
 	fetchNotifications,
 	markNotification,
 	markNotifications,
+	notificationQueryKeys,
+	type Notification,
+	type NotificationGroup,
 	type NotificationListQuery,
-} from "@/modules/notifications/api";
-import { notificationQueryKeys } from "@/modules/notifications/queryKeys";
-import type {
-	Notification,
-	NotificationGroup,
-	PaginatedNotificationsResponse,
-} from "@/modules/notifications/types";
+	type PaginatedNotificationsResponse,
+} from "@/hooks/useNotifications";
 
 dayjs.extend(relativeTime);
 

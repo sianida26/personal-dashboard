@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
-import { EmailChannelAdapter } from "../../src/modules/notifications/channels/email-adapter";
-import type { ChannelDeliveryRequest } from "../../src/modules/notifications/channels/types";
+import { EmailChannelAdapter } from "../../src/services/notifications/channels/email-adapter";
+import type { ChannelDeliveryRequest } from "../../src/services/notifications/channels/types";
 import jobQueueManager from "../../src/services/jobs/queue-manager";
 
 // Store original function

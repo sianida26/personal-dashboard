@@ -3,6 +3,10 @@ import * as fs from "node:fs";
 import appEnv from "../appEnv";
 import appLogger from "./logger";
 
+// Cache decoded keys in memory to avoid repeated base64 decoding
+let cachedPrivateKey: string | null = null;
+let cachedPublicKey: string | null = null;
+
 /**
  * Generates an RSA key pair using the specified options.
  *
@@ -46,31 +50,95 @@ const createKeyPairFiles = () => {
 };
 
 /**
- * Retrieves the private key from the specified file path.
- * If the private key does not exist, it generates a new key pair and returns the private key.
+ * Decodes a base64-encoded key to PEM format.
+ *
+ * @param base64Key - The base64-encoded key string.
+ * @returns The decoded PEM key string.
+ */
+const decodeBase64Key = (base64Key: string): string => {
+	return Buffer.from(base64Key, "base64").toString("utf-8");
+};
+
+/**
+ * Retrieves the private key with the following priority:
+ * 1. Environment variable JWT_PRIVATE_KEY (base64-encoded) - preferred for deployments
+ * 2. File-based key from PRIVATE_KEY_PATH
+ * 3. Auto-generate new key pair (development only)
  *
  * @returns The `privateKey` as a string in PEM format.
  */
 export const getPrivateKey = () => {
-	if (fs.existsSync(appEnv.PRIVATE_KEY_PATH)) {
-		return fs.readFileSync(appEnv.PRIVATE_KEY_PATH, "utf-8");
+	// Return cached key if available
+	if (cachedPrivateKey) {
+		return cachedPrivateKey;
 	}
-	appLogger.info("public/private key pair does not exists");
+
+	// Priority 1: Environment variable (base64-encoded)
+	if (appEnv.JWT_PRIVATE_KEY) {
+		cachedPrivateKey = decodeBase64Key(appEnv.JWT_PRIVATE_KEY);
+		appLogger.info("Using JWT_PRIVATE_KEY from environment variable");
+		return cachedPrivateKey;
+	}
+
+	// Priority 2: File-based key
+	if (fs.existsSync(appEnv.PRIVATE_KEY_PATH)) {
+		cachedPrivateKey = fs.readFileSync(appEnv.PRIVATE_KEY_PATH, "utf-8");
+		return cachedPrivateKey;
+	}
+
+	// Priority 3: Generate new keys (development only - NOT recommended for production)
+	if (appEnv.APP_ENV === "production") {
+		const error = new Error(
+			"JWT keys must be configured via environment variables in production. Set JWT_PRIVATE_KEY and JWT_PUBLIC_KEY.",
+		);
+		appLogger.error(error);
+		throw error;
+	}
+
+	appLogger.info("public/private key pair does not exist - generating for development");
 	const { privateKey } = createKeyPairFiles();
-	return privateKey;
+	cachedPrivateKey = privateKey;
+	return cachedPrivateKey;
 };
 
 /**
- * Retrieves the public key from the specified file path.
- * If the public key does not exist, it generates a new key pair and returns the public key.
+ * Retrieves the public key with the following priority:
+ * 1. Environment variable JWT_PUBLIC_KEY (base64-encoded) - preferred for deployments
+ * 2. File-based key from PUBLIC_KEY_PATH
+ * 3. Auto-generate new key pair (development only)
  *
  * @returns The `publicKey` as a string in PEM format.
  */
 export const getPublicKey = () => {
-	if (fs.existsSync(appEnv.PUBLIC_KEY_PATH)) {
-		return fs.readFileSync(appEnv.PUBLIC_KEY_PATH, "utf-8");
+	// Return cached key if available
+	if (cachedPublicKey) {
+		return cachedPublicKey;
 	}
-	appLogger.info("public/private key pair does not exists");
+
+	// Priority 1: Environment variable (base64-encoded)
+	if (appEnv.JWT_PUBLIC_KEY) {
+		cachedPublicKey = decodeBase64Key(appEnv.JWT_PUBLIC_KEY);
+		appLogger.info("Using JWT_PUBLIC_KEY from environment variable");
+		return cachedPublicKey;
+	}
+
+	// Priority 2: File-based key
+	if (fs.existsSync(appEnv.PUBLIC_KEY_PATH)) {
+		cachedPublicKey = fs.readFileSync(appEnv.PUBLIC_KEY_PATH, "utf-8");
+		return cachedPublicKey;
+	}
+
+	// Priority 3: Generate new keys (development only - NOT recommended for production)
+	if (appEnv.APP_ENV === "production") {
+		const error = new Error(
+			"JWT keys must be configured via environment variables in production. Set JWT_PRIVATE_KEY and JWT_PUBLIC_KEY.",
+		);
+		appLogger.error(error);
+		throw error;
+	}
+
+	appLogger.info("public/private key pair does not exist - generating for development");
 	const { publicKey } = createKeyPairFiles();
-	return publicKey;
+	cachedPublicKey = publicKey;
+	return cachedPublicKey;
 };

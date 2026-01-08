@@ -6,11 +6,11 @@ import { addSpanAttributes, addSpanEvent, withSpan } from "../../utils/tracing";
 import {
 	DEFAULT_NOTIFICATION_PREFERENCE_MATRIX,
 	NOTIFICATION_CHANNELS,
-} from "../notification-preferences/constants";
-import type { NotificationPreferenceSummary } from "../notification-preferences/notification-preferences-service";
+} from "../../modules/notification-preferences/constants";
+import type { NotificationPreferenceSummary } from "../../modules/notification-preferences/notification-preferences-service";
 import notificationPreferenceService, {
 	type NotificationPreferenceService,
-} from "../notification-preferences/notification-preferences-service";
+} from "../../modules/notification-preferences/notification-preferences-service";
 import { EmailChannelAdapter } from "./channels/email-adapter";
 import { InAppChannelAdapter } from "./channels/in-app-adapter";
 import type { NotificationChannelAdapter } from "./channels/types";

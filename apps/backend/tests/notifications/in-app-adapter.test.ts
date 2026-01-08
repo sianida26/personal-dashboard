@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
-import { InAppChannelAdapter } from "../../src/modules/notifications/channels/in-app-adapter";
-import type { ChannelDeliveryRequest } from "../../src/modules/notifications/channels/types";
+import { InAppChannelAdapter } from "../../src/services/notifications/channels/in-app-adapter";
+import type { ChannelDeliveryRequest } from "../../src/services/notifications/channels/types";
 import jobQueueManager from "../../src/services/jobs/queue-manager";
 
 // Store original function

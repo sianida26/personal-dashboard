@@ -9,11 +9,11 @@ import type {
 	NotificationTypeEnum,
 } from "@repo/validation";
 import appEnv from "../../appEnv";
-import unifiedNotificationService from "../../modules/notifications/unified-notification-service";
+import unifiedNotificationService from "../../services/notifications/unified-notification-service";
 import type {
 	UnifiedNotificationChannelOverrides,
 	UnifiedNotificationResponse,
-} from "../../modules/notifications/unified-notification-types";
+} from "../../services/notifications/unified-notification-types";
 
 interface SendToUsersAndRolesOptions {
 	userIds?: string[];

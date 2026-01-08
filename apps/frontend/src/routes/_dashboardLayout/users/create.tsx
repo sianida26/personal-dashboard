@@ -1,5 +1,5 @@
 import ModalFormTemplate from "@/components/ModalFormTemplate";
-import PermissionMatrix from "@/modules/users/components/PermissionMatrix";
+import PermissionMatrix from "@/components/users/PermissionMatrix";
 import client from "@/honoClient";
 import useAuth from "@/hooks/useAuth";
 import fetchRPC from "@/utils/fetchRPC";

@@ -1,5 +1,5 @@
 import notificationEventHub from "../../lib/event-bus/notification-event-hub";
-import createNotificationRepository from "../../modules/notifications/notification-repository";
+import createNotificationRepository from "../../services/notifications/notification-repository";
 import type { JobHandler } from "../../services/jobs/types";
 import type { InAppNotificationJobPayload } from "./types";
 

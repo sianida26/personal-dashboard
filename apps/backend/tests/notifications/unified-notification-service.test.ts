@@ -2,8 +2,8 @@ import { afterAll, afterEach, beforeAll, describe, expect, it } from "bun:test";
 import type {
 	ChannelDeliveryRequest,
 	NotificationChannelAdapter,
-} from "../../src/modules/notifications/channels/types";
-import { UnifiedNotificationService } from "../../src/modules/notifications/unified-notification-service";
+} from "../../src/services/notifications/channels/types";
+import { UnifiedNotificationService } from "../../src/services/notifications/unified-notification-service";
 import notificationPreferenceService from "../../src/modules/notification-preferences/notification-preferences-service";
 import db from "../../src/drizzle";
 import { users } from "../../src/drizzle/schema/users";

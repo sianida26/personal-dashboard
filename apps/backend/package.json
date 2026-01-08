@@ -9,6 +9,7 @@
 		"db:up": "drizzle-kit up",
 		"start": "bun src/index.ts",
 		"db:prepare": "bun run db:migrate && bun run db:seed",
+		"generate-jwt-keys": "bun run scripts/generate-jwt-keys.ts",
 		"test": "NODE_ENV=test bun test --env-file .env.test.local --preload ./src/test-preload.ts",
 		"test:coverage": "NODE_ENV=test bun test --coverage --env-file .env.test.local --preload ./src/test-preload.ts",
 		"lint": "biome lint --write --diagnostic-level warn",

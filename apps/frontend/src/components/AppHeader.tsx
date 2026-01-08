@@ -2,8 +2,7 @@ import { Badge, SidebarTrigger } from "@repo/ui";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useMatches } from "@tanstack/react-router";
 import { TbBell } from "react-icons/tb";
-import { fetchUnreadCount } from "@/modules/notifications/api";
-import { notificationQueryKeys } from "@/modules/notifications/queryKeys";
+import { fetchUnreadCount, notificationQueryKeys } from "@/hooks/useNotifications";
 
 export default function AppHeader() {
 	const matches = useMatches();
