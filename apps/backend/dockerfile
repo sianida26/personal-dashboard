@@ -24,6 +24,9 @@ RUN bunx turbo check --filter=backend
 
 FROM base AS production
 
+# Add node_modules binaries to PATH
+ENV PATH="/node/node_modules/.bin:${PATH}"
+
 COPY --from=installer /node/apps/backend ./
 COPY --from=installer /node/packages ./packages
 COPY --from=installer /node/node_modules ./node_modules
