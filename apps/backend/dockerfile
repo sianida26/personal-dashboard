@@ -25,8 +25,8 @@ RUN bunx turbo check --filter=backend
 FROM base AS production
 
 COPY --from=installer /node/apps/backend ./
-COPY --from=installer /node/apps/backend/node_modules ./node_modules
 COPY --from=installer /node/packages ./packages
+COPY --from=installer /node/node_modules ./node_modules
 COPY --from=installer /node/bun.lock ./bun.lock
 
 RUN mkdir -p /node/logs /node/keys /node/uploads \
