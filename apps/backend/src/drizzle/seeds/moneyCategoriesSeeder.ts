@@ -561,7 +561,7 @@ const moneyCategoriesSeeder = async () => {
 			)
 		`);
 
-		const deletedCount = duplicateCleanup.rowCount || 0;
+		const deletedCount = duplicateCleanup.length || 0;
 		if (deletedCount > 0) {
 			console.log(
 				`Merged and deleted ${deletedCount} duplicate categories`,

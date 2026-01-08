@@ -38,7 +38,7 @@ const getCategoryByIdRoute = createHonoRoute()
 			);
 
 		if (!category) {
-			throw notFound("Category not found");
+			throw notFound({ message: "Category not found" });
 		}
 
 		return c.json({ data: category });
