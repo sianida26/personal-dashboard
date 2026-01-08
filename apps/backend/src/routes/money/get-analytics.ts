@@ -74,7 +74,7 @@ const getAnalyticsRoute = createHonoRoute()
 			// 2. Get daily trends
 			const dailyTrendsResult = await db
 				.select({
-					date: moneyTransactions.date,
+					date: sql<string>`TO_CHAR(${moneyTransactions.date}, 'YYYY-MM-DD')`,
 					type: moneyTransactions.type,
 					total: sum(moneyTransactions.amount),
 				})
@@ -85,8 +85,11 @@ const getAnalyticsRoute = createHonoRoute()
 						sql`${moneyTransactions.type} IN ('income', 'expense')`,
 					),
 				)
-				.groupBy(moneyTransactions.date, moneyTransactions.type)
-				.orderBy(moneyTransactions.date);
+				.groupBy(
+					sql`TO_CHAR(${moneyTransactions.date}, 'YYYY-MM-DD')`,
+					moneyTransactions.type,
+				)
+				.orderBy(sql`TO_CHAR(${moneyTransactions.date}, 'YYYY-MM-DD')`);
 
 			// Group daily trends by date
 			const dailyTrendsMap = new Map<
@@ -94,11 +97,12 @@ const getAnalyticsRoute = createHonoRoute()
 				{ income: number; expense: number }
 			>();
 			for (const row of dailyTrendsResult) {
-				const dateStr = row.date.toISOString().split("T")[0] ?? "";
+				const dateStr = row.date;
 				if (!dailyTrendsMap.has(dateStr)) {
 					dailyTrendsMap.set(dateStr, { income: 0, expense: 0 });
 				}
-				const entry = dailyTrendsMap.get(dateStr)!;
+				const entry = dailyTrendsMap.get(dateStr);
+				if (!entry) continue;
 				const amount = Number(row.total) || 0;
 				if (row.type === "income") {
 					entry.income = amount;

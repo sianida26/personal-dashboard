@@ -541,5 +541,100 @@ describe("Money Tracker - Analytics API", () => {
 			);
 			expect(Math.round(totalIncomePercentage)).toBe(100);
 		});
+
+		test("should aggregate multiple transactions on the same day", async () => {
+			// Create additional transactions on the same day to test aggregation
+			const today = new Date();
+			const testDate = new Date(
+				today.getFullYear(),
+				today.getMonth(),
+				20,
+			);
+
+			const sameDayTransactions = [
+				{
+					userId: testUser.user.id,
+					accountId: testAccountId,
+					categoryId: expenseCategoryId,
+					type: "expense" as const,
+					amount: "100000.00",
+					description: "Breakfast",
+					date: testDate,
+				},
+				{
+					userId: testUser.user.id,
+					accountId: testAccountId,
+					categoryId: expenseCategoryId,
+					type: "expense" as const,
+					amount: "150000.00",
+					description: "Lunch",
+					date: testDate,
+				},
+				{
+					userId: testUser.user.id,
+					accountId: testAccountId,
+					categoryId: expenseCategoryId,
+					type: "expense" as const,
+					amount: "200000.00",
+					description: "Dinner",
+					date: testDate,
+				},
+			];
+
+			const sameDayTransactionIds: string[] = [];
+			for (const tx of sameDayTransactions) {
+				const [created] = await db
+					.insert(moneyTransactions)
+					.values(tx)
+					.returning();
+				sameDayTransactionIds.push(created.id);
+			}
+
+			try {
+				const startDate = new Date(
+					today.getFullYear(),
+					today.getMonth(),
+					20,
+				);
+				const endDate = new Date(
+					today.getFullYear(),
+					today.getMonth(),
+					20,
+				);
+
+				const res = await client.money.analytics.$get(
+					{
+						query: {
+							startDate: startDate.toISOString(),
+							endDate: endDate.toISOString(),
+						},
+					},
+					{
+						headers: {
+							Authorization: `Bearer ${testUser.accessToken}`,
+						},
+					},
+				);
+
+				expect(res.status).toBe(200);
+				const data = await res.json();
+
+				// Should have 1 daily trend item
+				expect(data.dailyTrends.length).toBe(1);
+
+				const trend = data.dailyTrends[0];
+				expect(trend.income).toBe(0);
+				// Should sum all 3 transactions: 100,000 + 150,000 + 200,000 = 450,000
+				expect(trend.expense).toBe(450000);
+				expect(trend.net).toBe(-450000);
+			} finally {
+				// Clean up same-day transactions
+				for (const txId of sameDayTransactionIds) {
+					await db
+						.delete(moneyTransactions)
+						.where(eq(moneyTransactions.id, txId));
+				}
+			}
+		});
 	});
 });
