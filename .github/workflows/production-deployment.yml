@@ -41,7 +41,7 @@ jobs:
             - name: Deploy backend to Dokploy
               run: |
                   curl -X 'POST' \
-                  'http://server-0:3000/api/trpc/application.redeploy' \
+                  'http://100.115.79.97:3000/api/trpc/application.redeploy' \
                   -H 'accept: application/json' \
                   -H 'x-api-key: ${{ secrets.DOKPLOY_API_KEY }}' \
                   -H 'Content-Type: application/json' \
@@ -54,7 +54,7 @@ jobs:
             - name: Deploy frontend to Dokploy
               run: |
                   curl -X 'POST' \
-                  'http://server-0:3000/api/trpc/application.redeploy' \
+                  'http://100.115.79.97:3000/api/trpc/application.redeploy' \
                   -H 'accept: application/json' \
                   -H 'x-api-key: ${{ secrets.DOKPLOY_API_KEY }}' \
                   -H 'Content-Type: application/json' \
