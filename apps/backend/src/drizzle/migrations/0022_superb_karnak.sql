@@ -1,0 +1,1 @@
+ALTER TABLE "money_transactions" ADD COLUMN "labels" jsonb;

@@ -96,6 +96,7 @@ const postTransactionRoute = createHonoRoute()
 					toAccountId: data.toAccountId,
 					source: "manual",
 					tags: data.tags,
+					labels: data.labels,
 					attachmentUrl: data.attachmentUrl,
 				})
 				.returning();

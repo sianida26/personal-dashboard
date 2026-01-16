@@ -2,6 +2,7 @@ import { useForm } from "@mantine/form";
 import {
 	Input,
 	Label,
+	MultiSelect,
 	NativeSelect,
 	SelectContent,
 	SelectItem,
@@ -40,6 +41,7 @@ function RouteComponent() {
 			date: undefined,
 			description: undefined,
 			tags: undefined,
+			labels: undefined,
 			attachmentUrl: undefined,
 		},
 	});
@@ -78,6 +80,22 @@ function RouteComponent() {
 		enabled: !!transactionData && transactionData.type !== "transfer",
 	});
 
+	// Fetch existing labels for autocomplete
+	const { data: labelsResponse } = useQuery({
+		queryKey: ["transaction-labels"],
+		queryFn: async () => {
+			try {
+				const res = await fetchRPC(
+					// @ts-expect-error - endpoint might not exist yet
+					client.money.transactions.labels.$get(),
+				);
+				return res;
+			} catch {
+				return { data: [] };
+			}
+		},
+	});
+
 	// Set form values when transaction data is loaded
 	useEffect(() => {
 		if (transactionData) {
@@ -89,12 +107,14 @@ function RouteComponent() {
 					: undefined,
 				description: transactionData.description ?? undefined,
 				tags: transactionData.tags ?? undefined,
+				labels: transactionData.labels ?? undefined,
 				attachmentUrl: transactionData.attachmentUrl ?? undefined,
 			});
 		}
 	}, [transactionData]);
 
 	const categories = categoriesResponse?.data ?? [];
+	const existingLabels = (labelsResponse?.data as string[]) ?? [];
 
 	if (isLoading) {
 		return null;
@@ -270,6 +290,24 @@ function RouteComponent() {
 							{form.errors.description}
 						</p>
 					)}
+				</div>
+
+				{/* Labels */}
+				<div className="space-y-2">
+					<MultiSelect
+						label="Label"
+						placeholder="Tambahkan label..."
+						options={existingLabels}
+						selectedOptions={form.values.labels ?? []}
+						onChange={(values) =>
+							form.setFieldValue("labels", values)
+						}
+						allowCreate={true}
+						error={form.errors.labels}
+					/>
+					<p className="text-xs text-muted-foreground">
+						Tambahkan label untuk mengkategorikan transaksi Anda
+					</p>
 				</div>
 			</div>
 		</ModalFormTemplate>

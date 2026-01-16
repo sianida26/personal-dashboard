@@ -61,6 +61,10 @@ export const transactionCreateSchema = z
 			.array(z.string().max(50, "Tag is too long"))
 			.max(10, "Maximum 10 tags allowed")
 			.optional(),
+		labels: z
+			.array(z.string().max(100, "Label is too long"))
+			.max(20, "Maximum 20 labels allowed")
+			.optional(),
 		attachmentUrl: z.string().url("Invalid URL").optional(),
 	})
 	.refine((data) => data.type !== "transfer" || data.toAccountId, {
@@ -88,6 +92,11 @@ export const transactionUpdateSchema = z.object({
 	tags: z
 		.array(z.string().max(50, "Tag is too long"))
 		.max(10, "Maximum 10 tags allowed")
+		.nullable()
+		.optional(),
+	labels: z
+		.array(z.string().max(100, "Label is too long"))
+		.max(20, "Maximum 20 labels allowed")
 		.nullable()
 		.optional(),
 	attachmentUrl: z.string().url("Invalid URL").nullable().optional(),

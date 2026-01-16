@@ -39,6 +39,7 @@ interface Transaction {
 	toAccountId: string | null;
 	source: "manual" | "import";
 	tags: string[] | null;
+	labels: string[] | null;
 	attachmentUrl: string | null;
 	waMessageId: string | null;
 	createdAt: string | null;

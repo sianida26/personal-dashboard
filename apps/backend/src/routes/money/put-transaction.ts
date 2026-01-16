@@ -92,6 +92,7 @@ const putTransactionRoute = createHonoRoute()
 				if (data.description !== undefined)
 					updateData.description = data.description;
 				if (data.tags !== undefined) updateData.tags = data.tags;
+				if (data.labels !== undefined) updateData.labels = data.labels;
 				if (data.attachmentUrl !== undefined)
 					updateData.attachmentUrl = data.attachmentUrl;
 

@@ -2,6 +2,7 @@ import { useForm } from "@mantine/form";
 import {
 	Input,
 	Label,
+	MultiSelect,
 	NativeSelect,
 	SelectContent,
 	SelectItem,
@@ -41,6 +42,7 @@ function RouteComponent() {
 			description: "",
 			toAccountId: undefined,
 			tags: [],
+			labels: [],
 			attachmentUrl: undefined,
 		},
 	});
@@ -83,8 +85,25 @@ function RouteComponent() {
 		},
 	});
 
+	// Fetch existing labels for autocomplete
+	const { data: labelsResponse } = useQuery({
+		queryKey: ["transaction-labels"],
+		queryFn: async () => {
+			try {
+				const res = await fetchRPC(
+					// @ts-expect-error - endpoint might not exist yet
+					client.money.transactions.labels.$get(),
+				);
+				return res;
+			} catch {
+				return { data: [] };
+			}
+		},
+	});
+
 	const categories = categoriesResponse?.data ?? [];
 	const accounts = accountsResponse?.data ?? [];
+	const existingLabels = (labelsResponse?.data as string[]) ?? [];
 
 	return (
 		<ModalFormTemplate
@@ -327,6 +346,24 @@ function RouteComponent() {
 							{form.errors.description}
 						</p>
 					)}
+				</div>
+
+				{/* Labels */}
+				<div className="space-y-2">
+					<MultiSelect
+						label="Label"
+						placeholder="Tambahkan label..."
+						options={existingLabels}
+						selectedOptions={form.values.labels ?? []}
+						onChange={(values) =>
+							form.setFieldValue("labels", values)
+						}
+						allowCreate={true}
+						error={form.errors.labels}
+					/>
+					<p className="text-xs text-muted-foreground">
+						Tambahkan label untuk mengkategorikan transaksi Anda
+					</p>
 				</div>
 			</div>
 		</ModalFormTemplate>

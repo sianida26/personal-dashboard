@@ -48,6 +48,7 @@ export const moneyTransactions = pgTable(
 		}),
 		source: transactionSourceEnum("source").notNull().default("manual"),
 		tags: jsonb("tags").$type<string[]>(),
+		labels: jsonb("labels").$type<string[]>(),
 		attachmentUrl: text("attachment_url"),
 		waMessageId: text("wa_message_id"),
 		createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),

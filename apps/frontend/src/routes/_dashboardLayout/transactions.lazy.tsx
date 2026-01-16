@@ -32,6 +32,7 @@ interface Transaction {
 	toAccountId: string | null;
 	source: "manual" | "import";
 	tags: string[] | null;
+	labels: string[] | null;
 	attachmentUrl: string | null;
 	waMessageId: string | null;
 	createdAt: string | null;
@@ -220,6 +221,33 @@ export default function TransactionsPage() {
 						);
 					}
 				},
+			},
+			{
+				accessorKey: "labels",
+				header: "Label",
+				cell: (info) => {
+					const labels = info.getValue() as string[] | null;
+					if (!labels || labels.length === 0) {
+						return <span className="text-gray-400">-</span>;
+					}
+					return (
+						<div className="flex flex-wrap gap-1">
+							{labels.map((label, index) => (
+								<Badge
+									key={index}
+									variant="outline"
+									className="text-xs"
+								>
+									{label}
+								</Badge>
+							))}
+						</div>
+					);
+				},
+				sortable: false,
+				size: 180,
+				minSize: 150,
+				enableHiding: true,
 			},
 			{
 				id: "category",
