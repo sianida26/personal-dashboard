@@ -66,6 +66,17 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 	const search = props.search ?? true;
 	const error = props.error;
 	const onRetry = props.onRetry;
+	const getRowClassName = props.getRowClassName;
+
+	// Helper to generate row className
+	const generateRowClassName = (row: {
+		original: T;
+		getIsSelected: () => boolean;
+	}) => {
+		const baseClasses = `group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""} ${showDetail ? "cursor-pointer" : ""}`;
+		const customClass = getRowClassName?.(row) ?? "";
+		return `${baseClasses} ${customClass}`.trim();
+	};
 
 	// Reference for the scrollable container
 	const tableContainerRef = useRef<HTMLDivElement>(null);
@@ -1102,7 +1113,9 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 														virtualRow.index
 													}
 													data-selected={row.getIsSelected()}
-													className={`group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""} ${showDetail ? "cursor-pointer" : ""}`}
+													className={generateRowClassName(
+														row,
+													)}
 													onClick={(e) =>
 														handleRowClick(
 															e,
@@ -1148,7 +1161,9 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 												key={row.id}
 												data-index={virtualRow.index}
 												data-selected={row.getIsSelected()}
-												className={`group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""} ${showDetail ? "cursor-pointer" : ""}`}
+												className={generateRowClassName(
+													row,
+												)}
 												onClick={(e) =>
 													handleRowClick(
 														e,
@@ -1243,7 +1258,9 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 														<tr
 															key={row.id}
 															data-selected={row.getIsSelected()}
-															className={`group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""} ${showDetail ? "cursor-pointer" : ""}`}
+															className={generateRowClassName(
+																row,
+															)}
 															onClick={(e) =>
 																handleRowClick(
 																	e,
@@ -1276,7 +1293,7 @@ export function AdaptiveTable<T>(props: AdaptiveTableProps<T>) {
 									<tr
 										key={row.id}
 										data-selected={row.getIsSelected()}
-										className={`group/row transition-colors border-b hover:bg-muted/50 ${row.getIsSelected() ? "bg-muted/40" : ""} ${showDetail ? "cursor-pointer" : ""}`}
+										className={generateRowClassName(row)}
 										onClick={(e) =>
 											handleRowClick(
 												e,

@@ -240,6 +240,12 @@ export type AdaptiveTableProps<T> = {
 	 */
 	tableHeight?: string;
 	/**
+	 * Function to determine CSS class for each row based on row data
+	 * @param row - The row object with original data
+	 * @returns CSS class string to apply to the row
+	 */
+	getRowClassName?: (row: { original: T }) => string;
+	/**
 	 * Scale columns to fit parent width without horizontal scroll
 	 * @default false
 	 */

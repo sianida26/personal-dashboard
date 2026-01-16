@@ -2,7 +2,6 @@ import { categoryQuerySchema } from "@repo/validation";
 import { and, eq, sql } from "drizzle-orm";
 import db from "../../drizzle";
 import { moneyCategories } from "../../drizzle/schema/moneyCategories";
-import { moneyTransactions } from "../../drizzle/schema/moneyTransactions";
 import { unauthorized } from "../../errors/DashboardError";
 import authInfo from "../../middlewares/authInfo";
 import { createHonoRoute } from "../../utils/createHonoRoute";
@@ -60,8 +59,8 @@ const getCategoriesRoute = createHonoRoute()
 				updatedAt: moneyCategories.updatedAt,
 				transactionCount: sql<number>`(
 					SELECT COUNT(*) 
-					FROM ${moneyTransactions} 
-					WHERE ${moneyTransactions.categoryId} = ${moneyCategories.id}
+					FROM "money_transactions" 
+					WHERE "money_transactions"."category_id" = "money_categories"."id"
 				)`.as("transaction_count"),
 			})
 			.from(moneyCategories)
