@@ -438,6 +438,14 @@ export default function AnalyticsPage() {
 		useState<TreemapItem | null>(null);
 	const [dialogOpen, setDialogOpen] = useState(false);
 
+	// State for date-based dialog
+	const [selectedDate, setSelectedDate] = useState<{
+		date: string;
+		type: "daily" | "monthly";
+		label: string;
+	} | null>(null);
+	const [dateDialogOpen, setDateDialogOpen] = useState(false);
+
 	// Determine the effective date range
 	const effectiveDateRange = useMemo(() => {
 		if (quickRange === "custom" && customDateRange) {
@@ -494,9 +502,67 @@ export default function AnalyticsPage() {
 			enabled: dialogOpen && !!selectedCategory?.categoryId,
 		});
 
+	// Fetch transactions for selected date
+	const { data: dateTransactions, isLoading: isLoadingDateTransactions } =
+		useQuery({
+			queryKey: [
+				"date-transactions",
+				selectedDate?.date,
+				selectedDate?.type,
+			],
+			queryFn: async () => {
+				if (!selectedDate) return { data: [], total: 0 };
+
+				let startDate: Date;
+				let endDate: Date;
+
+				if (selectedDate.type === "daily") {
+					startDate = new Date(selectedDate.date);
+					startDate.setHours(0, 0, 0, 0);
+					endDate = new Date(selectedDate.date);
+					endDate.setHours(23, 59, 59, 999);
+				} else {
+					// Monthly
+					const [year, month] = selectedDate.date.split("-");
+					startDate = new Date(Number(year), Number(month) - 1, 1);
+					endDate = new Date(
+						Number(year),
+						Number(month),
+						0,
+						23,
+						59,
+						59,
+						999,
+					);
+				}
+
+				const res = await client.money.transactions.$get({
+					query: {
+						startDate: startDate.toISOString(),
+						endDate: endDate.toISOString(),
+						page: "1",
+						limit: "100",
+						sort: JSON.stringify([{ id: "date", desc: true }]),
+					},
+				});
+				if (!res.ok) throw new Error("Failed to fetch transactions");
+				return res.json();
+			},
+			enabled: dateDialogOpen && !!selectedDate,
+		});
+
 	const handleCategoryClick = (item: TreemapItem) => {
 		setSelectedCategory(item);
 		setDialogOpen(true);
+	};
+
+	const handleDateClick = (
+		date: string,
+		type: "daily" | "monthly",
+		label: string,
+	) => {
+		setSelectedDate({ date, type, label });
+		setDateDialogOpen(true);
 	};
 
 	// Chart configs
@@ -695,11 +761,69 @@ export default function AnalyticsPage() {
 												dataKey="income"
 												fill="var(--color-income)"
 												radius={[4, 4, 0, 0]}
+												className="cursor-pointer"
+												onClick={(data) => {
+													const payload =
+														data as unknown as {
+															payload?: {
+																date?: string;
+															};
+														};
+													const date =
+														payload?.payload?.date;
+													if (date) {
+														const dateObj =
+															new Date(date);
+														handleDateClick(
+															date,
+															"daily",
+															dateObj.toLocaleDateString(
+																"id-ID",
+																{
+																	weekday:
+																		"long",
+																	day: "numeric",
+																	month: "long",
+																	year: "numeric",
+																},
+															),
+														);
+													}
+												}}
 											/>
 											<Bar
 												dataKey="expense"
 												fill="var(--color-expense)"
 												radius={[4, 4, 0, 0]}
+												className="cursor-pointer"
+												onClick={(data) => {
+													const payload =
+														data as unknown as {
+															payload?: {
+																date?: string;
+															};
+														};
+													const date =
+														payload?.payload?.date;
+													if (date) {
+														const dateObj =
+															new Date(date);
+														handleDateClick(
+															date,
+															"daily",
+															dateObj.toLocaleDateString(
+																"id-ID",
+																{
+																	weekday:
+																		"long",
+																	day: "numeric",
+																	month: "long",
+																	year: "numeric",
+																},
+															),
+														);
+													}
+												}}
 											/>
 										</BarChart>
 									</ChartContainer>
@@ -771,6 +895,35 @@ export default function AnalyticsPage() {
 											<Bar
 												dataKey="net"
 												radius={[4, 4, 0, 0]}
+												className="cursor-pointer"
+												onClick={(data) => {
+													const payload =
+														data as unknown as {
+															payload?: {
+																date?: string;
+															};
+														};
+													const date =
+														payload?.payload?.date;
+													if (date) {
+														const dateObj =
+															new Date(date);
+														handleDateClick(
+															date,
+															"daily",
+															dateObj.toLocaleDateString(
+																"id-ID",
+																{
+																	weekday:
+																		"long",
+																	day: "numeric",
+																	month: "long",
+																	year: "numeric",
+																},
+															),
+														);
+													}
+												}}
 											>
 												{data.dailyTrends.map(
 													(entry) => (
@@ -863,11 +1016,71 @@ export default function AnalyticsPage() {
 											dataKey="income"
 											fill="var(--color-income)"
 											radius={[4, 4, 0, 0]}
+											className="cursor-pointer"
+											onClick={(data) => {
+												const payload =
+													data as unknown as {
+														payload?: {
+															month?: string;
+														};
+													};
+												const month =
+													payload?.payload?.month;
+												if (month) {
+													const [year, monthNum] =
+														month.split("-");
+													const dateObj = new Date(
+														Number(year),
+														Number(monthNum) - 1,
+													);
+													handleDateClick(
+														month,
+														"monthly",
+														dateObj.toLocaleDateString(
+															"id-ID",
+															{
+																month: "long",
+																year: "numeric",
+															},
+														),
+													);
+												}
+											}}
 										/>
 										<Bar
 											dataKey="expense"
 											fill="var(--color-expense)"
 											radius={[4, 4, 0, 0]}
+											className="cursor-pointer"
+											onClick={(data) => {
+												const payload =
+													data as unknown as {
+														payload?: {
+															month?: string;
+														};
+													};
+												const month =
+													payload?.payload?.month;
+												if (month) {
+													const [year, monthNum] =
+														month.split("-");
+													const dateObj = new Date(
+														Number(year),
+														Number(monthNum) - 1,
+													);
+													handleDateClick(
+														month,
+														"monthly",
+														dateObj.toLocaleDateString(
+															"id-ID",
+															{
+																month: "long",
+																year: "numeric",
+															},
+														),
+													);
+												}
+											}}
 										/>
 									</BarChart>
 								</ChartContainer>
@@ -1074,6 +1287,159 @@ export default function AnalyticsPage() {
 													</div>
 												),
 											)}
+										</div>
+									) : (
+										<div className="flex items-center justify-center h-[200px] text-muted-foreground">
+											Tidak ada transaksi ditemukan
+										</div>
+									)}
+								</ScrollArea>
+							</div>
+						</div>
+					)}
+				</DialogContent>
+			</Dialog>
+
+			{/* Date Transactions Dialog */}
+			<Dialog open={dateDialogOpen} onOpenChange={setDateDialogOpen}>
+				<DialogContent className="max-w-2xl max-h-[80vh]">
+					<DialogHeader>
+						<DialogTitle className="flex items-center gap-2">
+							<TbReceipt className="h-5 w-5" />
+							<span>{selectedDate?.label}</span>
+						</DialogTitle>
+					</DialogHeader>
+
+					{selectedDate && (
+						<div className="space-y-4">
+							{/* Summary from dateTransactions */}
+							{dateTransactions?.data &&
+								dateTransactions.data.length > 0 && (
+									<div className="grid grid-cols-3 gap-4 p-4 bg-muted/50 rounded-lg">
+										<div className="text-center">
+											<p className="text-sm text-muted-foreground">
+												Pemasukan
+											</p>
+											<p className="text-lg font-bold text-green-600">
+												{formatCurrency(
+													dateTransactions.data
+														.filter(
+															(tx) =>
+																tx.type ===
+																"income",
+														)
+														.reduce(
+															(sum, tx) =>
+																sum +
+																Number(
+																	tx.amount,
+																),
+															0,
+														),
+												)}
+											</p>
+										</div>
+										<div className="text-center">
+											<p className="text-sm text-muted-foreground">
+												Pengeluaran
+											</p>
+											<p className="text-lg font-bold text-red-600">
+												{formatCurrency(
+													dateTransactions.data
+														.filter(
+															(tx) =>
+																tx.type ===
+																"expense",
+														)
+														.reduce(
+															(sum, tx) =>
+																sum +
+																Number(
+																	tx.amount,
+																),
+															0,
+														),
+												)}
+											</p>
+										</div>
+										<div className="text-center">
+											<p className="text-sm text-muted-foreground">
+												Transaksi
+											</p>
+											<p className="text-lg font-bold">
+												{dateTransactions.data.length}x
+											</p>
+										</div>
+									</div>
+								)}
+
+							{/* Transaction List */}
+							<div>
+								<p className="text-sm font-semibold mb-2">
+									Daftar Transaksi
+								</p>
+								<ScrollArea className="h-[350px]">
+									{isLoadingDateTransactions ? (
+										<div className="space-y-2">
+											{[...Array(5)].map((_, i) => (
+												<Skeleton
+													key={`date-skeleton-${i.toString()}`}
+													className="h-16 w-full"
+												/>
+											))}
+										</div>
+									) : dateTransactions?.data &&
+										dateTransactions.data.length > 0 ? (
+										<div className="space-y-2 pr-4">
+											{dateTransactions.data.map((tx) => (
+												<div
+													key={tx.id}
+													className="flex items-center justify-between p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors"
+												>
+													<div className="flex-1 min-w-0">
+														<div className="flex items-center gap-2">
+															{tx.category && (
+																<span className="text-sm">
+																	{
+																		tx
+																			.category
+																			.icon
+																	}
+																</span>
+															)}
+															<p className="font-medium truncate">
+																{tx.description ||
+																	"Tanpa deskripsi"}
+															</p>
+														</div>
+														<p className="text-sm text-muted-foreground">
+															{tx.category
+																?.name ||
+																"Tanpa kategori"}{" "}
+															•{" "}
+															{new Date(
+																tx.date,
+															).toLocaleTimeString(
+																"id-ID",
+																{
+																	hour: "2-digit",
+																	minute: "2-digit",
+																},
+															)}
+														</p>
+													</div>
+													<p
+														className={`font-semibold ${tx.type === "income" ? "text-green-600" : "text-red-600"}`}
+													>
+														{tx.type === "income"
+															? "+"
+															: "-"}
+														{formatCurrency(
+															Number(tx.amount),
+														)}
+													</p>
+												</div>
+											))}
 										</div>
 									) : (
 										<div className="flex items-center justify-center h-[200px] text-muted-foreground">
