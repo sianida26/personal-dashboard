@@ -4,6 +4,7 @@ import {
 	createLazyFileRoute,
 	Link,
 	Outlet,
+	useMatches,
 	useNavigate,
 } from "@tanstack/react-router";
 import { useMemo } from "react";
@@ -61,6 +62,14 @@ interface Transaction {
 export default function TransactionsPage() {
 	const navigate = useNavigate();
 	const queryClient = useQueryClient();
+	const matches = useMatches();
+
+	// Check if we're on a child route (analytics, create, edit, delete)
+	const isChildRoute = matches.some(
+		(match) =>
+			match.pathname !== "/transactions" &&
+			match.pathname.startsWith("/transactions"),
+	);
 
 	// Fetch categories
 	const { data: categoriesResponse } = useQuery({
@@ -376,41 +385,43 @@ export default function TransactionsPage() {
 
 	return (
 		<div className="p-6 h-full flex flex-col overflow-hidden">
-			<Card className="flex-1 p-6 flex flex-col overflow-hidden">
-				<ServerDataTable
-					columns={columns}
-					endpoint={client.money.transactions.$get}
-					queryKey={["transactions"]}
-					title="Transaksi"
-					saveState="transactions-table"
-					initialState={{
-						columnVisibility: {
-							source: false,
-						},
-						sorting: [{ id: "date", desc: true }],
-					}}
-					headerActions={
-						<div className="flex gap-2">
-							<Link to="/transactions/analytics">
-								<Button
-									variant="outline"
-									leftSection={<TbChartBar />}
-								>
-									Analisis
-								</Button>
-							</Link>
-							<Link to="/transactions/create">
-								<Button leftSection={<TbPlus />}>
-									Tambah Transaksi
-								</Button>
-							</Link>
-						</div>
-					}
-					columnOrderable
-					columnResizable
-					rowVirtualization
-				/>
-			</Card>
+			{!isChildRoute && (
+				<Card className="flex-1 p-6 flex flex-col overflow-hidden">
+					<ServerDataTable
+						columns={columns}
+						endpoint={client.money.transactions.$get}
+						queryKey={["transactions"]}
+						title="Transaksi"
+						saveState="transactions-table"
+						initialState={{
+							columnVisibility: {
+								source: false,
+							},
+							sorting: [{ id: "date", desc: true }],
+						}}
+						headerActions={
+							<div className="flex gap-2">
+								<Link to="/transactions/analytics">
+									<Button
+										variant="outline"
+										leftSection={<TbChartBar />}
+									>
+										Analisis
+									</Button>
+								</Link>
+								<Link to="/transactions/create">
+									<Button leftSection={<TbPlus />}>
+										Tambah Transaksi
+									</Button>
+								</Link>
+							</div>
+						}
+						columnOrderable
+						columnResizable
+						rowVirtualization
+					/>
+				</Card>
+			)}
 
 			<Outlet />
 		</div>
