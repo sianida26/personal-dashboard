@@ -88,8 +88,40 @@ This file tracks financial context, patterns, and important decisions.
 4. Food spending (Rp 155K/day) is ~55% of daily income allocation
 5. Multiple loans across platforms create complexity and risk
 
+## S2 ITS Financial Projection (Starting Feb 2026)
+
+### Tuition Cost
+- **Total**: Rp 80,000,000 (4 semesters @ Rp 20M)
+- **Company Support**: Requested 50% minimum (pending approval)
+- **Personal Cost (50% scenario)**: Rp 40,000,000
+- **Per Semester**: Rp 10,000,000
+- **Per Month**: ~Rp 1,666,667 (if paid monthly)
+- **Bond**: 2n+1 = 5 years with DSG after graduation
+
+### Financial Impact Scenarios
+
+**Best Case (100% company support):**
+- No direct cost
+- Only opportunity cost (time for study)
+
+**Target Case (50% company support):**
+- Rp 10M per semester out of pocket
+- Need to find Rp 1.67M/month additional
+- Total personal investment: Rp 40M over 2 years
+
+**Worst Case (< 50% or no support):**
+- Full Rp 20M per semester
+- Need Rp 3.33M/month additional
+- Financially not feasible with current debt load
+
+### Risk Assessment
+- Bond 5 years locks you to DSG (good if salary increases, bad if better opportunities arise)
+- Adding Rp 1.67-3.33M monthly obligation on top of Rp 5.2M debt = high risk
+- Current cash flow already negative Rp 14.4M/month
+
 ## Important Notes
 - Single account setup (all transactions in one "Kas" account)
 - Using WhatsApp integration for transaction recording
 - Currency: IDR (Indonesian Rupiah)
 - Pegadaian loan (Rp 9M) planned to be extended, not paid off in March 2026
+- [2026-01-18] Registered for S2 ITS MMT, start Feb 2026 if accepted
