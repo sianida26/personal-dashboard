@@ -43,6 +43,7 @@ _personal/memories/
 - Workflow preferences
 - Recurring patterns in how I work
 - Things I like/dislike
+- Command-line tips and preferences (e.g., piping database queries to `cat` for visibility)
 
 **projects.md**
 - Current projects and their status
@@ -93,6 +94,7 @@ For projects, you can use additional structure:
 - **Factual**: Focus on facts, preferences, and context, not verbose descriptions
 - **Organized**: Use the right file for each type of information
 - **Clean**: Periodically clean up context.md to keep it focused on recent, relevant information
+- **Database Queries**: When querying databases (psql, mysql, etc.), always pipe output to `cat` for visibility: `psql ... | cat`
 
 ## What to Remember
 
