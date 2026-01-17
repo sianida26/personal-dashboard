@@ -1,0 +1,4707 @@
+
+Table of Contents
+Computer Hacking Forensic Investigator (CHFI) Version 11
+Go to First Page
+
+More book options
+Computer Hacking Forensic Investigator (CHFI) Version 11
+EC-Council
+Table of Contents sections
+Expand all
+|
+Collapse all
+
+
+Computer Hacking Forensic Investigator v11 - Professional Series
+eCourseware
+
+Copyright
+II
+
+Foreword
+III
+
+About the EC-Council CHFI Program
+IV
+
+About EC-Council
+V
+
+CHFI Exam Information
+X
+
+Table of Contents
+XI
+
+
+Module 01 - Computer Forensics in Today’s World
+1
+
+Learning Objectives
+3
+
+
+Understand the Fundamentals of Computer Forensics
+5
+
+Understanding Computer Forensics
+6
+
+Why and When Do You Use Computer Forensics?
+7
+
+Scope of Computer Forensics
+9
+
+
+Understand Cybercrimes and their Investigation Procedures
+11
+
+
+Types of Cybercrimes
+12
+
+▪ Internal/Insider Attacks
+12
+
+▪ External Attacks
+13
+
+Examples of Cybercrimes
+14
+
+Impact of Cybercrimes at the Organizational Level
+15
+
+
+Cyber Attribution
+17
+
+Cyber Attribution Techniques
+17
+
+Challenges of Cyber Attribution
+18
+
+Cybercrime Investigation
+19
+
+Civil vs. Criminal Investigation
+20
+
+Administrative Investigation
+22
+
+
+Understand Digital Evidence and eDiscovery
+24
+
+Introduction to Digital Evidence
+25
+
+Types of Digital Evidence
+27
+
+Roles of Digital Evidence
+29
+
+Sources of Potential Evidence
+32
+
+Rules of Evidence
+36
+
+Best Evidence Rule
+38
+
+Federal Rules of Evidence (United States)
+40
+
+The Association of Chief Police Officers (ACPO) (inherited into NPCC) Principles of Digital Evidence
+54
+
+Computer Forensics vs. eDiscovery
+55
+
+Legal and IT Team Considerations for eDiscovery
+57
+
+Best Practices for Handling Digital Evidence
+60
+
+
+Understand Forensic Readiness
+63
+
+Forensic Readiness
+64
+
+Forensic Readiness and Business Continuity
+67
+
+Forensic Readiness Planning
+70
+
+Forensic Readiness Procedures: Forensic Policy
+73
+
+Forensic Readiness Procedures: Forensics in the Information System Life Cycle
+74
+
+Forensic Readiness Procedures: Creating an Investigation Team
+76
+
+Forensic Readiness Procedures: Maintaining an Inventory
+77
+
+Forensic Readiness Procedures: Host Monitoring
+78
+
+Forensic Readiness Procedures: Network Monitoring
+79
+
+
+Understand the Role of Various Processes and Technologies in Computer Forensics
+80
+
+Computer Forensics as a Part of Incidence Response Plan
+81
+
+Overview of Incident Response Process Flow
+84
+
+Role of Computer Forensics in SOC Operations
+87
+
+Role of Threat Intelligence in Computer Forensics
+90
+
+
+Role of Artificial Intelligence in Computer Forensics
+92
+
+Role of AI Tools in Computer Forensic Processes
+94
+
+Forensics Automation and Orchestration
+97
+
+
+Identify the Roles and Responsibilities of a Forensic Investigator
+100
+
+Need for a Forensic Investigator
+101
+
+Roles and Responsibilities of a Forensics Investigator
+103
+
+What Makes a Good Computer Forensics Investigator?
+105
+
+Code of Ethics
+107
+
+Managing Clients or Employers during Investigations
+109
+
+Accessing Computer Forensics Resources
+111
+
+
+Understand the Challenges Faced in Investigating Cybercrimes
+113
+
+
+Challenges Cybercrimes Pose to Investigators
+114
+
+Other Factors Influencing Forensic Investigations
+115
+
+Computer Forensics: Legal Issues
+117
+
+Computer Forensics: Privacy Issues
+119
+
+
+Understand Various Standards and Best Practices Related to Computer Forensics
+121
+
+
+ISO Standards
+123
+
+ISO/IEC 27000 Series
+123
+
+ISO/IEC 27037
+123
+
+ISO/IEC 27041
+124
+
+ISO/IEC 27042
+124
+
+ISO/IEC 27043
+125
+
+ISO/IEC 27050
+125
+
+ENFSI Best Practices for Forensic Examination of Digital Technology
+127
+
+
+Understand Laws and Legal Compliance in Computer Forensics
+129
+
+Role of Local/International Agencies during Cybercrime Investigation
+130
+
+Computer Forensics and Legal Compliance
+132
+
+Other Laws Relevant to Computer Forensics
+138
+
+Module Summary
+147
+
+
+Module 02 - Computer Forensics Investigation Process
+149
+
+Learning Objectives
+151
+
+
+Understand the Forensic Investigation Process and its Importance
+152
+
+Importance of Computer Forensic Investigation Process
+153
+
+Phases Involved in Computer Forensics Investigation Process
+154
+
+
+Understand First Response
+156
+
+First Response
+157
+
+First Responder
+158
+
+Roles of First Responder
+159
+
+First Response Basics
+161
+
+First Response: Different Situations
+162
+
+First Response by Non-forensic Staff
+163
+
+First Response by System/Network Administrators
+164
+
+First Response by Laboratory Forensics Staff
+165
+
+First Responder Common Mistakes
+167
+
+
+Understand the Pre-investigation Phase
+169
+
+Setting Up a Computer Forensics Lab
+170
+
+Building the Investigation Team
+175
+
+Understanding Hardware and Software Requirements of Forensics Lab
+177
+
+Validating Laboratory Software and Hardware
+179
+
+Ensuring Quality Assurance
+181
+
+Building Security Content, Scripts, Tools, or Methods to Enhance Forensic Processes
+182
+
+
+Understand the Investigation Phase
+184
+
+
+Documenting the Electronic Crime Scene
+185
+
+Photographing and Sketching the Scene
+187
+
+
+Search and Seizure
+189
+
+Search and Seizure Process Flow
+190
+
+Planning Search and Seizure
+191
+
+Seeking Consent
+192
+
+Obtaining Witness Signatures
+196
+
+Obtaining Warrant for Search and Seizure
+199
+
+Examples of Search Warrant
+201
+
+Search Without Warrant
+203
+
+Collecting Incident Information
+205
+
+Initial Search of Scene
+207
+
+Securing and Evaluating Crime Scene
+209
+
+Seizing Evidence at Crime Scene
+211
+
+Collecting Evidence
+212
+
+Dealing with Powered-on Computers
+214
+
+Dealing with Powered-off Computers
+217
+
+Dealing with Networked Computers
+219
+
+Dealing with Open Files and Startup Files
+221
+
+Operating System Shutdown Procedure
+222
+
+Dealing with Smartphones or Other Handheld Devices
+224
+
+Collecting Evidence from Social Networks
+226
+
+
+Evidence Preservation
+228
+
+Chain of Custody
+230
+
+Simple Format of Chain of Custody Document
+232
+
+Chain of Custody Form
+234
+
+Chain of Custody on Property Evidence Envelope/Bag and Sign-out Sheet
+236
+
+Evidence Bag Contents List
+238
+
+Packaging Evidence
+239
+
+Exhibit Numbering
+241
+
+Determining Location for Evidence Examination
+242
+
+Transporting and Storing Evidence
+244
+
+
+Data Acquisition
+246
+
+Original Evidence Should NEVER Be Used for Analysis
+247
+
+Duplicating Data (Imaging)
+248
+
+Data Analysis
+249
+
+
+Case Analysis
+250
+
+Evidence Reconstruction
+252
+
+
+Understand the Post-investigation Phase
+254
+
+
+Reporting
+255
+
+Audience of Computer Forensic Report
+256
+
+Gathering and Organizing Information
+258
+
+Writing the Investigation Report
+259
+
+Forensic Investigation Report Template
+261
+
+Guidelines for Writing a Report
+263
+
+Visual Aids and Presentation Techniques in a Digital Forensic Report
+264
+
+Mock Case Presentations and Critiques
+267
+
+Data Visualization and Report Generation Tools
+269
+
+
+Testifying as an Expert Witness
+272
+
+Who is an Expert Witness?
+273
+
+Roles of an Expert Witness
+273
+
+What Makes a Good Expert Witness?
+275
+
+Testifying in Court
+277
+
+General Ethics while Testifying
+278
+
+Module Summary
+280
+
+
+Module 03 - Understanding Hard Disks and File Systems
+281
+
+Learning Objectives
+283
+
+
+Describe Different Types of Disk Drives and their Characteristics
+284
+
+
+Understanding Hard Disk Drive
+285
+
+Tracks
+287
+
+Sectors
+288
+
+4K Sectors
+289
+
+Data Density on a Hard Disk
+290
+
+Logical Block Addressing (LBA) and Disk Capacity Calculation
+292
+
+Measuring the Hard Disk Performance
+294
+
+Understanding Solid-State Drive (SSD)
+297
+
+
+Disk Interfaces
+299
+
+Serial ATA/SATA (AHCI)
+299
+
+SCSI
+300
+
+Serial Attached SCSI (SAS)
+302
+
+PCIe
+303
+
+NVMe
+304
+
+
+Explain the Logical Structure of a Disk
+306
+
+Logical Structure of Disks
+307
+
+Clusters
+309
+
+Lost Clusters
+313
+
+Slack Space
+317
+
+
+Master Boot Record (MBR)
+319
+
+Structure of a Master Boot Record
+320
+
+Disk Partitions
+323
+
+BIOS Parameter Block (BPB)
+324
+
+Globally Unique Identifier (GUID)
+326
+
+GUID Partition Table (GPT)
+328
+
+
+Understand the Booting Process of Windows, Linux, and macOS Operating Systems
+334
+
+What is the Booting Process?
+335
+
+Essential Windows System Files and Components
+337
+
+Windows Boot Process: BIOS-MBR Method
+339
+
+Identifying the MBR Partition
+341
+
+Windows Boot Process: UEFI-GPT
+342
+
+Identifying the GUID Partition Table (GPT)
+344
+
+Analyzing the GPT Header and Entries
+348
+
+GPT Artifacts
+350
+
+
+macOS Boot Process
+352
+
+Boot Process of an Intel-based macOS
+352
+
+Boot Process of an Apple Silicon-based macOS
+353
+
+Linux Boot Process
+355
+
+
+Understand Various File Systems of Windows, Linux, and macOS Operating Systems
+357
+
+
+Windows File Systems
+358
+
+File Allocation Table (FAT)
+358
+
+FAT File System Layout
+360
+
+FAT Partition Boot Sector
+362
+
+FAT Folder Structure
+364
+
+Directory Entries and Cluster Chains
+365
+
+Filenames on FAT Volumes
+367
+
+FAT32
+368
+
+exFAT
+370
+
+New Technology File System (NTFS)
+372
+
+NTFS Architecture
+374
+
+NTFS System Files
+375
+
+NTFS Partition Boot Sector
+376
+
+Cluster Sizes of NTFS Volume
+378
+
+NTFS Master File Table (MFT)
+379
+
+Metadata Files Stored in the MFT
+381
+
+NTFS Attributes
+383
+
+NTFS Data Stream
+385
+
+NTFS Compressed Files
+388
+
+NTFS Journals
+390
+
+Encrypting File Systems (EFS)
+393
+
+Components of EFS
+394
+
+EFS Attribute
+396
+
+Sparse Files
+398
+
+Resilient File System (ReFS)
+400
+
+
+Linux File Systems
+403
+
+Linux File System Architecture
+403
+
+Filesystem Hierarchy Standard (FHS)
+405
+
+Second Extended File System (ext2)
+407
+
+Ext2 Inode
+409
+
+Ext2 Directories
+410
+
+Third Extended File System (ext3)
+412
+
+Journaling File System
+414
+
+Fourth Extended File System (ext4)
+415
+
+Understanding Superblocks, Inodes, and Data Blocks
+417
+
+
+macOS File Systems
+420
+
+Hierarchical File System Plus (HFS+)
+420
+
+HFS Plus Volumes
+421
+
+HFS Plus Journal
+422
+
+Apple File System (APFS)
+423
+
+Major Components of APFS
+425
+
+APFS vs. HFS Plus
+426
+
+
+Understand File System Analysis
+428
+
+File System Analysis Using Autopsy
+429
+
+
+File System Analysis Using The Sleuth Kit (TSK)
+431
+
+The Sleuth Kit (TSK): fsstat
+432
+
+The Sleuth Kit (TSK): istat
+434
+
+The Sleuth Kit (TSK): fls
+437
+
+The Sleuth Kit (TSK): img_stat
+439
+
+The Sleuth Kit (TSK): ffind
+441
+
+The Sleuth Kit (TSK): ils
+442
+
+
+File System Timeline Creation and Analysis Using The Sleuth Kit (TSK)
+446
+
+MACB Timestamps
+449
+
+
+NTFS Timestamp Rules in Windows and Linux
+450
+
+Windows NTFS Timestamp Rules
+452
+
+
+Understand Storage Systems
+454
+
+RAID Storage System
+455
+
+
+Levels of RAID Storage Systems
+458
+
+RAID 0: Disk Striping
+458
+
+RAID 1: Disk Mirroring
+459
+
+RAID 2
+460
+
+RAID 3
+461
+
+RAID 5
+461
+
+RAID 10
+462
+
+RAID 6
+463
+
+RAID 1E (Striped Mirroring)
+463
+
+RAID 5E
+463
+
+RAID 5EE
+463
+
+RAID 50 (striping with parity)
+464
+
+RAID 60
+464
+
+Just a Bunch of Drives/Disks (JBOD)
+465
+
+Host-Protected Areas (HPA) and Device Configuration Overlays (DCO)
+467
+
+Network-Attached Storage (NAS)
+469
+
+
+Storage Area Network (SAN)
+471
+
+Differences between NAS and SAN
+472
+
+
+Understand Encoding Standards and Hex Editors
+474
+
+
+Character Encoding Standards
+475
+
+American Standard Code for Information Interchange (ASCII)
+475
+
+UNICODE
+476
+
+OFFSET
+477
+
+Understanding Hex Editors
+478
+
+Understanding Hexadecimal Notation
+480
+
+
+Analyze Popular File Formats Using Hex Editor
+482
+
+Image File Analysis: JPEG
+483
+
+Image File Analysis: BMP
+486
+
+Hex View of Popular Image File Formats
+488
+
+PDF File Analysis
+491
+
+Word File Analysis
+493
+
+PowerPoint File Analysis
+495
+
+Excel File Analysis
+497
+
+Hex View of Other Popular File Formats
+499
+
+Hex View of Popular Video File Formats
+502
+
+Hex View of Popular Audio File Formats
+505
+
+Module Summary
+508
+
+
+Module 04 - Data Acquisition and Duplication
+509
+
+Learning Objectives
+511
+
+
+Understand Data Acquisition Fundamentals
+512
+
+Understanding Data Acquisition
+513
+
+Live Acquisition
+515
+
+Order of Volatility
+517
+
+Dead Acquisition
+519
+
+Rules of Thumb for Data Acquisition
+520
+
+
+Types of Data Acquisition
+522
+
+Logical Acquisition
+523
+
+Sparse Acquisition
+523
+
+Bitstream Image
+523
+
+Determine Data Acquisition Format
+525
+
+
+Understand eDiscovery
+528
+
+eDiscovery
+529
+
+Electronic Discovery Reference Model (EDRM) Cycle
+530
+
+Monitor and Maintain Accurate Metrics and Detailed Tracking Information Related to eDiscovery
+532
+
+eDiscovery Collection Methodologies
+534
+
+Best Practices for eDiscovery
+536
+
+eDiscovery Tools
+538
+
+
+Understand Data Acquisition Methodology
+540
+
+Data Acquisition Methodology
+541
+
+Step 1: Determine the Best Data Acquisition Method
+543
+
+Step 2: Select Data Acquisition Tool
+545
+
+Step 3: Sanitize Target Media
+547
+
+
+Step 4: Acquire Volatile Data
+551
+
+Step 4.1: Acquire Volatile Data from Windows Machine
+552
+
+Step 4.2: Acquire Volatile Data from Linux Machine
+552
+
+Step 4.2.1: Acquire Volatile Data from Linux Machine Using dd (Local Acquisition)
+552
+
+Step 4.2.2: Acquire Volatile Data from Linux Machine Using dd and Netcat (Remote Acquisition)
+553
+
+Step 4.2.3. Acquire Volatile Data from Linux Machine Using LiME (Local Acquisition)
+554
+
+Step 4.2.4. Acquire Volatile Data from Linux Machine Using LiME and Netcat (Remote Acquisition)
+555
+
+Step 4.3: Acquire Volatile Data from Mac Machine
+557
+
+Step 5: Enable Write Protection on the Evidence Media
+559
+
+
+Step 6: Acquire Non-volatile Data
+561
+
+Step 6.1: Acquire Non-volatile Data (Using Windows Forensic Workstation)
+561
+
+Step 6.2: Acquire Non-volatile Data (Using Linux Forensic Workstation)
+564
+
+Step 6.3: Acquire Non-volatile Data (Using macOS — Single User Mode)
+568
+
+Step 6.4: Acquire Non-volatile Data (Using macOS — Target Disk Mode)
+570
+
+Step 6.5: Acquire Non-volatile Data (Using Linux Bootable USB)
+572
+
+Step 6.6: Acquire Non-volatile Data on Mac Using Digital Collector
+578
+
+Acquiring RAID Disks
+580
+
+Identifying RAID Drives in Linux System
+582
+
+Identifying RAID Drives in Windows System
+584
+
+Rebuilding RAID
+584
+
+Step 7: Plan for Contingency
+586
+
+Step 8: Validate Data Acquisition
+589
+
+Step 8: Validate Data Acquisition – Windows Validation Methods
+591
+
+Step 8: Validate Data Acquisition — Linux/Mac Validation Methods
+593
+
+Data Acquisition Guidelines and Best Practices
+595
+
+
+Prepare an Image File for Examination
+597
+
+Preparing an Image for Examination
+598
+
+
+Scenario 1: Examining Images on Linux Forensic Workstation
+599
+
+Scenario 1.1: Converting E01 Image File to dd Image File
+600
+
+Scenario 1.2: Converting E01 Image File to Raw Image File
+601
+
+Scenario 1.3: Converting dd Image File to VHDX File
+603
+
+Scenario 1.4: Examining a dd Image File
+607
+
+Scenario 1.5: Examining Physical Hard Disk
+612
+
+Scenario 1.6: Examining Mac APFS Image File
+616
+
+Scenario 1.7: Examining Disk Image Using PyTSK
+619
+
+
+Scenario 2: Examining Images on Windows Forensic Workstation
+622
+
+Examining Mac HFS+ Image File
+625
+
+Scenario 3: Examining Images on Mac Forensic Workstation
+629
+
+Digital Forensic Imaging Tools
+631
+
+Module Summary
+633
+
+
+Module 05 - Defeating Anti-forensics Techniques
+635
+
+Learning Objectives
+637
+
+
+Understand Anti-forensics Techniques
+638
+
+
+What is Anti-forensics?
+639
+
+Anti-forensics Techniques
+639
+
+Challenges to Forensics from Anti-Forensics
+641
+
+
+Discuss Data Deletion and Recycle Bin Forensics
+643
+
+Anti-forensics Technique: Data/File Deletion
+644
+
+What Happens When a File is Deleted in Windows?
+645
+
+Recycle Bin in Windows
+646
+
+
+Recycle Bin Forensics
+649
+
+Recycle Bin Forensics Using Python
+652
+
+
+Illustrate File Carving Techniques and Ways to Recover Evidence from Deleted Partitions
+654
+
+File Carving
+655
+
+File Carving on Windows
+656
+
+SSD File Carving on Windows File System
+657
+
+HDD File Carving on Windows File System
+660
+
+File Recovery Tools: Windows
+661
+
+File Carving on Linux
+663
+
+SSD File Carving on Linux File System
+664
+
+File Recovery Tools: Linux
+665
+
+File Carving on macOS
+666
+
+SSD File Carving on Apple File System
+667
+
+Recovering Deleted Files on Mac Machine
+668
+
+Recovering Deleted Files from USB on Mac Machine
+671
+
+File Recovery Tools: macOS
+673
+
+Custom File Carving Signatures
+674
+
+Recovering Deleted Partitions
+678
+
+Recovering Deleted Partitions: Using R-Studio
+678
+
+Partition Recovery Tools
+679
+
+Recovering ReFS Volumes Using ReFSUtil
+680
+
+RAID Recovery Tools
+682
+
+
+Explore Password Cracking/Bypassing Techniques
+684
+
+Anti-Forensics Technique: Password Protection
+685
+
+Tools to Extract the Password Hashes
+687
+
+Password Cracking Tools
+689
+
+Bypassing Passwords on Powered-off Computer
+691
+
+Bypassing BIOS Passwords
+692
+
+Bypassing BIOS Passwords by Resetting CMOS Using Jumpers
+693
+
+Bypassing BIOS Passwords by Removing CMOS Battery
+694
+
+Tool to Reset Admin and Local User Password: PassFab 4WinKey
+695
+
+Bypassing Windows User Password by Booting Live USB
+699
+
+Application Password Cracking Tools
+701
+
+
+Detect Steganography, Hidden Data in File System Structures, Trail Obfuscation, and File Extension M
+703
+
+Anti-forensics Technique: Steganography
+704
+
+Defeating Anti-forensics: Steganalysis
+706
+
+Steganalysis Methods on Steganography
+708
+
+Detecting Steganography (Text, Image, Audio, and Video Files)
+710
+
+Steganography Detection Tools
+712
+
+Defeating Anti-forensics Technique: Detecting Data Hiding in File System Structures Using OSForensic
+713
+
+Anti-forensics Technique: Alternate Data Streams
+715
+
+Defeating Anti-forensics Technique: Detecting Alternate Data Streams
+716
+
+Defeating Anti-forensics Technique: Tools for Detecting Alternate Data Streams
+721
+
+Anti-forensics Technique: Trail Obfuscation
+723
+
+Defeating Anti-forensics Technique: Detecting File Extension Mismatch Using Autopsy
+725
+
+
+Understand Techniques of Artifact Wiping, Overwritten Data/Metadata Detection, and Encryption
+727
+
+Anti-forensics Technique: Artifact Wiping
+728
+
+Anti-forensics Technique: Overwriting Data/Metadata
+730
+
+Defeating Anti-forensics Technique: Detecting Overwritten Data/Metadata
+731
+
+Anti-forensics Technique: Encryption
+733
+
+Recover Encrypted Files Using Elcomsoft Forensic Disk Decryptor
+734
+
+
+Detect Program Packers and Footprint Minimizing Techniques
+736
+
+Anti-forensics Technique: Program Packers
+737
+
+
+Detecting and Unpacking Program Packers
+738
+
+Detecting Program Packers Using Detect it Easy (DiE)
+739
+
+Detecting Program Packers Using Exeinfo PE
+740
+
+Unpacking Program Packers Using Exeinfo PE
+741
+
+Anti-forensics Techniques that Minimize Footprint
+742
+
+
+Defeating Anti-forensics Technique: Detecting USB Devices
+744
+
+Artifacts Recorded in Windows Registry
+745
+
+Anti-forensics Countermeasures
+746
+
+Module Summary
+748
+
+
+Module 06 - Windows Forensics
+749
+
+Learning Objectives
+751
+
+
+Understand Windows Forensics
+752
+
+Introduction to Windows Forensics
+753
+
+Windows Forensics Methodology
+754
+
+
+Collect Volatile Information
+756
+
+Collecting Volatile Information
+757
+
+Collecting System Time
+758
+
+Collecting Logged-on Users
+760
+
+Collecting Open Files
+763
+
+Collecting Network Information
+765
+
+Collecting Information about Network Connections
+768
+
+Collecting Network Status
+771
+
+Process Information
+774
+
+Process-to-Port Mapping
+780
+
+Examining Process Memory
+782
+
+Examining Print Spool Files
+785
+
+
+Collecting Clipboard Contents and Service/Driver Information
+787
+
+Clipboard Contents
+787
+
+Service/Driver Information
+788
+
+
+Collecting Command History and Locally Shared Resource Information
+790
+
+Command History Information
+790
+
+Locally Shared Resource Information
+791
+
+
+Collect Non-volatile Information
+792
+
+Collecting Non-volatile Information
+793
+
+Examining File Systems
+794
+
+ESE Database File
+796
+
+Examining .edb Files Using ESEDatabaseView
+797
+
+Windows Search Index Analysis
+799
+
+Detecting Externally Connected Devices to the System
+801
+
+Slack Space
+804
+
+Collecting Hidden Partition Information
+805
+
+Collecting User Account Information
+807
+
+Extracting System Resource Usage Monitor (SRUM) Artifacts
+812
+
+Analyzing Windows Thumbnail Cache
+818
+
+Auditing Installed Applications
+820
+
+Identifying System Updates
+823
+
+Collecting Windows Domain Information
+824
+
+Examining Compressed Files
+829
+
+Extracting Information from Sticky Notes Using Python
+833
+
+
+Perform Windows Memory Analysis
+834
+
+Windows Memory Analysis
+835
+
+Windows Crash Dump
+836
+
+Collecting Process Memory
+838
+
+Memory Forensics: Malware Analysis Using Redline
+840
+
+Memory Forensics: Malware Analysis Using Volatility Framework
+842
+
+Page File
+847
+
+Examining Pagefile Using Strings Command
+849
+
+Hibernate Files
+853
+
+Extracting Data from Hibernation Files Using Hibernation Recon
+855
+
+
+Advanced Memory Forensics Using MemProcFS
+858
+
+Remote Memory Analysis Using MemProcFS
+861
+
+
+Memory Analysis Tools
+863
+
+Process Analysis Using Velociraptor
+864
+
+
+Perform Windows Registry Analysis
+866
+
+Windows Registry Analysis
+867
+
+Windows Registry
+868
+
+Windows Registry Data Types
+870
+
+Registry Structure within Hive Files
+872
+
+Windows Registry: Forensic Analysis
+873
+
+Registry as Log File
+877
+
+Collecting System Information
+879
+
+Collecting Last Shutdown Time and Time Zone Information
+882
+
+Shares
+885
+
+Wireless SSIDs
+886
+
+Startup Locations
+888
+
+Examining System Bootup and Enumerating Autostart Registry Locations
+890
+
+Importance of Volume Shadow Copy Services
+892
+
+Accessing Historical Data from Volume Shadow Copies
+893
+
+User Login
+895
+
+Microsoft Security ID
+897
+
+User Activity
+899
+
+Registry Settings
+901
+
+Registry Last Write Time
+903
+
+Recovering Deleted Registry Keys
+905
+
+USB Removable Storage Devices
+907
+
+Identifying Malicious HID USB Devices
+910
+
+Mounted Devices
+912
+
+Tracking User Activity
+914
+
+UserAssist Keys
+915
+
+
+MRU Lists
+917
+
+RunMRU
+918
+
+TypedURLs
+919
+
+OpenSavePidIMRU
+920
+
+FileExts
+920
+
+Connecting to Other Systems
+922
+
+Analyzing Restore Point Registry Settings
+924
+
+Determining Startup Locations
+926
+
+Analyzing Amcache and Shimcache
+929
+
+Identifying Webcam and Microphone Usage by Illicit Applications
+932
+
+Windows Registry Analysis Using Magnet AXIOM
+936
+
+
+Perform Electron Application Analysis
+939
+
+
+Electron Application Forensics
+940
+
+Electron Application Architecture
+940
+
+Local Data Storage for Electron
+942
+
+Extracting Data from Microsoft Teams
+943
+
+Extracting Data from WhatsApp
+945
+
+Extracting Data from Skype
+946
+
+
+Perform Web Browser Forensics
+948
+
+Web Browser Forensics
+949
+
+
+Cache, Cookie, and History Analysis: Mozilla Firefox
+951
+
+SQLite Database Files Created by Mozilla Firefox
+952
+
+Examining Download History
+954
+
+Examining Form History
+955
+
+Examining Session Recovery Files
+955
+
+Examining Firefox Extensions
+957
+
+Examining Firefox Cross-device Synchronization Feature
+957
+
+Mozilla Firefox Analysis Tools
+959
+
+
+Cache, Cookie, and History Analysis: Google Chrome
+962
+
+Examining URLs and Visits Tables
+965
+
+Examining History, Page Transition Types, and Preferences Files
+968
+
+Examining Web Data
+971
+
+Examining Shortcuts
+972
+
+Examining Network Action Predictor Databases
+972
+
+Examining Chrome Cache Files and Timestamps
+974
+
+Examining Download History
+977
+
+Examining Chrome Session Recovery
+977
+
+Examining Cross-device Chrome Synchronization
+979
+
+Google Chrome Analysis Tools
+981
+
+
+Cache, Cookie, and History Analysis: Microsoft Edge
+984
+
+Examining Download History
+985
+
+Examining Session Recovery
+986
+
+Examining Microsoft Edge Collections
+988
+
+Examining Microsoft Edge Extensions
+989
+
+Examining Browser Data Synchronization
+991
+
+Examining Multiple User Profiles
+992
+
+Microsoft Edge Analysis Tools
+993
+
+
+Recovering Private Browsing Data and Browser Artifacts
+996
+
+Recovering InPrivate Browser Data
+998
+
+Mozilla Firefox Private Browsing
+998
+
+Google Chrome Private Browsing
+1000
+
+Microsoft Edge Private Browsing
+1002
+
+
+Carving SQLite Database Files Using FTK® Imager
+1005
+
+Extracting and Rebuilding Cached Web Pages Using FTK® Imager
+1008
+
+Extracting and Analyzing Stored Browser Credentials Using FTK® Imager
+1011
+
+
+Examine Windows Files and Metadata
+1014
+
+
+Windows File Analysis
+1015
+
+System Restore Points (Rp.log Files)
+1016
+
+System Restore Points (Change.log.x Files)
+1018
+
+Prefetch Files
+1019
+
+Examining Prefetch Files Using WinPrefetchView
+1021
+
+Image Files
+1023
+
+Understanding EXIF Data
+1024
+
+
+Metadata Investigation
+1026
+
+Understanding Metadata
+1026
+
+Metadata in Different File Systems
+1028
+
+FAT 32 File System
+1029
+
+NTFS
+1030
+
+Metadata in PDF Files
+1031
+
+Extracting Metadata from PDF Documents Using Python
+1033
+
+Metadata in Word Documents
+1034
+
+Extracting Metadata from Office Documents Using Python
+1037
+
+Extracting Metadata from Microsoft Word (docx) Documents
+1037
+
+Extracting Metadata from Microsoft Excel (xlsx) Documents
+1037
+
+Extracting Metadata from Microsoft PowerPoint (pptx) Documents
+1038
+
+Analyzing Zone.Identifier Streams
+1039
+
+Tools to Analyze Zone.Identifier Streams
+1040
+
+Metadata Analysis Tools
+1043
+
+
+Understand ShellBags, LNK Files, and Jump Lists
+1045
+
+
+Windows ShellBags
+1046
+
+Windows ShellBags: Forensic Analysis
+1049
+
+Parsing ShellBags
+1049
+
+
+Analyzing LNK Files
+1051
+
+Analyzing LNK Files Using Belkasoft X
+1052
+
+
+Analyzing Jump Lists
+1056
+
+Tools for Analyzing Jump Lists
+1060
+
+
+Understand Text-based Logs and Windows Event Logs
+1062
+
+Understanding Events
+1063
+
+Types of Logon Events
+1065
+
+Event Log File Format
+1067
+
+Organization of Event Records
+1068
+
+ELF_LOGFILE_HEADER Structure
+1070
+
+EventLogRecord Structure
+1073
+
+Windows 11 Event Logs
+1076
+
+Evaluating Account Management Events
+1078
+
+Event Logs
+1082
+
+Examining System Log Entries
+1083
+
+Examining Application Log Entries
+1085
+
+Searching with Event Viewer
+1087
+
+Using Event Log Explorer to Examine Log Files
+1089
+
+Windows Event Log File Internals
+1091
+
+Examining Removable Storage Using Event Viewer
+1093
+
+Analyzing Microsoft Office Alert Logs
+1094
+
+Examining Last Failed Login Attempts and Login Count
+1097
+
+Auditing Windows Registry Using Security Audit Event
+1099
+
+Windows Forensics Tools
+1101
+
+Hashing it Out in PowerShell: Using Get-FileHash
+1103
+
+Module Summary
+1105
+
+
+Module 07 - Linux and Mac Forensics
+1107
+
+Learning Objectives
+1109
+
+
+Collect Volatile Information in Linux
+1110
+
+Introduction to Linux Forensics
+1111
+
+Collecting Volatile Information
+1112
+
+Collecting Hostname, Date, and Time
+1113
+
+Collecting Uptime Data
+1116
+
+Collecting Network Information
+1118
+
+Viewing Network Routing Tables
+1121
+
+Collecting Open Port Information
+1122
+
+Finding Programs/Processes Associated with a Port
+1124
+
+Collecting Open Files
+1126
+
+Collecting Mounted File System Information
+1127
+
+Finding Loaded Kernel Modules
+1128
+
+
+Collecting User Events and Reading ELF Files
+1130
+
+Collecting User Events
+1130
+
+Reading ELF Files
+1131
+
+Viewing Running Processes in the System
+1132
+
+Viewing Linux Services Using systemctl
+1134
+
+Collecting Swap Areas and Disk Partition Information
+1138
+
+Collecting Kernel Messages
+1140
+
+Collecting Volatile Information Using Freta
+1141
+
+Collecting Volatile Information Using Python
+1144
+
+
+Collect Non-volatile Information in Linux
+1145
+
+Collecting Non-volatile Information
+1146
+
+Collecting System Information
+1147
+
+Collecting Kernel Information
+1149
+
+Collecting User Account Information
+1150
+
+Collecting Currently Logged-in Users and Login History Information
+1152
+
+Collecting System Logs Data
+1155
+
+Linux Log Files
+1157
+
+Collecting User History File Information and Viewing Hidden Files and Directories
+1159
+
+Collecting Suspicious Information
+1161
+
+File Signature Analysis
+1163
+
+Usage of File and Strings Command
+1165
+
+Using find Command to Find Writable Files
+1167
+
+Examining Cron Jobs for Linux
+1168
+
+Performing Hash Calculations Using Python
+1171
+
+Collecting System Reboot History Using Python
+1172
+
+Viewing System Log Entries Using Python
+1173
+
+
+Understand Linux Memory Forensics
+1174
+
+
+Linux Memory Forensics
+1175
+
+Listing Open Files
+1176
+
+Collecting Bash Information
+1177
+
+Collecting System Information
+1177
+
+Collecting Kernel Memory Information
+1178
+
+Malware Analysis Using Volatility Framework
+1179
+
+
+Understand Mac Forensics
+1182
+
+Introduction to Mac Forensics
+1183
+
+Mac Forensics Data
+1184
+
+Mac Log Files
+1187
+
+Mac Directories
+1188
+
+
+Collect Volatile Information in Mac
+1189
+
+
+Collecting Volatile Information
+1190
+
+Collecting System Date and Time
+1191
+
+Collecting Process Information
+1193
+
+Collecting Network Information
+1196
+
+Collecting Open Files
+1200
+
+Collecting Clipboard Content Using Shell Script
+1202
+
+Collecting Locally Shared Resource Information
+1204
+
+Collecting Other Volatile Information
+1206
+
+Collecting Loaded Kernel Modules
+1206
+
+Collecting Logged-on Users
+1206
+
+Collecting Command History
+1207
+
+
+Collect Non-volatile Information in Mac
+1208
+
+
+Collecting Non-volatile Information
+1209
+
+Collecting System Information and Configuration
+1210
+
+Collecting Desktop Artifacts
+1213
+
+Collecting Startup Files
+1216
+
+Analyzing macOS Thumbnail Cache
+1218
+
+Collecting User Home Folder and Activities Information
+1220
+
+Identifying Last Accessed Files and Folders
+1222
+
+Viewing Log Messages
+1223
+
+
+Understand Mac Memory Forensics and Mac Forensics Tools
+1225
+
+Mac Memory Forensics
+1226
+
+Collecting Swap Areas and Disk Partition Information
+1226
+
+APFS Analysis
+1228
+
+Parsing Metadata on Spotlight
+1230
+
+Mac Forensics Tools
+1233
+
+Module Summary
+1235
+
+
+Module 08 - Network Forensics
+1237
+
+Learning Objectives
+1239
+
+
+Understand Network Forensics
+1241
+
+Introduction to Network Forensics
+1242
+
+Postmortem and Real-Time Analysis
+1244
+
+Network Attacks
+1245
+
+Indicators of Compromise (IoCs)
+1249
+
+Where to Look for Evidence
+1251
+
+Types of Network-based Evidence
+1254
+
+
+Summarize Event Correlation Concepts
+1256
+
+Event Correlation
+1257
+
+Types of Event Correlation
+1259
+
+Prerequisites of Event Correlation
+1260
+
+Event Correlation Approaches
+1262
+
+
+Identify Indicators of Compromise (IoCs) from Network Logs
+1264
+
+Log Files as Evidence
+1265
+
+
+Analyzing Firewall Logs
+1266
+
+Analyzing Firewall Logs: Cisco
+1267
+
+Analyzing Firewall Logs: Check Point
+1270
+
+
+Analyzing IDS Logs
+1273
+
+Analyzing IDS Logs: OSSEC
+1275
+
+Analyzing IDS Logs: Check Point
+1277
+
+Analyzing Honeypot Logs
+1279
+
+
+Analyzing Router Logs
+1282
+
+Analyzing Router Logs: Cisco
+1285
+
+Analyzing Router Logs: Juniper
+1288
+
+Analyzing DHCP Logs
+1290
+
+Analyzing Cisco Switch Logs
+1292
+
+
+Analyzing VPN Logs
+1294
+
+VPN Log Analysis Using Elastic Stack
+1295
+
+Analyzing SSH Logs
+1297
+
+Analyzing DNS Server Logs
+1299
+
+Network Log Analysis Tools
+1301
+
+
+Investigate Network Traffic
+1304
+
+Why Investigate Network Traffic?
+1305
+
+Gathering Evidence via Sniffers
+1306
+
+Sniffing Tools
+1307
+
+Display Filters in Wireshark
+1313
+
+Additional Wireshark Filters
+1315
+
+Analyze Traffic for TCP SYN Flood DoS Attack
+1317
+
+Analyze Traffic for SYN-FIN Flood DoS Attack
+1319
+
+Analyze Traffic for ICMP Flood Attack
+1321
+
+Analyze Traffic for UDP Flood Attack
+1323
+
+Analyze Traffic for HTTP Flood Attack
+1326
+
+Analyze Traffic for FTP Password Cracking Attempts
+1329
+
+Analyze Traffic for SMB Password Cracking Attempts
+1331
+
+Analyze Traffic for Sniffing Attempts
+1333
+
+Analyze Traffic for MAC Flooding Attempt
+1334
+
+Analyze Traffic for ARP Poisoning Attempt
+1336
+
+Analyze Traffic for SMTP HELO Flood Attack
+1338
+
+Analyze Traffic to Detect Malware Activity
+1340
+
+Analyze Network Traffic through NetFlow
+1342
+
+Network Forensic Analysis Using Dshell
+1345
+
+Tools for Investigating Network Traffic
+1347
+
+
+Perform Incident Detection and Examination Using SIEM Tools
+1349
+
+Centralized Logging Using SIEM Solutions
+1350
+
+SIEM Solutions
+1351
+
+Examine Brute-force Attack
+1354
+
+Examine DoS Attack
+1356
+
+Examine Malware Activity
+1358
+
+Examine Data Exfiltration Attempts over FTP
+1360
+
+Examine Network Scanning Attempts
+1362
+
+Examine Ransomware Attack
+1365
+
+Detect Rogue DNS Server (DNS Hijacking / DNS Spoofing)
+1369
+
+
+Understand Wireless Network Forensics
+1370
+
+Introduction to Wireless Network Forensics
+1371
+
+Wireless Network Forensics Challenges and Risks
+1373
+
+Types of Wireless Evidence
+1375
+
+Wireless Network Forensics Process
+1377
+
+
+Detect and Investigate Wireless Network Attacks
+1380
+
+
+Detect Rogue Access Points
+1381
+
+Wi-Fi Discovery Tools
+1383
+
+Detect Access Point MAC Address Spoofing Attempts
+1386
+
+
+Detect Misconfigured Access Points
+1387
+
+Tools for Detecting Misconfigured Access Points
+1388
+
+Detect Wi-Fi Jamming Attempts Using Wireshark
+1390
+
+
+Analyze Wireless Packet Captures
+1396
+
+Examine Client Connections
+1397
+
+Examine De-authentication Attack
+1398
+
+Examine Disassociation Attack
+1398
+
+Decrypt and Analyze Encrypted Wi-Fi Traffic
+1399
+
+
+Analyze Wi-Fi Spectrum
+1401
+
+Spectrum Analysis using NetSpot WiFi Spectrum Analyzer
+1401
+
+Analyze the Wireless Network Report
+1403
+
+Tools for Investigating Wireless Network Traffic
+1406
+
+Module Summary
+1408
+
+
+Module 09 - Malware Forensics
+1409
+
+Learning Objectives
+1411
+
+
+Understand Malware Concepts
+1412
+
+
+Introduction to Malware
+1413
+
+Different Ways for Malware to Enter a System
+1414
+
+Common Techniques Attackers Use to Distribute Malware across the Web
+1417
+
+Components of Malware
+1419
+
+
+Understand Malware Forensics
+1421
+
+Introduction to Malware Forensics
+1422
+
+Why Analyze Malware?
+1423
+
+Malware Analysis Challenges
+1425
+
+Malware Forensic Artifacts
+1427
+
+Indicators of Malware
+1429
+
+Prominence of Setting Up a Controlled Malware Analysis Lab
+1432
+
+Preparing Testbed for Malware Analysis
+1433
+
+Malware Analysis Tools
+1435
+
+Documentation Before Analysis
+1438
+
+Types of Malware Analysis
+1439
+
+Static Malware Analysis
+1441
+
+Dynamic Malware Analysis
+1443
+
+System Baselining
+1445
+
+Host Integrity Monitoring
+1447
+
+
+Perform Static Malware Analysis
+1449
+
+
+Static Malware Analysis: File Fingerprinting
+1450
+
+File Fingerprinting Using Python
+1452
+
+Static Malware Analysis: Local and Online Malware Scanning
+1453
+
+
+Static Malware Analysis: Performing Strings Search
+1455
+
+Performing Strings Search Using Python
+1457
+
+
+Static Malware Analysis: Identifying Packing/Obfuscation Methods
+1458
+
+Identifying Packing/Obfuscation Method of Executable and Linkable Format (ELF) Malware
+1459
+
+
+Static Malware Analysis: Finding the Portable Executables (PE) Information
+1461
+
+Analyzing PE Files Using Python
+1463
+
+
+Static Malware Analysis: Identifying File Dependencies
+1465
+
+Identifying File Dependencies Using Python
+1467
+
+Static Malware Analysis: Malware Disassembly
+1468
+
+Static Malware Analysis: Analyzing ELF Executable Files
+1470
+
+Static Malware Analysis: Analyzing Mach-O Executable Files
+1475
+
+
+Analyze Suspicious Documents
+1479
+
+Analyzing Suspicious MS Office Document
+1481
+
+Analyzing Suspicious MS Excel Document
+1486
+
+
+Analyzing Suspicious PDF Document
+1492
+
+Analyzing Suspicious PDF Document Using YARA
+1497
+
+
+Perform System Behavior Analysis
+1499
+
+
+System Behavior Analysis: Monitoring Registry Artifacts
+1500
+
+Windows AutoStart Registry Keys
+1501
+
+Analyzing Windows AutoStart Registry Keys
+1502
+
+
+System Behavior Analysis: Monitoring Processes
+1504
+
+Analyzing Windows Processes Using Python
+1506
+
+
+System Behavior Analysis: Monitoring Windows Services
+1508
+
+Analyzing Windows Services Using Python
+1510
+
+
+System Behavior Analysis: Monitoring Startup Programs
+1511
+
+Startup Program Monitoring Tool: Autoruns for Windows
+1514
+
+
+System Behavior Analysis: Monitoring Windows Event Logs
+1516
+
+Key Event IDs to Monitor
+1520
+
+Examining Windows Event Logs
+1523
+
+System Behavior Analysis: Monitoring API Calls
+1527
+
+System Behavior Analysis: Monitoring Device Drivers
+1529
+
+System Behavior Analysis: Monitoring Installation
+1532
+
+System Behavior Analysis: Monitoring System Calls
+1534
+
+System Behavior Analysis: Monitoring Scheduled Tasks
+1536
+
+System Behavior Analysis: Monitoring Files and Folders
+1538
+
+
+Perform Network Behavior Analysis
+1542
+
+
+Network Behavior Analysis: Monitoring Network Activities
+1543
+
+Monitoring IP Addresses
+1545
+
+
+Network Behavior Analysis: Monitoring Port
+1547
+
+Examining Open Ports
+1548
+
+Port Monitoring Tools
+1550
+
+
+Network Behavior Analysis: Monitoring DNS
+1552
+
+Examining DNS Entries
+1553
+
+DNS Monitoring Tools
+1555
+
+Network Behavior Analysis: Monitoring Browser Activity
+1557
+
+
+Perform Ransomware Analysis
+1559
+
+
+Ransomware Analysis - BlackCat (ALPHV)
+1560
+
+BlackCat (ALPHV) Malware Analysis
+1563
+
+1. Initial Access
+1563
+
+2. Discovery, Credential Access, and Privilege Escalation
+1565
+
+3. Defense Evasion, Persistence, and Lateral Movement
+1566
+
+4. Data Exfiltration and Covering Tracks
+1567
+
+5. Encrypt and Create Ransom Note
+1567
+
+BlackCat Toolkit Analysis
+1569
+
+Module Summary
+1572
+
+
+Module 10 - Investigating Web Attacks
+1573
+
+Learning Objectives
+1575
+
+
+Understand Web Application Forensics
+1576
+
+Introduction to Web Application Forensics
+1577
+
+Challenges in Web Application Forensics
+1578
+
+Indicators of a Web Attack
+1580
+
+OWASP Top 10 Application Security Risks - 2021
+1582
+
+Web Application Threats
+1585
+
+Web Attack Investigation Methodology
+1589
+
+
+Understand Internet Information Services (IIS) Logs
+1590
+
+IIS Web Server Architecture
+1591
+
+IIS Logs
+1593
+
+Analyzing IIS Logs
+1595
+
+Analyzing IIS HTTP Logs Using HttpLogBrowser
+1599
+
+IIS Log Analysis Tools
+1601
+
+
+Understand Apache Web Server Logs
+1603
+
+Apache Web Server Architecture
+1604
+
+Apache Web Server Logs
+1606
+
+Apache Access Logs
+1608
+
+Analyzing Apache Access Logs
+1610
+
+Apache Error Logs
+1613
+
+Analyzing Apache Error Logs
+1615
+
+Analyzing Apache Web Server Logs Using Python
+1617
+
+Apache Log Analysis Tools
+1619
+
+
+Detect and Investigate Various Attacks on Web Applications
+1621
+
+
+Investigating Cross-Site Scripting (XSS) Attack
+1622
+
+Investigating XSS: Using Regex to Search XSS Strings
+1625
+
+Examining Apache Logs for XSS Attack
+1628
+
+Examining IIS Logs for XSS Attack
+1630
+
+Examining Snort Alert Logs for XSS Attack
+1632
+
+Examining WAF Logs for XSS Attack
+1634
+
+Examining SIEM Logs for XSS Attack
+1636
+
+Examining Web Server Logs for XSS Attack Using Python
+1638
+
+
+Investigating SQL Injection Attack
+1640
+
+Investigating SQL Injection Attack: Using Regex
+1642
+
+Examining Apache Logs for SQL Injection Attack
+1646
+
+Examining IIS Logs for SQL Injection Attack
+1648
+
+Examining Snort Alert Logs for SQL Injection Attack
+1650
+
+Examining WAF Logs for SQL Injection Attack
+1651
+
+Examining SIEM Logs for SQL Injection Attack
+1653
+
+
+Investigating Path/Directory Traversal Attack
+1655
+
+Examining Apache Logs for Path/Directory Traversal Attack
+1658
+
+Examining Web Server Logs for Path/Directory Traversal Attack Using Python
+1660
+
+
+Investigating Command Injection Attack
+1662
+
+Examining Apache Logs for Command Injection Attack
+1664
+
+Examining Web Server Logs for Command Injection Attack Using Python
+1665
+
+
+Investigating XML External Entity (XXE) Attack
+1667
+
+Examining Apache Log File for XXE Attack
+1667
+
+
+Investigating Brute-force Attack
+1669
+
+Examining Apache Log File for Brute-force Attack
+1669
+
+Module Summary
+1671
+
+
+Module 11 - Dark Web Forensics
+1673
+
+Learning Objectives
+1675
+
+
+Understand the Dark Web and Dark Web Forensics
+1676
+
+Understanding the Dark Web
+1677
+
+Tor Relays
+1678
+
+Working of Tor Browser
+1679
+
+Tor Bridge Node
+1680
+
+Dark Web Forensics
+1682
+
+Dark Web Forensics Challenges
+1683
+
+
+Determine How to Identify Traces of Tor Browser during Investigation
+1684
+
+Identifying Tor Browser Artifacts: Command Prompt
+1685
+
+Identifying Tor Browser Artifacts: Windows Registry
+1687
+
+Identifying Tor Browser Artifacts: Prefetch Files
+1689
+
+Identifying Tor Browser Artifacts: places.sqlite File
+1691
+
+
+Perform Tor Browser Forensics
+1693
+
+Tor Browser Forensics: Memory Acquisition
+1694
+
+Collecting Memory Dumps
+1695
+
+Memory Dump Analysis: Bulk Extractor
+1697
+
+
+Forensic Analysis of Memory Dumps to Examine Email Artifacts (Tor Browser Open)
+1700
+
+Step 1: Identify the Domain
+1701
+
+Step 2: Identify the Email IDs
+1701
+
+Step 3: Search for Composed Emails
+1702
+
+Step 4: Search for Accessed/Opened Emails
+1703
+
+
+Forensic Analysis of Storage to Acquire Email Attachments (Tor Browser Open)
+1706
+
+Step 5: Retrieve the Uploaded File
+1706
+
+Step 6: Retrieve the Downloaded File
+1708
+
+
+Forensic Analysis of Memory Dumps to Examine Email Artifacts (Tor Browser Closed)
+1710
+
+Step 1: Identify the Domain
+1710
+
+Step 2: Identify the Email IDs
+1711
+
+Step 3: Search for Composed Emails
+1712
+
+Step 4: Search for Accessed/Opened Emails
+1713
+
+
+Forensic Analysis of Storage to Acquire Email Attachments (Tor Browser Closed)
+1714
+
+Step 5: Retrieve the Uploaded File
+1714
+
+Step 6: Retrieve the Downloaded File
+1715
+
+Forensic Analysis: Tor Browser Uninstalled
+1717
+
+Module Summary
+1718
+
+
+Module 12 - Cloud Forensics
+1719
+
+Learning Objectives
+1721
+
+
+Understand Cloud Computing Concepts
+1723
+
+Introduction to Cloud Computing
+1724
+
+Types of Cloud Computing Services
+1726
+
+Separation of Responsibilities in Cloud
+1733
+
+OWASP Top 10 Cloud Security Risks
+1735
+
+Cloud Computing Threats
+1737
+
+Cloud Computing Attacks
+1744
+
+
+Understand Cloud Forensics
+1750
+
+Introduction to Cloud Forensics
+1751
+
+Uses of Cloud Forensics
+1752
+
+Cyber Crime on Cloud Environment
+1754
+
+Cloud Forensics: Stakeholders and their Roles
+1755
+
+Cloud Forensics Challenges
+1759
+
+
+Understand Amazon Web Services (AWS) Fundamentals
+1768
+
+Introduction to Amazon Web Services
+1769
+
+Shared Responsibility Model for AWS
+1771
+
+
+Data Storage in AWS
+1773
+
+AWS Cloud Storage Services
+1775
+
+Logs in AWS
+1778
+
+
+Perform AWS Forensics
+1787
+
+
+Forensic Acquisition of Amazon EC2 Instance: Methodology
+1788
+
+Step 1: Isolate the Compromised EC2 Instance
+1789
+
+Step 2: Take a Snapshot of the EC2 Instance
+1790
+
+Step 3: Provision and Launch a Forensic Workstation
+1793
+
+Step 4: Create Evidence Volume from the Snapshot
+1794
+
+Step 5: Attach the Evidence Volume to the Forensic Workstation
+1796
+
+Step 6: Mount the Evidence Volume on the Forensic Workstation
+1798
+
+Collecting Information Using AWS CLI
+1801
+
+Investigating CloudWatch Logs
+1803
+
+Investigating S3 Server Access Logs
+1810
+
+Investigating AWS CloudTrail for IAM-based Incidents
+1817
+
+Investigating Amazon VPC Flow Logs Using AWS Management Console
+1820
+
+Analyzing AWS Security Incidents Using GuardDuty
+1822
+
+
+Understand Microsoft Azure Fundamentals
+1824
+
+Introduction to Microsoft Azure
+1825
+
+Division of Responsibilities in Azure
+1828
+
+
+Data Storage in Azure
+1829
+
+Azure Data Storage Services
+1831
+
+Data Redundancy in Azure Storage
+1834
+
+Logs in Azure
+1838
+
+
+Perform Microsoft Azure Forensics
+1845
+
+
+Forensic Acquisition of VMs in Azure: Methodology
+1846
+
+Forensic Acquisition of VMs in Azure: The Scenario
+1847
+
+Step 1: Create a Snapshot of the OS Disk of the Affected VM via Azure Portal
+1848
+
+Step 1: Create a Snapshot of the OS Disk of the Affected VM via Azure CLI
+1851
+
+Step 2: Copy the Snapshot to a Storage Account under a Different Resource Group
+1854
+
+Step 3: Delete the Snapshot from the Source Resource Group and Create a Backup Copy
+1858
+
+Step 4: Mount the Snapshot onto the Forensic Workstation
+1860
+
+Analyze the Snapshot via Autopsy
+1863
+
+Analyzing Azure Monitor Logs
+1865
+
+Collecting and Analyzing Logs in Azure AD
+1872
+
+Investigating Security Incidents Using Microsoft Azure Sentinel
+1877
+
+
+Understand Google Cloud Fundamentals
+1884
+
+Introduction to Google Cloud
+1885
+
+Shared Responsibilities in Google Cloud
+1889
+
+Google Kubernetes Engine (GKE) Shared Responsibility
+1891
+
+
+Data Storage in Google Cloud
+1893
+
+Google Cloud Storage Classes
+1895
+
+Google Cloud Data Storage Services
+1898
+
+Logs in Google Cloud
+1901
+
+
+Perform Google Cloud Forensics
+1907
+
+
+Forensic Acquisition of Persistent Disk Volumes in GCP: Methodology
+1908
+
+Step 1: Create an Instant Snapshot of a Persistent Disk Volume
+1909
+
+Step 2: View the Instant Snapshots for a Disk
+1911
+
+Step 3: Copy an Instant Snapshot to a Different Location
+1912
+
+Step 4: Delete an Instant Snapshot After Creating Long-term Snapshot
+1915
+
+Analyzing Google Workspace Logs
+1916
+
+Analyzing Log Data Using Google Cloud Log Analytics
+1919
+
+Analyzing Google Cloud VPC Flow Logs
+1921
+
+Investigating Google Cloud Security Incidents: Analyzing Access Attempts from Anonymous Proxy
+1923
+
+Investigating Google Cloud Security Incidents: Analyzing BigQuery Data Exfiltration
+1925
+
+Investigating Google Cloud Security Incidents: Analyzing SSH Brute Force Attempts
+1929
+
+Investigating Google Cloud Security Incidents: Analyzing Malware Incident
+1932
+
+Investigating Google Cloud Security Incidents: Analyzing Persistent Anomalous IAM Grants
+1934
+
+Investigating Google Cloud Container Security Incidents: Analyzing Malicious Script Executed
+1936
+
+Investigating Google Cloud Container Security Incidents: Analyzing Reverse Shell
+1940
+
+Investigating Google Cloud VM-based Security Incidents
+1943
+
+Module Summary
+1948
+
+
+Module 13 - Email and Social Media Forensics
+1949
+
+Learning Objectives
+1951
+
+
+Understand Email Basics
+1953
+
+Introduction to an Email System
+1954
+
+Components Involved in Email Communication
+1955
+
+How Email Communication Works?
+1958
+
+Understanding the Parts of an Email Message
+1960
+
+
+Explain Email Crime Investigation and its Steps
+1963
+
+
+Introduction to Email Crime Investigation
+1964
+
+Types of Email Crimes
+1964
+
+Steps to Investigate Email Crimes
+1966
+
+Step 1: Seizing the Computer and Email Accounts
+1967
+
+
+Step 2: Acquiring the Email Data
+1968
+
+Acquiring Email Data from Desktop-based Email Clients
+1969
+
+Local Email Files in Microsoft Outlook
+1970
+
+Local Email Files in Mozilla Thunderbird
+1975
+
+Acquiring Thunderbird Local Email Files via SysTools MailPro+
+1980
+
+Acquiring Outlook Email Files: .ost to .pst File Conversion
+1983
+
+Acquiring Outlook .pst File via SysTools MailPro+
+1986
+
+Acquiring Email Data from Web-based Email Accounts
+1988
+
+Step 3: Examining Email Messages
+1989
+
+
+Step 4: Retrieving Email Headers
+1991
+
+Retrieving Email Headers in Microsoft Outlook
+1992
+
+Retrieving Email Headers in Microsoft Outlook.live.com
+1994
+
+Retrieving Email Headers in AOL
+1996
+
+Retrieving Email Headers in Apple Mail
+1998
+
+Retrieving Email Headers in Gmail
+2000
+
+Retrieving Email Headers in Yahoo Mail
+2002
+
+
+Step 5: Analyzing Email Headers
+2005
+
+Analyzing Email Headers: X-Headers
+2012
+
+Analyzing Email Headers: Checking Email Authenticity
+2014
+
+Analyzing Email Headers: Examining the Originating IP Address
+2017
+
+Analyzing Email Headers: Tracing Email Origin
+2019
+
+Analyzing Email Headers: Tracing Back Web-based Email
+2021
+
+
+Step 6: Recovering Deleted Email Messages
+2024
+
+Recovering Deleted Email Messages from Outlook .pst Files Using Recover My eMail
+2026
+
+Recovering Deleted Email Data from Thunderbird Using Thunderbird Forensics Wizard
+2027
+
+Recovering Deleted Emails from Gmail and Outlook
+2028
+
+Email Recovery Tools
+2031
+
+
+Understand U.S. Laws Against Email Crime
+2033
+
+U.S. Laws Against Email Crime: CAN-SPAM Act
+2034
+
+
+Explain Social Media Forensics
+2036
+
+Introduction to Social Media Forensics
+2037
+
+Social Media Crimes
+2038
+
+Social Media Forensics Challenges
+2040
+
+Manually Collecting Data from Social Media Platforms
+2041
+
+Collecting Evidence from Social Media Platforms Using WebPreserver
+2043
+
+Extracting Footages from Social Media Platforms
+2047
+
+Tracking Social Media User Activities Using Social Searcher
+2052
+
+Constructing and Analyzing Social Network Graphs
+2055
+
+Social Media Forensics Tools
+2057
+
+Module Summary
+2059
+
+
+Module 14 - Mobile Forensics
+2061
+
+Learning Objectives
+2063
+
+
+Understand Mobile Device Forensics
+2065
+
+Mobile Device Forensics
+2066
+
+OWASP Top 10 Mobile Risks - 2016
+2067
+
+Mobile Attacks
+2070
+
+Mobile Hardware and Forensics
+2076
+
+Mobile OS and Forensics
+2077
+
+Mobile Forensics Challenges
+2078
+
+
+Understand Android and iOS Architecture, Boot Process, and File Systems
+2080
+
+Mobile Device Architecture
+2081
+
+Android OS Architecture
+2083
+
+Android Boot Process
+2086
+
+iOS Architecture
+2089
+
+iOS Boot Process
+2091
+
+DFU Mode Booting
+2092
+
+Booting iPhone in DFU Mode
+2093
+
+Booting iPhone in Recovery Mode
+2094
+
+Android File System
+2095
+
+iOS File System
+2098
+
+
+Understand Mobile Forensics Process
+2101
+
+Mobile Forensics Process
+2102
+
+Collect the Evidence
+2103
+
+Document the Evidence
+2105
+
+Preserve the Evidence
+2106
+
+Mobile Storage and Evidence Locations
+2110
+
+Data Acquisition Methods
+2111
+
+Android Forensics Process
+2112
+
+iOS Forensics Process
+2114
+
+
+Investigate Cellular Network Data
+2115
+
+Components of Cellular Network
+2116
+
+Different Cellular Networks
+2118
+
+Cell Site Analysis: Analyzing Service Provider Data
+2120
+
+CDR Contents
+2122
+
+
+Perform File System Acquisition
+2123
+
+Subscriber Identity Module (SIM)
+2124
+
+SIM File System
+2125
+
+Data Stored in a SIM
+2127
+
+Integrated Circuit Card Identification (ICCID)
+2132
+
+International Mobile Equipment Identifier (IMEI)
+2133
+
+SIM Cloning
+2135
+
+SIM Data Acquisition Using Oxygen Forensic® Extractor
+2137
+
+SIM Data Acquisition Tools
+2141
+
+
+Understand Phone Locks, Rooting, and Jailbreaking of Mobile Devices
+2143
+
+Phone Locking on Android
+2144
+
+
+Bypassing Locked Android Devices
+2147
+
+Method 1: Unlock Android Device without Password Using DroidKit
+2148
+
+Method 2: Bypass Android Lock Using Dr.Fone - Screen Unlock (Android)
+2150
+
+Phone Locking on iOS
+2152
+
+Rooting of Android Devices
+2155
+
+Rooting of Android Devices Using KingoRoot
+2157
+
+Accessing Root Files in Android
+2159
+
+Jailbreaking of iOS Devices
+2161
+
+Risks of Jailbreaking
+2162
+
+Jailbreaking Techniques
+2164
+
+Jailbreaking iOS Using Hexxa Plus
+2165
+
+
+Perform Logical Acquisition on Mobile Devices
+2169
+
+Logical Acquisition
+2170
+
+Android Debug Bridge (ADB)
+2171
+
+Logical Acquisition of Android Devices: Using “adb pull” Command
+2172
+
+Logical Acquisition of Android Devices: Using Commercial Tools
+2175
+
+Logical Acquisition of iOS Devices: Using Finder
+2177
+
+Logical Acquisition of iOS Devices: Using Commercial Tools
+2179
+
+Extracting Data from Android Devices Using Magnet ACQUIRE
+2181
+
+Cloud Data Acquisition on Android and iOS Devices
+2184
+
+Cloud Data Acquisition: Using Commercial Tools
+2185
+
+
+Perform Physical Acquisition on Mobile Devices
+2186
+
+Physical Acquisition
+2187
+
+Physical Acquisition of Android Devices: Using dd Command
+2188
+
+Physical Acquisition of Android Devices: Using ADB, Busybox, Netcat
+2190
+
+Physical Acquisition of Android Devices: Using Commercial Tools
+2192
+
+Physical Acquisition of iOS Devices: Using SSH, Netcat
+2194
+
+Physical Acquisition of iOS Devices: Using Commercial Tools
+2195
+
+SQLite Database Extraction
+2198
+
+SQLite Database Browsing Tools
+2200
+
+SQLite Forensics Using Belkasoft X
+2203
+
+JTAG Forensics
+2209
+
+Chip-off Forensics
+2214
+
+Chip-off Forensics Process
+2215
+
+Chip-off Forensic Equipment
+2216
+
+Flasher Boxes
+2219
+
+
+Perform Android and iOS Forensic Analysis
+2221
+
+
+Static Analysis and Dynamic Analysis of Android Package Kit (APK)
+2222
+
+Static Analysis of an APK Using Mobile Security Framework (MobSF)
+2223
+
+Dynamic Analysis for an APK Using Mobile Security Framework (MobSF)
+2225
+
+Android Logs
+2228
+
+Examining Android Logs Using Logcat
+2231
+
+Android Log Analysis Tools
+2233
+
+Collecting WhatsApp Artifacts from Android Devices
+2235
+
+Analyzing Android Chrome Artifacts
+2237
+
+Android Forensic Analysis: Using Commercial Tools
+2239
+
+Extracting iOS Signal Data Using Belkasoft Evidence Center
+2241
+
+Analyzing iOS Safari Artifacts
+2244
+
+
+Decrypting and Analyzing iOS Keychains
+2245
+
+Types of iOS Keychains
+2246
+
+iOS Forensic Analysis: Using Commercial Tools
+2248
+
+Module Summary
+2249
+
+
+Module 15 - IoT Forensics
+2251
+
+Learning Objectives
+2253
+
+
+Understand IoT Concepts
+2254
+
+What is the IoT?
+2255
+
+IoT Architecture
+2257
+
+IoT Security Problems
+2259
+
+OWASP Top 10 IoT Threats
+2260
+
+OWASP IoT Attack Surface Areas
+2263
+
+IoT Attacks
+2268
+
+
+Perform Forensics on IoT Devices
+2270
+
+Introduction to IoT Forensics
+2271
+
+IoT Forensics Process
+2272
+
+IoT Forensics Challenges
+2274
+
+
+Wearable IoT Device: Smartwatch
+2276
+
+Wearable IoT Device Forensics: Smartwatch
+2278
+
+Steps Involved in Data Acquisition and Analysis of Android Wear
+2280
+
+Logical Acquisition of Android Wear
+2281
+
+Physical Acquisition of Android Wear
+2282
+
+Forensic Examination of Evidence File: Android Wear
+2283
+
+Recovered Forensic Artifacts: Android Wear
+2284
+
+Forensic Data Extraction of Apple Watch
+2285
+
+
+IoT Device Forensics: Smart Speaker—Amazon Echo
+2292
+
+Amazon Alexa Forensics: Client-based Analysis
+2294
+
+Amazon Alexa Forensics: Cloud-based Analysis
+2296
+
+Hardware-Level Analysis: JTAG and Chip-off Forensics
+2299
+
+Extracting and Analyzing Data from Drone/UAVs
+2301
+
+IoT Forensics Tools
+2304
+
+Module Summary
+2306
+
+
+Glossary
+2307
+
+A
+2307
+
+B
+2308
+
+C
+2309
+
+D
+2310
+
+E
+2311
+
+F
+2312
+
+G
+2313
+
+H
+2314
+
+I
+2314
+
+J
+2315
+
+L
+2315
+
+M
+2316
+
+N
+2317
+
+O
+2317
+
+P
+2318
+
+R
+2319
+
+S
+2319
+
+T
+2321
+
+U
+2321
+
+V
+2322
+
+W
+2322
+
+Z
+2322
+
+
+References
+2323
+
+Module 01: Computer Forensics in Today's World
+2323
+
+Module 02: Computer Forensics Investigation Process
+2327
+
+Module 03: Understanding Hard Disks and File Systems
+2330
+
+Module 04: Data Acquisition and Duplication
+2339
+
+Module 05: Defeating Anti-forensics Techniques
+2342
+
+Module 06: Windows Forensics
+2345
+
+Module 07: Linux and MAC Forensics
+2351
+
+Module 08: Network Forensics
+2356
+
+Module 09: Malware Forensics
+2361
+
+Module 10: Investigating Web Attacks
+2364
+
+Module 11: Dark Web Forensics
+2367
+
+Module 12: Cloud Forensics
+2368
+
+Module 13: Email and Social Media Forensics
+2373
+
+Module 14: Mobile Forensics
+2376
+
+Module 15: IOT Forensics
+2380
+
+
+Computer Hacking Forensic Investigator v11 - Lab Manual
+Lab Manual
+
+Copyright
+LM-II
+
+Table of Contents
+LM-III
+
+
+Module 02 - Computer Forensics Investigation Process
+LM-1
+
+Lab Scenario
+LM-2
+
+Lab Objectives
+LM-2
+
+Lab Environment
+LM-2
+
+Lab Duration
+LM-2
+
+Overview of the Computer Forensics Investigation Process
+LM-3
+
+Lab Tasks
+LM-3
+
+Lab Analysis
+LM-4
+
+Lab 1 - Recover Data from a Windows Hard Disk
+LM-5
+
+Lab 2 - Perform Hash or HMAC Calculations
+LM-18
+
+Lab 3 - Compare Hash Values of Files to Check their Integrity
+LM-31
+
+Lab 4 - View Files of Various Formats
+LM-43
+
+Lab 5 - Handle Evidence Data
+LM-52
+
+Lab 6 - Create a Disk Image File of a Hard Disk Partition
+LM-63
+
+
+Module 03 - Understanding Hard Disks and File Systems
+LM-71
+
+Lab Scenario
+LM-72
+
+Lab Objective
+LM-72
+
+Lab Environment
+LM-72
+
+Lab Duration
+LM-72
+
+Overview of Understanding Hard Disks and File Systems
+LM-72
+
+Lab Tasks
+LM-73
+
+Lab Analysis
+LM-73
+
+Lab 1 - Analyze File System of a Linux Image
+LM-74
+
+Lab 2 - Analyze File System of Windows Images
+LM-87
+
+Lab 3 - Recover Deleted Files from Hard Disks
+LM-99
+
+Lab 4 - File System Timeline Creation and Analysis Using The Sleuth Kit (TSK)
+LM-110
+
+Lab 5 - Analyze Popular File Formats Using Hex Editor
+LM-117
+
+
+Module 04 - Data Acquisition and Duplication
+LM-133
+
+Lab Scenario
+LM-134
+
+Lab Objectives
+LM-134
+
+Lab Duration
+LM-134
+
+Overview of Data Acquisition and Duplication
+LM-134
+
+Lab Tasks
+LM-135
+
+Lab Analysis
+LM-135
+
+Lab 1 - Create a dd Image of a System Drive
+LM-136
+
+Lab 2 - Convert Image File from E01 Format to dd Format
+LM-143
+
+Lab 3 - Mount Images on a Linux Forensic Workstation
+LM-150
+
+Lab 4 - Acquire RAM from Windows and Linux Workstations
+LM-160
+
+Lab 5 - Create Customized Images from an Image Containing NTFS File System
+LM-178
+
+Lab 6 - View Contents of Forensic Image File
+LM-189
+
+Lab 7 - Access a Disk Image Using PyTSK Tool
+LM-196
+
+
+Module 05 - Defeating Anti-forensics Techniques
+LM-205
+
+Lab Scenario
+LM-206
+
+Lab Objectives
+LM-206
+
+Lab Environment
+LM-206
+
+Lab Duration
+LM-206
+
+Overview of Defeating Anti-forensics Techniques
+LM-206
+
+Lab Tasks
+LM-207
+
+Lab Analysis
+LM-207
+
+Lab 1 - SSD File Carving on a Windows File System
+LM-208
+
+Lab 2 - SSD File Carving on a Linux File System
+LM-230
+
+Lab 3 - Recover Data from Lost/Deleted Disk Partition
+LM-241
+
+Lab 4 - Recover Data from a Partition that is Deleted and Merged into another Partition
+LM-252
+
+Lab 5 - Extract Password Hashes from the Target System using pwdump
+LM-266
+
+Lab 6 - Crack Application Passwords
+LM-270
+
+Lab 7 - Detect Steganography
+LM-288
+
+Lab 8 - Detect Alternate Data Streams
+LM-303
+
+Lab 9 - Detect File Extension Mismatch
+LM-314
+
+Lab 10 - Unpack Program Packers
+LM-324
+
+
+Module 06 - Windows Forensics
+LM-335
+
+Lab Scenario
+LM-336
+
+Lab Objectives
+LM-336
+
+Lab Environment
+LM-336
+
+Lab Duration
+LM-336
+
+Overview of Windows Forensics
+LM-336
+
+Lab Tasks
+LM-337
+
+Lab Analysis
+LM-337
+
+Lab 1 - Acquire Volatile Information from a Live Windows System
+LM-338
+
+Lab 2 - Investigate Forensic Image of Windows RAM
+LM-358
+
+Lab 3 - Extract and Analyze Windows RAM Dump Files using MemProcFS
+LM-383
+
+Lab 4 - Capture and Examine Windows Registry Files on a Live System
+LM-390
+
+Lab 5 - Examine Web Browser Artifacts
+LM-399
+
+Lab 6 - Recover InPrivate Browser Data and Browser Artifacts
+LM-410
+
+Lab 7 - Carve and Analyze the Browser SQLite3 Database Files
+LM-418
+
+Lab 8 - Extract and Rebuild Cached Web Pages of Google Chrome
+LM-434
+
+Lab 9 - Discover and Extract Forensic Data from Computers
+LM-447
+
+Lab 10 - Extract Information about Loaded Processes on a Computer
+LM-490
+
+Lab 11 - View, Monitor, and Analyze Events Occurred on a Windows Machine
+LM-503
+
+
+Module 07 - Linux and MAC Forensics
+LM-525
+
+Lab Scenario
+LM-526
+
+Lab Objectives
+LM-526
+
+Lab Environment
+LM-526
+
+Lab Duration
+LM-526
+
+Overview of Linux and Mac Forensics
+LM-526
+
+Lab Tasks
+LM-527
+
+Lab Analysis
+LM-527
+
+Lab 1 - Acquire Volatile Data in Linux System
+LM-528
+
+Lab 2 - Acquire Non-Volatile Data in Linux System
+LM-544
+
+Lab 3 - Investigate Forensic Images of Linux and Mac Systems
+LM-559
+
+Lab 4 - Perform Forensic Investigation on a Linux Memory Dump
+LM-599
+
+Lab 5 - Recover Data from a Linux Memory Dump
+LM-609
+
+
+Module 08 - Network Forensics
+LM-617
+
+Lab Scenario
+LM-618
+
+Lab Objectives
+LM-618
+
+Lab Environment
+LM-618
+
+Lab Duration
+LM-618
+
+Overview of Network Forensics
+LM-618
+
+Lab Tasks
+LM-619
+
+Lab Analysis
+LM-619
+
+Lab 1 - Identify and Investigate an FTP Brute Force Attack using Splunk
+LM-620
+
+Lab 2 - Investigate Network Attacks using Kiwi Log Viewer
+LM-644
+
+Lab 3 - Identify and Investigate Various Network Attacks using Wireshark
+LM-656
+
+Lab 4 - Analyze SSH Logs
+LM-675
+
+Lab 5 - Capture and Analyze Raw Packets Using Python
+LM-680
+
+
+Module 09 - Malware Forensics
+LM-687
+
+Lab Scenario
+LM-688
+
+Lab Objectives
+LM-688
+
+Lab Environment
+LM-688
+
+Lab Duration
+LM-688
+
+Overview of Malware Forensics
+LM-689
+
+Lab Tasks
+LM-689
+
+Lab Analysis
+LM-689
+
+Lab 1 - Perform Static Analysis on a Suspicious File
+LM-690
+
+Lab 2 - Perform Static Analysis on a Suspicious File using Python Scripts
+LM-733
+
+Lab 3 - Forensic Examination of a Suspicious PDF File
+LM-746
+
+Lab 4 - Forensic Examination of a Suspicious Microsoft Office Document
+LM-765
+
+Lab 5 - Examine a Suspicious File Using Online Resources
+LM-793
+
+Lab 6 - Emotet Malware Analysis
+LM-825
+
+Lab 7 - Examine Windows Event Logs
+LM-850
+
+
+Module 10 - Investigating Web Attacks
+LM-865
+
+Lab Scenario
+LM-866
+
+Lab Objectives
+LM-866
+
+Lab Environment
+LM-866
+
+Lab Duration
+LM-866
+
+Overview of Investigating Web Attacks
+LM-866
+
+Lab Tasks
+LM-867
+
+Lab Analysis
+LM-867
+
+Lab 1 - Identify and Investigate Web Application Attacks Using Splunk
+LM-868
+
+Lab 2 - Identify and Investigate Web Application Attacks Using Python
+LM-968
+
+
+Module 11 - Dark Web Forensics
+LM-987
+
+Lab Scenario
+LM-988
+
+Lab Objectives
+LM-988
+
+Lab Environment
+LM-988
+
+Lab Duration
+LM-988
+
+Overview of Dark Web Forensics
+LM-988
+
+Lab Tasks
+LM-989
+
+Lab Analysis
+LM-989
+
+Lab 1 - Detect Tor Browser Activity on Windows Machine
+LM-990
+
+Lab 2 - Analyze RAM Dumps to Retrieve Tor Browser Artifacts
+LM-999
+
+
+Module 12 - Cloud Forensics
+LM-1021
+
+Lab Scenario
+LM-1022
+
+Lab Objectives
+LM-1022
+
+Lab Environment
+LM-1022
+
+Lab Duration
+LM-1022
+
+Overview of Cloud Forensics
+LM-1022
+
+Lab Tasks
+LM-1023
+
+Lab Analysis
+LM-1023
+
+
+Lab 1 - Forensically Acquire and Examine Amazon EC2 Instance
+LM-1024
+
+Task 1: Creating Suspect and Forensic Workstation EC2 Instances in Amazon Web Services
+LM-1025
+
+Task 2: Converting the .pem File into a .ppk File Using PuTTYgen
+LM-1046
+
+Task 3: Upload a File into Production Machine as a Legitimate User
+LM-1053
+
+Task 4: Perform File Tampering Attack as a Malicious Insider Using PuTTY
+LM-1056
+
+Task 5: Creating Snapshot and Volume of the Production Machine
+LM-1066
+
+
+Lab 2 - Forensically Acquire and Examine an Azure Virtual Machine
+LM-1102
+
+Task 1: Create Resource Group and Azure Virtual Machine
+LM-1103
+
+Task 2: Configure and Connect to a Virtual Machine in Microsoft Azure
+LM-1114
+
+Task 3: Performing File Injection Attack on Azure VM
+LM-1128
+
+Task 4: Create File Share, Snapshot and Copy the Snapshot to the File Share, and Mount the Snapshot
+LM-1130
+
+
+Lab 3 - Forensically Acquire and Examine a GCP Virtual Machine
+LM-1168
+
+Task 1: Create Virtual Machines in Google Cloud Platform
+LM-1169
+
+Task 2: Perform Sensitive Data Exfiltration by Uploading a Password-protected File to VM
+LM-1184
+
+Task 3: Create Snapshot of the Production-machine Virtual Machine
+LM-1196
+
+Task 4: Attach the Snapshot to the Forensic-workstation
+LM-1201
+
+Task 5: Connect to Forensic-workstation Virtual Machine Using Remote Desktop Connection
+LM-1208
+
+
+Module 13 - Email and Social Media Forensics
+LM-1231
+
+Lab Scenario
+LM-1232
+
+Lab Objectives
+LM-1232
+
+Lab Environment
+LM-1232
+
+Lab Duration
+LM-1232
+
+Overview of Investigating Email Crimes
+LM-1232
+
+Lab Tasks
+LM-1233
+
+Lab Analysis
+LM-1233
+
+Lab 1 - Investigate a Suspicious Email
+LM-1234
+
+Lab 2 - Recover Deleted Email Messages Using Recover My Email
+LM-1253
+
+Lab 3 - Recover Deleted Email Messages Using Recovery Toolbox for Outlook
+LM-1263
+
+Lab 4 - Extract Information from EML Files Using Python
+LM-1275
+
+
+Module 14 - Mobile Forensics
+LM-1283
+
+Lab Scenario
+LM-1284
+
+Lab Objectives
+LM-1284
+
+Lab Environment
+LM-1284
+
+Lab Duration
+LM-1284
+
+Overview of Mobile Forensics
+LM-1284
+
+Lab Tasks
+LM-1284
+
+Lab Analysis
+LM-1285
+
+Lab 1 - Analyze Android Forensic Image and Carve Deleted Files
+LM-1286
+
+
+Computer Hacking Forensic Investigator v11 Appendix - Database Forensics
+AP-1
+
+Learning Objectives
+AP-2
+
+
+LO#01: Understand Database Forensics and its Importance
+AP-3
+
+Database Forensics and its Importance
+AP-4
+
+
+LO#02: Determine Data Storage and Database Evidence Repositories in MSSQL Server
+AP-5
+
+Data Storage in SQL Server
+AP-6
+
+Database Evidence Repositories
+AP-8
+
+
+LO#03: Collect Evidence Files on MSSQL Server
+AP-10
+
+Collecting Volatile Database Data
+AP-11
+
+Collecting Primary Data File and Active​ Transaction Logs Using SQLCMD
+AP-13
+
+Collecting Primary Data File and​ Transaction Logs
+AP-16
+
+Collecting Active Transaction Logs Using​ SQL Server Management Studio
+AP-17
+
+Collecting Database Plan Cache​
+AP-22
+
+Collecting Windows Logs​
+AP-24
+
+Collecting SQL Server Trace Files​
+AP-25
+
+Collecting SQL Server Error Logs
+AP-26
+
+
+LO#04: Perform MSSQL Forensics
+AP-27
+
+Database Forensics Using SQL ServerManagement Studio
+AP-28
+
+Database Forensics Using ApexSQL DBA
+AP-34
+
+
+LO#05: Understand Internal Architecture of MySQL and Structure of Data Directory
+AP-39
+
+Internal Architecture of MySQL
+AP-40
+
+Structure of Data Directory
+AP-45
+
+
+LO#06: Understand Information Schema and List MySQL Utilities for Performing Forensic Analysis
+AP-48
+
+MySQL Forensics
+AP-49
+
+Viewing the Information Schema
+AP-50
+
+MySQL Utility Programs for Forensic Analysis
+AP-51
+
+
+LO#07: Perform MySQL Forensics on WordPress Web Application Database
+AP-53
+
+Common Scenario for Reference
+AP-54
+
+
+MySQL Forensics for WordPress Website Database: Scenario 1
+AP-55
+
+Scenario 1: Collect the Evidence
+AP-56
+
+Scenario 1: Examine the Log Files
+AP-56
+
+Scenario 1: Analyze the General Log
+AP-57
+
+Scenario 1: Take Backup of the Database
+AP-57
+
+Scenario 1: Create Evidence Database
+AP-58
+
+Scenario 1: Select Database
+AP-58
+
+Scenario 1: View Tables in the Database
+AP-59
+
+Scenario 1: View Users in the Database
+AP-59
+
+Scenario 1: View Columns in the Table
+AP-60
+
+Scenario 1: Collect Posts Made by the User
+AP-60
+
+Scenario 1: Examine the Posts Made by the User
+AP-61
+
+
+MySQL Forensics for WordPress Website Database: Scenario 2
+AP-62
+
+Scenario 2: Collect the Database and All the Logs
+AP-64
+
+Scenario 2: Examine the Binary Logs
+AP-64
+
+Scenario 2: wp_users.ibd in WordPress Database
+AP-67
+
+Scenario 2: wp_posts.ibd in WordPress Database
+AP-67
+
+Module Summary
+AP-69

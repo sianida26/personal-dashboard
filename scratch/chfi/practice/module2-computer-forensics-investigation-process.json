@@ -1,0 +1,2102 @@
+[
+    {
+        "question": "A forensic investigator arrives at a crime scene where a laptop is displaying an encrypted file system login prompt. What should be the FIRST action taken?",
+        "options": [
+            {
+                "value": "Immediately pull the power cord to preserve the current state",
+                "isCorrect": false
+            },
+            {
+                "value": "Document and photograph the screen display before any other action",
+                "isCorrect": true
+            },
+            {
+                "value": "Attempt to guess the password to access the encrypted files",
+                "isCorrect": false
+            },
+            {
+                "value": "Connect a write-blocker and begin imaging the drive",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "During a forensic investigation, which of the following is the PRIMARY purpose of maintaining a chain of custody?",
+        "options": [
+            {
+                "value": "To ensure evidence can be quickly accessed during trial",
+                "isCorrect": false
+            },
+            {
+                "value": "To track who handled the evidence and when, ensuring its integrity and admissibility",
+                "isCorrect": true
+            },
+            {
+                "value": "To reduce the cost of storing digital evidence",
+                "isCorrect": false
+            },
+            {
+                "value": "To speed up the forensic analysis process",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An organization discovers unauthorized access to their financial database. The system administrator, acting as a first responder, immediately reboots the server to 'clear' any malicious processes. What critical mistake was made?",
+        "options": [
+            {
+                "value": "The administrator should have contacted law enforcement first",
+                "isCorrect": false
+            },
+            {
+                "value": "Rebooting destroyed volatile evidence in RAM that could identify the attacker",
+                "isCorrect": true
+            },
+            {
+                "value": "The administrator should have disconnected the network cable instead",
+                "isCorrect": false
+            },
+            {
+                "value": "The server should have been left running indefinitely",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "According to forensic investigation best practices, what is the recommended order of volatility when collecting digital evidence?",
+        "options": [
+            {
+                "value": "Hard disk → Network connections → RAM → CPU registers",
+                "isCorrect": false
+            },
+            {
+                "value": "CPU registers → RAM → Network connections → Hard disk",
+                "isCorrect": true
+            },
+            {
+                "value": "Network connections → Hard disk → RAM → CPU registers",
+                "isCorrect": false
+            },
+            {
+                "value": "RAM → CPU registers → Hard disk → Network connections",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A forensic lab is being set up for a law enforcement agency. Which of the following is NOT a critical requirement for the lab?",
+        "options": [
+            {
+                "value": "Physical access controls and surveillance systems",
+                "isCorrect": false
+            },
+            {
+                "value": "Faraday cage or RF-shielded room for mobile device examination",
+                "isCorrect": false
+            },
+            {
+                "value": "High-speed internet connection for real-time streaming of evidence",
+                "isCorrect": true
+            },
+            {
+                "value": "Dedicated workstations with write-blocking capabilities",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "During the search and seizure process, an investigator finds a computer that is powered on and connected to a cloud storage service actively syncing files. What is the MOST appropriate action?",
+        "options": [
+            {
+                "value": "Immediately disconnect the power to stop any potential data modification",
+                "isCorrect": false
+            },
+            {
+                "value": "Document the screen, capture volatile data, then isolate the network connection",
+                "isCorrect": true
+            },
+            {
+                "value": "Allow the sync to complete to ensure all evidence is preserved",
+                "isCorrect": false
+            },
+            {
+                "value": "Log into the cloud service to download all synced files",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What type of forensic duplicate creates an exact sector-by-sector copy of the original storage media, including deleted files and unallocated space?",
+        "options": [
+            {
+                "value": "Logical copy",
+                "isCorrect": false
+            },
+            {
+                "value": "Bit-stream image",
+                "isCorrect": true
+            },
+            {
+                "value": "File backup",
+                "isCorrect": false
+            },
+            {
+                "value": "Incremental image",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An expert witness is testifying in a cybercrime case. The defense attorney asks a question outside the witness's area of expertise. What is the appropriate response?",
+        "options": [
+            {
+                "value": "Provide the best possible answer based on general knowledge",
+                "isCorrect": false
+            },
+            {
+                "value": "State that the question is outside the scope of their expertise",
+                "isCorrect": true
+            },
+            {
+                "value": "Refuse to answer any further questions",
+                "isCorrect": false
+            },
+            {
+                "value": "Ask the judge to dismiss the question",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which of the following tools is commonly used for creating forensic disk images?",
+        "options": [
+            {
+                "value": "Wireshark",
+                "isCorrect": false
+            },
+            {
+                "value": "FTK Imager",
+                "isCorrect": true
+            },
+            {
+                "value": "Nmap",
+                "isCorrect": false
+            },
+            {
+                "value": "Metasploit",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A first responder at a crime scene notices that the suspect is still typing on the computer. What should be the immediate action?",
+        "options": [
+            {
+                "value": "Allow the suspect to finish and then seize the computer",
+                "isCorrect": false
+            },
+            {
+                "value": "Physically restrain the suspect and document what was on screen",
+                "isCorrect": false
+            },
+            {
+                "value": "Safely remove the suspect from the computer, secure the scene, and document the screen state",
+                "isCorrect": true
+            },
+            {
+                "value": "Immediately unplug the computer to prevent data destruction",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "In a forensic report, which section typically describes the tools, techniques, and processes used during the examination?",
+        "options": [
+            {
+                "value": "Executive Summary",
+                "isCorrect": false
+            },
+            {
+                "value": "Methodology",
+                "isCorrect": true
+            },
+            {
+                "value": "Conclusions",
+                "isCorrect": false
+            },
+            {
+                "value": "Appendices",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What is the PRIMARY reason for using write-blockers during forensic data acquisition?",
+        "options": [
+            {
+                "value": "To speed up the imaging process",
+                "isCorrect": false
+            },
+            {
+                "value": "To prevent any modifications to the original evidence",
+                "isCorrect": true
+            },
+            {
+                "value": "To compress the data during acquisition",
+                "isCorrect": false
+            },
+            {
+                "value": "To encrypt the forensic image",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A forensic investigator needs to validate that a disk imaging tool is working correctly. Which method is MOST appropriate?",
+        "options": [
+            {
+                "value": "Use the tool on production systems first",
+                "isCorrect": false
+            },
+            {
+                "value": "Test the tool on known test images and verify hash values",
+                "isCorrect": true
+            },
+            {
+                "value": "Trust the vendor's documentation",
+                "isCorrect": false
+            },
+            {
+                "value": "Compare output file sizes only",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "During evidence collection, which hash algorithm pair is commonly used to ensure evidence integrity?",
+        "options": [
+            {
+                "value": "ROT13 and Base64",
+                "isCorrect": false
+            },
+            {
+                "value": "MD5 and SHA-256",
+                "isCorrect": true
+            },
+            {
+                "value": "AES and RSA",
+                "isCorrect": false
+            },
+            {
+                "value": "DES and 3DES",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What is the significance of the 'pre-investigation phase' in the forensic investigation process?",
+        "options": [
+            {
+                "value": "It involves testifying in court about findings",
+                "isCorrect": false
+            },
+            {
+                "value": "It establishes the lab setup, team, tools, and procedures before actual investigation begins",
+                "isCorrect": true
+            },
+            {
+                "value": "It is when evidence is collected from the crime scene",
+                "isCorrect": false
+            },
+            {
+                "value": "It refers to writing the final forensic report",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A network administrator notices suspicious outbound traffic at 3 AM. As a first responder, what is the MOST critical information to document immediately?",
+        "options": [
+            {
+                "value": "The administrator's personal observations about the traffic",
+                "isCorrect": false
+            },
+            {
+                "value": "Active network connections, running processes, logged-in users, and current system time",
+                "isCorrect": true
+            },
+            {
+                "value": "A complete backup of all server data",
+                "isCorrect": false
+            },
+            {
+                "value": "The physical location of all network equipment",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which command would a Linux first responder use to capture the current network connections on a compromised system?",
+        "options": [
+            {
+                "value": "ifconfig -a",
+                "isCorrect": false
+            },
+            {
+                "value": "netstat -anp",
+                "isCorrect": true
+            },
+            {
+                "value": "ps aux",
+                "isCorrect": false
+            },
+            {
+                "value": "cat /etc/passwd",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An investigator must seize a smartphone that is still receiving messages. What specialized equipment should be used to prevent remote wiping?",
+        "options": [
+            {
+                "value": "Write-blocker",
+                "isCorrect": false
+            },
+            {
+                "value": "Faraday bag",
+                "isCorrect": true
+            },
+            {
+                "value": "USB hub",
+                "isCorrect": false
+            },
+            {
+                "value": "Network tap",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What is the PRIMARY purpose of exhibit numbering in forensic evidence handling?",
+        "options": [
+            {
+                "value": "To make the evidence look more professional in court",
+                "isCorrect": false
+            },
+            {
+                "value": "To uniquely identify and track each piece of evidence throughout the investigation",
+                "isCorrect": true
+            },
+            {
+                "value": "To organize evidence alphabetically",
+                "isCorrect": false
+            },
+            {
+                "value": "To reduce storage space requirements",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "During a forensic investigation, the investigator discovers that the suspect used secure deletion software. Which statement is TRUE regarding evidence recovery?",
+        "options": [
+            {
+                "value": "All data is permanently unrecoverable",
+                "isCorrect": false
+            },
+            {
+                "value": "Some data may still be recoverable from slack space, shadow copies, or backup locations",
+                "isCorrect": true
+            },
+            {
+                "value": "Secure deletion only affects temporary files",
+                "isCorrect": false
+            },
+            {
+                "value": "The investigation should be immediately terminated",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which of the following is a common first responder mistake when dealing with a powered-on computer at a crime scene?",
+        "options": [
+            {
+                "value": "Documenting the screen display",
+                "isCorrect": false
+            },
+            {
+                "value": "Moving the mouse or pressing keys to 'wake up' the screen",
+                "isCorrect": true
+            },
+            {
+                "value": "Noting the time and date displayed",
+                "isCorrect": false
+            },
+            {
+                "value": "Photographing the workspace",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A forensic examiner is preparing to testify as an expert witness. Which document should they review to ensure testimony accuracy?",
+        "options": [
+            {
+                "value": "Only the final report conclusions",
+                "isCorrect": false
+            },
+            {
+                "value": "All case notes, examination records, chain of custody documents, and the final report",
+                "isCorrect": true
+            },
+            {
+                "value": "Only the evidence photographs",
+                "isCorrect": false
+            },
+            {
+                "value": "The suspect's social media profiles",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What is the correct procedure for shutting down a Windows system during evidence collection to preserve maximum evidence?",
+        "options": [
+            {
+                "value": "Use the Start menu to perform a normal shutdown",
+                "isCorrect": false
+            },
+            {
+                "value": "Pull the power cord directly from the wall or computer",
+                "isCorrect": true
+            },
+            {
+                "value": "Press and hold the power button for 10 seconds",
+                "isCorrect": false
+            },
+            {
+                "value": "Use the hibernate function",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "In the context of forensic reporting, what is the PRIMARY audience for an 'Executive Summary'?",
+        "options": [
+            {
+                "value": "Other forensic examiners for peer review",
+                "isCorrect": false
+            },
+            {
+                "value": "Non-technical stakeholders such as management, attorneys, or jury members",
+                "isCorrect": true
+            },
+            {
+                "value": "The suspect being investigated",
+                "isCorrect": false
+            },
+            {
+                "value": "Software developers for tool improvements",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A search warrant specifies the seizure of 'all computer equipment related to financial fraud.' The investigator finds a gaming console connected to the network. What should the investigator do?",
+        "options": [
+            {
+                "value": "Seize the gaming console as it could contain evidence",
+                "isCorrect": false
+            },
+            {
+                "value": "Document the presence of the console but only seize it if there's a clear connection to the alleged crime",
+                "isCorrect": true
+            },
+            {
+                "value": "Ignore the gaming console completely",
+                "isCorrect": false
+            },
+            {
+                "value": "Modify the warrant to include the gaming console",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which tool is specifically designed for live forensic acquisition of RAM on Windows systems?",
+        "options": [
+            {
+                "value": "dd",
+                "isCorrect": false
+            },
+            {
+                "value": "FTK Imager",
+                "isCorrect": true
+            },
+            {
+                "value": "Autopsy",
+                "isCorrect": false
+            },
+            {
+                "value": "Sleuth Kit",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An investigator receives an anonymous tip about a suspect's social media activity. What is required before collecting evidence from social media platforms?",
+        "options": [
+            {
+                "value": "Nothing special is required for publicly available information",
+                "isCorrect": false
+            },
+            {
+                "value": "Proper legal authorization and documentation of collection methods",
+                "isCorrect": true
+            },
+            {
+                "value": "Permission from the social media company only",
+                "isCorrect": false
+            },
+            {
+                "value": "Verbal consent from the suspect",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What does the term 'evidence reconstruction' refer to in forensic investigation?",
+        "options": [
+            {
+                "value": "Physically rebuilding damaged storage media",
+                "isCorrect": false
+            },
+            {
+                "value": "Piecing together digital artifacts to understand the sequence of events",
+                "isCorrect": true
+            },
+            {
+                "value": "Creating fake evidence for testing purposes",
+                "isCorrect": false
+            },
+            {
+                "value": "Restoring files from backup",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which of the following scenarios would legally permit a search without a warrant?",
+        "options": [
+            {
+                "value": "The suspect is a known criminal",
+                "isCorrect": false
+            },
+            {
+                "value": "Consent from the property owner or exigent circumstances",
+                "isCorrect": true
+            },
+            {
+                "value": "The crime is considered minor",
+                "isCorrect": false
+            },
+            {
+                "value": "The investigator has a strong suspicion of guilt",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A forensic lab must demonstrate that its processes meet industry standards. Which certification is commonly pursued?",
+        "options": [
+            {
+                "value": "PCI DSS",
+                "isCorrect": false
+            },
+            {
+                "value": "ISO/IEC 17025 accreditation",
+                "isCorrect": true
+            },
+            {
+                "value": "HIPAA compliance",
+                "isCorrect": false
+            },
+            {
+                "value": "SOC 2 Type II",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "During case analysis, an investigator discovers timestamps that appear to be manipulated. What technique should be used to validate the timeline?",
+        "options": [
+            {
+                "value": "Trust the file system timestamps as they cannot be modified",
+                "isCorrect": false
+            },
+            {
+                "value": "Cross-reference multiple timestamp sources including logs, registry, and metadata",
+                "isCorrect": true
+            },
+            {
+                "value": "Only use creation dates as they are immutable",
+                "isCorrect": false
+            },
+            {
+                "value": "Ignore timestamps and focus on file content only",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A company's HR department requests that IT immediately delete all files from a terminated employee's computer. The employee is under investigation for data theft. What should the IT department do?",
+        "options": [
+            {
+                "value": "Follow HR's request immediately",
+                "isCorrect": false
+            },
+            {
+                "value": "Preserve the computer and notify the appropriate legal/investigative team",
+                "isCorrect": true
+            },
+            {
+                "value": "Delete only non-work-related files",
+                "isCorrect": false
+            },
+            {
+                "value": "Create a backup then delete the files",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which of the following information should NOT be included in a chain of custody document?",
+        "options": [
+            {
+                "value": "Date and time of evidence transfer",
+                "isCorrect": false
+            },
+            {
+                "value": "Names and signatures of personnel handling evidence",
+                "isCorrect": false
+            },
+            {
+                "value": "Personal opinions about the suspect's guilt",
+                "isCorrect": true
+            },
+            {
+                "value": "Description and condition of the evidence",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An investigator is examining a log file and notices the following entry: 'Failed login attempt for user admin from IP 192.168.1.105 at 02:34:15'. What type of log is this most likely from?",
+        "options": [
+            {
+                "value": "Application event log",
+                "isCorrect": false
+            },
+            {
+                "value": "Security/authentication log",
+                "isCorrect": true
+            },
+            {
+                "value": "System hardware log",
+                "isCorrect": false
+            },
+            {
+                "value": "Network traffic log",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What is the PRIMARY difference between a forensic image and a logical copy?",
+        "options": [
+            {
+                "value": "A forensic image is smaller in size",
+                "isCorrect": false
+            },
+            {
+                "value": "A forensic image includes all sectors including unallocated space, while a logical copy only includes visible files",
+                "isCorrect": true
+            },
+            {
+                "value": "A logical copy is more legally admissible",
+                "isCorrect": false
+            },
+            {
+                "value": "There is no difference between them",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "During the initial search of a crime scene, an investigator finds a sticky note with what appears to be a password. How should this be handled?",
+        "options": [
+            {
+                "value": "Memorize it and discard the note",
+                "isCorrect": false
+            },
+            {
+                "value": "Photograph it in place, document its location, and collect it as physical evidence",
+                "isCorrect": true
+            },
+            {
+                "value": "Immediately try the password on nearby devices",
+                "isCorrect": false
+            },
+            {
+                "value": "Ignore it as it's not digital evidence",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What is the recommended practice for transporting seized computer equipment?",
+        "options": [
+            {
+                "value": "Stack devices to save space",
+                "isCorrect": false
+            },
+            {
+                "value": "Use anti-static bags, avoid extreme temperatures, and prevent physical shocks",
+                "isCorrect": true
+            },
+            {
+                "value": "Transport in the trunk of any vehicle",
+                "isCorrect": false
+            },
+            {
+                "value": "Keep all devices powered on during transport",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An expert witness's credibility is challenged because they have no formal certifications. Which response is MOST appropriate?",
+        "options": [
+            {
+                "value": "Argue that certifications are unnecessary",
+                "isCorrect": false
+            },
+            {
+                "value": "Demonstrate expertise through education, training, experience, and peer-reviewed work",
+                "isCorrect": true
+            },
+            {
+                "value": "Refuse to continue testifying",
+                "isCorrect": false
+            },
+            {
+                "value": "Provide false certification claims",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which Linux command would capture the running processes on a system during first response?",
+        "options": [
+            {
+                "value": "ls -la",
+                "isCorrect": false
+            },
+            {
+                "value": "ps auxf",
+                "isCorrect": true
+            },
+            {
+                "value": "cat /proc/meminfo",
+                "isCorrect": false
+            },
+            {
+                "value": "fdisk -l",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "In a civil litigation case, what standard of evidence is typically required?",
+        "options": [
+            {
+                "value": "Beyond a reasonable doubt",
+                "isCorrect": false
+            },
+            {
+                "value": "Preponderance of evidence (more likely than not)",
+                "isCorrect": true
+            },
+            {
+                "value": "Clear and convincing evidence",
+                "isCorrect": false
+            },
+            {
+                "value": "Absolute certainty",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A forensic investigator discovers that a suspect's computer clock was intentionally set 3 hours behind. How does this affect the investigation?",
+        "options": [
+            {
+                "value": "It has no impact on the investigation",
+                "isCorrect": false
+            },
+            {
+                "value": "File timestamps and log entries will show incorrect times, requiring clock skew analysis",
+                "isCorrect": true
+            },
+            {
+                "value": "All evidence from the computer becomes inadmissible",
+                "isCorrect": false
+            },
+            {
+                "value": "Only email evidence is affected",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What is the role of a 'technical reviewer' in the forensic investigation process?",
+        "options": [
+            {
+                "value": "To testify in court on behalf of the examiner",
+                "isCorrect": false
+            },
+            {
+                "value": "To verify the accuracy of analysis, methodology, and conclusions before report finalization",
+                "isCorrect": true
+            },
+            {
+                "value": "To collect evidence from the crime scene",
+                "isCorrect": false
+            },
+            {
+                "value": "To train new forensic examiners",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which dd command option is used to specify the block size during disk imaging?",
+        "options": [
+            {
+                "value": "if=",
+                "isCorrect": false
+            },
+            {
+                "value": "bs=",
+                "isCorrect": true
+            },
+            {
+                "value": "of=",
+                "isCorrect": false
+            },
+            {
+                "value": "count=",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A forensic examiner is asked to investigate a case involving a large corporate network. What is the FIRST step in the investigation phase?",
+        "options": [
+            {
+                "value": "Begin imaging all servers immediately",
+                "isCorrect": false
+            },
+            {
+                "value": "Define the scope and objectives of the investigation",
+                "isCorrect": true
+            },
+            {
+                "value": "Interview all employees",
+                "isCorrect": false
+            },
+            {
+                "value": "Install monitoring software on all systems",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "During evidence packaging, which of the following should be documented on the evidence bag?",
+        "options": [
+            {
+                "value": "Only the case number",
+                "isCorrect": false
+            },
+            {
+                "value": "Case number, item description, date/time collected, collector's name/signature, and location found",
+                "isCorrect": true
+            },
+            {
+                "value": "Only the suspect's name",
+                "isCorrect": false
+            },
+            {
+                "value": "Only the type of device",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A forensic investigator needs to preserve evidence from a smartphone that has only 5% battery remaining. What is the MOST appropriate action?",
+        "options": [
+            {
+                "value": "Allow the battery to drain completely to preserve current state",
+                "isCorrect": false
+            },
+            {
+                "value": "Place in a Faraday bag and connect to an appropriate charger if possible",
+                "isCorrect": true
+            },
+            {
+                "value": "Immediately power off the device",
+                "isCorrect": false
+            },
+            {
+                "value": "Begin extracting data without any precautions",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "In the context of building a forensic investigation team, what role is responsible for ensuring all activities comply with legal requirements?",
+        "options": [
+            {
+                "value": "Lead Forensic Examiner",
+                "isCorrect": false
+            },
+            {
+                "value": "Legal Counsel/Advisor",
+                "isCorrect": true
+            },
+            {
+                "value": "IT Administrator",
+                "isCorrect": false
+            },
+            {
+                "value": "Project Manager",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What visual aid is MOST effective when presenting a complex timeline of events to a non-technical jury?",
+        "options": [
+            {
+                "value": "Raw log files printed on paper",
+                "isCorrect": false
+            },
+            {
+                "value": "Graphical timeline chart showing events chronologically",
+                "isCorrect": true
+            },
+            {
+                "value": "Detailed technical specifications of tools used",
+                "isCorrect": false
+            },
+            {
+                "value": "Source code of malware analyzed",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An investigator analyzing Windows Security logs sees Event ID 4625. What does this indicate?",
+        "options": [
+            {
+                "value": "Successful user logon",
+                "isCorrect": false
+            },
+            {
+                "value": "Failed logon attempt",
+                "isCorrect": true
+            },
+            {
+                "value": "System shutdown",
+                "isCorrect": false
+            },
+            {
+                "value": "New user account created",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which of the following is a valid reason for conducting a forensic investigation without proper legal authorization?",
+        "options": [
+            {
+                "value": "The suspect is a company employee",
+                "isCorrect": false
+            },
+            {
+                "value": "There is no valid reason; proper legal authorization is always required",
+                "isCorrect": true
+            },
+            {
+                "value": "The crime is considered very serious",
+                "isCorrect": false
+            },
+            {
+                "value": "The investigator has extensive experience",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What is the purpose of a 'forensic preview' before full data acquisition?",
+        "options": [
+            {
+                "value": "To modify evidence before collection",
+                "isCorrect": false
+            },
+            {
+                "value": "To quickly assess if relevant evidence exists and determine acquisition scope",
+                "isCorrect": true
+            },
+            {
+                "value": "To delete unnecessary files",
+                "isCorrect": false
+            },
+            {
+                "value": "To bypass encryption",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A first responder at a corporate breach discovers that backups are running to an external drive. What should they do?",
+        "options": [
+            {
+                "value": "Allow the backup to complete",
+                "isCorrect": false
+            },
+            {
+                "value": "Document and disconnect the external drive to prevent evidence contamination",
+                "isCorrect": true
+            },
+            {
+                "value": "Delete the backup files",
+                "isCorrect": false
+            },
+            {
+                "value": "Ignore it as backups are routine",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which of the following is NOT a characteristic of a good expert witness?",
+        "options": [
+            {
+                "value": "Ability to explain technical concepts in simple terms",
+                "isCorrect": false
+            },
+            {
+                "value": "Strong advocacy for the party that hired them",
+                "isCorrect": true
+            },
+            {
+                "value": "Objectivity and impartiality",
+                "isCorrect": false
+            },
+            {
+                "value": "Thorough documentation of all analysis steps",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "During quality assurance in a forensic lab, what does 'validation' of tools ensure?",
+        "options": [
+            {
+                "value": "The tools have the latest software updates",
+                "isCorrect": false
+            },
+            {
+                "value": "The tools produce accurate and reliable results for their intended purpose",
+                "isCorrect": true
+            },
+            {
+                "value": "The tools are the most expensive available",
+                "isCorrect": false
+            },
+            {
+                "value": "The tools have a nice user interface",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A forensic investigator is imaging a 2TB drive using dd. The imaging process has been running for 8 hours. What status option shows progress?",
+        "options": [
+            {
+                "value": "Adding the conv=sync option",
+                "isCorrect": false
+            },
+            {
+                "value": "Using status=progress with the dd command",
+                "isCorrect": true
+            },
+            {
+                "value": "Running the top command in another terminal",
+                "isCorrect": false
+            },
+            {
+                "value": "Progress cannot be monitored with dd",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What type of information should be gathered during the 'initial incident information collection' phase?",
+        "options": [
+            {
+                "value": "Only technical specifications of affected systems",
+                "isCorrect": false
+            },
+            {
+                "value": "Who discovered the incident, when, how, what systems are affected, and initial observations",
+                "isCorrect": true
+            },
+            {
+                "value": "Personal background of all employees",
+                "isCorrect": false
+            },
+            {
+                "value": "Financial records of the company",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An investigator needs to document a crime scene before any evidence is touched. Which documentation method provides the MOST comprehensive record?",
+        "options": [
+            {
+                "value": "Written notes only",
+                "isCorrect": false
+            },
+            {
+                "value": "Combination of photographs, video, written notes, and sketches/diagrams",
+                "isCorrect": true
+            },
+            {
+                "value": "Audio recordings only",
+                "isCorrect": false
+            },
+            {
+                "value": "Sketches only",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "In the context of forensic investigation, what is 'locard's exchange principle'?",
+        "options": [
+            {
+                "value": "Evidence must be exchanged between parties in litigation",
+                "isCorrect": false
+            },
+            {
+                "value": "Every contact leaves a trace; perpetrators leave something behind and take something away",
+                "isCorrect": true
+            },
+            {
+                "value": "Digital evidence can be exchanged without modification",
+                "isCorrect": false
+            },
+            {
+                "value": "Forensic tools must be exchanged between lab personnel",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A system administrator discovers that an attacker is actively exfiltrating data. Which action balances evidence preservation with stopping ongoing damage?",
+        "options": [
+            {
+                "value": "Immediately shut down all systems",
+                "isCorrect": false
+            },
+            {
+                "value": "Isolate the affected system from the network while maintaining power and documenting actions",
+                "isCorrect": true
+            },
+            {
+                "value": "Delete the attacker's tools to stop the attack",
+                "isCorrect": false
+            },
+            {
+                "value": "Wait until the attack is complete to collect all evidence",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What is the significance of obtaining witness signatures during evidence collection?",
+        "options": [
+            {
+                "value": "It is merely a formality with no legal significance",
+                "isCorrect": false
+            },
+            {
+                "value": "It provides independent verification of the collection process and strengthens evidence integrity",
+                "isCorrect": true
+            },
+            {
+                "value": "It transfers ownership of the evidence to the witness",
+                "isCorrect": false
+            },
+            {
+                "value": "It speeds up the investigation process",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "During forensic analysis, an investigator notices MAC times (Modified, Accessed, Created) on a file show the following: Created: 2025-01-15 10:00, Modified: 2025-01-10 08:00, Accessed: 2025-01-14 15:00. What does this indicate?",
+        "options": [
+            {
+                "value": "Normal file behavior",
+                "isCorrect": false
+            },
+            {
+                "value": "The file was likely copied from another location, as the created date is after the modified date",
+                "isCorrect": true
+            },
+            {
+                "value": "The file system is corrupted",
+                "isCorrect": false
+            },
+            {
+                "value": "Time zone issues on the system",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which of the following scenarios represents a valid 'exigent circumstance' for warrantless search?",
+        "options": [
+            {
+                "value": "The suspect is wealthy",
+                "isCorrect": false
+            },
+            {
+                "value": "Evidence is being actively destroyed or there is imminent danger to life",
+                "isCorrect": true
+            },
+            {
+                "value": "The investigation has been ongoing for months",
+                "isCorrect": false
+            },
+            {
+                "value": "The investigator forgot to obtain a warrant",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What is the PRIMARY purpose of maintaining a forensic workstation in a 'sterile' state?",
+        "options": [
+            {
+                "value": "To make the workstation look clean",
+                "isCorrect": false
+            },
+            {
+                "value": "To prevent contamination of evidence with data from previous cases",
+                "isCorrect": true
+            },
+            {
+                "value": "To reduce power consumption",
+                "isCorrect": false
+            },
+            {
+                "value": "To improve processing speed",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An investigator is reviewing Apache web server logs. Which log file would contain records of HTTP requests?",
+        "options": [
+            {
+                "value": "error.log",
+                "isCorrect": false
+            },
+            {
+                "value": "access.log",
+                "isCorrect": true
+            },
+            {
+                "value": "ssl.log",
+                "isCorrect": false
+            },
+            {
+                "value": "startup.log",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "During a mock case presentation, what is the PRIMARY benefit of presenting to colleagues before actual court testimony?",
+        "options": [
+            {
+                "value": "To practice memorizing the testimony",
+                "isCorrect": false
+            },
+            {
+                "value": "To receive feedback, identify weaknesses, and improve presentation clarity",
+                "isCorrect": true
+            },
+            {
+                "value": "To determine the verdict before trial",
+                "isCorrect": false
+            },
+            {
+                "value": "To share confidential case information",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A forensic investigator receives a hard drive with suspected bad sectors. What should be done before imaging?",
+        "options": [
+            {
+                "value": "Use disk repair software to fix the bad sectors",
+                "isCorrect": false
+            },
+            {
+                "value": "Document the bad sectors and use imaging software that can handle read errors",
+                "isCorrect": true
+            },
+            {
+                "value": "Return the drive as it cannot be imaged",
+                "isCorrect": false
+            },
+            {
+                "value": "Replace the drive platters",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What is the correct chain of custody procedure when transferring evidence to another investigator?",
+        "options": [
+            {
+                "value": "Simply hand over the evidence with verbal acknowledgment",
+                "isCorrect": false
+            },
+            {
+                "value": "Document the transfer with date, time, recipient name, signature, and reason for transfer",
+                "isCorrect": true
+            },
+            {
+                "value": "Email confirmation is sufficient",
+                "isCorrect": false
+            },
+            {
+                "value": "Take a photograph of the transfer",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which tool is commonly used for generating forensic reports with automated timeline analysis?",
+        "options": [
+            {
+                "value": "Microsoft Word",
+                "isCorrect": false
+            },
+            {
+                "value": "Autopsy with timeline feature",
+                "isCorrect": true
+            },
+            {
+                "value": "Notepad",
+                "isCorrect": false
+            },
+            {
+                "value": "Windows Calculator",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An investigator is tasked with collecting evidence from a RAID 5 array. What challenge might they face?",
+        "options": [
+            {
+                "value": "RAID 5 arrays cannot store data",
+                "isCorrect": false
+            },
+            {
+                "value": "Data is striped across multiple disks with parity, requiring all disks for complete reconstruction",
+                "isCorrect": true
+            },
+            {
+                "value": "RAID 5 uses encryption by default",
+                "isCorrect": false
+            },
+            {
+                "value": "RAID 5 arrays are immune to forensic imaging",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What is 'data visualization' in the context of forensic reporting?",
+        "options": [
+            {
+                "value": "Making data invisible to unauthorized personnel",
+                "isCorrect": false
+            },
+            {
+                "value": "Representing complex data through charts, graphs, timelines, and other visual formats",
+                "isCorrect": true
+            },
+            {
+                "value": "Encrypting data for secure storage",
+                "isCorrect": false
+            },
+            {
+                "value": "Converting data to binary format",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A first responder finds a computer displaying a ransom note. The user states they were in the middle of paying the ransom. What should the first responder do?",
+        "options": [
+            {
+                "value": "Help the user complete the payment",
+                "isCorrect": false
+            },
+            {
+                "value": "Document everything visible, photograph the screen, and prevent any further user interaction",
+                "isCorrect": true
+            },
+            {
+                "value": "Unplug the computer immediately",
+                "isCorrect": false
+            },
+            {
+                "value": "Navigate away from the ransom note to look for other evidence",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "In establishing the hardware requirements for a forensic lab, which specification is MOST critical for disk imaging?",
+        "options": [
+            {
+                "value": "High-quality speakers",
+                "isCorrect": false
+            },
+            {
+                "value": "Multiple high-speed storage interfaces and large storage capacity",
+                "isCorrect": true
+            },
+            {
+                "value": "Gaming-grade graphics card",
+                "isCorrect": false
+            },
+            {
+                "value": "Wireless networking capabilities",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What ethical obligation does an expert witness have when their analysis supports the opposing party's position?",
+        "options": [
+            {
+                "value": "Hide the findings to help the party that hired them",
+                "isCorrect": false
+            },
+            {
+                "value": "Disclose the findings honestly, as their duty is to the court and truth",
+                "isCorrect": true
+            },
+            {
+                "value": "Refuse to testify",
+                "isCorrect": false
+            },
+            {
+                "value": "Modify the findings to be neutral",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which Windows command displays currently active network connections and listening ports?",
+        "options": [
+            {
+                "value": "ipconfig /all",
+                "isCorrect": false
+            },
+            {
+                "value": "netstat -ano",
+                "isCorrect": true
+            },
+            {
+                "value": "hostname",
+                "isCorrect": false
+            },
+            {
+                "value": "systeminfo",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "During the post-investigation phase, who is typically the PRIMARY recipient of the detailed technical forensic report?",
+        "options": [
+            {
+                "value": "The general public",
+                "isCorrect": false
+            },
+            {
+                "value": "Attorneys, investigators, and technical reviewers",
+                "isCorrect": true
+            },
+            {
+                "value": "Social media followers",
+                "isCorrect": false
+            },
+            {
+                "value": "The suspect's family",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A forensic investigator is creating a search warrant application. Which element is MOST critical to include?",
+        "options": [
+            {
+                "value": "The investigator's personal opinions about the case",
+                "isCorrect": false
+            },
+            {
+                "value": "Specific description of items to be seized and probable cause justification",
+                "isCorrect": true
+            },
+            {
+                "value": "The suspect's social media activity",
+                "isCorrect": false
+            },
+            {
+                "value": "Rumors from anonymous sources",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What is the significance of the 'hash verification' after creating a forensic image?",
+        "options": [
+            {
+                "value": "It compresses the image for easier storage",
+                "isCorrect": false
+            },
+            {
+                "value": "It proves the image is an exact copy of the original, ensuring integrity",
+                "isCorrect": true
+            },
+            {
+                "value": "It encrypts the image for security",
+                "isCorrect": false
+            },
+            {
+                "value": "It repairs any damaged sectors",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An investigator is dealing with a powered-off computer that may contain full-disk encryption. What is the best approach?",
+        "options": [
+            {
+                "value": "Power it on immediately to check",
+                "isCorrect": false
+            },
+            {
+                "value": "Attempt imaging first; if encryption is detected, consider live acquisition if authorization permits",
+                "isCorrect": true
+            },
+            {
+                "value": "Give up as encrypted drives cannot be investigated",
+                "isCorrect": false
+            },
+            {
+                "value": "Break the encryption using brute force",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which of the following is a valid first response action for non-forensic staff who discover a potential cybercrime?",
+        "options": [
+            {
+                "value": "Begin collecting evidence from all systems",
+                "isCorrect": false
+            },
+            {
+                "value": "Secure the area, document observations, and immediately contact designated forensic personnel",
+                "isCorrect": true
+            },
+            {
+                "value": "Turn off all computers to preserve evidence",
+                "isCorrect": false
+            },
+            {
+                "value": "Confront the suspected perpetrator",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What is the PRIMARY function of forensic imaging software like EnCase or FTK Imager?",
+        "options": [
+            {
+                "value": "To edit and modify digital evidence",
+                "isCorrect": false
+            },
+            {
+                "value": "To create bit-for-bit copies of storage media while maintaining evidence integrity",
+                "isCorrect": true
+            },
+            {
+                "value": "To delete unwanted files from storage media",
+                "isCorrect": false
+            },
+            {
+                "value": "To compress storage media for archival",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An investigator notices the following in system logs: multiple failed SSH login attempts from various IP addresses targeting the root account. What type of attack is indicated?",
+        "options": [
+            {
+                "value": "SQL injection",
+                "isCorrect": false
+            },
+            {
+                "value": "Brute force or dictionary attack",
+                "isCorrect": true
+            },
+            {
+                "value": "Cross-site scripting",
+                "isCorrect": false
+            },
+            {
+                "value": "Buffer overflow",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which factor determines the admissibility of digital evidence in court?",
+        "options": [
+            {
+                "value": "The size of the files",
+                "isCorrect": false
+            },
+            {
+                "value": "Authenticity, integrity, reliability, and proper chain of custody",
+                "isCorrect": true
+            },
+            {
+                "value": "The age of the storage media",
+                "isCorrect": false
+            },
+            {
+                "value": "The brand of computer used",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A forensic lab technician accidentally opens an evidence drive without a write-blocker. What is the appropriate course of action?",
+        "options": [
+            {
+                "value": "Ignore the mistake and continue analysis",
+                "isCorrect": false
+            },
+            {
+                "value": "Document the incident, report it to supervisors, and assess the impact on evidence integrity",
+                "isCorrect": true
+            },
+            {
+                "value": "Delete any files that may have been modified",
+                "isCorrect": false
+            },
+            {
+                "value": "Recreate the evidence from memory",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "When dealing with networked computers during seizure, what is the recommended approach?",
+        "options": [
+            {
+                "value": "Leave the network connections intact",
+                "isCorrect": false
+            },
+            {
+                "value": "Document network configurations, capture volatile network data, then isolate from the network",
+                "isCorrect": true
+            },
+            {
+                "value": "Immediately format all networked devices",
+                "isCorrect": false
+            },
+            {
+                "value": "Ignore network connections as they are not relevant",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which type of court proceeding requires the highest standard of proof for digital evidence?",
+        "options": [
+            {
+                "value": "Civil litigation",
+                "isCorrect": false
+            },
+            {
+                "value": "Criminal prosecution (beyond reasonable doubt)",
+                "isCorrect": true
+            },
+            {
+                "value": "Administrative hearings",
+                "isCorrect": false
+            },
+            {
+                "value": "Arbitration",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An expert witness is asked a hypothetical question during cross-examination. What is the appropriate approach?",
+        "options": [
+            {
+                "value": "Refuse to answer hypothetical questions",
+                "isCorrect": false
+            },
+            {
+                "value": "Answer based on technical expertise while clarifying it's a hypothetical scenario",
+                "isCorrect": true
+            },
+            {
+                "value": "Make up facts to support the hypothesis",
+                "isCorrect": false
+            },
+            {
+                "value": "Ask the jury for their opinion",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What is the role of 'Standard Operating Procedures (SOPs)' in a forensic laboratory?",
+        "options": [
+            {
+                "value": "They are optional guidelines that can be ignored",
+                "isCorrect": false
+            },
+            {
+                "value": "They ensure consistency, quality, and defensibility of forensic processes",
+                "isCorrect": true
+            },
+            {
+                "value": "They are used only for budget planning",
+                "isCorrect": false
+            },
+            {
+                "value": "They apply only to new employees",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A forensic investigator discovers that the suspect used Tor browser. What challenge does this present?",
+        "options": [
+            {
+                "value": "Tor browser leaves no traces on the local system",
+                "isCorrect": false
+            },
+            {
+                "value": "Network traffic analysis is complicated due to encryption and routing through multiple nodes",
+                "isCorrect": true
+            },
+            {
+                "value": "Tor browser prevents all forensic investigation",
+                "isCorrect": false
+            },
+            {
+                "value": "Tor browser stores all visited URLs in plain text",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which log file on a Linux system would contain authentication-related events including sudo usage?",
+        "options": [
+            {
+                "value": "/var/log/messages",
+                "isCorrect": false
+            },
+            {
+                "value": "/var/log/auth.log or /var/log/secure",
+                "isCorrect": true
+            },
+            {
+                "value": "/var/log/syslog",
+                "isCorrect": false
+            },
+            {
+                "value": "/var/log/boot.log",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "During the initial crime scene assessment, an investigator notices an open safe near the computer. What should be documented?",
+        "options": [
+            {
+                "value": "Only items directly related to computers",
+                "isCorrect": false
+            },
+            {
+                "value": "The entire scene including the safe, its contents, and proximity to digital devices",
+                "isCorrect": true
+            },
+            {
+                "value": "Nothing, as safes are not digital evidence",
+                "isCorrect": false
+            },
+            {
+                "value": "Only if the safe contains digital storage media",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A forensic examiner receives a USB drive that allegedly contains evidence of fraud. Before analysis, what must be verified?",
+        "options": [
+            {
+                "value": "That the USB drive is the correct brand",
+                "isCorrect": false
+            },
+            {
+                "value": "The chain of custody documentation and proper legal authorization for examination",
+                "isCorrect": true
+            },
+            {
+                "value": "That the USB drive has been formatted",
+                "isCorrect": false
+            },
+            {
+                "value": "The market value of the USB drive",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What is 'live forensics' and when is it MOST appropriate?",
+        "options": [
+            {
+                "value": "Examining systems while they are powered off",
+                "isCorrect": false
+            },
+            {
+                "value": "Collecting evidence from running systems when volatile data is critical or encryption is in use",
+                "isCorrect": true
+            },
+            {
+                "value": "Broadcasting the investigation on live television",
+                "isCorrect": false
+            },
+            {
+                "value": "Performing forensics during a live concert",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An investigator is preparing to testify and the opposing counsel has requested all notes and working documents. This is known as:",
+        "options": [
+            {
+                "value": "Evidence tampering",
+                "isCorrect": false
+            },
+            {
+                "value": "Discovery process",
+                "isCorrect": true
+            },
+            {
+                "value": "Chain of custody violation",
+                "isCorrect": false
+            },
+            {
+                "value": "Expert witness disqualification",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What is the PRIMARY purpose of creating sketches/diagrams of a crime scene in addition to photographs?",
+        "options": [
+            {
+                "value": "Sketches are more visually appealing than photographs",
+                "isCorrect": false
+            },
+            {
+                "value": "Sketches show spatial relationships and measurements that may not be clear in photographs",
+                "isCorrect": true
+            },
+            {
+                "value": "Sketches are required by all courts",
+                "isCorrect": false
+            },
+            {
+                "value": "Photographs are often blurry",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "During report writing, an investigator realizes they made an error in their initial analysis. What is the proper course of action?",
+        "options": [
+            {
+                "value": "Delete all references to the error",
+                "isCorrect": false
+            },
+            {
+                "value": "Document the error, the correction, and the impact on findings transparently",
+                "isCorrect": true
+            },
+            {
+                "value": "Rewrite the entire report to hide the error",
+                "isCorrect": false
+            },
+            {
+                "value": "Blame another team member",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What does the acronym 'AFF' stand for in forensic imaging?",
+        "options": [
+            {
+                "value": "Automated Forensic Format",
+                "isCorrect": false
+            },
+            {
+                "value": "Advanced Forensics Format",
+                "isCorrect": true
+            },
+            {
+                "value": "Authenticated File Format",
+                "isCorrect": false
+            },
+            {
+                "value": "Acquired Forensics File",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A forensic investigator needs to analyze a Windows system's startup programs. Which registry key should be examined?",
+        "options": [
+            {
+                "value": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall",
+                "isCorrect": false
+            },
+            {
+                "value": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                "isCorrect": true
+            },
+            {
+                "value": "HKEY_LOCAL_MACHINE\\SYSTEM\\ControlSet001\\Services",
+                "isCorrect": false
+            },
+            {
+                "value": "HKEY_CURRENT_USER\\Control Panel\\Desktop",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "During seizure planning, what factor determines whether a 'live acquisition' should be performed?",
+        "options": [
+            {
+                "value": "The color of the computer case",
+                "isCorrect": false
+            },
+            {
+                "value": "Whether critical volatile data or encryption keys would be lost if the system is powered off",
+                "isCorrect": true
+            },
+            {
+                "value": "The age of the computer system",
+                "isCorrect": false
+            },
+            {
+                "value": "Whether the investigator prefers live acquisition",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What is the 'best evidence rule' in the context of digital forensics?",
+        "options": [
+            {
+                "value": "Only the largest files should be presented as evidence",
+                "isCorrect": false
+            },
+            {
+                "value": "The original evidence or an exact authenticated copy must be presented when possible",
+                "isCorrect": true
+            },
+            {
+                "value": "Evidence should only be collected from the newest devices",
+                "isCorrect": false
+            },
+            {
+                "value": "Only evidence that favors the prosecution should be collected",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An investigator discovers that critical evidence files were stored on a virtual machine. What additional challenge does this present?",
+        "options": [
+            {
+                "value": "Virtual machines cannot be investigated",
+                "isCorrect": false
+            },
+            {
+                "value": "The VM container files must be properly identified and the virtual disk extracted for analysis",
+                "isCorrect": true
+            },
+            {
+                "value": "Virtual machines automatically destroy evidence",
+                "isCorrect": false
+            },
+            {
+                "value": "VM files are always encrypted",
+                "isCorrect": false
+            }
+        ]
+    }
+]

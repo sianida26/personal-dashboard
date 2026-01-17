@@ -1,0 +1,1262 @@
+[
+  {
+    "question": "What is the primary purpose of DFU (Device Firmware Upgrade) mode in iOS forensics?",
+    "options": [
+      {
+        "value": "To update the iOS version",
+        "isCorrect": false
+      },
+      {
+        "value": "To allow low-level access to the device bypassing the normal boot process",
+        "isCorrect": true
+      },
+      {
+        "value": "To enable Wi-Fi connectivity",
+        "isCorrect": false
+      },
+      {
+        "value": "To backup user data automatically",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A forensic examiner receives an Android device with a pattern lock. The device has USB debugging disabled. What is the MOST appropriate first step?",
+    "options": [
+      {
+        "value": "Perform a factory reset",
+        "isCorrect": false
+      },
+      {
+        "value": "Attempt to bypass the lock using specialized forensic tools or exploits",
+        "isCorrect": true
+      },
+      {
+        "value": "Return the device as unexaminable",
+        "isCorrect": false
+      },
+      {
+        "value": "Remove the battery to reset the lock",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Android file system partition contains user-installed applications and their data?",
+    "options": [
+      {
+        "value": "/system",
+        "isCorrect": false
+      },
+      {
+        "value": "/boot",
+        "isCorrect": false
+      },
+      {
+        "value": "/data",
+        "isCorrect": true
+      },
+      {
+        "value": "/recovery",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does ICCID stand for in SIM card forensics?",
+    "options": [
+      {
+        "value": "Internal Circuit Card Identifier",
+        "isCorrect": false
+      },
+      {
+        "value": "Integrated Circuit Card Identification",
+        "isCorrect": true
+      },
+      {
+        "value": "International Cellular Communication ID",
+        "isCorrect": false
+      },
+      {
+        "value": "Internal Carrier Card ID",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In iOS forensics, which file contains the device's keychain data?",
+    "options": [
+      {
+        "value": "keychain.db",
+        "isCorrect": false
+      },
+      {
+        "value": "keychain-2.db",
+        "isCorrect": true
+      },
+      {
+        "value": "secrets.plist",
+        "isCorrect": false
+      },
+      {
+        "value": "credentials.sqlite",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During a mobile forensic examination, an investigator needs to extract WhatsApp messages from an Android device. Where are these messages primarily stored?",
+    "options": [
+      {
+        "value": "/sdcard/WhatsApp/messages.txt",
+        "isCorrect": false
+      },
+      {
+        "value": "/data/data/com.whatsapp/databases/msgstore.db",
+        "isCorrect": true
+      },
+      {
+        "value": "/system/app/WhatsApp/data.db",
+        "isCorrect": false
+      },
+      {
+        "value": "/cache/WhatsApp/messages.db",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the key difference between logical and physical acquisition in mobile forensics?",
+    "options": [
+      {
+        "value": "Logical acquisition is faster than physical acquisition",
+        "isCorrect": false
+      },
+      {
+        "value": "Physical acquisition creates a bit-by-bit copy including deleted data, while logical extracts only accessible files and folders",
+        "isCorrect": true
+      },
+      {
+        "value": "Logical acquisition requires root access, physical does not",
+        "isCorrect": false
+      },
+      {
+        "value": "Physical acquisition only works on iOS devices",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool is specifically used for examining Android logs in real-time?",
+    "options": [
+      {
+        "value": "Wireshark",
+        "isCorrect": false
+      },
+      {
+        "value": "Logcat",
+        "isCorrect": true
+      },
+      {
+        "value": "Event Viewer",
+        "isCorrect": false
+      },
+      {
+        "value": "Process Monitor",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the IMEI used for in mobile device forensics?",
+    "options": [
+      {
+        "value": "To identify the SIM card",
+        "isCorrect": false
+      },
+      {
+        "value": "To uniquely identify the mobile device hardware",
+        "isCorrect": true
+      },
+      {
+        "value": "To encrypt user data",
+        "isCorrect": false
+      },
+      {
+        "value": "To track GPS location",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator is performing JTAG forensics on a damaged smartphone. What is the primary advantage of this technique?",
+    "options": [
+      {
+        "value": "It's faster than all other methods",
+        "isCorrect": false
+      },
+      {
+        "value": "It can extract data from devices with damaged screens or USB ports by accessing memory directly through test access ports",
+        "isCorrect": true
+      },
+      {
+        "value": "It doesn't require any specialized equipment",
+        "isCorrect": false
+      },
+      {
+        "value": "It works on all devices without exception",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In the Android boot process, what is the correct order of components?",
+    "options": [
+      {
+        "value": "Kernel → Bootloader → Init → Zygote",
+        "isCorrect": false
+      },
+      {
+        "value": "Bootloader → Kernel → Init → Zygote → System Server",
+        "isCorrect": true
+      },
+      {
+        "value": "Init → Bootloader → Kernel → System Server",
+        "isCorrect": false
+      },
+      {
+        "value": "Zygote → Kernel → Bootloader → Init",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the primary purpose of rooting an Android device in forensic context?",
+    "options": [
+      {
+        "value": "To install games without payment",
+        "isCorrect": false
+      },
+      {
+        "value": "To gain privileged (superuser) access for complete data extraction",
+        "isCorrect": true
+      },
+      {
+        "value": "To speed up the device",
+        "isCorrect": false
+      },
+      {
+        "value": "To enable GPS tracking",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which command is used for logical acquisition of Android device data via ADB?",
+    "options": [
+      {
+        "value": "adb copy",
+        "isCorrect": false
+      },
+      {
+        "value": "adb pull",
+        "isCorrect": true
+      },
+      {
+        "value": "adb extract",
+        "isCorrect": false
+      },
+      {
+        "value": "adb backup",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A forensic analyst receives an iPhone that was involved in a crime. The device is locked and the passcode is unknown. Which iOS mode allows the lowest level of access for potential exploitation?",
+    "options": [
+      {
+        "value": "Safe Mode",
+        "isCorrect": false
+      },
+      {
+        "value": "Recovery Mode",
+        "isCorrect": false
+      },
+      {
+        "value": "DFU (Device Firmware Upgrade) Mode",
+        "isCorrect": true
+      },
+      {
+        "value": "Airplane Mode",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What information is typically stored in a CDR (Call Detail Record)?",
+    "options": [
+      {
+        "value": "Only the content of phone conversations",
+        "isCorrect": false
+      },
+      {
+        "value": "Call timestamps, duration, originating and terminating numbers, and cell tower information",
+        "isCorrect": true
+      },
+      {
+        "value": "Only SMS message content",
+        "isCorrect": false
+      },
+      {
+        "value": "Only GPS coordinates",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which layer in the Android OS architecture is responsible for running applications in isolated sandboxes?",
+    "options": [
+      {
+        "value": "Hardware Abstraction Layer (HAL)",
+        "isCorrect": false
+      },
+      {
+        "value": "Linux Kernel",
+        "isCorrect": false
+      },
+      {
+        "value": "Android Runtime (ART) / Dalvik Virtual Machine",
+        "isCorrect": true
+      },
+      {
+        "value": "Native Libraries",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the forensic significance of the 'Zygote' process in Android?",
+    "options": [
+      {
+        "value": "It handles network connections",
+        "isCorrect": false
+      },
+      {
+        "value": "It is the parent process from which all Android applications are forked",
+        "isCorrect": true
+      },
+      {
+        "value": "It manages device encryption",
+        "isCorrect": false
+      },
+      {
+        "value": "It stores user passwords",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator needs to perform physical acquisition on an Android device. Which command using dd would create a raw image of the data partition?",
+    "options": [
+      {
+        "value": "dd if=/data of=/sdcard/data.img",
+        "isCorrect": true
+      },
+      {
+        "value": "dd copy /data /sdcard/data.img",
+        "isCorrect": false
+      },
+      {
+        "value": "dd -input /data -output /sdcard/data.img",
+        "isCorrect": false
+      },
+      {
+        "value": "dd backup /data /sdcard/data.img",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the main difference between tethered and untethered jailbreaking?",
+    "options": [
+      {
+        "value": "Tethered jailbreaking is more secure",
+        "isCorrect": false
+      },
+      {
+        "value": "Untethered jailbreak persists after reboot, while tethered requires re-jailbreaking after each reboot",
+        "isCorrect": true
+      },
+      {
+        "value": "Tethered jailbreaking doesn't require a computer",
+        "isCorrect": false
+      },
+      {
+        "value": "There is no difference between them",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which iOS file system is used in modern iPhones (iOS 10.3 and later)?",
+    "options": [
+      {
+        "value": "HFS+",
+        "isCorrect": false
+      },
+      {
+        "value": "APFS (Apple File System)",
+        "isCorrect": true
+      },
+      {
+        "value": "ext4",
+        "isCorrect": false
+      },
+      {
+        "value": "NTFS",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is chip-off forensics?",
+    "options": [
+      {
+        "value": "A software-based extraction method",
+        "isCorrect": false
+      },
+      {
+        "value": "Physically removing memory chips from the device and reading them with specialized equipment",
+        "isCorrect": true
+      },
+      {
+        "value": "Using Wi-Fi to extract data",
+        "isCorrect": false
+      },
+      {
+        "value": "A method that only works on iOS devices",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During a mobile forensic investigation, the examiner discovers a SQLite database file. Which tool would be MOST appropriate for browsing and analyzing this database?",
+    "options": [
+      {
+        "value": "Microsoft Excel",
+        "isCorrect": false
+      },
+      {
+        "value": "DB Browser for SQLite or Belkasoft X",
+        "isCorrect": true
+      },
+      {
+        "value": "Notepad++",
+        "isCorrect": false
+      },
+      {
+        "value": "WinRAR",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the OWASP Top 10 Mobile Risk M1 (2016)?",
+    "options": [
+      {
+        "value": "Insecure Data Storage",
+        "isCorrect": false
+      },
+      {
+        "value": "Improper Platform Usage",
+        "isCorrect": true
+      },
+      {
+        "value": "Insecure Communication",
+        "isCorrect": false
+      },
+      {
+        "value": "Code Tampering",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which SIM card file system folder contains the subscriber's IMSI (International Mobile Subscriber Identity)?",
+    "options": [
+      {
+        "value": "DF_TELECOM",
+        "isCorrect": false
+      },
+      {
+        "value": "DF_GSM",
+        "isCorrect": true
+      },
+      {
+        "value": "EF_ADN",
+        "isCorrect": false
+      },
+      {
+        "value": "EF_SMS",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A forensic examiner is analyzing Chrome browser artifacts on an Android device. Where would the browsing history be stored?",
+    "options": [
+      {
+        "value": "/sdcard/Chrome/history.txt",
+        "isCorrect": false
+      },
+      {
+        "value": "/data/data/com.android.chrome/app_chrome/Default/History",
+        "isCorrect": true
+      },
+      {
+        "value": "/system/chrome/history.db",
+        "isCorrect": false
+      },
+      {
+        "value": "/cache/chrome/browsing.log",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the primary risk of jailbreaking an iOS device from a forensic perspective?",
+    "options": [
+      {
+        "value": "It improves device security",
+        "isCorrect": false
+      },
+      {
+        "value": "It may compromise evidence integrity and introduce artifacts that weren't originally present",
+        "isCorrect": true
+      },
+      {
+        "value": "It makes the device completely inaccessible",
+        "isCorrect": false
+      },
+      {
+        "value": "It automatically deletes all user data",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Android Debug Bridge (ADB) command is used to check if a device is connected?",
+    "options": [
+      {
+        "value": "adb check",
+        "isCorrect": false
+      },
+      {
+        "value": "adb devices",
+        "isCorrect": true
+      },
+      {
+        "value": "adb status",
+        "isCorrect": false
+      },
+      {
+        "value": "adb connect",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What type of data can be found in the EF_ADN file on a SIM card?",
+    "options": [
+      {
+        "value": "SMS messages",
+        "isCorrect": false
+      },
+      {
+        "value": "Abbreviated Dialing Numbers (contacts)",
+        "isCorrect": true
+      },
+      {
+        "value": "Call logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Network settings",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator receives an iPhone with Find My iPhone enabled. What forensic challenge does this present?",
+    "options": [
+      {
+        "value": "The device cannot be powered on",
+        "isCorrect": false
+      },
+      {
+        "value": "Remote wipe could be triggered by the owner, potentially destroying evidence",
+        "isCorrect": true
+      },
+      {
+        "value": "The device will automatically encrypt all photos",
+        "isCorrect": false
+      },
+      {
+        "value": "The battery will drain faster",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the purpose of using Faraday bags in mobile forensics?",
+    "options": [
+      {
+        "value": "To charge the device faster",
+        "isCorrect": false
+      },
+      {
+        "value": "To block all wireless signals and prevent remote access or data modification",
+        "isCorrect": true
+      },
+      {
+        "value": "To keep the device cool",
+        "isCorrect": false
+      },
+      {
+        "value": "To increase storage capacity",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the MobSF (Mobile Security Framework) primarily used for in mobile forensics?",
+    "options": [
+      {
+        "value": "Network traffic analysis only",
+        "isCorrect": false
+      },
+      {
+        "value": "Static and dynamic analysis of Android APK and iOS IPA files",
+        "isCorrect": true
+      },
+      {
+        "value": "SIM card extraction",
+        "isCorrect": false
+      },
+      {
+        "value": "JTAG data recovery",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During an investigation, the forensic team needs to determine the cell towers a suspect's phone connected to. What analysis technique would provide this information?",
+    "options": [
+      {
+        "value": "Memory dump analysis",
+        "isCorrect": false
+      },
+      {
+        "value": "Cell site analysis using CDR data from the service provider",
+        "isCorrect": true
+      },
+      {
+        "value": "SQLite database extraction",
+        "isCorrect": false
+      },
+      {
+        "value": "APK static analysis",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which component in iOS is responsible for secure boot chain verification?",
+    "options": [
+      {
+        "value": "SpringBoard",
+        "isCorrect": false
+      },
+      {
+        "value": "Secure Enclave Processor (SEP)",
+        "isCorrect": true
+      },
+      {
+        "value": "Cydia",
+        "isCorrect": false
+      },
+      {
+        "value": "App Store",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the Flasher Box used for in mobile forensics?",
+    "options": [
+      {
+        "value": "To take photographs of evidence",
+        "isCorrect": false
+      },
+      {
+        "value": "To read data from memory chips removed during chip-off forensics",
+        "isCorrect": true
+      },
+      {
+        "value": "To charge multiple devices simultaneously",
+        "isCorrect": false
+      },
+      {
+        "value": "To create Faraday shielding",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In Android, what is the purpose of the 'init' process during boot?",
+    "options": [
+      {
+        "value": "To display the boot animation",
+        "isCorrect": false
+      },
+      {
+        "value": "To initialize the system, mount file systems, and start essential services",
+        "isCorrect": true
+      },
+      {
+        "value": "To connect to Wi-Fi networks",
+        "isCorrect": false
+      },
+      {
+        "value": "To download system updates",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A forensic examiner is analyzing an iPhone and discovers the device uses a 6-digit passcode. What is the maximum number of possible combinations?",
+    "options": [
+      {
+        "value": "100,000",
+        "isCorrect": false
+      },
+      {
+        "value": "1,000,000",
+        "isCorrect": true
+      },
+      {
+        "value": "10,000",
+        "isCorrect": false
+      },
+      {
+        "value": "999,999",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What type of iOS keychain stores passwords for Wi-Fi networks and VPN credentials?",
+    "options": [
+      {
+        "value": "Login keychain",
+        "isCorrect": false
+      },
+      {
+        "value": "System keychain",
+        "isCorrect": true
+      },
+      {
+        "value": "User keychain",
+        "isCorrect": false
+      },
+      {
+        "value": "iCloud keychain only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Android log buffer contains system-level messages including boot sequence information?",
+    "options": [
+      {
+        "value": "main",
+        "isCorrect": false
+      },
+      {
+        "value": "system",
+        "isCorrect": true
+      },
+      {
+        "value": "radio",
+        "isCorrect": false
+      },
+      {
+        "value": "events",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the primary function of Busybox in Android forensics?",
+    "options": [
+      {
+        "value": "To play media files",
+        "isCorrect": false
+      },
+      {
+        "value": "To provide Unix utilities for advanced command-line operations",
+        "isCorrect": true
+      },
+      {
+        "value": "To manage Bluetooth connections",
+        "isCorrect": false
+      },
+      {
+        "value": "To encrypt user data",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator needs to extract data from an Android device over a network. Which tool combination would be used for physical acquisition using netcat?",
+    "options": [
+      {
+        "value": "dd and FTP",
+        "isCorrect": false
+      },
+      {
+        "value": "ADB, Busybox, and Netcat (nc)",
+        "isCorrect": true
+      },
+      {
+        "value": "Wireshark and Telnet",
+        "isCorrect": false
+      },
+      {
+        "value": "SSH and SCP only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the OWASP Mobile Risk M2 'Insecure Data Storage' primarily address?",
+    "options": [
+      {
+        "value": "Network transmission security",
+        "isCorrect": false
+      },
+      {
+        "value": "Sensitive data stored insecurely on the device such as in SQLite databases, log files, or shared preferences",
+        "isCorrect": true
+      },
+      {
+        "value": "Server-side vulnerabilities",
+        "isCorrect": false
+      },
+      {
+        "value": "Code obfuscation issues",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which file in iOS contains Safari browsing history?",
+    "options": [
+      {
+        "value": "History.plist",
+        "isCorrect": false
+      },
+      {
+        "value": "History.db",
+        "isCorrect": true
+      },
+      {
+        "value": "Safari.sqlite",
+        "isCorrect": false
+      },
+      {
+        "value": "Bookmarks.db",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is SIM cloning in the context of mobile forensics?",
+    "options": [
+      {
+        "value": "Creating a backup of SIM card data",
+        "isCorrect": false
+      },
+      {
+        "value": "Duplicating the SIM card's identity to another card, allowing interception of calls and messages",
+        "isCorrect": true
+      },
+      {
+        "value": "Upgrading a SIM card's memory",
+        "isCorrect": false
+      },
+      {
+        "value": "Converting a nano-SIM to micro-SIM",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During iOS forensic analysis, an examiner finds encrypted backup files. What tool can be used to decrypt iOS backups if the password is known?",
+    "options": [
+      {
+        "value": "WinRAR",
+        "isCorrect": false
+      },
+      {
+        "value": "Elcomsoft Phone Breaker or iBackup Viewer",
+        "isCorrect": true
+      },
+      {
+        "value": "7-Zip",
+        "isCorrect": false
+      },
+      {
+        "value": "Microsoft Office",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the purpose of the Android 'recovery' partition?",
+    "options": [
+      {
+        "value": "To store user applications",
+        "isCorrect": false
+      },
+      {
+        "value": "To provide a minimal environment for system recovery, updates, and factory reset",
+        "isCorrect": true
+      },
+      {
+        "value": "To cache web pages",
+        "isCorrect": false
+      },
+      {
+        "value": "To store the phone's IMEI",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool is commonly used for logical acquisition of iOS devices through iTunes backup?",
+    "options": [
+      {
+        "value": "Wireshark",
+        "isCorrect": false
+      },
+      {
+        "value": "Cellebrite UFED or Magnet AXIOM",
+        "isCorrect": true
+      },
+      {
+        "value": "Nmap",
+        "isCorrect": false
+      },
+      {
+        "value": "Metasploit",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the significance of the 'radio' log buffer in Android forensics?",
+    "options": [
+      {
+        "value": "It contains music streaming data",
+        "isCorrect": false
+      },
+      {
+        "value": "It contains telephony and modem-related messages including call and SMS events",
+        "isCorrect": true
+      },
+      {
+        "value": "It stores FM radio recordings",
+        "isCorrect": false
+      },
+      {
+        "value": "It logs Bluetooth connections only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A forensic investigator receives a Samsung Android phone with Knox security enabled. What challenge does this present?",
+    "options": [
+      {
+        "value": "The phone cannot be powered on",
+        "isCorrect": false
+      },
+      {
+        "value": "Knox creates a secure container that may require additional authentication to access enterprise data",
+        "isCorrect": true
+      },
+      {
+        "value": "Knox automatically deletes all user data",
+        "isCorrect": false
+      },
+      {
+        "value": "Knox prevents the phone from connecting to computers",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the JTAG interface primarily used for in embedded devices?",
+    "options": [
+      {
+        "value": "Audio output",
+        "isCorrect": false
+      },
+      {
+        "value": "Testing and debugging at the hardware level, allowing direct memory access",
+        "isCorrect": true
+      },
+      {
+        "value": "Charging the battery",
+        "isCorrect": false
+      },
+      {
+        "value": "GPS navigation",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In iOS forensics, what is the significance of the 'Manifest.plist' file in an iTunes backup?",
+    "options": [
+      {
+        "value": "It contains all user passwords",
+        "isCorrect": false
+      },
+      {
+        "value": "It provides metadata about the backup including the list of backed up files and their attributes",
+        "isCorrect": true
+      },
+      {
+        "value": "It stores the device's IMEI",
+        "isCorrect": false
+      },
+      {
+        "value": "It contains GPS coordinates only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the primary advantage of using Oxygen Forensic Detective for mobile forensics?",
+    "options": [
+      {
+        "value": "It's free and open-source",
+        "isCorrect": false
+      },
+      {
+        "value": "It provides comprehensive extraction and analysis capabilities for multiple device types including cloud data acquisition",
+        "isCorrect": true
+      },
+      {
+        "value": "It only works with iPhone devices",
+        "isCorrect": false
+      },
+      {
+        "value": "It requires no training to use",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator is examining an Android device and needs to find evidence of a specific app's network communications. Which file location would contain this information?",
+    "options": [
+      {
+        "value": "/system/network/",
+        "isCorrect": false
+      },
+      {
+        "value": "/data/data/<app_package>/shared_prefs/ or analyzing network logs",
+        "isCorrect": true
+      },
+      {
+        "value": "/sdcard/network.log",
+        "isCorrect": false
+      },
+      {
+        "value": "/boot/network/",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is 'semi-tethered' jailbreaking?",
+    "options": [
+      {
+        "value": "A jailbreak that requires constant internet connection",
+        "isCorrect": false
+      },
+      {
+        "value": "The device can reboot without a computer but jailbreak features only work after re-running the jailbreak app",
+        "isCorrect": true
+      },
+      {
+        "value": "A jailbreak that only works on older devices",
+        "isCorrect": false
+      },
+      {
+        "value": "A jailbreak that partially roots the device",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Android file typically stores user credentials and authentication tokens for installed apps?",
+    "options": [
+      {
+        "value": "/system/credentials.db",
+        "isCorrect": false
+      },
+      {
+        "value": "/data/system/accounts.db or app-specific shared_prefs files",
+        "isCorrect": true
+      },
+      {
+        "value": "/sdcard/passwords.txt",
+        "isCorrect": false
+      },
+      {
+        "value": "/boot/auth.db",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the purpose of the iOS 'lockdownd' daemon?",
+    "options": [
+      {
+        "value": "To play lock screen sounds",
+        "isCorrect": false
+      },
+      {
+        "value": "To manage pairing and communication between the iOS device and computers",
+        "isCorrect": true
+      },
+      {
+        "value": "To lock the device after timeout",
+        "isCorrect": false
+      },
+      {
+        "value": "To manage app store downloads",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During a mobile forensic examination, an investigator finds that the suspect used Signal messaging app. What forensic challenge does this present?",
+    "options": [
+      {
+        "value": "Signal data is always stored in plain text",
+        "isCorrect": false
+      },
+      {
+        "value": "Signal uses end-to-end encryption and local message database encryption, making data extraction more difficult",
+        "isCorrect": true
+      },
+      {
+        "value": "Signal cannot be installed on modern smartphones",
+        "isCorrect": false
+      },
+      {
+        "value": "Signal automatically uploads all messages to the cloud",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the function of the Android 'Dalvik cache' partition?",
+    "options": [
+      {
+        "value": "To store SMS messages",
+        "isCorrect": false
+      },
+      {
+        "value": "To store optimized DEX files for faster app loading",
+        "isCorrect": true
+      },
+      {
+        "value": "To cache web pages",
+        "isCorrect": false
+      },
+      {
+        "value": "To store user photos",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which OWASP Mobile Risk addresses vulnerabilities in how apps communicate with backend servers?",
+    "options": [
+      {
+        "value": "M1 - Improper Platform Usage",
+        "isCorrect": false
+      },
+      {
+        "value": "M3 - Insecure Communication",
+        "isCorrect": true
+      },
+      {
+        "value": "M2 - Insecure Data Storage",
+        "isCorrect": false
+      },
+      {
+        "value": "M5 - Insufficient Cryptography",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the primary purpose of using Magnet ACQUIRE in mobile forensics?",
+    "options": [
+      {
+        "value": "To hack into locked devices",
+        "isCorrect": false
+      },
+      {
+        "value": "To perform quick forensic acquisition of mobile devices including Android and iOS",
+        "isCorrect": true
+      },
+      {
+        "value": "To crack passwords",
+        "isCorrect": false
+      },
+      {
+        "value": "To modify device firmware",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator needs to analyze SMS messages from an iPhone. In which SQLite database would these messages be stored?",
+    "options": [
+      {
+        "value": "messages.sqlite",
+        "isCorrect": false
+      },
+      {
+        "value": "sms.db",
+        "isCorrect": true
+      },
+      {
+        "value": "imessage.db",
+        "isCorrect": false
+      },
+      {
+        "value": "texts.sqlite",
+        "isCorrect": false
+      }
+    ]
+  }
+]

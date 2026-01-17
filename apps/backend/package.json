@@ -39,6 +39,7 @@
 		"@turbo/gen": "^2.7.1",
 		"@types/nodemailer": "^7.0.4",
 		"ai": "^5.0.116",
+		"dotenv": "^17.2.3",
 		"drizzle-kit": "^0.31.8",
 		"drizzle-orm": "^0.45.1",
 		"hono": "^4.11.1",

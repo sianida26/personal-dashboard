@@ -1,0 +1,2102 @@
+[
+  {
+    "question": "A forensic investigator discovers that a suspect used the 'Shift + Delete' combination to remove files. What is the PRIMARY implication for the investigation?",
+    "options": [
+      {
+        "value": "Files are permanently destroyed and cannot be recovered",
+        "isCorrect": false
+      },
+      {
+        "value": "Files bypass the Recycle Bin but may still be recoverable from unallocated space",
+        "isCorrect": true
+      },
+      {
+        "value": "Files are moved to a hidden system folder",
+        "isCorrect": false
+      },
+      {
+        "value": "Files are encrypted before deletion",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which file in the Windows Recycle Bin contains the original path and deletion timestamp of a deleted file?",
+    "options": [
+      {
+        "value": "$R file",
+        "isCorrect": false
+      },
+      {
+        "value": "$I file",
+        "isCorrect": true
+      },
+      {
+        "value": "INFO2 file",
+        "isCorrect": false
+      },
+      {
+        "value": "desktop.ini",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator is analyzing an NTFS volume and suspects data is hidden using Alternate Data Streams (ADS). Which command reveals ADS attached to files?",
+    "options": [
+      {
+        "value": "dir /a:h",
+        "isCorrect": false
+      },
+      {
+        "value": "dir /r",
+        "isCorrect": true
+      },
+      {
+        "value": "attrib -s -h",
+        "isCorrect": false
+      },
+      {
+        "value": "type filename:stream",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the PRIMARY challenge of file carving on SSDs compared to HDDs?",
+    "options": [
+      {
+        "value": "SSDs use different file systems",
+        "isCorrect": false
+      },
+      {
+        "value": "TRIM command causes immediate physical erasure of deleted data",
+        "isCorrect": true
+      },
+      {
+        "value": "SSDs have smaller storage capacity",
+        "isCorrect": false
+      },
+      {
+        "value": "SSDs encrypt all data by default",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A suspect has used steganography to hide data in JPEG images. Which technique is MOST effective for detecting LSB (Least Significant Bit) steganography?",
+    "options": [
+      {
+        "value": "Visual inspection of the image",
+        "isCorrect": false
+      },
+      {
+        "value": "Statistical analysis using chi-square test",
+        "isCorrect": true
+      },
+      {
+        "value": "Comparing file sizes",
+        "isCorrect": false
+      },
+      {
+        "value": "Checking EXIF metadata",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During an investigation, you find a file named 'report.pdf' but the file header shows '89 50 4E 47'. What anti-forensics technique was used?",
+    "options": [
+      {
+        "value": "Steganography",
+        "isCorrect": false
+      },
+      {
+        "value": "File extension mismatch/spoofing",
+        "isCorrect": true
+      },
+      {
+        "value": "Encryption",
+        "isCorrect": false
+      },
+      {
+        "value": "Data hiding in slack space",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool is specifically designed to detect and analyze Alternate Data Streams on NTFS?",
+    "options": [
+      {
+        "value": "PhotoRec",
+        "isCorrect": false
+      },
+      {
+        "value": "LADS (List Alternate Data Streams)",
+        "isCorrect": true
+      },
+      {
+        "value": "Foremost",
+        "isCorrect": false
+      },
+      {
+        "value": "Volatility",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic analyst encounters a Windows system where someone ran 'cipher /w:C:' command. What was the intent?",
+    "options": [
+      {
+        "value": "To encrypt all files on the C: drive",
+        "isCorrect": false
+      },
+      {
+        "value": "To securely overwrite deleted data in free space",
+        "isCorrect": true
+      },
+      {
+        "value": "To list all encrypted files",
+        "isCorrect": false
+      },
+      {
+        "value": "To decrypt previously encrypted files",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which anti-forensics technique involves modifying file timestamps to mislead investigators about when files were created or accessed?",
+    "options": [
+      {
+        "value": "Steganography",
+        "isCorrect": false
+      },
+      {
+        "value": "Timestomping",
+        "isCorrect": true
+      },
+      {
+        "value": "File carving",
+        "isCorrect": false
+      },
+      {
+        "value": "Slack space hiding",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator needs to bypass a BIOS password on a suspect's computer. Which method does NOT require opening the computer case?",
+    "options": [
+      {
+        "value": "Removing the CMOS battery",
+        "isCorrect": false
+      },
+      {
+        "value": "Using manufacturer backdoor passwords",
+        "isCorrect": true
+      },
+      {
+        "value": "Shorting the CMOS jumper",
+        "isCorrect": false
+      },
+      {
+        "value": "Clearing CMOS via motherboard switch",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the tool 'Detect It Easy (DiE)' primarily help forensic investigators identify?",
+    "options": [
+      {
+        "value": "Hidden partitions on a disk",
+        "isCorrect": false
+      },
+      {
+        "value": "Packers, compilers, and protectors used on executables",
+        "isCorrect": true
+      },
+      {
+        "value": "Steganographic content in images",
+        "isCorrect": false
+      },
+      {
+        "value": "Deleted files in unallocated space",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A suspect used BleachBit to clean their system. Which forensic artifact is MOST likely to still contain evidence?",
+    "options": [
+      {
+        "value": "Browser cache",
+        "isCorrect": false
+      },
+      {
+        "value": "Windows Event Logs",
+        "isCorrect": true
+      },
+      {
+        "value": "Temporary files",
+        "isCorrect": false
+      },
+      {
+        "value": "Recent documents list",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In file carving, what is the significance of 'file header' and 'file footer' signatures?",
+    "options": [
+      {
+        "value": "They indicate file encryption status",
+        "isCorrect": false
+      },
+      {
+        "value": "They mark the beginning and end of file content for recovery",
+        "isCorrect": true
+      },
+      {
+        "value": "They contain file metadata only",
+        "isCorrect": false
+      },
+      {
+        "value": "They are used for file compression",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Windows registry key should be examined to detect recently connected USB devices that may have been used for data exfiltration?",
+    "options": [
+      {
+        "value": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+        "isCorrect": false
+      },
+      {
+        "value": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Enum\\USBSTOR",
+        "isCorrect": true
+      },
+      {
+        "value": "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\Explorer",
+        "isCorrect": false
+      },
+      {
+        "value": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the PRIMARY purpose of using a 'secure erase' utility like DBAN (Darik's Boot and Nuke)?",
+    "options": [
+      {
+        "value": "To format a disk quickly",
+        "isCorrect": false
+      },
+      {
+        "value": "To overwrite all data on a disk multiple times making recovery impossible",
+        "isCorrect": true
+      },
+      {
+        "value": "To encrypt disk contents",
+        "isCorrect": false
+      },
+      {
+        "value": "To partition a disk securely",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool can extract password hashes from a Windows SAM (Security Account Manager) file for offline cracking?",
+    "options": [
+      {
+        "value": "Wireshark",
+        "isCorrect": false
+      },
+      {
+        "value": "pwdump or samdump2",
+        "isCorrect": true
+      },
+      {
+        "value": "Autopsy",
+        "isCorrect": false
+      },
+      {
+        "value": "FTK Imager",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic investigator discovers that $MFT timestamps do not match $STANDARD_INFORMATION timestamps for a suspicious file. What does this indicate?",
+    "options": [
+      {
+        "value": "File corruption occurred",
+        "isCorrect": false
+      },
+      {
+        "value": "Possible timestomping attack was performed",
+        "isCorrect": true
+      },
+      {
+        "value": "Normal file system behavior",
+        "isCorrect": false
+      },
+      {
+        "value": "The file was compressed",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which file carving tool uses a configuration file to define custom file signatures for recovery?",
+    "options": [
+      {
+        "value": "Autopsy",
+        "isCorrect": false
+      },
+      {
+        "value": "Scalpel",
+        "isCorrect": true
+      },
+      {
+        "value": "EnCase",
+        "isCorrect": false
+      },
+      {
+        "value": "X-Ways",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator is examining a suspect machine and finds evidence of CCleaner being used. What is the FIRST artifact to check for evidence of what was cleaned?",
+    "options": [
+      {
+        "value": "Windows Event Logs",
+        "isCorrect": false
+      },
+      {
+        "value": "CCleaner log file (CCleaner.ini or ccleaner.log)",
+        "isCorrect": true
+      },
+      {
+        "value": "Prefetch files",
+        "isCorrect": false
+      },
+      {
+        "value": "Browser history",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the hex signature (magic number) for a JPEG file that forensic investigators look for during file carving?",
+    "options": [
+      {
+        "value": "50 4B 03 04",
+        "isCorrect": false
+      },
+      {
+        "value": "FF D8 FF",
+        "isCorrect": true
+      },
+      {
+        "value": "89 50 4E 47",
+        "isCorrect": false
+      },
+      {
+        "value": "25 50 44 46",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which steganalysis tool is commonly used to detect hidden data in image files?",
+    "options": [
+      {
+        "value": "Volatility",
+        "isCorrect": false
+      },
+      {
+        "value": "StegDetect",
+        "isCorrect": true
+      },
+      {
+        "value": "Foremost",
+        "isCorrect": false
+      },
+      {
+        "value": "Hashcat",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A suspect encrypted their hard drive with VeraCrypt and the system is currently powered on with the volume mounted. What should the investigator do FIRST?",
+    "options": [
+      {
+        "value": "Immediately power off the system",
+        "isCorrect": false
+      },
+      {
+        "value": "Perform live memory acquisition to capture encryption keys",
+        "isCorrect": true
+      },
+      {
+        "value": "Remove the hard drive for imaging",
+        "isCorrect": false
+      },
+      {
+        "value": "Attempt to guess the password",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which anti-forensics technique involves using legitimate system tools for malicious purposes to avoid detection?",
+    "options": [
+      {
+        "value": "Steganography",
+        "isCorrect": false
+      },
+      {
+        "value": "Living off the Land (LOLBins)",
+        "isCorrect": true
+      },
+      {
+        "value": "Encryption",
+        "isCorrect": false
+      },
+      {
+        "value": "File carving",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In the context of password cracking, what is a rainbow table?",
+    "options": [
+      {
+        "value": "A list of commonly used passwords",
+        "isCorrect": false
+      },
+      {
+        "value": "Precomputed hash values for quick password lookup",
+        "isCorrect": true
+      },
+      {
+        "value": "A tool for brute force attacks",
+        "isCorrect": false
+      },
+      {
+        "value": "A method for encrypting passwords",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What Windows feature automatically creates backup copies of files that can be used to recover previous versions, even if artifact wiping was performed?",
+    "options": [
+      {
+        "value": "System Restore",
+        "isCorrect": false
+      },
+      {
+        "value": "Volume Shadow Copy Service (VSS)",
+        "isCorrect": true
+      },
+      {
+        "value": "Windows Backup",
+        "isCorrect": false
+      },
+      {
+        "value": "File History",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which technique do anti-forensics tools use to overwrite data in a way that makes recovery statistically impossible?",
+    "options": [
+      {
+        "value": "Single-pass zero overwrite",
+        "isCorrect": false
+      },
+      {
+        "value": "Gutmann method (35-pass overwrite)",
+        "isCorrect": true
+      },
+      {
+        "value": "Quick format",
+        "isCorrect": false
+      },
+      {
+        "value": "File deletion",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic analyst finds a USB device was connected to a Windows system. Which log file contains the first connection timestamp?",
+    "options": [
+      {
+        "value": "System.evtx",
+        "isCorrect": false
+      },
+      {
+        "value": "setupapi.dev.log",
+        "isCorrect": true
+      },
+      {
+        "value": "Security.evtx",
+        "isCorrect": false
+      },
+      {
+        "value": "Application.evtx",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the PRIMARY limitation of using file carving to recover deleted files?",
+    "options": [
+      {
+        "value": "It only works on Windows systems",
+        "isCorrect": false
+      },
+      {
+        "value": "Fragmented files may not be fully recovered",
+        "isCorrect": true
+      },
+      {
+        "value": "It requires the original file system to be intact",
+        "isCorrect": false
+      },
+      {
+        "value": "It cannot recover common file types",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool is used to create and hide data within the slack space of files?",
+    "options": [
+      {
+        "value": "bmap",
+        "isCorrect": true
+      },
+      {
+        "value": "Autopsy",
+        "isCorrect": false
+      },
+      {
+        "value": "FTK",
+        "isCorrect": false
+      },
+      {
+        "value": "Wireshark",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator discovers that a suspect used the sdelete tool from Sysinternals. What forensic artifact might still reveal file names that were securely deleted?",
+    "options": [
+      {
+        "value": "File content in slack space",
+        "isCorrect": false
+      },
+      {
+        "value": "$MFT entries may retain file name records",
+        "isCorrect": true
+      },
+      {
+        "value": "Recycle Bin files",
+        "isCorrect": false
+      },
+      {
+        "value": "Prefetch files only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which password cracking technique uses a list of words and their variations to guess passwords?",
+    "options": [
+      {
+        "value": "Brute force attack",
+        "isCorrect": false
+      },
+      {
+        "value": "Dictionary attack",
+        "isCorrect": true
+      },
+      {
+        "value": "Rainbow table attack",
+        "isCorrect": false
+      },
+      {
+        "value": "Pass-the-hash attack",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic investigator needs to recover a deleted partition from a hard drive. Which tool is specifically designed for partition recovery?",
+    "options": [
+      {
+        "value": "Volatility",
+        "isCorrect": false
+      },
+      {
+        "value": "TestDisk",
+        "isCorrect": true
+      },
+      {
+        "value": "Wireshark",
+        "isCorrect": false
+      },
+      {
+        "value": "Hashcat",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the PRIMARY purpose of a 'packer' in the context of anti-forensics?",
+    "options": [
+      {
+        "value": "To compress files for faster transfer",
+        "isCorrect": false
+      },
+      {
+        "value": "To obfuscate executable code and evade detection",
+        "isCorrect": true
+      },
+      {
+        "value": "To encrypt network traffic",
+        "isCorrect": false
+      },
+      {
+        "value": "To delete files securely",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During a forensic examination, an analyst discovers a file with extension .docx but Autopsy flags it as having a mismatched file type. Which feature in Autopsy detected this?",
+    "options": [
+      {
+        "value": "Keyword Search",
+        "isCorrect": false
+      },
+      {
+        "value": "Extension Mismatch Detector",
+        "isCorrect": true
+      },
+      {
+        "value": "Hash Lookup",
+        "isCorrect": false
+      },
+      {
+        "value": "Timeline Analysis",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What information does the Windows Recycle Bin $I file contain?",
+    "options": [
+      {
+        "value": "The actual file content",
+        "isCorrect": false
+      },
+      {
+        "value": "Original file path, size, and deletion timestamp",
+        "isCorrect": true
+      },
+      {
+        "value": "User credentials who deleted the file",
+        "isCorrect": false
+      },
+      {
+        "value": "Backup copy of file metadata",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which anti-forensics technique involves hiding malicious code within the unused space between file clusters?",
+    "options": [
+      {
+        "value": "Alternate Data Streams",
+        "isCorrect": false
+      },
+      {
+        "value": "Slack space hiding",
+        "isCorrect": true
+      },
+      {
+        "value": "Steganography",
+        "isCorrect": false
+      },
+      {
+        "value": "File extension spoofing",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator encounters a BitLocker-encrypted drive. Which tool can attempt to recover the encryption key from memory dumps?",
+    "options": [
+      {
+        "value": "Foremost",
+        "isCorrect": false
+      },
+      {
+        "value": "Elcomsoft Forensic Disk Decryptor",
+        "isCorrect": true
+      },
+      {
+        "value": "Scalpel",
+        "isCorrect": false
+      },
+      {
+        "value": "PhotoRec",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the file header signature for PNG images used in file carving?",
+    "options": [
+      {
+        "value": "FF D8 FF E0",
+        "isCorrect": false
+      },
+      {
+        "value": "89 50 4E 47 0D 0A 1A 0A",
+        "isCorrect": true
+      },
+      {
+        "value": "50 4B 03 04",
+        "isCorrect": false
+      },
+      {
+        "value": "47 49 46 38",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A suspect used Eraser software to securely delete files. What makes Eraser more effective than simply deleting files?",
+    "options": [
+      {
+        "value": "It moves files to a hidden location",
+        "isCorrect": false
+      },
+      {
+        "value": "It overwrites file data with random patterns multiple times",
+        "isCorrect": true
+      },
+      {
+        "value": "It encrypts files before deletion",
+        "isCorrect": false
+      },
+      {
+        "value": "It removes files from the MFT only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which command in Linux can be used to securely overwrite and delete a file?",
+    "options": [
+      {
+        "value": "rm -rf",
+        "isCorrect": false
+      },
+      {
+        "value": "shred",
+        "isCorrect": true
+      },
+      {
+        "value": "delete --secure",
+        "isCorrect": false
+      },
+      {
+        "value": "wipe -r",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During file carving, what is a 'carving signature' or 'magic number'?",
+    "options": [
+      {
+        "value": "A unique hash value for each file",
+        "isCorrect": false
+      },
+      {
+        "value": "A sequence of bytes that identifies a file type",
+        "isCorrect": true
+      },
+      {
+        "value": "The file name encoded in hexadecimal",
+        "isCorrect": false
+      },
+      {
+        "value": "The encryption key for the file",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What anti-forensics technique involves using encrypted containers that appear as random data unless the correct password is provided?",
+    "options": [
+      {
+        "value": "Steganography",
+        "isCorrect": false
+      },
+      {
+        "value": "Plausible deniability/Hidden volumes",
+        "isCorrect": true
+      },
+      {
+        "value": "File slack hiding",
+        "isCorrect": false
+      },
+      {
+        "value": "Alternate Data Streams",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool can detect and display hidden NTFS Alternate Data Streams system-wide?",
+    "options": [
+      {
+        "value": "dir /s /r",
+        "isCorrect": false
+      },
+      {
+        "value": "Streams.exe from Sysinternals",
+        "isCorrect": true
+      },
+      {
+        "value": "attrib command",
+        "isCorrect": false
+      },
+      {
+        "value": "fsutil",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator finds that the system time was deliberately changed before certain activities. This is an example of which anti-forensics technique?",
+    "options": [
+      {
+        "value": "Trail obfuscation",
+        "isCorrect": true
+      },
+      {
+        "value": "Data hiding",
+        "isCorrect": false
+      },
+      {
+        "value": "Encryption",
+        "isCorrect": false
+      },
+      {
+        "value": "Artifact wiping",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Windows Event Log ID indicates that the system audit log was cleared, potentially as an anti-forensics measure?",
+    "options": [
+      {
+        "value": "Event ID 4624",
+        "isCorrect": false
+      },
+      {
+        "value": "Event ID 1102",
+        "isCorrect": true
+      },
+      {
+        "value": "Event ID 4688",
+        "isCorrect": false
+      },
+      {
+        "value": "Event ID 7045",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic investigator suspects that files were hidden in the Host Protected Area (HPA) of a hard drive. Which tool can detect and access HPA?",
+    "options": [
+      {
+        "value": "PhotoRec",
+        "isCorrect": false
+      },
+      {
+        "value": "hdparm or HDAT2",
+        "isCorrect": true
+      },
+      {
+        "value": "Autopsy",
+        "isCorrect": false
+      },
+      {
+        "value": "Volatility",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the 'UPX' tool do when used on executable files?",
+    "options": [
+      {
+        "value": "Encrypts the executable",
+        "isCorrect": false
+      },
+      {
+        "value": "Compresses and packs the executable",
+        "isCorrect": true
+      },
+      {
+        "value": "Digitally signs the executable",
+        "isCorrect": false
+      },
+      {
+        "value": "Removes metadata from the executable",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which forensic technique can detect if an image file contains hidden data using steganography?",
+    "options": [
+      {
+        "value": "Hashing",
+        "isCorrect": false
+      },
+      {
+        "value": "Steganalysis",
+        "isCorrect": true
+      },
+      {
+        "value": "File carving",
+        "isCorrect": false
+      },
+      {
+        "value": "Password cracking",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A suspect used AxCrypt to encrypt sensitive files. What type of encryption algorithm does AxCrypt primarily use?",
+    "options": [
+      {
+        "value": "DES",
+        "isCorrect": false
+      },
+      {
+        "value": "AES-256",
+        "isCorrect": true
+      },
+      {
+        "value": "RSA",
+        "isCorrect": false
+      },
+      {
+        "value": "Blowfish",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During recycle bin forensics on Windows 10, an investigator finds a file starting with '$I'. What is the corresponding file that contains the actual deleted content?",
+    "options": [
+      {
+        "value": "A file starting with '$R'",
+        "isCorrect": true
+      },
+      {
+        "value": "A file starting with '$D'",
+        "isCorrect": false
+      },
+      {
+        "value": "A file starting with '$C'",
+        "isCorrect": false
+      },
+      {
+        "value": "The INFO2 file",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool is commonly used for GPU-accelerated password cracking?",
+    "options": [
+      {
+        "value": "John the Ripper",
+        "isCorrect": false
+      },
+      {
+        "value": "Hashcat",
+        "isCorrect": true
+      },
+      {
+        "value": "Ophcrack",
+        "isCorrect": false
+      },
+      {
+        "value": "L0phtCrack",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the PRIMARY indicator that a file has been packed or obfuscated when analyzing it with PE analysis tools?",
+    "options": [
+      {
+        "value": "Large file size",
+        "isCorrect": false
+      },
+      {
+        "value": "High entropy in code sections and unusual section names",
+        "isCorrect": true
+      },
+      {
+        "value": "Multiple digital signatures",
+        "isCorrect": false
+      },
+      {
+        "value": "Standard import tables",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator needs to recover files from a ReFS volume that has been corrupted. Which Microsoft tool is specifically designed for this purpose?",
+    "options": [
+      {
+        "value": "chkdsk",
+        "isCorrect": false
+      },
+      {
+        "value": "ReFSUtil",
+        "isCorrect": true
+      },
+      {
+        "value": "diskpart",
+        "isCorrect": false
+      },
+      {
+        "value": "fsutil",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which anti-forensics countermeasure involves creating detailed documentation and hash values of all evidence at every stage?",
+    "options": [
+      {
+        "value": "Data encryption",
+        "isCorrect": false
+      },
+      {
+        "value": "Maintaining chain of custody and integrity verification",
+        "isCorrect": true
+      },
+      {
+        "value": "Using proprietary tools",
+        "isCorrect": false
+      },
+      {
+        "value": "Avoiding digital evidence",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What happens to data when the TRIM command is executed on an SSD?",
+    "options": [
+      {
+        "value": "Data is moved to a backup location",
+        "isCorrect": false
+      },
+      {
+        "value": "Data blocks are marked for immediate garbage collection and erasure",
+        "isCorrect": true
+      },
+      {
+        "value": "Data is compressed for efficiency",
+        "isCorrect": false
+      },
+      {
+        "value": "Data is encrypted in place",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic analyst is using Foremost for file carving. Which configuration file does Foremost use to define file signatures?",
+    "options": [
+      {
+        "value": "foremost.ini",
+        "isCorrect": false
+      },
+      {
+        "value": "foremost.conf",
+        "isCorrect": true
+      },
+      {
+        "value": "signatures.txt",
+        "isCorrect": false
+      },
+      {
+        "value": "carve.cfg",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which of the following is a characteristic of LSB (Least Significant Bit) steganography in images?",
+    "options": [
+      {
+        "value": "Dramatically increases file size",
+        "isCorrect": false
+      },
+      {
+        "value": "Makes minimal visual changes to the carrier image",
+        "isCorrect": true
+      },
+      {
+        "value": "Requires special software to view the image",
+        "isCorrect": false
+      },
+      {
+        "value": "Changes the file extension",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During an investigation, you find that Prefetch files have been deleted. Which alternative artifact can provide similar information about program execution?",
+    "options": [
+      {
+        "value": "Recycle Bin",
+        "isCorrect": false
+      },
+      {
+        "value": "Amcache.hve or ShimCache",
+        "isCorrect": true
+      },
+      {
+        "value": "Browser history",
+        "isCorrect": false
+      },
+      {
+        "value": "Pagefile.sys",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the purpose of the DoD 5220.22-M wiping standard?",
+    "options": [
+      {
+        "value": "To encrypt classified data",
+        "isCorrect": false
+      },
+      {
+        "value": "To securely erase data using a specific overwrite pattern",
+        "isCorrect": true
+      },
+      {
+        "value": "To compress data for archival",
+        "isCorrect": false
+      },
+      {
+        "value": "To verify data integrity",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator discovers that someone used Timestomp from the Metasploit framework. What was the likely intent?",
+    "options": [
+      {
+        "value": "To encrypt files",
+        "isCorrect": false
+      },
+      {
+        "value": "To modify file timestamps and obscure activity timeline",
+        "isCorrect": true
+      },
+      {
+        "value": "To hide files in ADS",
+        "isCorrect": false
+      },
+      {
+        "value": "To delete files securely",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Python library is commonly used for Recycle Bin forensics to parse $I and $R files?",
+    "options": [
+      {
+        "value": "requests",
+        "isCorrect": false
+      },
+      {
+        "value": "python-registry or custom parsers",
+        "isCorrect": true
+      },
+      {
+        "value": "numpy",
+        "isCorrect": false
+      },
+      {
+        "value": "flask",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic examiner discovers that the Master File Table (MFT) contains entries for files that no longer exist on the disk. What can these orphan entries reveal?",
+    "options": [
+      {
+        "value": "Current running processes",
+        "isCorrect": false
+      },
+      {
+        "value": "Previously deleted file names and metadata",
+        "isCorrect": true
+      },
+      {
+        "value": "Network connections",
+        "isCorrect": false
+      },
+      {
+        "value": "User passwords",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which anti-forensics technique uses the Device Configuration Overlay (DCO) to hide data?",
+    "options": [
+      {
+        "value": "File encryption",
+        "isCorrect": false
+      },
+      {
+        "value": "Hiding data in areas of the disk invisible to the operating system",
+        "isCorrect": true
+      },
+      {
+        "value": "Steganography",
+        "isCorrect": false
+      },
+      {
+        "value": "Trail obfuscation",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the tool 'Exeinfo PE' help forensic investigators determine?",
+    "options": [
+      {
+        "value": "Network traffic patterns",
+        "isCorrect": false
+      },
+      {
+        "value": "Packer/protector used on Windows executables",
+        "isCorrect": true
+      },
+      {
+        "value": "File system structure",
+        "isCorrect": false
+      },
+      {
+        "value": "Memory layout",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A suspect claims they never used a particular USB drive. Which Windows artifact can definitively prove USB device connection?",
+    "options": [
+      {
+        "value": "Browser history",
+        "isCorrect": false
+      },
+      {
+        "value": "USBSTOR registry key with device serial number",
+        "isCorrect": true
+      },
+      {
+        "value": "Prefetch files",
+        "isCorrect": false
+      },
+      {
+        "value": "Event viewer only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool can unpack executables that have been compressed with UPX?",
+    "options": [
+      {
+        "value": "upx -d (decompress option)",
+        "isCorrect": true
+      },
+      {
+        "value": "Foremost",
+        "isCorrect": false
+      },
+      {
+        "value": "PhotoRec",
+        "isCorrect": false
+      },
+      {
+        "value": "Scalpel",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During steganography detection, what does a high entropy value in an image file suggest?",
+    "options": [
+      {
+        "value": "The image is corrupted",
+        "isCorrect": false
+      },
+      {
+        "value": "Possible presence of hidden encrypted or random data",
+        "isCorrect": true
+      },
+      {
+        "value": "The image uses lossless compression",
+        "isCorrect": false
+      },
+      {
+        "value": "The image has high resolution",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the key difference between artifact wiping and data destruction?",
+    "options": [
+      {
+        "value": "Artifact wiping targets specific forensic traces while data destruction removes all data",
+        "isCorrect": true
+      },
+      {
+        "value": "They are the same technique",
+        "isCorrect": false
+      },
+      {
+        "value": "Data destruction only affects documents",
+        "isCorrect": false
+      },
+      {
+        "value": "Artifact wiping requires hardware tools",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which command can create a hidden Alternate Data Stream attached to a file in Windows?",
+    "options": [
+      {
+        "value": "copy secret.txt > visible.txt:hidden",
+        "isCorrect": false
+      },
+      {
+        "value": "echo secret data > visible.txt:hidden",
+        "isCorrect": true
+      },
+      {
+        "value": "attrib +h secret.txt",
+        "isCorrect": false
+      },
+      {
+        "value": "hide secret.txt visible.txt",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic investigator is examining a system where the Windows Event Logs show gaps in timestamps. What anti-forensics technique might have been used?",
+    "options": [
+      {
+        "value": "Steganography",
+        "isCorrect": false
+      },
+      {
+        "value": "Selective log deletion or log tampering",
+        "isCorrect": true
+      },
+      {
+        "value": "File encryption",
+        "isCorrect": false
+      },
+      {
+        "value": "Password protection",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which file recovery tool is known for its strong signature-based carving and is included in many forensic Linux distributions?",
+    "options": [
+      {
+        "value": "Wireshark",
+        "isCorrect": false
+      },
+      {
+        "value": "Scalpel",
+        "isCorrect": true
+      },
+      {
+        "value": "Nmap",
+        "isCorrect": false
+      },
+      {
+        "value": "Burp Suite",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the PRIMARY function of OSForensics in anti-forensics detection?",
+    "options": [
+      {
+        "value": "Network packet analysis",
+        "isCorrect": false
+      },
+      {
+        "value": "Detecting hidden data, ADS, and system artifacts",
+        "isCorrect": true
+      },
+      {
+        "value": "Password management",
+        "isCorrect": false
+      },
+      {
+        "value": "Malware creation",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "When performing password hash extraction on a Windows system, which two files must be obtained from the config folder?",
+    "options": [
+      {
+        "value": "NTUSER.DAT and SOFTWARE",
+        "isCorrect": false
+      },
+      {
+        "value": "SAM and SYSTEM",
+        "isCorrect": true
+      },
+      {
+        "value": "SECURITY and DEFAULT",
+        "isCorrect": false
+      },
+      {
+        "value": "HARDWARE and BCD",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A suspect used a virtual machine to conduct malicious activities and then deleted the VM. Where might evidence of the VM still exist?",
+    "options": [
+      {
+        "value": "Only in the deleted VMDK file",
+        "isCorrect": false
+      },
+      {
+        "value": "Registry entries, recent documents, and potentially recoverable VM files",
+        "isCorrect": true
+      },
+      {
+        "value": "The evidence is completely destroyed",
+        "isCorrect": false
+      },
+      {
+        "value": "Only in network logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which steganography tool is commonly used to hide data within audio files?",
+    "options": [
+      {
+        "value": "OpenStego",
+        "isCorrect": false
+      },
+      {
+        "value": "DeepSound",
+        "isCorrect": true
+      },
+      {
+        "value": "Steghide",
+        "isCorrect": false
+      },
+      {
+        "value": "Snow",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the significance of the 'Zone.Identifier' Alternate Data Stream in forensic investigations?",
+    "options": [
+      {
+        "value": "It contains encryption keys",
+        "isCorrect": false
+      },
+      {
+        "value": "It indicates files downloaded from the internet and their source URL",
+        "isCorrect": true
+      },
+      {
+        "value": "It stores file permissions",
+        "isCorrect": false
+      },
+      {
+        "value": "It contains backup data",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic investigator finds that $STANDARD_INFORMATION timestamps show a file was created in 2024, but $FILE_NAME attribute shows 2019. What does this discrepancy indicate?",
+    "options": [
+      {
+        "value": "Normal Windows behavior",
+        "isCorrect": false
+      },
+      {
+        "value": "Evidence of timestamp manipulation (timestomping)",
+        "isCorrect": true
+      },
+      {
+        "value": "File system corruption",
+        "isCorrect": false
+      },
+      {
+        "value": "Daylight saving time adjustment",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool can be used to analyze and recover data from damaged or corrupted RAID arrays?",
+    "options": [
+      {
+        "value": "Volatility",
+        "isCorrect": false
+      },
+      {
+        "value": "R-Studio",
+        "isCorrect": true
+      },
+      {
+        "value": "Wireshark",
+        "isCorrect": false
+      },
+      {
+        "value": "Burp Suite",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What anti-forensics technique involves running malicious code entirely in memory to avoid leaving traces on disk?",
+    "options": [
+      {
+        "value": "File encryption",
+        "isCorrect": false
+      },
+      {
+        "value": "Fileless malware/memory-only attacks",
+        "isCorrect": true
+      },
+      {
+        "value": "Steganography",
+        "isCorrect": false
+      },
+      {
+        "value": "Data hiding in slack space",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During an investigation, you need to bypass a Windows login password on a powered-off computer. Which tool can reset the password by modifying the SAM file?",
+    "options": [
+      {
+        "value": "Ophcrack",
+        "isCorrect": false
+      },
+      {
+        "value": "chntpw or Offline NT Password & Registry Editor",
+        "isCorrect": true
+      },
+      {
+        "value": "John the Ripper",
+        "isCorrect": false
+      },
+      {
+        "value": "Hashcat",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the file footer signature for JPEG files used to identify the end of a JPEG during file carving?",
+    "options": [
+      {
+        "value": "00 00 00 00",
+        "isCorrect": false
+      },
+      {
+        "value": "FF D9",
+        "isCorrect": true
+      },
+      {
+        "value": "49 45 4E 44",
+        "isCorrect": false
+      },
+      {
+        "value": "25 25 45 4F",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which method does an investigator use to detect if a suspect used portable applications that leave minimal traces?",
+    "options": [
+      {
+        "value": "Check only installed programs list",
+        "isCorrect": false
+      },
+      {
+        "value": "Examine Prefetch, Registry MRUs, and USB device history",
+        "isCorrect": true
+      },
+      {
+        "value": "Review only browser history",
+        "isCorrect": false
+      },
+      {
+        "value": "Analyze only the Recycle Bin",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A suspect used TrueCrypt to create a hidden volume within an encrypted container. What makes this particularly challenging for forensics?",
+    "options": [
+      {
+        "value": "TrueCrypt uses weak encryption",
+        "isCorrect": false
+      },
+      {
+        "value": "The hidden volume is indistinguishable from random data without the correct password",
+        "isCorrect": true
+      },
+      {
+        "value": "Hidden volumes are always visible in file explorer",
+        "isCorrect": false
+      },
+      {
+        "value": "TrueCrypt leaves obvious traces in the registry",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Windows log file records when services are installed, which can indicate malicious software installation?",
+    "options": [
+      {
+        "value": "Application.evtx",
+        "isCorrect": false
+      },
+      {
+        "value": "System.evtx (Event ID 7045)",
+        "isCorrect": true
+      },
+      {
+        "value": "Setup.evtx",
+        "isCorrect": false
+      },
+      {
+        "value": "PowerShell Operational log",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the PRIMARY method for detecting data hidden in the Host Protected Area (HPA) of a hard drive?",
+    "options": [
+      {
+        "value": "Using standard file browsing tools",
+        "isCorrect": false
+      },
+      {
+        "value": "Comparing reported disk size with actual physical capacity using specialized tools",
+        "isCorrect": true
+      },
+      {
+        "value": "Checking Windows Disk Management",
+        "isCorrect": false
+      },
+      {
+        "value": "Analyzing file timestamps",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which anti-forensics technique specifically targets the Windows Event Log by corrupting the log headers?",
+    "options": [
+      {
+        "value": "Steganography",
+        "isCorrect": false
+      },
+      {
+        "value": "Log file tampering/corruption",
+        "isCorrect": true
+      },
+      {
+        "value": "Password protection",
+        "isCorrect": false
+      },
+      {
+        "value": "File carving",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator finds evidence that 'Privacy Eraser' software was used. What should be the next investigative step?",
+    "options": [
+      {
+        "value": "Assume all evidence is destroyed",
+        "isCorrect": false
+      },
+      {
+        "value": "Check for artifacts that may survive wiping: VSS, MFT entries, registry backups",
+        "isCorrect": true
+      },
+      {
+        "value": "Only analyze network traffic",
+        "isCorrect": false
+      },
+      {
+        "value": "Focus solely on mobile devices",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the 'Snow' steganography tool hide data within?",
+    "options": [
+      {
+        "value": "Image files",
+        "isCorrect": false
+      },
+      {
+        "value": "Whitespace at the end of text lines",
+        "isCorrect": true
+      },
+      {
+        "value": "Audio files",
+        "isCorrect": false
+      },
+      {
+        "value": "Video files",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool from the Sleuth Kit can help identify deleted file entries in the NTFS MFT?",
+    "options": [
+      {
+        "value": "mmls",
+        "isCorrect": false
+      },
+      {
+        "value": "icat",
+        "isCorrect": false
+      },
+      {
+        "value": "fls with -d flag",
+        "isCorrect": true
+      },
+      {
+        "value": "fsstat",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic analyst discovers that a suspect used 'BCWipe' on their system. What distinguishes BCWipe from simple deletion?",
+    "options": [
+      {
+        "value": "BCWipe only deletes shortcuts",
+        "isCorrect": false
+      },
+      {
+        "value": "BCWipe overwrites file content, slack space, and free space with secure patterns",
+        "isCorrect": true
+      },
+      {
+        "value": "BCWipe moves files to a hidden location",
+        "isCorrect": false
+      },
+      {
+        "value": "BCWipe only works on network drives",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which registry key stores information about recently accessed documents that can survive artifact wiping tools?",
+    "options": [
+      {
+        "value": "HKEY_LOCAL_MACHINE\\SOFTWARE",
+        "isCorrect": false
+      },
+      {
+        "value": "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\RecentDocs",
+        "isCorrect": true
+      },
+      {
+        "value": "HKEY_CLASSES_ROOT",
+        "isCorrect": false
+      },
+      {
+        "value": "HKEY_LOCAL_MACHINE\\SYSTEM",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During an investigation of a corporate data breach, you find that the attacker used 'Eraser' with the 'Pseudorandom Data' method. How many passes does this method use?",
+    "options": [
+      {
+        "value": "1 pass",
+        "isCorrect": true
+      },
+      {
+        "value": "3 passes",
+        "isCorrect": false
+      },
+      {
+        "value": "7 passes",
+        "isCorrect": false
+      },
+      {
+        "value": "35 passes",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the PRIMARY purpose of using a write-blocker when dealing with potential anti-forensics evidence?",
+    "options": [
+      {
+        "value": "To speed up data acquisition",
+        "isCorrect": false
+      },
+      {
+        "value": "To prevent any changes to evidence including triggered anti-forensics mechanisms",
+        "isCorrect": true
+      },
+      {
+        "value": "To decrypt encrypted files",
+        "isCorrect": false
+      },
+      {
+        "value": "To recover deleted files",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic investigator discovers that someone used the 'defrag' command with the /U parameter on a Windows system. What forensic concern does this raise?",
+    "options": [
+      {
+        "value": "It encrypts the drive",
+        "isCorrect": false
+      },
+      {
+        "value": "It may overwrite deleted file data in unallocated space during optimization",
+        "isCorrect": true
+      },
+      {
+        "value": "It creates hidden partitions",
+        "isCorrect": false
+      },
+      {
+        "value": "It has no forensic implications",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which steganography technique hides data by modifying the spacing between words or letters in text documents?",
+    "options": [
+      {
+        "value": "LSB insertion",
+        "isCorrect": false
+      },
+      {
+        "value": "Whitespace steganography",
+        "isCorrect": true
+      },
+      {
+        "value": "Image embedding",
+        "isCorrect": false
+      },
+      {
+        "value": "Audio spectrum hiding",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the significance of the USN Journal in anti-forensics investigations?",
+    "options": [
+      {
+        "value": "It only stores system preferences",
+        "isCorrect": false
+      },
+      {
+        "value": "It records file system changes and can reveal deleted or modified files",
+        "isCorrect": true
+      },
+      {
+        "value": "It is used for network logging",
+        "isCorrect": false
+      },
+      {
+        "value": "It contains only boot information",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A suspect used 'Wise Disk Cleaner' to remove traces of their activity. Which artifact would MOST likely survive this cleaning?",
+    "options": [
+      {
+        "value": "Temporary internet files",
+        "isCorrect": false
+      },
+      {
+        "value": "Volume Shadow Copies if not specifically targeted",
+        "isCorrect": true
+      },
+      {
+        "value": "Browser cookies",
+        "isCorrect": false
+      },
+      {
+        "value": "Windows temp folder contents",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What anti-forensics indicator would suggest that someone used the 'diskpart clean all' command?",
+    "options": [
+      {
+        "value": "Encrypted files present",
+        "isCorrect": false
+      },
+      {
+        "value": "Drive shows as unallocated with zeroed sectors",
+        "isCorrect": true
+      },
+      {
+        "value": "Multiple partitions visible",
+        "isCorrect": false
+      },
+      {
+        "value": "Normal file system structure",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool can detect and analyze packed or protected executables by examining PE header anomalies?",
+    "options": [
+      {
+        "value": "Autopsy",
+        "isCorrect": false
+      },
+      {
+        "value": "PEiD or Detect It Easy (DiE)",
+        "isCorrect": true
+      },
+      {
+        "value": "FTK Imager",
+        "isCorrect": false
+      },
+      {
+        "value": "Foremost",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During a case involving suspected steganography, an investigator compares the histogram of a suspect image to a known clean image of the same scene. What is this technique called?",
+    "options": [
+      {
+        "value": "Hash comparison",
+        "isCorrect": false
+      },
+      {
+        "value": "Visual or statistical steganalysis",
+        "isCorrect": true
+      },
+      {
+        "value": "File carving",
+        "isCorrect": false
+      },
+      {
+        "value": "Password auditing",
+        "isCorrect": false
+      }
+    ]
+  }
+]

@@ -1,0 +1,2102 @@
+[
+  {
+    "question": "What is the primary purpose of network forensics?",
+    "options": [
+      {
+        "value": "To configure network devices",
+        "isCorrect": false
+      },
+      {
+        "value": "To capture, record, and analyze network traffic for investigating security incidents and policy violations",
+        "isCorrect": true
+      },
+      {
+        "value": "To install firewalls and IDS systems",
+        "isCorrect": false
+      },
+      {
+        "value": "To optimize network performance",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Wireshark display filter would show only HTTP traffic?",
+    "options": [
+      {
+        "value": "filter http",
+        "isCorrect": false
+      },
+      {
+        "value": "http",
+        "isCorrect": true
+      },
+      {
+        "value": "tcp.port == http",
+        "isCorrect": false
+      },
+      {
+        "value": "protocol:http",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A forensic investigator notices multiple TCP packets with both SYN and FIN flags set in a capture file. What type of attack does this indicate?",
+    "options": [
+      {
+        "value": "TCP SYN Flood attack",
+        "isCorrect": false
+      },
+      {
+        "value": "SYN-FIN Flood DoS attack",
+        "isCorrect": true
+      },
+      {
+        "value": "Normal TCP handshake",
+        "isCorrect": false
+      },
+      {
+        "value": "UDP Flood attack",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which log file on a Cisco ASA firewall contains information about denied connections?",
+    "options": [
+      {
+        "value": "/var/log/messages",
+        "isCorrect": false
+      },
+      {
+        "value": "Syslog messages with severity level 4 (warning) or message ID 106xxx",
+        "isCorrect": true
+      },
+      {
+        "value": "/var/log/firewall.log",
+        "isCorrect": false
+      },
+      {
+        "value": "access.log",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the difference between postmortem and real-time network analysis?",
+    "options": [
+      {
+        "value": "There is no difference; they are the same",
+        "isCorrect": false
+      },
+      {
+        "value": "Postmortem analyzes captured traffic after an incident; real-time monitors traffic as it occurs",
+        "isCorrect": true
+      },
+      {
+        "value": "Real-time is faster than postmortem",
+        "isCorrect": false
+      },
+      {
+        "value": "Postmortem uses Wireshark; real-time uses tcpdump",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool is commonly used for network forensic analysis and can reassemble TCP sessions from packet captures?",
+    "options": [
+      {
+        "value": "Notepad++",
+        "isCorrect": false
+      },
+      {
+        "value": "NetworkMiner",
+        "isCorrect": true
+      },
+      {
+        "value": "Task Manager",
+        "isCorrect": false
+      },
+      {
+        "value": "Registry Editor",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In a DHCP log, what information is most useful for tracking which device was assigned a specific IP address at a given time?",
+    "options": [
+      {
+        "value": "Server hostname",
+        "isCorrect": false
+      },
+      {
+        "value": "MAC address, IP address, and timestamp of the lease",
+        "isCorrect": true
+      },
+      {
+        "value": "DNS server address",
+        "isCorrect": false
+      },
+      {
+        "value": "Gateway address only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator analyzing network traffic sees thousands of ICMP echo request packets from various source IPs to a single destination. What attack is likely occurring?",
+    "options": [
+      {
+        "value": "ARP Poisoning",
+        "isCorrect": false
+      },
+      {
+        "value": "ICMP Flood (Ping Flood) DoS attack",
+        "isCorrect": true
+      },
+      {
+        "value": "DNS Amplification",
+        "isCorrect": false
+      },
+      {
+        "value": "SQL Injection",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is event correlation in network forensics?",
+    "options": [
+      {
+        "value": "Deleting duplicate events from logs",
+        "isCorrect": false
+      },
+      {
+        "value": "The process of linking related events from multiple sources to identify patterns and incidents",
+        "isCorrect": true
+      },
+      {
+        "value": "Copying events to backup storage",
+        "isCorrect": false
+      },
+      {
+        "value": "Creating new events from old logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Wireshark filter would display traffic from a specific IP address 192.168.1.100?",
+    "options": [
+      {
+        "value": "source == 192.168.1.100",
+        "isCorrect": false
+      },
+      {
+        "value": "ip.addr == 192.168.1.100",
+        "isCorrect": true
+      },
+      {
+        "value": "filter ip 192.168.1.100",
+        "isCorrect": false
+      },
+      {
+        "value": "host:192.168.1.100",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is an Indicator of Compromise (IoC) in network forensics?",
+    "options": [
+      {
+        "value": "A network performance metric",
+        "isCorrect": false
+      },
+      {
+        "value": "Artifacts or evidence that suggest a security breach or malicious activity has occurred",
+        "isCorrect": true
+      },
+      {
+        "value": "A type of firewall rule",
+        "isCorrect": false
+      },
+      {
+        "value": "A backup configuration file",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool is specifically designed for analyzing Cisco NetFlow data?",
+    "options": [
+      {
+        "value": "Wireshark",
+        "isCorrect": false
+      },
+      {
+        "value": "nfdump or SolarWinds NetFlow Traffic Analyzer",
+        "isCorrect": true
+      },
+      {
+        "value": "Notepad",
+        "isCorrect": false
+      },
+      {
+        "value": "Registry Editor",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During a network investigation, you find that the ARP table on multiple hosts shows the same MAC address for different IP addresses. What attack has likely occurred?",
+    "options": [
+      {
+        "value": "DNS Spoofing",
+        "isCorrect": false
+      },
+      {
+        "value": "ARP Poisoning/Spoofing attack",
+        "isCorrect": true
+      },
+      {
+        "value": "DHCP Starvation",
+        "isCorrect": false
+      },
+      {
+        "value": "TCP SYN Flood",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the primary function of a honeypot in network security?",
+    "options": [
+      {
+        "value": "To speed up network traffic",
+        "isCorrect": false
+      },
+      {
+        "value": "To act as a decoy system that attracts and monitors attacker activity",
+        "isCorrect": true
+      },
+      {
+        "value": "To store backup data",
+        "isCorrect": false
+      },
+      {
+        "value": "To encrypt network traffic",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In SSH logs, which event typically indicates a brute-force attack attempt?",
+    "options": [
+      {
+        "value": "Single successful login",
+        "isCorrect": false
+      },
+      {
+        "value": "Multiple 'Failed password' entries from the same source IP in rapid succession",
+        "isCorrect": true
+      },
+      {
+        "value": "Server restart message",
+        "isCorrect": false
+      },
+      {
+        "value": "Key exchange completion",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What type of network-based evidence includes full packet captures with headers and payloads?",
+    "options": [
+      {
+        "value": "Statistical data",
+        "isCorrect": false
+      },
+      {
+        "value": "Full content data (PCAP files)",
+        "isCorrect": true
+      },
+      {
+        "value": "Session data only",
+        "isCorrect": false
+      },
+      {
+        "value": "Alert data",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which SIEM solution is open-source and commonly used for log management and analysis?",
+    "options": [
+      {
+        "value": "Microsoft Word",
+        "isCorrect": false
+      },
+      {
+        "value": "Elastic Stack (ELK) or Splunk Free",
+        "isCorrect": true
+      },
+      {
+        "value": "Adobe Acrobat",
+        "isCorrect": false
+      },
+      {
+        "value": "Notepad++",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A network analyst notices that the switch's MAC address table is full of random MAC addresses, causing the switch to operate like a hub. What attack is this?",
+    "options": [
+      {
+        "value": "ARP Spoofing",
+        "isCorrect": false
+      },
+      {
+        "value": "MAC Flooding attack",
+        "isCorrect": true
+      },
+      {
+        "value": "DNS Poisoning",
+        "isCorrect": false
+      },
+      {
+        "value": "ICMP Redirect",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What Wireshark filter would show only DNS traffic?",
+    "options": [
+      {
+        "value": "tcp.port == 53",
+        "isCorrect": false
+      },
+      {
+        "value": "dns",
+        "isCorrect": true
+      },
+      {
+        "value": "filter dns protocol",
+        "isCorrect": false
+      },
+      {
+        "value": "udp == dns",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which protocol does NetFlow use to export network flow data to a collector?",
+    "options": [
+      {
+        "value": "HTTP",
+        "isCorrect": false
+      },
+      {
+        "value": "UDP (typically port 2055 or 9996)",
+        "isCorrect": true
+      },
+      {
+        "value": "TCP port 80",
+        "isCorrect": false
+      },
+      {
+        "value": "ICMP",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the purpose of the Dshell tool in network forensics?",
+    "options": [
+      {
+        "value": "To create network diagrams",
+        "isCorrect": false
+      },
+      {
+        "value": "A framework for rapid development of custom network forensic decoders",
+        "isCorrect": true
+      },
+      {
+        "value": "To configure switches",
+        "isCorrect": false
+      },
+      {
+        "value": "To encrypt network traffic",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In OSSEC IDS logs, what does a rule level of 10 or higher typically indicate?",
+    "options": [
+      {
+        "value": "Informational message",
+        "isCorrect": false
+      },
+      {
+        "value": "High severity security event requiring immediate attention",
+        "isCorrect": true
+      },
+      {
+        "value": "System startup message",
+        "isCorrect": false
+      },
+      {
+        "value": "Debug information",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator finds multiple FTP login attempts in logs with different passwords tried for the same username within seconds. What type of attack is this?",
+    "options": [
+      {
+        "value": "Denial of Service",
+        "isCorrect": false
+      },
+      {
+        "value": "FTP Password Cracking/Brute-force attack",
+        "isCorrect": true
+      },
+      {
+        "value": "Man-in-the-Middle",
+        "isCorrect": false
+      },
+      {
+        "value": "SQL Injection",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which wireless network attack involves sending forged deauthentication frames to disconnect clients from an access point?",
+    "options": [
+      {
+        "value": "WEP Cracking",
+        "isCorrect": false
+      },
+      {
+        "value": "Deauthentication attack",
+        "isCorrect": true
+      },
+      {
+        "value": "Rogue DHCP",
+        "isCorrect": false
+      },
+      {
+        "value": "ARP Spoofing",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is a rogue access point?",
+    "options": [
+      {
+        "value": "An access point with strong encryption",
+        "isCorrect": false
+      },
+      {
+        "value": "An unauthorized wireless access point installed on a network without permission",
+        "isCorrect": true
+      },
+      {
+        "value": "A backup access point",
+        "isCorrect": false
+      },
+      {
+        "value": "An access point with MAC filtering enabled",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Wireshark filter displays packets with TCP RST (reset) flag set?",
+    "options": [
+      {
+        "value": "tcp.reset == 1",
+        "isCorrect": false
+      },
+      {
+        "value": "tcp.flags.reset == 1",
+        "isCorrect": true
+      },
+      {
+        "value": "filter tcp rst",
+        "isCorrect": false
+      },
+      {
+        "value": "tcp.rst",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What type of event correlation analyzes events occurring within a specific time window?",
+    "options": [
+      {
+        "value": "Spatial correlation",
+        "isCorrect": false
+      },
+      {
+        "value": "Temporal correlation",
+        "isCorrect": true
+      },
+      {
+        "value": "Protocol correlation",
+        "isCorrect": false
+      },
+      {
+        "value": "Physical correlation",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which log file on a Linux system typically contains DHCP lease information?",
+    "options": [
+      {
+        "value": "/var/log/auth.log",
+        "isCorrect": false
+      },
+      {
+        "value": "/var/lib/dhcp/dhcpd.leases or /var/log/syslog",
+        "isCorrect": true
+      },
+      {
+        "value": "/etc/passwd",
+        "isCorrect": false
+      },
+      {
+        "value": "/var/log/kernel.log",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: Network traffic analysis shows large amounts of data being sent to an external IP during non-business hours using FTP. What type of activity might this indicate?",
+    "options": [
+      {
+        "value": "Normal backup operation",
+        "isCorrect": false
+      },
+      {
+        "value": "Data exfiltration attempt",
+        "isCorrect": true
+      },
+      {
+        "value": "System update",
+        "isCorrect": false
+      },
+      {
+        "value": "User web browsing",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the standard port for DNS traffic?",
+    "options": [
+      {
+        "value": "Port 80",
+        "isCorrect": false
+      },
+      {
+        "value": "Port 53",
+        "isCorrect": true
+      },
+      {
+        "value": "Port 443",
+        "isCorrect": false
+      },
+      {
+        "value": "Port 22",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool is used to discover Wi-Fi networks and detect rogue access points?",
+    "options": [
+      {
+        "value": "Microsoft Word",
+        "isCorrect": false
+      },
+      {
+        "value": "Kismet or NetStumbler",
+        "isCorrect": true
+      },
+      {
+        "value": "Registry Editor",
+        "isCorrect": false
+      },
+      {
+        "value": "Task Manager",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the term 'sniffing' refer to in network forensics?",
+    "options": [
+      {
+        "value": "Compressing network data",
+        "isCorrect": false
+      },
+      {
+        "value": "Capturing and analyzing network packets passing through a network interface",
+        "isCorrect": true
+      },
+      {
+        "value": "Encrypting network traffic",
+        "isCorrect": false
+      },
+      {
+        "value": "Deleting network logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A Check Point firewall log shows 'action=drop' entries with the same destination port 445 from multiple external IPs. What attack type does this suggest?",
+    "options": [
+      {
+        "value": "DNS Tunneling",
+        "isCorrect": false
+      },
+      {
+        "value": "SMB port scanning or brute-force attempts",
+        "isCorrect": true
+      },
+      {
+        "value": "HTTP Flood",
+        "isCorrect": false
+      },
+      {
+        "value": "ARP Spoofing",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Wireshark filter shows only packets larger than 1000 bytes?",
+    "options": [
+      {
+        "value": "size > 1000",
+        "isCorrect": false
+      },
+      {
+        "value": "frame.len > 1000",
+        "isCorrect": true
+      },
+      {
+        "value": "packet.length > 1000",
+        "isCorrect": false
+      },
+      {
+        "value": "bytes > 1000",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the purpose of VPN logs in network forensics?",
+    "options": [
+      {
+        "value": "To encrypt traffic",
+        "isCorrect": false
+      },
+      {
+        "value": "To track remote user connections, authentication attempts, and session durations",
+        "isCorrect": true
+      },
+      {
+        "value": "To speed up network traffic",
+        "isCorrect": false
+      },
+      {
+        "value": "To block malware",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which attack involves flooding the target with UDP packets to random ports, consuming bandwidth and resources?",
+    "options": [
+      {
+        "value": "TCP SYN Flood",
+        "isCorrect": false
+      },
+      {
+        "value": "UDP Flood attack",
+        "isCorrect": true
+      },
+      {
+        "value": "Slowloris",
+        "isCorrect": false
+      },
+      {
+        "value": "DNS Poisoning",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In a Juniper router log, what does the 'accept' action indicate?",
+    "options": [
+      {
+        "value": "Traffic was blocked",
+        "isCorrect": false
+      },
+      {
+        "value": "Traffic was permitted through the router according to policy",
+        "isCorrect": true
+      },
+      {
+        "value": "Router restart occurred",
+        "isCorrect": false
+      },
+      {
+        "value": "Error condition",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator notices HTTP GET requests in rapid succession to the same URL from thousands of different IP addresses. What attack is this?",
+    "options": [
+      {
+        "value": "SQL Injection",
+        "isCorrect": false
+      },
+      {
+        "value": "HTTP Flood (Layer 7 DDoS) attack",
+        "isCorrect": true
+      },
+      {
+        "value": "Cross-Site Scripting",
+        "isCorrect": false
+      },
+      {
+        "value": "Session Hijacking",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is Wi-Fi jamming?",
+    "options": [
+      {
+        "value": "Encrypting wireless traffic",
+        "isCorrect": false
+      },
+      {
+        "value": "Intentionally disrupting wireless communication by transmitting interference signals",
+        "isCorrect": true
+      },
+      {
+        "value": "Connecting to a wireless network",
+        "isCorrect": false
+      },
+      {
+        "value": "Configuring an access point",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which protocol is commonly used for centralized logging from network devices to a SIEM?",
+    "options": [
+      {
+        "value": "HTTP",
+        "isCorrect": false
+      },
+      {
+        "value": "Syslog (UDP/TCP port 514)",
+        "isCorrect": true
+      },
+      {
+        "value": "FTP",
+        "isCorrect": false
+      },
+      {
+        "value": "SMTP",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What information does NetFlow provide that full packet captures do not efficiently provide?",
+    "options": [
+      {
+        "value": "Payload content",
+        "isCorrect": false
+      },
+      {
+        "value": "Summary statistics of network conversations (flow metadata) at scale",
+        "isCorrect": true
+      },
+      {
+        "value": "Encrypted data",
+        "isCorrect": false
+      },
+      {
+        "value": "Physical layer information",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Wireshark filter shows TCP traffic to or from port 443 (HTTPS)?",
+    "options": [
+      {
+        "value": "https",
+        "isCorrect": false
+      },
+      {
+        "value": "tcp.port == 443",
+        "isCorrect": true
+      },
+      {
+        "value": "ssl.port == 443",
+        "isCorrect": false
+      },
+      {
+        "value": "filter port 443",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: DNS server logs show numerous queries for random subdomain names of a single domain (e.g., abc123.example.com, xyz789.example.com). What type of attack might this indicate?",
+    "options": [
+      {
+        "value": "Normal DNS resolution",
+        "isCorrect": false
+      },
+      {
+        "value": "DNS tunneling or random subdomain attack for DDoS",
+        "isCorrect": true
+      },
+      {
+        "value": "DHCP starvation",
+        "isCorrect": false
+      },
+      {
+        "value": "ARP spoofing",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the main challenge in wireless network forensics compared to wired network forensics?",
+    "options": [
+      {
+        "value": "Wireless is faster",
+        "isCorrect": false
+      },
+      {
+        "value": "Ephemeral nature of wireless signals, encryption, and difficulty in capturing all traffic",
+        "isCorrect": true
+      },
+      {
+        "value": "Wireless uses different IP addresses",
+        "isCorrect": false
+      },
+      {
+        "value": "Wireless networks don't generate logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool can be used to analyze Wi-Fi spectrum and detect interference?",
+    "options": [
+      {
+        "value": "Notepad",
+        "isCorrect": false
+      },
+      {
+        "value": "NetSpot WiFi Spectrum Analyzer or Wi-Spy",
+        "isCorrect": true
+      },
+      {
+        "value": "Microsoft Word",
+        "isCorrect": false
+      },
+      {
+        "value": "Registry Editor",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What type of attack is characterized by an attacker sending SMTP HELO commands repeatedly to overwhelm an email server?",
+    "options": [
+      {
+        "value": "Phishing",
+        "isCorrect": false
+      },
+      {
+        "value": "SMTP HELO Flood attack",
+        "isCorrect": true
+      },
+      {
+        "value": "Email spoofing",
+        "isCorrect": false
+      },
+      {
+        "value": "Man-in-the-Middle",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Elastic Stack component is primarily used for log collection and parsing?",
+    "options": [
+      {
+        "value": "Kibana",
+        "isCorrect": false
+      },
+      {
+        "value": "Logstash or Beats",
+        "isCorrect": true
+      },
+      {
+        "value": "Elasticsearch",
+        "isCorrect": false
+      },
+      {
+        "value": "Redis",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: Wireshark analysis reveals a client repeatedly receiving 802.11 deauthentication frames with reason code 7 (Class 3 frame received from nonassociated STA). What attack is occurring?",
+    "options": [
+      {
+        "value": "WEP cracking",
+        "isCorrect": false
+      },
+      {
+        "value": "Wireless deauthentication attack",
+        "isCorrect": true
+      },
+      {
+        "value": "Rogue DHCP",
+        "isCorrect": false
+      },
+      {
+        "value": "Evil Twin",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the purpose of rule-based event correlation?",
+    "options": [
+      {
+        "value": "To delete unnecessary logs",
+        "isCorrect": false
+      },
+      {
+        "value": "To match events against predefined rules and patterns to detect known attack signatures",
+        "isCorrect": true
+      },
+      {
+        "value": "To encrypt log data",
+        "isCorrect": false
+      },
+      {
+        "value": "To create new log files",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Wireshark filter would display only ARP traffic?",
+    "options": [
+      {
+        "value": "protocol.arp",
+        "isCorrect": false
+      },
+      {
+        "value": "arp",
+        "isCorrect": true
+      },
+      {
+        "value": "eth.type == arp",
+        "isCorrect": false
+      },
+      {
+        "value": "filter:arp",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does DNS hijacking/spoofing involve?",
+    "options": [
+      {
+        "value": "Encrypting DNS traffic",
+        "isCorrect": false
+      },
+      {
+        "value": "Manipulating DNS responses to redirect users to malicious sites",
+        "isCorrect": true
+      },
+      {
+        "value": "Speeding up DNS resolution",
+        "isCorrect": false
+      },
+      {
+        "value": "Backing up DNS records",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: IDS logs show multiple alerts for 'ET SCAN Potential SSH Scan' from a single IP address targeting various internal hosts on port 22. What activity does this indicate?",
+    "options": [
+      {
+        "value": "Normal SSH usage",
+        "isCorrect": false
+      },
+      {
+        "value": "Network reconnaissance/scanning for SSH services",
+        "isCorrect": true
+      },
+      {
+        "value": "Software update",
+        "isCorrect": false
+      },
+      {
+        "value": "Backup operation",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the primary difference between an IDS and an IPS?",
+    "options": [
+      {
+        "value": "IDS is more expensive",
+        "isCorrect": false
+      },
+      {
+        "value": "IDS detects and alerts; IPS can also actively block or prevent detected threats",
+        "isCorrect": true
+      },
+      {
+        "value": "IPS is slower than IDS",
+        "isCorrect": false
+      },
+      {
+        "value": "They are identical",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which port is commonly used for SSH connections?",
+    "options": [
+      {
+        "value": "Port 21",
+        "isCorrect": false
+      },
+      {
+        "value": "Port 22",
+        "isCorrect": true
+      },
+      {
+        "value": "Port 23",
+        "isCorrect": false
+      },
+      {
+        "value": "Port 25",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What type of wireless evidence includes beacon frames, probe requests, and association/authentication frames?",
+    "options": [
+      {
+        "value": "Application layer evidence",
+        "isCorrect": false
+      },
+      {
+        "value": "802.11 management frame evidence",
+        "isCorrect": true
+      },
+      {
+        "value": "Physical layer evidence",
+        "isCorrect": false
+      },
+      {
+        "value": "Transport layer evidence",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Wireshark filter would show TCP conversations with a specific flag combination (SYN and ACK)?",
+    "options": [
+      {
+        "value": "tcp.syn && tcp.ack",
+        "isCorrect": false
+      },
+      {
+        "value": "tcp.flags.syn == 1 && tcp.flags.ack == 1",
+        "isCorrect": true
+      },
+      {
+        "value": "tcp.flags == syn+ack",
+        "isCorrect": false
+      },
+      {
+        "value": "filter tcp synack",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the main purpose of analyzing Cisco switch logs in network forensics?",
+    "options": [
+      {
+        "value": "To configure VLANs",
+        "isCorrect": false
+      },
+      {
+        "value": "To track port security violations, MAC address changes, and spanning tree events",
+        "isCorrect": true
+      },
+      {
+        "value": "To speed up switch performance",
+        "isCorrect": false
+      },
+      {
+        "value": "To create new VLANs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: Network traffic analysis shows a host making connections to many different IPs on port 445 in rapid succession. What type of activity is this likely?",
+    "options": [
+      {
+        "value": "Normal file sharing",
+        "isCorrect": false
+      },
+      {
+        "value": "SMB scanning or worm propagation attempt",
+        "isCorrect": true
+      },
+      {
+        "value": "Web browsing",
+        "isCorrect": false
+      },
+      {
+        "value": "Email sending",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool is commonly used for network traffic capture and is considered the command-line equivalent of Wireshark?",
+    "options": [
+      {
+        "value": "netstat",
+        "isCorrect": false
+      },
+      {
+        "value": "tcpdump",
+        "isCorrect": true
+      },
+      {
+        "value": "ping",
+        "isCorrect": false
+      },
+      {
+        "value": "traceroute",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the 'follow TCP stream' feature in Wireshark allow an investigator to do?",
+    "options": [
+      {
+        "value": "Block TCP connections",
+        "isCorrect": false
+      },
+      {
+        "value": "Reconstruct and view the entire content of a TCP conversation",
+        "isCorrect": true
+      },
+      {
+        "value": "Create new TCP connections",
+        "isCorrect": false
+      },
+      {
+        "value": "Delete TCP packets",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is a disassociation attack in wireless networks?",
+    "options": [
+      {
+        "value": "Encrypting wireless traffic",
+        "isCorrect": false
+      },
+      {
+        "value": "Sending forged disassociation frames to disconnect clients from an access point",
+        "isCorrect": true
+      },
+      {
+        "value": "Creating a new wireless network",
+        "isCorrect": false
+      },
+      {
+        "value": "Upgrading wireless firmware",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Cisco firewall log message indicates a connection has been denied by an access rule?",
+    "options": [
+      {
+        "value": "%ASA-6-302013",
+        "isCorrect": false
+      },
+      {
+        "value": "%ASA-4-106023 (Deny by access-group)",
+        "isCorrect": true
+      },
+      {
+        "value": "%ASA-6-305011",
+        "isCorrect": false
+      },
+      {
+        "value": "%ASA-5-111008",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A SIEM alert shows multiple failed login attempts followed by a successful login from the same source IP. What attack pattern does this suggest?",
+    "options": [
+      {
+        "value": "DDoS attack",
+        "isCorrect": false
+      },
+      {
+        "value": "Successful brute-force attack",
+        "isCorrect": true
+      },
+      {
+        "value": "Port scanning",
+        "isCorrect": false
+      },
+      {
+        "value": "DNS tunneling",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the purpose of the 'statistics' menu in Wireshark?",
+    "options": [
+      {
+        "value": "To delete packets",
+        "isCorrect": false
+      },
+      {
+        "value": "To view summary statistics, protocol hierarchy, conversations, and endpoints",
+        "isCorrect": true
+      },
+      {
+        "value": "To encrypt traffic",
+        "isCorrect": false
+      },
+      {
+        "value": "To configure network interfaces",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which protocol is used by IPFIX, the IETF standard for network flow export?",
+    "options": [
+      {
+        "value": "HTTP",
+        "isCorrect": false
+      },
+      {
+        "value": "SCTP or UDP",
+        "isCorrect": true
+      },
+      {
+        "value": "FTP",
+        "isCorrect": false
+      },
+      {
+        "value": "SMTP",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What type of attack involves flooding a switch's CAM table with fake MAC addresses?",
+    "options": [
+      {
+        "value": "ARP spoofing",
+        "isCorrect": false
+      },
+      {
+        "value": "MAC flooding/CAM table overflow attack",
+        "isCorrect": true
+      },
+      {
+        "value": "DNS poisoning",
+        "isCorrect": false
+      },
+      {
+        "value": "IP spoofing",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: Router logs show unusual traffic spikes to a single external IP with consistent packet sizes. What might this indicate?",
+    "options": [
+      {
+        "value": "Normal web browsing",
+        "isCorrect": false
+      },
+      {
+        "value": "Potential C2 (Command and Control) communication or data exfiltration",
+        "isCorrect": true
+      },
+      {
+        "value": "Software update",
+        "isCorrect": false
+      },
+      {
+        "value": "Email activity",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Wireshark display filter shows only ICMP packets?",
+    "options": [
+      {
+        "value": "protocol.icmp",
+        "isCorrect": false
+      },
+      {
+        "value": "icmp",
+        "isCorrect": true
+      },
+      {
+        "value": "ip.protocol == icmp",
+        "isCorrect": false
+      },
+      {
+        "value": "filter icmp",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the primary function of correlation rules in a SIEM system?",
+    "options": [
+      {
+        "value": "To store logs",
+        "isCorrect": false
+      },
+      {
+        "value": "To detect complex attack patterns by analyzing relationships between multiple events",
+        "isCorrect": true
+      },
+      {
+        "value": "To delete old logs",
+        "isCorrect": false
+      },
+      {
+        "value": "To encrypt logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool can decrypt WPA/WPA2 traffic in Wireshark if you have the passphrase?",
+    "options": [
+      {
+        "value": "It's impossible to decrypt",
+        "isCorrect": false
+      },
+      {
+        "value": "Wireshark's built-in 802.11 decryption with the PSK or PMK",
+        "isCorrect": true
+      },
+      {
+        "value": "Only aircrack-ng",
+        "isCorrect": false
+      },
+      {
+        "value": "Notepad",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is an 'Evil Twin' attack in wireless networks?",
+    "options": [
+      {
+        "value": "Using two antennas",
+        "isCorrect": false
+      },
+      {
+        "value": "Setting up a rogue access point with the same SSID as a legitimate network to intercept traffic",
+        "isCorrect": true
+      },
+      {
+        "value": "Connecting two networks together",
+        "isCorrect": false
+      },
+      {
+        "value": "Using dual-band wireless",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: DNS logs show repeated NXDOMAIN responses for domains following a pattern like 'a1b2c3d4.example.com'. What might this indicate?",
+    "options": [
+      {
+        "value": "Normal DNS resolution",
+        "isCorrect": false
+      },
+      {
+        "value": "Domain Generation Algorithm (DGA) malware attempting C2 communication",
+        "isCorrect": true
+      },
+      {
+        "value": "DNS server maintenance",
+        "isCorrect": false
+      },
+      {
+        "value": "Cache refresh",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Wireshark filter displays packets containing a specific string in the payload?",
+    "options": [
+      {
+        "value": "payload == 'string'",
+        "isCorrect": false
+      },
+      {
+        "value": "frame contains \"string\" or tcp contains \"string\"",
+        "isCorrect": true
+      },
+      {
+        "value": "filter string",
+        "isCorrect": false
+      },
+      {
+        "value": "search:string",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the purpose of promiscuous mode in network forensics?",
+    "options": [
+      {
+        "value": "To speed up network traffic",
+        "isCorrect": false
+      },
+      {
+        "value": "To allow a network interface to capture all packets on the network segment, not just those addressed to it",
+        "isCorrect": true
+      },
+      {
+        "value": "To encrypt packets",
+        "isCorrect": false
+      },
+      {
+        "value": "To block malicious traffic",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which common port is used for Telnet connections?",
+    "options": [
+      {
+        "value": "Port 22",
+        "isCorrect": false
+      },
+      {
+        "value": "Port 23",
+        "isCorrect": true
+      },
+      {
+        "value": "Port 25",
+        "isCorrect": false
+      },
+      {
+        "value": "Port 443",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which network forensic approach involves analyzing stored packet captures after an incident has occurred?",
+    "options": [
+      {
+        "value": "Real-time analysis",
+        "isCorrect": false
+      },
+      {
+        "value": "Postmortem (retrospective) analysis",
+        "isCorrect": true
+      },
+      {
+        "value": "Predictive analysis",
+        "isCorrect": false
+      },
+      {
+        "value": "Proactive analysis",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the typical format of Check Point firewall logs?",
+    "options": [
+      {
+        "value": "Binary only",
+        "isCorrect": false
+      },
+      {
+        "value": "Log Exporter format with fields like action, src, dst, proto, service",
+        "isCorrect": true
+      },
+      {
+        "value": "XML only",
+        "isCorrect": false
+      },
+      {
+        "value": "Plain text without structure",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: Network traffic shows a host making DNS queries over TCP port 53 with unusually large response sizes containing encoded data. What technique might the attacker be using?",
+    "options": [
+      {
+        "value": "Normal DNS resolution",
+        "isCorrect": false
+      },
+      {
+        "value": "DNS tunneling for data exfiltration or C2 communication",
+        "isCorrect": true
+      },
+      {
+        "value": "DNSSEC",
+        "isCorrect": false
+      },
+      {
+        "value": "DNS caching",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Wireshark filter shows only packets with TCP retransmissions?",
+    "options": [
+      {
+        "value": "tcp.retry",
+        "isCorrect": false
+      },
+      {
+        "value": "tcp.analysis.retransmission",
+        "isCorrect": true
+      },
+      {
+        "value": "tcp.resend",
+        "isCorrect": false
+      },
+      {
+        "value": "filter retransmit",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the purpose of tshark in network forensics?",
+    "options": [
+      {
+        "value": "To edit packet captures",
+        "isCorrect": false
+      },
+      {
+        "value": "Command-line version of Wireshark for packet capture and analysis",
+        "isCorrect": true
+      },
+      {
+        "value": "To configure firewalls",
+        "isCorrect": false
+      },
+      {
+        "value": "To create network diagrams",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which wireless security protocol is considered most secure for enterprise environments?",
+    "options": [
+      {
+        "value": "WEP",
+        "isCorrect": false
+      },
+      {
+        "value": "WPA3-Enterprise or WPA2-Enterprise with 802.1X",
+        "isCorrect": true
+      },
+      {
+        "value": "Open (no security)",
+        "isCorrect": false
+      },
+      {
+        "value": "WPA-Personal",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: Firewall logs show repeated connection attempts to ports 135, 139, and 445 from an internal host to many external IPs. What type of activity does this suggest?",
+    "options": [
+      {
+        "value": "Normal file sharing",
+        "isCorrect": false
+      },
+      {
+        "value": "Worm propagation or lateral movement attempt",
+        "isCorrect": true
+      },
+      {
+        "value": "Web browsing",
+        "isCorrect": false
+      },
+      {
+        "value": "Email activity",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the term 'session data' refer to in network forensics?",
+    "options": [
+      {
+        "value": "User login sessions only",
+        "isCorrect": false
+      },
+      {
+        "value": "Summary information about network connections including source, destination, ports, and timestamps",
+        "isCorrect": true
+      },
+      {
+        "value": "Encrypted data only",
+        "isCorrect": false
+      },
+      {
+        "value": "Application layer data only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool is commonly used for deep packet inspection and protocol analysis?",
+    "options": [
+      {
+        "value": "Notepad",
+        "isCorrect": false
+      },
+      {
+        "value": "Zeek (formerly Bro) or Suricata",
+        "isCorrect": true
+      },
+      {
+        "value": "Microsoft Word",
+        "isCorrect": false
+      },
+      {
+        "value": "Calculator",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the primary purpose of honeypot logs in network forensics?",
+    "options": [
+      {
+        "value": "To improve network performance",
+        "isCorrect": false
+      },
+      {
+        "value": "To capture attacker tactics, techniques, and procedures (TTPs) on a decoy system",
+        "isCorrect": true
+      },
+      {
+        "value": "To backup production data",
+        "isCorrect": false
+      },
+      {
+        "value": "To encrypt network traffic",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A network capture shows TCP connections where the client sends SYN, receives SYN-ACK, but never completes with ACK. What attack pattern is this?",
+    "options": [
+      {
+        "value": "Normal handshake",
+        "isCorrect": false
+      },
+      {
+        "value": "TCP SYN scan or half-open scan (reconnaissance)",
+        "isCorrect": true
+      },
+      {
+        "value": "Full connect scan",
+        "isCorrect": false
+      },
+      {
+        "value": "UDP scan",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Wireshark feature allows you to color-code packets based on specific criteria?",
+    "options": [
+      {
+        "value": "Packet Editor",
+        "isCorrect": false
+      },
+      {
+        "value": "Coloring Rules",
+        "isCorrect": true
+      },
+      {
+        "value": "Statistics",
+        "isCorrect": false
+      },
+      {
+        "value": "Protocol Tree",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the purpose of SPAN (Switched Port Analyzer) in network forensics?",
+    "options": [
+      {
+        "value": "To encrypt traffic",
+        "isCorrect": false
+      },
+      {
+        "value": "To mirror traffic from one or more switch ports to a monitoring port for analysis",
+        "isCorrect": true
+      },
+      {
+        "value": "To block malicious traffic",
+        "isCorrect": false
+      },
+      {
+        "value": "To route traffic between VLANs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which log source would be most useful for investigating a ransomware attack's network communication?",
+    "options": [
+      {
+        "value": "Printer logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Firewall logs, DNS logs, and proxy logs showing C2 communication",
+        "isCorrect": true
+      },
+      {
+        "value": "Physical access logs only",
+        "isCorrect": false
+      },
+      {
+        "value": "Backup logs only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the term 'baseline' refer to in network forensics and SIEM?",
+    "options": [
+      {
+        "value": "The bottom line of a network diagram",
+        "isCorrect": false
+      },
+      {
+        "value": "Normal network behavior patterns used to identify anomalies and deviations",
+        "isCorrect": true
+      },
+      {
+        "value": "The minimum network speed",
+        "isCorrect": false
+      },
+      {
+        "value": "The first packet in a capture",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Wireshark filter would show only failed TCP connections (RST flag)?",
+    "options": [
+      {
+        "value": "tcp.failed",
+        "isCorrect": false
+      },
+      {
+        "value": "tcp.flags.reset == 1",
+        "isCorrect": true
+      },
+      {
+        "value": "tcp.error",
+        "isCorrect": false
+      },
+      {
+        "value": "connection.failed",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the purpose of pcap-ng format compared to traditional pcap?",
+    "options": [
+      {
+        "value": "Smaller file size only",
+        "isCorrect": false
+      },
+      {
+        "value": "Extended features including multiple interfaces, comments, and enhanced metadata",
+        "isCorrect": true
+      },
+      {
+        "value": "Better encryption",
+        "isCorrect": false
+      },
+      {
+        "value": "Faster capture speed",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: IDS alerts show 'ICMP Redirect' messages from an unauthorized source. What attack might this indicate?",
+    "options": [
+      {
+        "value": "Normal routing",
+        "isCorrect": false
+      },
+      {
+        "value": "ICMP redirect attack attempting to alter routing tables for MitM",
+        "isCorrect": true
+      },
+      {
+        "value": "ICMP echo",
+        "isCorrect": false
+      },
+      {
+        "value": "Ping sweep",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What information is NOT typically found in NetFlow records?",
+    "options": [
+      {
+        "value": "Source and destination IP addresses",
+        "isCorrect": false
+      },
+      {
+        "value": "Full packet payload content",
+        "isCorrect": true
+      },
+      {
+        "value": "Source and destination ports",
+        "isCorrect": false
+      },
+      {
+        "value": "Byte and packet counts",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which wireless frame type is used to announce the presence of an access point?",
+    "options": [
+      {
+        "value": "Data frame",
+        "isCorrect": false
+      },
+      {
+        "value": "Beacon frame",
+        "isCorrect": true
+      },
+      {
+        "value": "ACK frame",
+        "isCorrect": false
+      },
+      {
+        "value": "RTS frame",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the acronym SIEM stand for?",
+    "options": [
+      {
+        "value": "Security Information and Event Management",
+        "isCorrect": true
+      },
+      {
+        "value": "System Information and Error Monitoring",
+        "isCorrect": false
+      },
+      {
+        "value": "Secure Internet and Email Management",
+        "isCorrect": false
+      },
+      {
+        "value": "Service Integration and Enterprise Monitoring",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: Network analysis reveals that a host is sending DNS queries to an IP address that is not the configured DNS server. What might this indicate?",
+    "options": [
+      {
+        "value": "Normal failover behavior",
+        "isCorrect": false
+      },
+      {
+        "value": "Possible malware using rogue DNS server or DNS hijacking",
+        "isCorrect": true
+      },
+      {
+        "value": "DNS caching",
+        "isCorrect": false
+      },
+      {
+        "value": "DHCP issue",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Wireshark feature allows you to export specific packets or conversations?",
+    "options": [
+      {
+        "value": "Import wizard",
+        "isCorrect": false
+      },
+      {
+        "value": "Export Specified Packets or Export Objects",
+        "isCorrect": true
+      },
+      {
+        "value": "Packet editor",
+        "isCorrect": false
+      },
+      {
+        "value": "Statistics menu only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the significance of the TTL (Time To Live) field in IP packets for forensic analysis?",
+    "options": [
+      {
+        "value": "It determines packet encryption",
+        "isCorrect": false
+      },
+      {
+        "value": "It can help identify OS fingerprinting, routing path, and detect spoofed packets",
+        "isCorrect": true
+      },
+      {
+        "value": "It stores user credentials",
+        "isCorrect": false
+      },
+      {
+        "value": "It defines packet priority",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool is specifically designed for wireless network auditing and can capture WPA handshakes?",
+    "options": [
+      {
+        "value": "Notepad",
+        "isCorrect": false
+      },
+      {
+        "value": "aircrack-ng suite",
+        "isCorrect": true
+      },
+      {
+        "value": "Microsoft Word",
+        "isCorrect": false
+      },
+      {
+        "value": "Registry Editor",
+        "isCorrect": false
+      }
+    ]
+  }
+]

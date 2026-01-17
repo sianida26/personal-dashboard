@@ -1,0 +1,1052 @@
+[
+  {
+    "question": "A forensic investigator needs to capture RAM contents from a live Linux system. According to the order of volatility, which data should be captured FIRST?",
+    "options": [
+      {
+        "value": "Swap space",
+        "isCorrect": false
+      },
+      {
+        "value": "CPU registers and cache",
+        "isCorrect": true
+      },
+      {
+        "value": "Network connections",
+        "isCorrect": false
+      },
+      {
+        "value": "Temporary file systems",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During a forensic investigation, an analyst uses the command: dd if=/dev/sda of=/dev/sdb bs=512 conv=noerror,sync. What does the 'conv=sync' option accomplish?",
+    "options": [
+      {
+        "value": "Synchronizes timestamps between source and destination",
+        "isCorrect": false
+      },
+      {
+        "value": "Pads input blocks with zeros if there are read errors",
+        "isCorrect": true
+      },
+      {
+        "value": "Verifies data integrity after copying",
+        "isCorrect": false
+      },
+      {
+        "value": "Enables real-time progress display",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A company suspects an insider threat and wants to collect digital evidence without alerting the suspect. The suspect's computer is currently running. Which acquisition method is MOST appropriate?",
+    "options": [
+      {
+        "value": "Dead acquisition with hardware write blocker",
+        "isCorrect": false
+      },
+      {
+        "value": "Live acquisition using forensic agent",
+        "isCorrect": true
+      },
+      {
+        "value": "Logical acquisition after system shutdown",
+        "isCorrect": false
+      },
+      {
+        "value": "Sparse acquisition using disk imaging",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which phase of the Electronic Discovery Reference Model (EDRM) involves reducing the volume of electronically stored information (ESI) by removing duplicates and filtering by date ranges?",
+    "options": [
+      {
+        "value": "Collection",
+        "isCorrect": false
+      },
+      {
+        "value": "Processing",
+        "isCorrect": true
+      },
+      {
+        "value": "Preservation",
+        "isCorrect": false
+      },
+      {
+        "value": "Review",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator is acquiring volatile data from a Windows machine. Which tool is specifically designed to dump physical memory from Windows systems?",
+    "options": [
+      {
+        "value": "LiME",
+        "isCorrect": false
+      },
+      {
+        "value": "DumpIt",
+        "isCorrect": true
+      },
+      {
+        "value": "Volatility",
+        "isCorrect": false
+      },
+      {
+        "value": "PhotoRec",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the PRIMARY purpose of sanitizing target media before data acquisition?",
+    "options": [
+      {
+        "value": "To increase storage capacity",
+        "isCorrect": false
+      },
+      {
+        "value": "To prevent cross-contamination from previous cases",
+        "isCorrect": true
+      },
+      {
+        "value": "To improve write speed during imaging",
+        "isCorrect": false
+      },
+      {
+        "value": "To ensure compatibility with imaging tools",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic examiner needs to acquire data from a RAID 5 array. Two of the five disks appear to be failing. What is the recommended approach?",
+    "options": [
+      {
+        "value": "Image only the healthy disks and reconstruct data",
+        "isCorrect": false
+      },
+      {
+        "value": "Attempt to image all disks including failing ones, then rebuild the array",
+        "isCorrect": true
+      },
+      {
+        "value": "Replace failing disks first, then perform acquisition",
+        "isCorrect": false
+      },
+      {
+        "value": "Use logical acquisition to extract only accessible files",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During a live acquisition of a Linux machine, an investigator runs: insmod lime-4.15.0-generic.ko \"path=/tmp/ram.lime format=lime\". What is the purpose of this command?",
+    "options": [
+      {
+        "value": "Mount a remote filesystem for data transfer",
+        "isCorrect": false
+      },
+      {
+        "value": "Load a kernel module to capture physical memory",
+        "isCorrect": true
+      },
+      {
+        "value": "Create a compressed backup of system logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Enable network-based disk imaging",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which forensic image format stores data with compression and includes built-in MD5/SHA1 hash verification?",
+    "options": [
+      {
+        "value": "Raw/dd format",
+        "isCorrect": false
+      },
+      {
+        "value": "E01 (EnCase Evidence File)",
+        "isCorrect": true
+      },
+      {
+        "value": "AFF (Advanced Forensic Format)",
+        "isCorrect": false
+      },
+      {
+        "value": "VMDK (Virtual Machine Disk)",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic analyst receives an E01 image file and needs to examine it on a Linux forensic workstation. Which tool can convert E01 to raw format for analysis?",
+    "options": [
+      {
+        "value": "FTK Imager",
+        "isCorrect": false
+      },
+      {
+        "value": "ewfexport",
+        "isCorrect": true
+      },
+      {
+        "value": "Autopsy",
+        "isCorrect": false
+      },
+      {
+        "value": "dcfldd",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "When performing remote memory acquisition from a Linux machine using dd and netcat, which command should be run on the TARGET machine?",
+    "options": [
+      {
+        "value": "nc -l -p 9000 | dd of=/dev/mem",
+        "isCorrect": false
+      },
+      {
+        "value": "dd if=/dev/mem | nc 192.168.1.100 9000",
+        "isCorrect": true
+      },
+      {
+        "value": "nc 192.168.1.100 9000 > memory.dump",
+        "isCorrect": false
+      },
+      {
+        "value": "dd if=/dev/sda | nc -l -p 9000",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "According to data acquisition best practices, which validation method provides the HIGHEST level of evidence integrity assurance?",
+    "options": [
+      {
+        "value": "File count comparison",
+        "isCorrect": false
+      },
+      {
+        "value": "Visual inspection of directory structure",
+        "isCorrect": false
+      },
+      {
+        "value": "Cryptographic hash comparison (source vs. copy)",
+        "isCorrect": true
+      },
+      {
+        "value": "File size verification",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator needs to acquire a Mac computer in Target Disk Mode. Which key combination must be held during startup?",
+    "options": [
+      {
+        "value": "Command + R",
+        "isCorrect": false
+      },
+      {
+        "value": "Option + Command + R",
+        "isCorrect": false
+      },
+      {
+        "value": "T",
+        "isCorrect": true
+      },
+      {
+        "value": "Command + S",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the MAIN difference between logical acquisition and bitstream imaging?",
+    "options": [
+      {
+        "value": "Logical acquisition captures deleted files while bitstream does not",
+        "isCorrect": false
+      },
+      {
+        "value": "Bitstream creates a sector-by-sector copy including unallocated space",
+        "isCorrect": true
+      },
+      {
+        "value": "Logical acquisition is always faster than bitstream imaging",
+        "isCorrect": false
+      },
+      {
+        "value": "Bitstream imaging only works on Windows systems",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During eDiscovery, which practice ensures that relevant data is protected from modification or deletion once litigation is anticipated?",
+    "options": [
+      {
+        "value": "Data processing",
+        "isCorrect": false
+      },
+      {
+        "value": "Legal hold",
+        "isCorrect": true
+      },
+      {
+        "value": "Data culling",
+        "isCorrect": false
+      },
+      {
+        "value": "Technology-assisted review",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic investigator is examining a Windows system and needs to identify all connected USB storage devices during a live acquisition. Which Windows registry key contains USB device connection history?",
+    "options": [
+      {
+        "value": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+        "isCorrect": false
+      },
+      {
+        "value": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Enum\\USBSTOR",
+        "isCorrect": true
+      },
+      {
+        "value": "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\Explorer\\RecentDocs",
+        "isCorrect": false
+      },
+      {
+        "value": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which acquisition type captures only specific files or directories rather than the entire storage media?",
+    "options": [
+      {
+        "value": "Bitstream acquisition",
+        "isCorrect": false
+      },
+      {
+        "value": "Physical acquisition",
+        "isCorrect": false
+      },
+      {
+        "value": "Sparse acquisition",
+        "isCorrect": true
+      },
+      {
+        "value": "Dead acquisition",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator uses FTK Imager to create a forensic image. The resulting hash values differ between the source drive and the image. What is the MOST likely cause?",
+    "options": [
+      {
+        "value": "The compression setting was enabled",
+        "isCorrect": false
+      },
+      {
+        "value": "Bad sectors on the source drive caused read errors",
+        "isCorrect": true
+      },
+      {
+        "value": "The E01 format was selected instead of raw",
+        "isCorrect": false
+      },
+      {
+        "value": "The write blocker malfunctioned during imaging",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In the context of data acquisition, what does HPA (Host Protected Area) refer to?",
+    "options": [
+      {
+        "value": "A compressed partition on the hard drive",
+        "isCorrect": false
+      },
+      {
+        "value": "A hidden area on the disk not accessible by normal OS operations",
+        "isCorrect": true
+      },
+      {
+        "value": "A hardware protection mechanism in SSDs",
+        "isCorrect": false
+      },
+      {
+        "value": "A secure boot partition in UEFI systems",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During RAID reconstruction for forensic analysis, what information is ESSENTIAL to properly rebuild a RAID 5 array?",
+    "options": [
+      {
+        "value": "The original purchase date of the disks",
+        "isCorrect": false
+      },
+      {
+        "value": "Stripe size, disk order, and parity rotation direction",
+        "isCorrect": true
+      },
+      {
+        "value": "The operating system version installed",
+        "isCorrect": false
+      },
+      {
+        "value": "The manufacturer firmware version",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A digital forensics team needs to acquire evidence from a running server without shutting it down. Which volatile data should be captured according to the order of volatility?",
+    "options": [
+      {
+        "value": "Hard drive contents, then memory",
+        "isCorrect": false
+      },
+      {
+        "value": "Registers, cache, memory, network state, processes, then disk",
+        "isCorrect": true
+      },
+      {
+        "value": "Disk contents, then network connections",
+        "isCorrect": false
+      },
+      {
+        "value": "Log files, then temporary files, then memory",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which command-line tool is an enhanced version of dd that provides hashing during acquisition and supports logging?",
+    "options": [
+      {
+        "value": "ddrescue",
+        "isCorrect": false
+      },
+      {
+        "value": "dcfldd",
+        "isCorrect": true
+      },
+      {
+        "value": "dd_enhance",
+        "isCorrect": false
+      },
+      {
+        "value": "dd_hash",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An eDiscovery professional needs to reduce the volume of collected emails before review. Which technique removes exact duplicate emails based on message content and metadata?",
+    "options": [
+      {
+        "value": "De-NISTing",
+        "isCorrect": false
+      },
+      {
+        "value": "Deduplication",
+        "isCorrect": true
+      },
+      {
+        "value": "Filtering",
+        "isCorrect": false
+      },
+      {
+        "value": "Threading",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "When performing live acquisition on a Windows system, which tool can capture the contents of physical memory while the system is running?",
+    "options": [
+      {
+        "value": "Rekall",
+        "isCorrect": false
+      },
+      {
+        "value": "Volatility",
+        "isCorrect": false
+      },
+      {
+        "value": "WinPmem",
+        "isCorrect": true
+      },
+      {
+        "value": "Strings",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the PRIMARY advantage of using a hardware write blocker over a software write blocker during forensic imaging?",
+    "options": [
+      {
+        "value": "Hardware blockers are cheaper and more portable",
+        "isCorrect": false
+      },
+      {
+        "value": "Hardware blockers cannot be bypassed by malware on the suspect drive",
+        "isCorrect": true
+      },
+      {
+        "value": "Hardware blockers provide faster data transfer rates",
+        "isCorrect": false
+      },
+      {
+        "value": "Hardware blockers automatically hash the acquired data",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During a corporate investigation, an examiner needs to image a laptop with BitLocker encryption enabled. The system is currently powered on and unlocked. What is the recommended approach?",
+    "options": [
+      {
+        "value": "Shut down the system and perform dead acquisition",
+        "isCorrect": false
+      },
+      {
+        "value": "Perform live acquisition to capture the unencrypted volume",
+        "isCorrect": true
+      },
+      {
+        "value": "Remove the hard drive and use a hardware decryption tool",
+        "isCorrect": false
+      },
+      {
+        "value": "Wait for the user to provide the recovery key",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which phase of EDRM focuses on locating potentially relevant ESI and ensuring it is preserved?",
+    "options": [
+      {
+        "value": "Processing",
+        "isCorrect": false
+      },
+      {
+        "value": "Review",
+        "isCorrect": false
+      },
+      {
+        "value": "Identification",
+        "isCorrect": true
+      },
+      {
+        "value": "Production",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic analyst runs the command: md5sum /dev/sda. What does this command accomplish?",
+    "options": [
+      {
+        "value": "Creates an MD5-encrypted copy of the disk",
+        "isCorrect": false
+      },
+      {
+        "value": "Generates an MD5 hash of the entire disk",
+        "isCorrect": true
+      },
+      {
+        "value": "Verifies the disk against a known MD5 hash",
+        "isCorrect": false
+      },
+      {
+        "value": "Removes malware using MD5 signatures",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "When acquiring data from a Mac system with Apple Silicon (M1/M2 chip), which mode allows another Mac to access the target disk for imaging?",
+    "options": [
+      {
+        "value": "Single User Mode",
+        "isCorrect": false
+      },
+      {
+        "value": "Target Disk Mode",
+        "isCorrect": false
+      },
+      {
+        "value": "Share Disk mode via macOS Recovery",
+        "isCorrect": true
+      },
+      {
+        "value": "Safe Mode",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator needs to identify RAID configuration on a Windows system. Which utility provides detailed information about RAID volumes?",
+    "options": [
+      {
+        "value": "chkdsk",
+        "isCorrect": false
+      },
+      {
+        "value": "Disk Management or diskpart",
+        "isCorrect": true
+      },
+      {
+        "value": "sfc /scannow",
+        "isCorrect": false
+      },
+      {
+        "value": "defrag",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic examiner is preparing to image a 2TB hard drive. The target storage device shows as 1.8TB available. What should the examiner do?",
+    "options": [
+      {
+        "value": "Proceed with imaging using compression",
+        "isCorrect": false
+      },
+      {
+        "value": "Use a larger target device that exceeds source capacity",
+        "isCorrect": true
+      },
+      {
+        "value": "Perform logical acquisition instead",
+        "isCorrect": false
+      },
+      {
+        "value": "Delete unnecessary files from target to make space",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During network-based acquisition using LiME and netcat, which command should be executed on the RECEIVING forensic workstation?",
+    "options": [
+      {
+        "value": "insmod lime.ko path=tcp:4444 format=lime",
+        "isCorrect": false
+      },
+      {
+        "value": "nc -l -p 4444 > memory.lime",
+        "isCorrect": true
+      },
+      {
+        "value": "nc target_ip 4444 | dd of=memory.lime",
+        "isCorrect": false
+      },
+      {
+        "value": "dd if=/dev/mem | nc -l 4444",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the correct order of steps in data acquisition methodology?",
+    "options": [
+      {
+        "value": "Sanitize media → Acquire data → Select tool → Validate → Determine method",
+        "isCorrect": false
+      },
+      {
+        "value": "Determine method → Select tool → Sanitize media → Acquire data → Validate",
+        "isCorrect": true
+      },
+      {
+        "value": "Select tool → Determine method → Acquire data → Sanitize media → Validate",
+        "isCorrect": false
+      },
+      {
+        "value": "Acquire data → Validate → Sanitize media → Determine method → Select tool",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic investigator encounters a suspect machine that is running and displays an encrypted TrueCrypt volume. According to best practices, what is the FIRST action?",
+    "options": [
+      {
+        "value": "Immediately unplug the power to preserve evidence",
+        "isCorrect": false
+      },
+      {
+        "value": "Document the screen and perform live memory acquisition",
+        "isCorrect": true
+      },
+      {
+        "value": "Attempt to crack the encryption password",
+        "isCorrect": false
+      },
+      {
+        "value": "Remove the hard drive for offline analysis",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Linux command displays information about RAID arrays, including member disks and RAID level?",
+    "options": [
+      {
+        "value": "fdisk -l",
+        "isCorrect": false
+      },
+      {
+        "value": "cat /proc/mdstat",
+        "isCorrect": true
+      },
+      {
+        "value": "lsblk -r",
+        "isCorrect": false
+      },
+      {
+        "value": "blkid --raid",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During acquisition validation, the MD5 hash of the source drive is d41d8cd98f00b204e9800998ecf8427e and the image hash is the same. However, SHA-256 hashes differ. What does this indicate?",
+    "options": [
+      {
+        "value": "Successful acquisition - one matching hash is sufficient",
+        "isCorrect": false
+      },
+      {
+        "value": "Potential data corruption or acquisition error occurred",
+        "isCorrect": true
+      },
+      {
+        "value": "Normal behavior due to different algorithm block sizes",
+        "isCorrect": false
+      },
+      {
+        "value": "The write blocker introduced minor modifications",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator uses the PyTSK library in Python to examine a disk image. What is the primary purpose of this library?",
+    "options": [
+      {
+        "value": "Network traffic analysis",
+        "isCorrect": false
+      },
+      {
+        "value": "Memory forensics",
+        "isCorrect": false
+      },
+      {
+        "value": "File system analysis and parsing",
+        "isCorrect": true
+      },
+      {
+        "value": "Password recovery",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which scenario BEST describes when sparse acquisition would be appropriate?",
+    "options": [
+      {
+        "value": "When full disk encryption is detected",
+        "isCorrect": false
+      },
+      {
+        "value": "When only specific file types or locations contain relevant evidence",
+        "isCorrect": true
+      },
+      {
+        "value": "When the suspect system is powered off",
+        "isCorrect": false
+      },
+      {
+        "value": "When dealing with RAID arrays",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the function of the conv=noerror option in the dd command?",
+    "options": [
+      {
+        "value": "Disables error logging during acquisition",
+        "isCorrect": false
+      },
+      {
+        "value": "Continues copying even when read errors are encountered",
+        "isCorrect": true
+      },
+      {
+        "value": "Converts the output to a different file format",
+        "isCorrect": false
+      },
+      {
+        "value": "Prevents writing errors to the destination",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In eDiscovery, what does TAR (Technology-Assisted Review) primarily help with?",
+    "options": [
+      {
+        "value": "Creating forensic images of ESI",
+        "isCorrect": false
+      },
+      {
+        "value": "Using machine learning to prioritize document review",
+        "isCorrect": true
+      },
+      {
+        "value": "Validating hash values of collected data",
+        "isCorrect": false
+      },
+      {
+        "value": "Converting proprietary formats to standard formats",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic analyst is examining a disk image and notices a region at the end of the hard drive that was not captured. This area is likely the:",
+    "options": [
+      {
+        "value": "Master Boot Record",
+        "isCorrect": false
+      },
+      {
+        "value": "Device Configuration Overlay (DCO)",
+        "isCorrect": true
+      },
+      {
+        "value": "Extended partition",
+        "isCorrect": false
+      },
+      {
+        "value": "Swap partition",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool is commonly used for acquiring volatile memory from macOS systems?",
+    "options": [
+      {
+        "value": "LiME",
+        "isCorrect": false
+      },
+      {
+        "value": "DumpIt",
+        "isCorrect": false
+      },
+      {
+        "value": "MacMemoryReader or osxpmem",
+        "isCorrect": true
+      },
+      {
+        "value": "Memoryze",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During a live acquisition, an investigator notices the suspect system has multiple virtual machines running. What additional consideration must be made?",
+    "options": [
+      {
+        "value": "Only acquire the host system; VMs are not relevant",
+        "isCorrect": false
+      },
+      {
+        "value": "Acquire both host memory and individual VM memory/disk images",
+        "isCorrect": true
+      },
+      {
+        "value": "Shut down all VMs before acquiring the host",
+        "isCorrect": false
+      },
+      {
+        "value": "Virtual machines cannot contain evidence",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the significance of the bs (block size) parameter in the dd command?",
+    "options": [
+      {
+        "value": "It determines the compression ratio of the output",
+        "isCorrect": false
+      },
+      {
+        "value": "It specifies the number of bytes read/written at a time, affecting speed and error handling",
+        "isCorrect": true
+      },
+      {
+        "value": "It sets the maximum file size for the output",
+        "isCorrect": false
+      },
+      {
+        "value": "It defines the encryption block size",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator needs to convert an E01 image to a raw format for use with tools that do not support E01. Which command using ewf-tools accomplishes this?",
+    "options": [
+      {
+        "value": "ewfmount image.E01 /mnt/ewf",
+        "isCorrect": false
+      },
+      {
+        "value": "ewfexport -t raw image.E01",
+        "isCorrect": true
+      },
+      {
+        "value": "ewfconvert -f raw image.E01",
+        "isCorrect": false
+      },
+      {
+        "value": "ewfinfo --export image.E01",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In the context of EDRM, what does Proportionality principle refer to?",
+    "options": [
+      {
+        "value": "The ratio of relevant to irrelevant documents",
+        "isCorrect": false
+      },
+      {
+        "value": "Balancing the cost and burden of discovery against its likely benefit",
+        "isCorrect": true
+      },
+      {
+        "value": "The percentage of data that must be reviewed",
+        "isCorrect": false
+      },
+      {
+        "value": "Equal distribution of discovery costs between parties",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic examiner is imaging a hard drive and the process fails at 45%. Upon inspection, the drive makes clicking sounds. What is the recommended action?",
+    "options": [
+      {
+        "value": "Restart the imaging process from the beginning",
+        "isCorrect": false
+      },
+      {
+        "value": "Use ddrescue to recover as much data as possible from the failing drive",
+        "isCorrect": true
+      },
+      {
+        "value": "Apply physical pressure to the drive while imaging",
+        "isCorrect": false
+      },
+      {
+        "value": "Declare the evidence unrecoverable and document it",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which statement about AFF (Advanced Forensic Format) is TRUE?",
+    "options": [
+      {
+        "value": "AFF is a proprietary format owned by EnCase",
+        "isCorrect": false
+      },
+      {
+        "value": "AFF is an open-source format that supports compression and metadata storage",
+        "isCorrect": true
+      },
+      {
+        "value": "AFF can only be read on Windows systems",
+        "isCorrect": false
+      },
+      {
+        "value": "AFF does not support integrity verification",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During acquisition from a Linux system, an investigator wants to ensure the source disk is mounted read-only. Which mount option achieves this?",
+    "options": [
+      {
+        "value": "mount -o noexec /dev/sda1 /mnt",
+        "isCorrect": false
+      },
+      {
+        "value": "mount -o ro /dev/sda1 /mnt",
+        "isCorrect": true
+      },
+      {
+        "value": "mount -o rw /dev/sda1 /mnt",
+        "isCorrect": false
+      },
+      {
+        "value": "mount -o sync /dev/sda1 /mnt",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A digital forensics lab receives a case involving a NAS device with 8 drives in a proprietary RAID configuration. What is the BEST acquisition approach?",
+    "options": [
+      {
+        "value": "Image only the first and last drives",
+        "isCorrect": false
+      },
+      {
+        "value": "Image each drive individually and document the RAID configuration for reconstruction",
+        "isCorrect": true
+      },
+      {
+        "value": "Connect the NAS to the network and copy files directly",
+        "isCorrect": false
+      },
+      {
+        "value": "Use the NAS web interface to export data",
+        "isCorrect": false
+      }
+    ]
+  }
+]

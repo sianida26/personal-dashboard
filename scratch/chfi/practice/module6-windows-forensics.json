@@ -1,0 +1,2207 @@
+[
+  {
+    "question": "During a Windows forensic investigation, an analyst needs to collect volatile data. Which of the following should be collected FIRST according to the order of volatility?",
+    "options": [
+      {
+        "value": "Registry hives",
+        "isCorrect": false
+      },
+      {
+        "value": "System memory (RAM)",
+        "isCorrect": true
+      },
+      {
+        "value": "Hard disk contents",
+        "isCorrect": false
+      },
+      {
+        "value": "Event logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator runs the command \"net session\" on a Windows machine. What volatile information is being collected?",
+    "options": [
+      {
+        "value": "Currently logged-on users",
+        "isCorrect": false
+      },
+      {
+        "value": "Open network sessions from remote computers",
+        "isCorrect": true
+      },
+      {
+        "value": "Running network services",
+        "isCorrect": false
+      },
+      {
+        "value": "DNS cache entries",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Windows command displays the process ID (PID) associated with each network connection?",
+    "options": [
+      {
+        "value": "netstat -a",
+        "isCorrect": false
+      },
+      {
+        "value": "netstat -ano",
+        "isCorrect": true
+      },
+      {
+        "value": "netstat -r",
+        "isCorrect": false
+      },
+      {
+        "value": "netstat -e",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic examiner discovers a suspicious process running on a Windows system. Which tool provides detailed memory analysis capabilities including process hollowing detection?",
+    "options": [
+      {
+        "value": "Task Manager",
+        "isCorrect": false
+      },
+      {
+        "value": "Volatility Framework",
+        "isCorrect": true
+      },
+      {
+        "value": "Process Explorer",
+        "isCorrect": false
+      },
+      {
+        "value": "Resource Monitor",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During live forensics on a Windows 10 machine, the investigator needs to determine when the system was last booted. Which command provides this information?",
+    "options": [
+      {
+        "value": "systeminfo | find \"Boot Time\"",
+        "isCorrect": true
+      },
+      {
+        "value": "wmic os get lastboottime",
+        "isCorrect": false
+      },
+      {
+        "value": "net statistics workstation",
+        "isCorrect": false
+      },
+      {
+        "value": "All of the above can provide boot time information",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An employee is suspected of exfiltrating data. The investigator finds an unusual process with high network activity. Which volatile data source would BEST reveal the destination IP addresses?",
+    "options": [
+      {
+        "value": "Clipboard contents",
+        "isCorrect": false
+      },
+      {
+        "value": "Active network connections with netstat",
+        "isCorrect": true
+      },
+      {
+        "value": "Print spool files",
+        "isCorrect": false
+      },
+      {
+        "value": "Service driver information",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the PRIMARY purpose of collecting clipboard contents during volatile data acquisition?",
+    "options": [
+      {
+        "value": "To identify installed applications",
+        "isCorrect": false
+      },
+      {
+        "value": "To capture recently copied sensitive data like passwords",
+        "isCorrect": true
+      },
+      {
+        "value": "To determine system configuration",
+        "isCorrect": false
+      },
+      {
+        "value": "To analyze network connections",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Windows tool displays information about files opened by remote users over the network?",
+    "options": [
+      {
+        "value": "openfiles",
+        "isCorrect": true
+      },
+      {
+        "value": "handle.exe",
+        "isCorrect": false
+      },
+      {
+        "value": "listdlls",
+        "isCorrect": false
+      },
+      {
+        "value": "procmon",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator needs to examine print spool files to find evidence of printed documents. Where are Windows print spool files typically located?",
+    "options": [
+      {
+        "value": "C:\\Windows\\System32\\spool\\PRINTERS",
+        "isCorrect": true
+      },
+      {
+        "value": "C:\\Windows\\Temp\\PrintSpool",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\Users\\<username>\\PrintHistory",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\ProgramData\\Microsoft\\Windows\\Spool",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which command retrieves the Windows command history from a running cmd.exe session?",
+    "options": [
+      {
+        "value": "history",
+        "isCorrect": false
+      },
+      {
+        "value": "doskey /history",
+        "isCorrect": true
+      },
+      {
+        "value": "cmd /history",
+        "isCorrect": false
+      },
+      {
+        "value": "cmdhistory -list",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During a malware investigation, an analyst finds that a process is injecting code into legitimate Windows processes. Which Volatility plugin is MOST appropriate for detecting this?",
+    "options": [
+      {
+        "value": "pslist",
+        "isCorrect": false
+      },
+      {
+        "value": "malfind",
+        "isCorrect": true
+      },
+      {
+        "value": "netscan",
+        "isCorrect": false
+      },
+      {
+        "value": "filescan",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What information does the Windows command \"net share\" reveal during volatile data collection?",
+    "options": [
+      {
+        "value": "Network adapter configuration",
+        "isCorrect": false
+      },
+      {
+        "value": "Locally shared resources on the system",
+        "isCorrect": true
+      },
+      {
+        "value": "Remote shares mapped by the user",
+        "isCorrect": false
+      },
+      {
+        "value": "Active network connections",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator uses the command \"query user\" on a Windows system. What information does this provide?",
+    "options": [
+      {
+        "value": "User account privileges",
+        "isCorrect": false
+      },
+      {
+        "value": "Currently logged-on users and their session information",
+        "isCorrect": true
+      },
+      {
+        "value": "User password policies",
+        "isCorrect": false
+      },
+      {
+        "value": "User group memberships",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Windows tool provides process-to-port mapping with detailed information about DLLs loaded by each process?",
+    "options": [
+      {
+        "value": "netstat -b",
+        "isCorrect": false
+      },
+      {
+        "value": "TCPView",
+        "isCorrect": true
+      },
+      {
+        "value": "Process Monitor",
+        "isCorrect": false
+      },
+      {
+        "value": "Autoruns",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During volatile data collection, an investigator wants to capture all running services and their states. Which command provides this information?",
+    "options": [
+      {
+        "value": "sc query state= all",
+        "isCorrect": true
+      },
+      {
+        "value": "services.msc",
+        "isCorrect": false
+      },
+      {
+        "value": "net service list",
+        "isCorrect": false
+      },
+      {
+        "value": "wmic service get status",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the file extension for Windows Extensible Storage Engine (ESE) database files commonly used by Windows Search and other applications?",
+    "options": [
+      {
+        "value": ".mdb",
+        "isCorrect": false
+      },
+      {
+        "value": ".edb",
+        "isCorrect": true
+      },
+      {
+        "value": ".sdb",
+        "isCorrect": false
+      },
+      {
+        "value": ".ldb",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During analysis of a Windows system, an investigator finds the file Windows.edb. What type of evidence might this file contain?",
+    "options": [
+      {
+        "value": "System event logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Windows Search index including file contents and metadata",
+        "isCorrect": true
+      },
+      {
+        "value": "Browser cookies and history",
+        "isCorrect": false
+      },
+      {
+        "value": "User password hashes",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool is specifically designed to examine ESE database (.edb) files?",
+    "options": [
+      {
+        "value": "SQLite Browser",
+        "isCorrect": false
+      },
+      {
+        "value": "ESEDatabaseView",
+        "isCorrect": true
+      },
+      {
+        "value": "Registry Editor",
+        "isCorrect": false
+      },
+      {
+        "value": "FTK Imager",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is slack space in the context of Windows forensics?",
+    "options": [
+      {
+        "value": "Unallocated space on the hard drive",
+        "isCorrect": false
+      },
+      {
+        "value": "The unused space between the end of a file and the end of its allocated cluster",
+        "isCorrect": true
+      },
+      {
+        "value": "Space reserved for system restore points",
+        "isCorrect": false
+      },
+      {
+        "value": "Virtual memory swap space",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator needs to identify all USB devices ever connected to a Windows 10 system. Which registry key contains this information?",
+    "options": [
+      {
+        "value": "HKLM\\SYSTEM\\CurrentControlSet\\Enum\\USB",
+        "isCorrect": false
+      },
+      {
+        "value": "HKLM\\SYSTEM\\CurrentControlSet\\Enum\\USBSTOR",
+        "isCorrect": true
+      },
+      {
+        "value": "HKCU\\Software\\Microsoft\\USB",
+        "isCorrect": false
+      },
+      {
+        "value": "HKLM\\SOFTWARE\\Microsoft\\Windows\\USB",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the SRUM database in Windows forensics?",
+    "options": [
+      {
+        "value": "Security and Recovery Update Manager",
+        "isCorrect": false
+      },
+      {
+        "value": "System Resource Usage Monitor containing application and network usage data",
+        "isCorrect": true
+      },
+      {
+        "value": "Software Restriction Usage Management",
+        "isCorrect": false
+      },
+      {
+        "value": "System Registry Update Module",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Where is the SRUM database located on a Windows 10 system?",
+    "options": [
+      {
+        "value": "C:\\Windows\\System32\\sru\\SRUDB.dat",
+        "isCorrect": true
+      },
+      {
+        "value": "C:\\Windows\\System32\\config\\SRUM",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\ProgramData\\Microsoft\\SRUM",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\Users\\<username>\\AppData\\Local\\SRUM",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which folder contains Windows thumbnail cache files that may reveal previously viewed images?",
+    "options": [
+      {
+        "value": "C:\\Users\\<username>\\AppData\\Local\\Microsoft\\Windows\\Explorer",
+        "isCorrect": true
+      },
+      {
+        "value": "C:\\Windows\\System32\\Thumbnails",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\ProgramData\\Microsoft\\Thumbnails",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\Users\\<username>\\Pictures\\Thumbnails",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator needs to analyze a Windows crash dump file. Which file extension indicates a complete memory dump?",
+    "options": [
+      {
+        "value": ".mdmp",
+        "isCorrect": false
+      },
+      {
+        "value": ".dmp (MEMORY.DMP)",
+        "isCorrect": true
+      },
+      {
+        "value": ".hdmp",
+        "isCorrect": false
+      },
+      {
+        "value": ".crash",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A forensic analyst discovers the hiberfil.sys file on a Windows machine. What valuable evidence can be extracted from this file?",
+    "options": [
+      {
+        "value": "Browser history only",
+        "isCorrect": false
+      },
+      {
+        "value": "A snapshot of system RAM at hibernation time",
+        "isCorrect": true
+      },
+      {
+        "value": "User login credentials only",
+        "isCorrect": false
+      },
+      {
+        "value": "Registry hives only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool is specifically designed to extract data from Windows hibernation files?",
+    "options": [
+      {
+        "value": "Autopsy",
+        "isCorrect": false
+      },
+      {
+        "value": "Hibernation Recon",
+        "isCorrect": true
+      },
+      {
+        "value": "EnCase",
+        "isCorrect": false
+      },
+      {
+        "value": "Cellebrite",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the pagefile.sys contain that is valuable for forensic analysis?",
+    "options": [
+      {
+        "value": "Cached web pages only",
+        "isCorrect": false
+      },
+      {
+        "value": "Data swapped from RAM including potentially sensitive information",
+        "isCorrect": true
+      },
+      {
+        "value": "System boot configuration",
+        "isCorrect": false
+      },
+      {
+        "value": "Application installation history",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Volatility plugin lists all running processes along with their creation time?",
+    "options": [
+      {
+        "value": "psscan",
+        "isCorrect": false
+      },
+      {
+        "value": "pslist",
+        "isCorrect": true
+      },
+      {
+        "value": "pstree",
+        "isCorrect": false
+      },
+      {
+        "value": "psxview",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator wants to find hidden processes that may be using DKOM (Direct Kernel Object Manipulation). Which Volatility plugin compares multiple process listing methods?",
+    "options": [
+      {
+        "value": "pslist",
+        "isCorrect": false
+      },
+      {
+        "value": "psxview",
+        "isCorrect": true
+      },
+      {
+        "value": "pstree",
+        "isCorrect": false
+      },
+      {
+        "value": "psscan",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is MemProcFS used for in Windows forensics?",
+    "options": [
+      {
+        "value": "Mounting disk images as virtual drives",
+        "isCorrect": false
+      },
+      {
+        "value": "Advanced memory forensics with virtual file system representation",
+        "isCorrect": true
+      },
+      {
+        "value": "Creating forensic images of hard drives",
+        "isCorrect": false
+      },
+      {
+        "value": "Analyzing network traffic captures",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Windows registry hive contains system-wide configuration and hardware information?",
+    "options": [
+      {
+        "value": "NTUSER.DAT",
+        "isCorrect": false
+      },
+      {
+        "value": "SYSTEM",
+        "isCorrect": true
+      },
+      {
+        "value": "SOFTWARE",
+        "isCorrect": false
+      },
+      {
+        "value": "SECURITY",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Where is the NTUSER.DAT registry hive file located for a specific user?",
+    "options": [
+      {
+        "value": "C:\\Windows\\System32\\config",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\Users\\<username>",
+        "isCorrect": true
+      },
+      {
+        "value": "C:\\Windows\\Users\\Registry",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\ProgramData\\Microsoft\\Registry",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator needs to determine when a Windows system was last shut down. Which registry key and value contains this information?",
+    "options": [
+      {
+        "value": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Windows - ShutdownTime",
+        "isCorrect": true
+      },
+      {
+        "value": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Shutdown",
+        "isCorrect": false
+      },
+      {
+        "value": "HKCU\\Software\\Microsoft\\Windows\\Shutdown",
+        "isCorrect": false
+      },
+      {
+        "value": "HKLM\\SYSTEM\\Setup\\ShutdownTime",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What information does the UserAssist registry key provide to forensic investigators?",
+    "options": [
+      {
+        "value": "List of installed software",
+        "isCorrect": false
+      },
+      {
+        "value": "Programs executed by the user with execution counts and timestamps",
+        "isCorrect": true
+      },
+      {
+        "value": "User password hints",
+        "isCorrect": false
+      },
+      {
+        "value": "Network connection history",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "The UserAssist data is encoded using which method?",
+    "options": [
+      {
+        "value": "Base64 encoding",
+        "isCorrect": false
+      },
+      {
+        "value": "ROT13 encoding",
+        "isCorrect": true
+      },
+      {
+        "value": "AES encryption",
+        "isCorrect": false
+      },
+      {
+        "value": "XOR encryption",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which registry key stores the Most Recently Used (MRU) list for the Run dialog box?",
+    "options": [
+      {
+        "value": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\RunMRU",
+        "isCorrect": true
+      },
+      {
+        "value": "HKLM\\Software\\Microsoft\\Windows\\Run",
+        "isCorrect": false
+      },
+      {
+        "value": "HKCU\\Software\\Microsoft\\Run\\MRUList",
+        "isCorrect": false
+      },
+      {
+        "value": "HKLM\\SYSTEM\\CurrentControlSet\\RunMRU",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the TypedURLs registry key reveal about user activity?",
+    "options": [
+      {
+        "value": "Downloaded files",
+        "isCorrect": false
+      },
+      {
+        "value": "URLs typed directly into Internet Explorer/Edge address bar",
+        "isCorrect": true
+      },
+      {
+        "value": "Bookmarked websites",
+        "isCorrect": false
+      },
+      {
+        "value": "Search engine queries",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator wants to find wireless network SSIDs the computer has connected to. Which registry location contains this information?",
+    "options": [
+      {
+        "value": "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\NetworkList\\Profiles",
+        "isCorrect": true
+      },
+      {
+        "value": "HKCU\\Software\\Microsoft\\Windows\\WiFi\\Connections",
+        "isCorrect": false
+      },
+      {
+        "value": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\WLAN\\Profiles",
+        "isCorrect": false
+      },
+      {
+        "value": "HKLM\\SOFTWARE\\Microsoft\\WiFi\\Networks",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A forensic analyst needs to determine the first connection time of a specific USB device. Which registry key timestamp provides this information?",
+    "options": [
+      {
+        "value": "SYSTEM\\CurrentControlSet\\Enum\\USBSTOR key last write time",
+        "isCorrect": true
+      },
+      {
+        "value": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\USB\\FirstConnect",
+        "isCorrect": false
+      },
+      {
+        "value": "NTUSER.DAT\\Software\\USB\\Timestamps",
+        "isCorrect": false
+      },
+      {
+        "value": "SECURITY\\USB\\ConnectionTimes",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the Shimcache (AppCompatCache) in Windows forensics?",
+    "options": [
+      {
+        "value": "A cache of web browser data",
+        "isCorrect": false
+      },
+      {
+        "value": "Application compatibility cache tracking executable files",
+        "isCorrect": true
+      },
+      {
+        "value": "A cache of Windows updates",
+        "isCorrect": false
+      },
+      {
+        "value": "A cache of DNS queries",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Where is the Shimcache data stored in the Windows registry?",
+    "options": [
+      {
+        "value": "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\AppCompatCache",
+        "isCorrect": false
+      },
+      {
+        "value": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\AppCompatCache",
+        "isCorrect": true
+      },
+      {
+        "value": "HKCU\\Software\\Microsoft\\Windows\\AppCompat",
+        "isCorrect": false
+      },
+      {
+        "value": "HKLM\\SYSTEM\\Setup\\AppCompatibility\\Cache",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the difference between Shimcache and Amcache in Windows forensics?",
+    "options": [
+      {
+        "value": "They are identical and store the same information",
+        "isCorrect": false
+      },
+      {
+        "value": "Shimcache tracks file existence while Amcache tracks actual execution with SHA1 hashes",
+        "isCorrect": true
+      },
+      {
+        "value": "Shimcache is for 32-bit apps and Amcache is for 64-bit apps",
+        "isCorrect": false
+      },
+      {
+        "value": "Shimcache is deprecated and replaced by Amcache",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "The Amcache.hve file is located in which directory?",
+    "options": [
+      {
+        "value": "C:\\Windows\\System32\\config",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\Windows\\AppCompat\\Programs",
+        "isCorrect": true
+      },
+      {
+        "value": "C:\\Users\\<username>\\AppData\\Local",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\ProgramData\\Microsoft\\Windows",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What information does the MountedDevices registry key provide?",
+    "options": [
+      {
+        "value": "Currently active drive letters only",
+        "isCorrect": false
+      },
+      {
+        "value": "History of all mounted volumes with their drive letter assignments",
+        "isCorrect": true
+      },
+      {
+        "value": "List of network drives only",
+        "isCorrect": false
+      },
+      {
+        "value": "CD/DVD drive assignments only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator discovers the registry key HKCU\\Software\\Microsoft\\Office\\16.0\\Word\\Reading Locations. What evidence does this provide?",
+    "options": [
+      {
+        "value": "Recently printed documents",
+        "isCorrect": false
+      },
+      {
+        "value": "Document file paths with last reading position",
+        "isCorrect": true
+      },
+      {
+        "value": "Word macro history",
+        "isCorrect": false
+      },
+      {
+        "value": "Spelling check history",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Windows registry hive contains system-wide configuration and hardware information?",
+    "options": [
+      {
+        "value": "NTUSER.DAT",
+        "isCorrect": false
+      },
+      {
+        "value": "SYSTEM",
+        "isCorrect": true
+      },
+      {
+        "value": "SOFTWARE",
+        "isCorrect": false
+      },
+      {
+        "value": "SECURITY",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Where is the NTUSER.DAT registry hive file located for a specific user?",
+    "options": [
+      {
+        "value": "C:\\\\Windows\\\\System32\\\\config",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\\\Users\\\\<username>",
+        "isCorrect": true
+      },
+      {
+        "value": "C:\\\\Windows\\\\Users\\\\Registry",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\\\ProgramData\\\\Microsoft\\\\Registry",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator needs to determine when a Windows system was last shut down. Which registry key and value contains this information?",
+    "options": [
+      {
+        "value": "HKLM\\\\SYSTEM\\\\CurrentControlSet\\\\Control\\\\Windows - ShutdownTime",
+        "isCorrect": true
+      },
+      {
+        "value": "HKLM\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Shutdown",
+        "isCorrect": false
+      },
+      {
+        "value": "HKCU\\\\Software\\\\Microsoft\\\\Windows\\\\Shutdown",
+        "isCorrect": false
+      },
+      {
+        "value": "HKLM\\\\SYSTEM\\\\Setup\\\\ShutdownTime",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What information does the UserAssist registry key provide to forensic investigators?",
+    "options": [
+      {
+        "value": "List of installed software",
+        "isCorrect": false
+      },
+      {
+        "value": "Programs executed by the user with execution counts and timestamps",
+        "isCorrect": true
+      },
+      {
+        "value": "User password hints",
+        "isCorrect": false
+      },
+      {
+        "value": "Network connection history",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "The UserAssist data is encoded using which method?",
+    "options": [
+      {
+        "value": "Base64 encoding",
+        "isCorrect": false
+      },
+      {
+        "value": "ROT13 encoding",
+        "isCorrect": true
+      },
+      {
+        "value": "AES encryption",
+        "isCorrect": false
+      },
+      {
+        "value": "XOR encryption",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which registry key stores the Most Recently Used (MRU) list for the Run dialog box?",
+    "options": [
+      {
+        "value": "HKCU\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\RunMRU",
+        "isCorrect": true
+      },
+      {
+        "value": "HKLM\\\\Software\\\\Microsoft\\\\Windows\\\\Run",
+        "isCorrect": false
+      },
+      {
+        "value": "HKCU\\\\Software\\\\Microsoft\\\\Run\\\\MRUList",
+        "isCorrect": false
+      },
+      {
+        "value": "HKLM\\\\SYSTEM\\\\CurrentControlSet\\\\RunMRU",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the TypedURLs registry key reveal about user activity?",
+    "options": [
+      {
+        "value": "Downloaded files",
+        "isCorrect": false
+      },
+      {
+        "value": "URLs typed directly into Internet Explorer/Edge address bar",
+        "isCorrect": true
+      },
+      {
+        "value": "Bookmarked websites",
+        "isCorrect": false
+      },
+      {
+        "value": "Search engine queries",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator wants to find wireless network SSIDs the computer has connected to. Which registry location contains this information?",
+    "options": [
+      {
+        "value": "HKLM\\\\SOFTWARE\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\\\\NetworkList\\\\Profiles",
+        "isCorrect": true
+      },
+      {
+        "value": "HKCU\\\\Software\\\\Microsoft\\\\Windows\\\\WiFi\\\\Connections",
+        "isCorrect": false
+      },
+      {
+        "value": "HKLM\\\\SYSTEM\\\\CurrentControlSet\\\\Services\\\\WLAN\\\\Profiles",
+        "isCorrect": false
+      },
+      {
+        "value": "HKLM\\\\SOFTWARE\\\\Microsoft\\\\WiFi\\\\Networks",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A forensic analyst needs to determine the first connection time of a specific USB device. Which registry key timestamp provides this information?",
+    "options": [
+      {
+        "value": "SYSTEM\\\\CurrentControlSet\\\\Enum\\\\USBSTOR key last write time",
+        "isCorrect": true
+      },
+      {
+        "value": "SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\USB\\\\FirstConnect",
+        "isCorrect": false
+      },
+      {
+        "value": "NTUSER.DAT\\\\Software\\\\USB\\\\Timestamps",
+        "isCorrect": false
+      },
+      {
+        "value": "SECURITY\\\\USB\\\\ConnectionTimes",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the Shimcache (AppCompatCache) in Windows forensics?",
+    "options": [
+      {
+        "value": "A cache of web browser data",
+        "isCorrect": false
+      },
+      {
+        "value": "Application compatibility cache tracking executable files",
+        "isCorrect": true
+      },
+      {
+        "value": "A cache of Windows updates",
+        "isCorrect": false
+      },
+      {
+        "value": "A cache of DNS queries",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Where is the Shimcache data stored in the Windows registry?",
+    "options": [
+      {
+        "value": "HKLM\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\AppCompatCache",
+        "isCorrect": false
+      },
+      {
+        "value": "HKLM\\\\SYSTEM\\\\CurrentControlSet\\\\Control\\\\Session Manager\\\\AppCompatCache",
+        "isCorrect": true
+      },
+      {
+        "value": "HKCU\\\\Software\\\\Microsoft\\\\Windows\\\\AppCompat",
+        "isCorrect": false
+      },
+      {
+        "value": "HKLM\\\\SYSTEM\\\\Setup\\\\AppCompatibility\\\\Cache",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the difference between Shimcache and Amcache in Windows forensics?",
+    "options": [
+      {
+        "value": "They are identical and store the same information",
+        "isCorrect": false
+      },
+      {
+        "value": "Shimcache tracks file existence while Amcache tracks actual execution with SHA1 hashes",
+        "isCorrect": true
+      },
+      {
+        "value": "Shimcache is for 32-bit apps and Amcache is for 64-bit apps",
+        "isCorrect": false
+      },
+      {
+        "value": "Shimcache is deprecated and replaced by Amcache",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "The Amcache.hve file is located in which directory?",
+    "options": [
+      {
+        "value": "C:\\\\Windows\\\\System32\\\\config",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\\\Windows\\\\AppCompat\\\\Programs",
+        "isCorrect": true
+      },
+      {
+        "value": "C:\\\\Users\\\\<username>\\\\AppData\\\\Local",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\\\ProgramData\\\\Microsoft\\\\Windows",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What information does the MountedDevices registry key provide?",
+    "options": [
+      {
+        "value": "Currently active drive letters only",
+        "isCorrect": false
+      },
+      {
+        "value": "History of all mounted volumes with their drive letter assignments",
+        "isCorrect": true
+      },
+      {
+        "value": "List of network drives only",
+        "isCorrect": false
+      },
+      {
+        "value": "CD/DVD drive assignments only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator discovers the registry key HKCU\\\\Software\\\\Microsoft\\\\Office\\\\16.0\\\\Word\\\\Reading Locations. What evidence does this provide?",
+    "options": [
+      {
+        "value": "Recently printed documents",
+        "isCorrect": false
+      },
+      {
+        "value": "Document file paths with last reading position",
+        "isCorrect": true
+      },
+      {
+        "value": "Word macro history",
+        "isCorrect": false
+      },
+      {
+        "value": "Spelling check history",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which SQLite database file in Mozilla Firefox contains the browsing history and bookmarks?",
+    "options": [
+      {
+        "value": "cookies.sqlite",
+        "isCorrect": false
+      },
+      {
+        "value": "places.sqlite",
+        "isCorrect": true
+      },
+      {
+        "value": "history.sqlite",
+        "isCorrect": false
+      },
+      {
+        "value": "browser.sqlite",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator needs to recover form data submitted by a suspect in Firefox. Which database file should be examined?",
+    "options": [
+      {
+        "value": "places.sqlite",
+        "isCorrect": false
+      },
+      {
+        "value": "formhistory.sqlite",
+        "isCorrect": true
+      },
+      {
+        "value": "webappsstore.sqlite",
+        "isCorrect": false
+      },
+      {
+        "value": "permissions.sqlite",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In Google Chrome, which file contains the browsing history including URLs and visit timestamps?",
+    "options": [
+      {
+        "value": "Bookmarks",
+        "isCorrect": false
+      },
+      {
+        "value": "History",
+        "isCorrect": true
+      },
+      {
+        "value": "Cookies",
+        "isCorrect": false
+      },
+      {
+        "value": "Preferences",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Where is the Google Chrome user profile data typically stored on Windows 10?",
+    "options": [
+      {
+        "value": "C:\\\\Users\\\\<username>\\\\AppData\\\\Roaming\\\\Google\\\\Chrome",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\\\Users\\\\<username>\\\\AppData\\\\Local\\\\Google\\\\Chrome\\\\User Data",
+        "isCorrect": true
+      },
+      {
+        "value": "C:\\\\Program Files\\\\Google\\\\Chrome\\\\Profile",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\\\ProgramData\\\\Google\\\\Chrome\\\\Users",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Chrome database table contains information about when URLs were typed vs clicked?",
+    "options": [
+      {
+        "value": "urls",
+        "isCorrect": false
+      },
+      {
+        "value": "visits with transition types",
+        "isCorrect": true
+      },
+      {
+        "value": "keywords",
+        "isCorrect": false
+      },
+      {
+        "value": "segments",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator examining Microsoft Edge Chromium finds the History file. What format is this file?",
+    "options": [
+      {
+        "value": "XML",
+        "isCorrect": false
+      },
+      {
+        "value": "SQLite database",
+        "isCorrect": true
+      },
+      {
+        "value": "JSON",
+        "isCorrect": false
+      },
+      {
+        "value": "ESE database",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the significance of the sessionstore.jsonlz4 file in Firefox forensics?",
+    "options": [
+      {
+        "value": "Stores saved passwords",
+        "isCorrect": false
+      },
+      {
+        "value": "Contains session recovery data including open tabs and form data",
+        "isCorrect": true
+      },
+      {
+        "value": "Stores browser extensions",
+        "isCorrect": false
+      },
+      {
+        "value": "Contains certificate information",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A suspect claims they never visited a malicious website. The investigator finds no evidence in browsing history but suspects private browsing was used. Where might artifacts still exist?",
+    "options": [
+      {
+        "value": "Browser history database",
+        "isCorrect": false
+      },
+      {
+        "value": "Memory dumps, pagefile, or DNS cache",
+        "isCorrect": true
+      },
+      {
+        "value": "Bookmarks file",
+        "isCorrect": false
+      },
+      {
+        "value": "Extension data folder",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which folder contains Microsoft Edge Collections data that might reveal research interests?",
+    "options": [
+      {
+        "value": "C:\\\\Users\\\\<username>\\\\AppData\\\\Local\\\\Microsoft\\\\Edge\\\\User Data\\\\Default\\\\Collections",
+        "isCorrect": true
+      },
+      {
+        "value": "C:\\\\Users\\\\<username>\\\\Favorites\\\\Edge\\\\Collections",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\\\ProgramData\\\\Microsoft\\\\Edge\\\\Collections",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\\\Users\\\\<username>\\\\AppData\\\\Roaming\\\\Edge\\\\Collections",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Electron applications like Microsoft Teams store local data in which format?",
+    "options": [
+      {
+        "value": "Registry keys only",
+        "isCorrect": false
+      },
+      {
+        "value": "LevelDB and SQLite databases",
+        "isCorrect": true
+      },
+      {
+        "value": "Windows Event Logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Binary blob files only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Where would an investigator find Microsoft Teams chat message artifacts on Windows?",
+    "options": [
+      {
+        "value": "C:\\\\Users\\\\<username>\\\\AppData\\\\Local\\\\Microsoft\\\\Teams",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\\\Users\\\\<username>\\\\AppData\\\\Roaming\\\\Microsoft\\\\Teams",
+        "isCorrect": true
+      },
+      {
+        "value": "C:\\\\Program Files\\\\Microsoft Teams\\\\Data",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\\\ProgramData\\\\Microsoft\\\\Teams\\\\Messages",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What database format does WhatsApp Desktop use for storing messages?",
+    "options": [
+      {
+        "value": "MySQL",
+        "isCorrect": false
+      },
+      {
+        "value": "SQLite",
+        "isCorrect": true
+      },
+      {
+        "value": "LevelDB only",
+        "isCorrect": false
+      },
+      {
+        "value": "PostgreSQL",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator needs to analyze Skype conversations. Which file contains the main message database?",
+    "options": [
+      {
+        "value": "skype.db",
+        "isCorrect": false
+      },
+      {
+        "value": "main.db or s4l-<username>.db",
+        "isCorrect": true
+      },
+      {
+        "value": "messages.sqlite",
+        "isCorrect": false
+      },
+      {
+        "value": "chat.mdb",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "The Chrome Network Action Predictor database helps investigators understand what?",
+    "options": [
+      {
+        "value": "Downloaded malware behavior",
+        "isCorrect": false
+      },
+      {
+        "value": "URLs the user is likely to visit based on typing patterns",
+        "isCorrect": true
+      },
+      {
+        "value": "Network bandwidth usage",
+        "isCorrect": false
+      },
+      {
+        "value": "VPN connection history",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool is commonly used to examine SQLite database files from web browsers during forensic analysis?",
+    "options": [
+      {
+        "value": "Registry Editor",
+        "isCorrect": false
+      },
+      {
+        "value": "DB Browser for SQLite",
+        "isCorrect": true
+      },
+      {
+        "value": "ESEDatabaseView",
+        "isCorrect": false
+      },
+      {
+        "value": "HxD Hex Editor",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What are Windows ShellBags and why are they forensically significant?",
+    "options": [
+      {
+        "value": "Temporary files created by Windows Explorer",
+        "isCorrect": false
+      },
+      {
+        "value": "Registry entries tracking folder access, views, and window positions even for deleted folders",
+        "isCorrect": true
+      },
+      {
+        "value": "Log files for shell command execution",
+        "isCorrect": false
+      },
+      {
+        "value": "Backup copies of system files",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Where are ShellBag artifacts primarily stored in the Windows registry?",
+    "options": [
+      {
+        "value": "HKLM\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\Shell",
+        "isCorrect": false
+      },
+      {
+        "value": "NTUSER.DAT and UsrClass.dat under BagMRU and Bags keys",
+        "isCorrect": true
+      },
+      {
+        "value": "HKLM\\\\SYSTEM\\\\CurrentControlSet\\\\Explorer\\\\ShellBags",
+        "isCorrect": false
+      },
+      {
+        "value": "HKCU\\\\Software\\\\Microsoft\\\\Explorer\\\\Bags",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool is specifically designed for parsing Windows ShellBag artifacts?",
+    "options": [
+      {
+        "value": "RegRipper",
+        "isCorrect": false
+      },
+      {
+        "value": "ShellBags Explorer",
+        "isCorrect": true
+      },
+      {
+        "value": "Autoruns",
+        "isCorrect": false
+      },
+      {
+        "value": "Process Monitor",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What forensic information can be extracted from Windows LNK (shortcut) files?",
+    "options": [
+      {
+        "value": "File contents only",
+        "isCorrect": false
+      },
+      {
+        "value": "Target path, MAC times, volume serial number, and machine identifiers",
+        "isCorrect": true
+      },
+      {
+        "value": "User passwords",
+        "isCorrect": false
+      },
+      {
+        "value": "Network traffic data",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator finds an LNK file pointing to a file on drive E:. The drive letter is no longer in use. What can still be determined?",
+    "options": [
+      {
+        "value": "Nothing useful since the drive is disconnected",
+        "isCorrect": false
+      },
+      {
+        "value": "The volume serial number and potentially the device type from the LNK file",
+        "isCorrect": true
+      },
+      {
+        "value": "Only the filename",
+        "isCorrect": false
+      },
+      {
+        "value": "The exact device manufacturer",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Where are Windows Jump List files stored?",
+    "options": [
+      {
+        "value": "C:\\\\Windows\\\\System32\\\\JumpLists",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\\\Users\\\\<username>\\\\AppData\\\\Roaming\\\\Microsoft\\\\Windows\\\\Recent\\\\AutomaticDestinations and CustomDestinations",
+        "isCorrect": true
+      },
+      {
+        "value": "C:\\\\ProgramData\\\\Microsoft\\\\JumpLists",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\\\Users\\\\<username>\\\\Recent\\\\JumpLists",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the difference between AutomaticDestinations and CustomDestinations Jump Lists?",
+    "options": [
+      {
+        "value": "AutomaticDestinations are for 32-bit apps, CustomDestinations for 64-bit",
+        "isCorrect": false
+      },
+      {
+        "value": "AutomaticDestinations are system-generated; CustomDestinations are application-pinned items",
+        "isCorrect": true
+      },
+      {
+        "value": "There is no difference",
+        "isCorrect": false
+      },
+      {
+        "value": "AutomaticDestinations store network files, CustomDestinations store local files",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Windows artifact tracks recently accessed files and is linked to Jump Lists?",
+    "options": [
+      {
+        "value": "Prefetch files",
+        "isCorrect": false
+      },
+      {
+        "value": "Recent Items folder and LNK files",
+        "isCorrect": true
+      },
+      {
+        "value": "Event logs",
+        "isCorrect": false
+      },
+      {
+        "value": "SRUM database",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What information do Prefetch files provide to forensic investigators?",
+    "options": [
+      {
+        "value": "User login times only",
+        "isCorrect": false
+      },
+      {
+        "value": "Application execution history including run count and last run time",
+        "isCorrect": true
+      },
+      {
+        "value": "Network connection logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Browser history",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Where are Windows Prefetch files located?",
+    "options": [
+      {
+        "value": "C:\\\\Windows\\\\Prefetch",
+        "isCorrect": true
+      },
+      {
+        "value": "C:\\\\Windows\\\\System32\\\\Prefetch",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\\\Users\\\\<username>\\\\AppData\\\\Prefetch",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\\\ProgramData\\\\Microsoft\\\\Prefetch",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the maximum number of Prefetch files Windows 10 maintains by default?",
+    "options": [
+      {
+        "value": "64",
+        "isCorrect": false
+      },
+      {
+        "value": "128",
+        "isCorrect": false
+      },
+      {
+        "value": "1024",
+        "isCorrect": true
+      },
+      {
+        "value": "256",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator examines Zone.Identifier alternate data streams on downloaded files. What security information does this reveal?",
+    "options": [
+      {
+        "value": "Antivirus scan results",
+        "isCorrect": false
+      },
+      {
+        "value": "The URL from which the file was downloaded (Mark of the Web)",
+        "isCorrect": true
+      },
+      {
+        "value": "User who downloaded the file",
+        "isCorrect": false
+      },
+      {
+        "value": "Time spent downloading",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which NTFS feature stores metadata like Zone.Identifier that indicates file origin?",
+    "options": [
+      {
+        "value": "Master File Table",
+        "isCorrect": false
+      },
+      {
+        "value": "Alternate Data Streams (ADS)",
+        "isCorrect": true
+      },
+      {
+        "value": "File Allocation Table",
+        "isCorrect": false
+      },
+      {
+        "value": "Volume Boot Record",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What EXIF data from image files is most valuable for establishing location evidence?",
+    "options": [
+      {
+        "value": "Camera model",
+        "isCorrect": false
+      },
+      {
+        "value": "GPS coordinates embedded in the metadata",
+        "isCorrect": true
+      },
+      {
+        "value": "Image resolution",
+        "isCorrect": false
+      },
+      {
+        "value": "Color profile",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Python library is commonly used to extract metadata from Office documents during forensic analysis?",
+    "options": [
+      {
+        "value": "beautifulsoup4",
+        "isCorrect": false
+      },
+      {
+        "value": "python-docx and olefile",
+        "isCorrect": true
+      },
+      {
+        "value": "pandas",
+        "isCorrect": false
+      },
+      {
+        "value": "requests",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the file extension for Windows Event Log files in Windows Vista and later?",
+    "options": [
+      {
+        "value": ".evt",
+        "isCorrect": false
+      },
+      {
+        "value": ".evtx",
+        "isCorrect": true
+      },
+      {
+        "value": ".log",
+        "isCorrect": false
+      },
+      {
+        "value": ".xml",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Windows Event ID indicates a successful user logon?",
+    "options": [
+      {
+        "value": "4624",
+        "isCorrect": true
+      },
+      {
+        "value": "4625",
+        "isCorrect": false
+      },
+      {
+        "value": "4634",
+        "isCorrect": false
+      },
+      {
+        "value": "4648",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Event ID indicates a failed logon attempt?",
+    "options": [
+      {
+        "value": "4624",
+        "isCorrect": false
+      },
+      {
+        "value": "4625",
+        "isCorrect": true
+      },
+      {
+        "value": "4634",
+        "isCorrect": false
+      },
+      {
+        "value": "4672",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator needs to determine when a user account was created. Which Event ID should they search for?",
+    "options": [
+      {
+        "value": "4720",
+        "isCorrect": true
+      },
+      {
+        "value": "4722",
+        "isCorrect": false
+      },
+      {
+        "value": "4724",
+        "isCorrect": false
+      },
+      {
+        "value": "4726",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does Windows Event ID 4688 record?",
+    "options": [
+      {
+        "value": "User logon events",
+        "isCorrect": false
+      },
+      {
+        "value": "A new process has been created",
+        "isCorrect": true
+      },
+      {
+        "value": "Security group membership changes",
+        "isCorrect": false
+      },
+      {
+        "value": "File access events",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Where are Windows Event Logs stored by default?",
+    "options": [
+      {
+        "value": "C:\\\\Windows\\\\Logs\\\\Events",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\\\Windows\\\\System32\\\\winevt\\\\Logs",
+        "isCorrect": true
+      },
+      {
+        "value": "C:\\\\Windows\\\\EventLogs",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\\\ProgramData\\\\Microsoft\\\\EventLogs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which logon type in Windows Event ID 4624 indicates an interactive logon at the keyboard?",
+    "options": [
+      {
+        "value": "Type 2",
+        "isCorrect": true
+      },
+      {
+        "value": "Type 3",
+        "isCorrect": false
+      },
+      {
+        "value": "Type 10",
+        "isCorrect": false
+      },
+      {
+        "value": "Type 7",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does Logon Type 3 indicate in a Windows 4624 event?",
+    "options": [
+      {
+        "value": "Interactive logon",
+        "isCorrect": false
+      },
+      {
+        "value": "Network logon (accessing shared resources)",
+        "isCorrect": true
+      },
+      {
+        "value": "Remote Desktop logon",
+        "isCorrect": false
+      },
+      {
+        "value": "Service account logon",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Event ID indicates that special privileges were assigned to a new logon?",
+    "options": [
+      {
+        "value": "4624",
+        "isCorrect": false
+      },
+      {
+        "value": "4672",
+        "isCorrect": true
+      },
+      {
+        "value": "4634",
+        "isCorrect": false
+      },
+      {
+        "value": "4648",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator needs to track USB device connections through Event Logs. Which log should they examine?",
+    "options": [
+      {
+        "value": "Security.evtx only",
+        "isCorrect": false
+      },
+      {
+        "value": "System.evtx and Microsoft-Windows-DriverFrameworks-UserMode/Operational",
+        "isCorrect": true
+      },
+      {
+        "value": "Application.evtx only",
+        "isCorrect": false
+      },
+      {
+        "value": "Setup.evtx only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Windows tool provides a graphical interface for viewing Event Logs?",
+    "options": [
+      {
+        "value": "regedit",
+        "isCorrect": false
+      },
+      {
+        "value": "Event Viewer (eventvwr.msc)",
+        "isCorrect": true
+      },
+      {
+        "value": "Task Manager",
+        "isCorrect": false
+      },
+      {
+        "value": "Device Manager",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What PowerShell command retrieves Windows Event Log entries?",
+    "options": [
+      {
+        "value": "Get-EventLog or Get-WinEvent",
+        "isCorrect": true
+      },
+      {
+        "value": "Read-EventLog",
+        "isCorrect": false
+      },
+      {
+        "value": "Show-WinEvents",
+        "isCorrect": false
+      },
+      {
+        "value": "Export-EventLog",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator suspects an attacker cleared the Security Event Log. Which Event ID would indicate this action?",
+    "options": [
+      {
+        "value": "1100",
+        "isCorrect": false
+      },
+      {
+        "value": "1102",
+        "isCorrect": true
+      },
+      {
+        "value": "4624",
+        "isCorrect": false
+      },
+      {
+        "value": "4688",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool from Sysinternals can monitor real-time file system, registry, and process activity?",
+    "options": [
+      {
+        "value": "Autoruns",
+        "isCorrect": false
+      },
+      {
+        "value": "Process Monitor",
+        "isCorrect": true
+      },
+      {
+        "value": "TCPView",
+        "isCorrect": false
+      },
+      {
+        "value": "PsExec",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the PowerShell command Get-FileHash provide for forensic analysis?",
+    "options": [
+      {
+        "value": "File metadata only",
+        "isCorrect": false
+      },
+      {
+        "value": "Cryptographic hash values for file integrity verification",
+        "isCorrect": true
+      },
+      {
+        "value": "File permissions",
+        "isCorrect": false
+      },
+      {
+        "value": "File ownership information",
+        "isCorrect": false
+      }
+    ]
+  }
+]

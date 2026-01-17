@@ -1,0 +1,4617 @@
+[
+  {
+    "module_number": 1,
+    "module_name": "Computer Forensics in Today’s World",
+    "topics": [
+      {
+        "topic": "Understand the Fundamentals of Computer Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Understanding Computer Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Why and When Do You Use Computer Forensics?",
+        "subtopics": []
+      },
+      {
+        "topic": "Scope of Computer Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Cybercrimes and their Investigation Procedures",
+        "subtopics": []
+      },
+      {
+        "topic": "Types of Cybercrimes",
+        "subtopics": [
+          "Internal/Insider Attacks",
+          "External Attacks"
+        ]
+      },
+      {
+        "topic": "Examples of Cybercrimes",
+        "subtopics": []
+      },
+      {
+        "topic": "Impact of Cybercrimes at the Organizational Level",
+        "subtopics": []
+      },
+      {
+        "topic": "Cyber Attribution",
+        "subtopics": []
+      },
+      {
+        "topic": "Cyber Attribution Techniques",
+        "subtopics": []
+      },
+      {
+        "topic": "Challenges of Cyber Attribution",
+        "subtopics": []
+      },
+      {
+        "topic": "Cybercrime Investigation",
+        "subtopics": []
+      },
+      {
+        "topic": "Civil vs. Criminal Investigation",
+        "subtopics": []
+      },
+      {
+        "topic": "Administrative Investigation",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Digital Evidence and eDiscovery",
+        "subtopics": []
+      },
+      {
+        "topic": "Introduction to Digital Evidence",
+        "subtopics": []
+      },
+      {
+        "topic": "Types of Digital Evidence",
+        "subtopics": []
+      },
+      {
+        "topic": "Roles of Digital Evidence",
+        "subtopics": []
+      },
+      {
+        "topic": "Sources of Potential Evidence",
+        "subtopics": []
+      },
+      {
+        "topic": "Rules of Evidence",
+        "subtopics": []
+      },
+      {
+        "topic": "Best Evidence Rule",
+        "subtopics": []
+      },
+      {
+        "topic": "Federal Rules of Evidence (United States)",
+        "subtopics": []
+      },
+      {
+        "topic": "The Association of Chief Police Officers (ACPO) (inherited into NPCC) Principles of Digital Evidence",
+        "subtopics": []
+      },
+      {
+        "topic": "Computer Forensics vs. eDiscovery",
+        "subtopics": []
+      },
+      {
+        "topic": "Legal and IT Team Considerations for eDiscovery",
+        "subtopics": []
+      },
+      {
+        "topic": "Best Practices for Handling Digital Evidence",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Forensic Readiness",
+        "subtopics": []
+      },
+      {
+        "topic": "Forensic Readiness",
+        "subtopics": []
+      },
+      {
+        "topic": "Forensic Readiness and Business Continuity",
+        "subtopics": []
+      },
+      {
+        "topic": "Forensic Readiness Planning",
+        "subtopics": []
+      },
+      {
+        "topic": "Forensic Readiness Procedures: Forensic Policy",
+        "subtopics": []
+      },
+      {
+        "topic": "Forensic Readiness Procedures: Forensics in the Information System Life Cycle",
+        "subtopics": []
+      },
+      {
+        "topic": "Forensic Readiness Procedures: Creating an Investigation Team",
+        "subtopics": []
+      },
+      {
+        "topic": "Forensic Readiness Procedures: Maintaining an Inventory",
+        "subtopics": []
+      },
+      {
+        "topic": "Forensic Readiness Procedures: Host Monitoring",
+        "subtopics": []
+      },
+      {
+        "topic": "Forensic Readiness Procedures: Network Monitoring",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand the Role of Various Processes and Technologies in Computer Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Computer Forensics as a Part of Incidence Response Plan",
+        "subtopics": []
+      },
+      {
+        "topic": "Overview of Incident Response Process Flow",
+        "subtopics": []
+      },
+      {
+        "topic": "Role of Computer Forensics in SOC Operations",
+        "subtopics": []
+      },
+      {
+        "topic": "Role of Threat Intelligence in Computer Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Role of Artificial Intelligence in Computer Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Role of AI Tools in Computer Forensic Processes",
+        "subtopics": []
+      },
+      {
+        "topic": "Forensics Automation and Orchestration",
+        "subtopics": []
+      },
+      {
+        "topic": "Identify the Roles and Responsibilities of a Forensic Investigator",
+        "subtopics": []
+      },
+      {
+        "topic": "Need for a Forensic Investigator",
+        "subtopics": []
+      },
+      {
+        "topic": "Roles and Responsibilities of a Forensics Investigator",
+        "subtopics": []
+      },
+      {
+        "topic": "What Makes a Good Computer Forensics Investigator?",
+        "subtopics": []
+      },
+      {
+        "topic": "Code of Ethics",
+        "subtopics": []
+      },
+      {
+        "topic": "Managing Clients or Employers during Investigations",
+        "subtopics": []
+      },
+      {
+        "topic": "Accessing Computer Forensics Resources",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand the Challenges Faced in Investigating Cybercrimes",
+        "subtopics": []
+      },
+      {
+        "topic": "Challenges Cybercrimes Pose to Investigators",
+        "subtopics": []
+      },
+      {
+        "topic": "Other Factors Influencing Forensic Investigations",
+        "subtopics": []
+      },
+      {
+        "topic": "Computer Forensics: Legal Issues",
+        "subtopics": []
+      },
+      {
+        "topic": "Computer Forensics: Privacy Issues",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Various Standards and Best Practices Related to Computer Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "ISO Standards",
+        "subtopics": []
+      },
+      {
+        "topic": "ISO/IEC 27000 Series",
+        "subtopics": []
+      },
+      {
+        "topic": "ISO/IEC 27037",
+        "subtopics": []
+      },
+      {
+        "topic": "ISO/IEC 27041",
+        "subtopics": []
+      },
+      {
+        "topic": "ISO/IEC 27042",
+        "subtopics": []
+      },
+      {
+        "topic": "ISO/IEC 27043",
+        "subtopics": []
+      },
+      {
+        "topic": "ISO/IEC 27050",
+        "subtopics": []
+      },
+      {
+        "topic": "ENFSI Best Practices for Forensic Examination of Digital Technology",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Laws and Legal Compliance in Computer Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Role of Local/International Agencies during Cybercrime Investigation",
+        "subtopics": []
+      },
+      {
+        "topic": "Computer Forensics and Legal Compliance",
+        "subtopics": []
+      },
+      {
+        "topic": "Other Laws Relevant to Computer Forensics",
+        "subtopics": []
+      }
+    ]
+  },
+  {
+    "module_number": 2,
+    "module_name": "Computer Forensics Investigation Process",
+    "topics": [
+      {
+        "topic": "Understand the Forensic Investigation Process and its Importance",
+        "subtopics": []
+      },
+      {
+        "topic": "Importance of Computer Forensic Investigation Process",
+        "subtopics": []
+      },
+      {
+        "topic": "Phases Involved in Computer Forensics Investigation Process",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand First Response",
+        "subtopics": []
+      },
+      {
+        "topic": "First Response",
+        "subtopics": []
+      },
+      {
+        "topic": "First Responder",
+        "subtopics": []
+      },
+      {
+        "topic": "Roles of First Responder",
+        "subtopics": []
+      },
+      {
+        "topic": "First Response Basics",
+        "subtopics": []
+      },
+      {
+        "topic": "First Response: Different Situations",
+        "subtopics": []
+      },
+      {
+        "topic": "First Response by Non-forensic Staff",
+        "subtopics": []
+      },
+      {
+        "topic": "First Response by System/Network Administrators",
+        "subtopics": []
+      },
+      {
+        "topic": "First Response by Laboratory Forensics Staff",
+        "subtopics": []
+      },
+      {
+        "topic": "First Responder Common Mistakes",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand the Pre-investigation Phase",
+        "subtopics": []
+      },
+      {
+        "topic": "Setting Up a Computer Forensics Lab",
+        "subtopics": []
+      },
+      {
+        "topic": "Building the Investigation Team",
+        "subtopics": []
+      },
+      {
+        "topic": "Understanding Hardware and Software Requirements of Forensics Lab",
+        "subtopics": []
+      },
+      {
+        "topic": "Validating Laboratory Software and Hardware",
+        "subtopics": []
+      },
+      {
+        "topic": "Ensuring Quality Assurance",
+        "subtopics": []
+      },
+      {
+        "topic": "Building Security Content, Scripts, Tools, or Methods to Enhance Forensic Processes",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand the Investigation Phase",
+        "subtopics": []
+      },
+      {
+        "topic": "Documenting the Electronic Crime Scene",
+        "subtopics": []
+      },
+      {
+        "topic": "Photographing and Sketching the Scene",
+        "subtopics": []
+      },
+      {
+        "topic": "Search and Seizure",
+        "subtopics": []
+      },
+      {
+        "topic": "Search and Seizure Process Flow",
+        "subtopics": []
+      },
+      {
+        "topic": "Planning Search and Seizure",
+        "subtopics": []
+      },
+      {
+        "topic": "Seeking Consent",
+        "subtopics": []
+      },
+      {
+        "topic": "Obtaining Witness Signatures",
+        "subtopics": []
+      },
+      {
+        "topic": "Obtaining Warrant for Search and Seizure",
+        "subtopics": []
+      },
+      {
+        "topic": "Examples of Search Warrant",
+        "subtopics": []
+      },
+      {
+        "topic": "Search Without Warrant",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Incident Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Initial Search of Scene",
+        "subtopics": []
+      },
+      {
+        "topic": "Securing and Evaluating Crime Scene",
+        "subtopics": []
+      },
+      {
+        "topic": "Seizing Evidence at Crime Scene",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Evidence",
+        "subtopics": []
+      },
+      {
+        "topic": "Dealing with Powered-on Computers",
+        "subtopics": []
+      },
+      {
+        "topic": "Dealing with Powered-off Computers",
+        "subtopics": []
+      },
+      {
+        "topic": "Dealing with Networked Computers",
+        "subtopics": []
+      },
+      {
+        "topic": "Dealing with Open Files and Startup Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Operating System Shutdown Procedure",
+        "subtopics": []
+      },
+      {
+        "topic": "Dealing with Smartphones or Other Handheld Devices",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Evidence from Social Networks",
+        "subtopics": []
+      },
+      {
+        "topic": "Evidence Preservation",
+        "subtopics": []
+      },
+      {
+        "topic": "Chain of Custody",
+        "subtopics": []
+      },
+      {
+        "topic": "Simple Format of Chain of Custody Document",
+        "subtopics": []
+      },
+      {
+        "topic": "Chain of Custody Form",
+        "subtopics": []
+      },
+      {
+        "topic": "Chain of Custody on Property Evidence Envelope/Bag and Sign-out Sheet",
+        "subtopics": []
+      },
+      {
+        "topic": "Evidence Bag Contents List",
+        "subtopics": []
+      },
+      {
+        "topic": "Packaging Evidence",
+        "subtopics": []
+      },
+      {
+        "topic": "Exhibit Numbering",
+        "subtopics": []
+      },
+      {
+        "topic": "Determining Location for Evidence Examination",
+        "subtopics": []
+      },
+      {
+        "topic": "Transporting and Storing Evidence",
+        "subtopics": []
+      },
+      {
+        "topic": "Data Acquisition",
+        "subtopics": []
+      },
+      {
+        "topic": "Original Evidence Should NEVER Be Used for Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Duplicating Data (Imaging)",
+        "subtopics": []
+      },
+      {
+        "topic": "Data Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Case Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Evidence Reconstruction",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand the Post-investigation Phase",
+        "subtopics": []
+      },
+      {
+        "topic": "Reporting",
+        "subtopics": []
+      },
+      {
+        "topic": "Audience of Computer Forensic Report",
+        "subtopics": []
+      },
+      {
+        "topic": "Gathering and Organizing Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Writing the Investigation Report",
+        "subtopics": []
+      },
+      {
+        "topic": "Forensic Investigation Report Template",
+        "subtopics": []
+      },
+      {
+        "topic": "Guidelines for Writing a Report",
+        "subtopics": []
+      },
+      {
+        "topic": "Visual Aids and Presentation Techniques in a Digital Forensic Report",
+        "subtopics": []
+      },
+      {
+        "topic": "Mock Case Presentations and Critiques",
+        "subtopics": []
+      },
+      {
+        "topic": "Data Visualization and Report Generation Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Testifying as an Expert Witness",
+        "subtopics": []
+      },
+      {
+        "topic": "Who is an Expert Witness?",
+        "subtopics": []
+      },
+      {
+        "topic": "Roles of an Expert Witness",
+        "subtopics": []
+      },
+      {
+        "topic": "What Makes a Good Expert Witness?",
+        "subtopics": []
+      },
+      {
+        "topic": "Testifying in Court",
+        "subtopics": []
+      },
+      {
+        "topic": "General Ethics while Testifying",
+        "subtopics": []
+      }
+    ]
+  },
+  {
+    "module_number": 3,
+    "module_name": "Understanding Hard Disks and File Systems",
+    "topics": [
+      {
+        "topic": "Describe Different Types of Disk Drives and their Characteristics",
+        "subtopics": []
+      },
+      {
+        "topic": "Understanding Hard Disk Drive",
+        "subtopics": []
+      },
+      {
+        "topic": "Tracks",
+        "subtopics": []
+      },
+      {
+        "topic": "Sectors",
+        "subtopics": []
+      },
+      {
+        "topic": "4K Sectors",
+        "subtopics": []
+      },
+      {
+        "topic": "Data Density on a Hard Disk",
+        "subtopics": []
+      },
+      {
+        "topic": "Logical Block Addressing (LBA) and Disk Capacity Calculation",
+        "subtopics": []
+      },
+      {
+        "topic": "Measuring the Hard Disk Performance",
+        "subtopics": []
+      },
+      {
+        "topic": "Understanding Solid-State Drive (SSD)",
+        "subtopics": []
+      },
+      {
+        "topic": "Disk Interfaces",
+        "subtopics": []
+      },
+      {
+        "topic": "Serial ATA/SATA (AHCI)",
+        "subtopics": []
+      },
+      {
+        "topic": "SCSI",
+        "subtopics": []
+      },
+      {
+        "topic": "Serial Attached SCSI (SAS)",
+        "subtopics": []
+      },
+      {
+        "topic": "PCIe",
+        "subtopics": []
+      },
+      {
+        "topic": "NVMe",
+        "subtopics": []
+      },
+      {
+        "topic": "Explain the Logical Structure of a Disk",
+        "subtopics": []
+      },
+      {
+        "topic": "Logical Structure of Disks",
+        "subtopics": []
+      },
+      {
+        "topic": "Clusters",
+        "subtopics": []
+      },
+      {
+        "topic": "Lost Clusters",
+        "subtopics": []
+      },
+      {
+        "topic": "Slack Space",
+        "subtopics": []
+      },
+      {
+        "topic": "Master Boot Record (MBR)",
+        "subtopics": []
+      },
+      {
+        "topic": "Structure of a Master Boot Record",
+        "subtopics": []
+      },
+      {
+        "topic": "Disk Partitions",
+        "subtopics": []
+      },
+      {
+        "topic": "BIOS Parameter Block (BPB)",
+        "subtopics": []
+      },
+      {
+        "topic": "Globally Unique Identifier (GUID)",
+        "subtopics": []
+      },
+      {
+        "topic": "GUID Partition Table (GPT)",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand the Booting Process of Windows, Linux, and macOS Operating Systems",
+        "subtopics": []
+      },
+      {
+        "topic": "What is the Booting Process?",
+        "subtopics": []
+      },
+      {
+        "topic": "Essential Windows System Files and Components",
+        "subtopics": []
+      },
+      {
+        "topic": "Windows Boot Process: BIOS-MBR Method",
+        "subtopics": []
+      },
+      {
+        "topic": "Identifying the MBR Partition",
+        "subtopics": []
+      },
+      {
+        "topic": "Windows Boot Process: UEFI-GPT",
+        "subtopics": []
+      },
+      {
+        "topic": "Identifying the GUID Partition Table (GPT)",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing the GPT Header and Entries",
+        "subtopics": []
+      },
+      {
+        "topic": "GPT Artifacts",
+        "subtopics": []
+      },
+      {
+        "topic": "macOS Boot Process",
+        "subtopics": []
+      },
+      {
+        "topic": "Boot Process of an Intel-based macOS",
+        "subtopics": []
+      },
+      {
+        "topic": "Boot Process of an Apple Silicon-based macOS",
+        "subtopics": []
+      },
+      {
+        "topic": "Linux Boot Process",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Various File Systems of Windows, Linux, and macOS Operating Systems",
+        "subtopics": []
+      },
+      {
+        "topic": "Windows File Systems",
+        "subtopics": []
+      },
+      {
+        "topic": "File Allocation Table (FAT)",
+        "subtopics": []
+      },
+      {
+        "topic": "FAT File System Layout",
+        "subtopics": []
+      },
+      {
+        "topic": "FAT Partition Boot Sector",
+        "subtopics": []
+      },
+      {
+        "topic": "FAT Folder Structure",
+        "subtopics": []
+      },
+      {
+        "topic": "Directory Entries and Cluster Chains",
+        "subtopics": []
+      },
+      {
+        "topic": "Filenames on FAT Volumes",
+        "subtopics": []
+      },
+      {
+        "topic": "FAT32",
+        "subtopics": []
+      },
+      {
+        "topic": "exFAT",
+        "subtopics": []
+      },
+      {
+        "topic": "New Technology File System (NTFS)",
+        "subtopics": []
+      },
+      {
+        "topic": "NTFS Architecture",
+        "subtopics": []
+      },
+      {
+        "topic": "NTFS System Files",
+        "subtopics": []
+      },
+      {
+        "topic": "NTFS Partition Boot Sector",
+        "subtopics": []
+      },
+      {
+        "topic": "Cluster Sizes of NTFS Volume",
+        "subtopics": []
+      },
+      {
+        "topic": "NTFS Master File Table (MFT)",
+        "subtopics": []
+      },
+      {
+        "topic": "Metadata Files Stored in the MFT",
+        "subtopics": []
+      },
+      {
+        "topic": "NTFS Attributes",
+        "subtopics": []
+      },
+      {
+        "topic": "NTFS Data Stream",
+        "subtopics": []
+      },
+      {
+        "topic": "NTFS Compressed Files",
+        "subtopics": []
+      },
+      {
+        "topic": "NTFS Journals",
+        "subtopics": []
+      },
+      {
+        "topic": "Encrypting File Systems (EFS)",
+        "subtopics": []
+      },
+      {
+        "topic": "Components of EFS",
+        "subtopics": []
+      },
+      {
+        "topic": "EFS Attribute",
+        "subtopics": []
+      },
+      {
+        "topic": "Sparse Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Resilient File System (ReFS)",
+        "subtopics": []
+      },
+      {
+        "topic": "Linux File Systems",
+        "subtopics": []
+      },
+      {
+        "topic": "Linux File System Architecture",
+        "subtopics": []
+      },
+      {
+        "topic": "Filesystem Hierarchy Standard (FHS)",
+        "subtopics": []
+      },
+      {
+        "topic": "Second Extended File System (ext2)",
+        "subtopics": []
+      },
+      {
+        "topic": "Ext2 Inode",
+        "subtopics": []
+      },
+      {
+        "topic": "Ext2 Directories",
+        "subtopics": []
+      },
+      {
+        "topic": "Third Extended File System (ext3)",
+        "subtopics": []
+      },
+      {
+        "topic": "Journaling File System",
+        "subtopics": []
+      },
+      {
+        "topic": "Fourth Extended File System (ext4)",
+        "subtopics": []
+      },
+      {
+        "topic": "Understanding Superblocks, Inodes, and Data Blocks",
+        "subtopics": []
+      },
+      {
+        "topic": "macOS File Systems",
+        "subtopics": []
+      },
+      {
+        "topic": "Hierarchical File System Plus (HFS+)",
+        "subtopics": []
+      },
+      {
+        "topic": "HFS Plus Volumes",
+        "subtopics": []
+      },
+      {
+        "topic": "HFS Plus Journal",
+        "subtopics": []
+      },
+      {
+        "topic": "Apple File System (APFS)",
+        "subtopics": []
+      },
+      {
+        "topic": "Major Components of APFS",
+        "subtopics": []
+      },
+      {
+        "topic": "APFS vs. HFS Plus",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand File System Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "File System Analysis Using Autopsy",
+        "subtopics": []
+      },
+      {
+        "topic": "File System Analysis Using The Sleuth Kit (TSK)",
+        "subtopics": []
+      },
+      {
+        "topic": "The Sleuth Kit (TSK): fsstat",
+        "subtopics": []
+      },
+      {
+        "topic": "The Sleuth Kit (TSK): istat",
+        "subtopics": []
+      },
+      {
+        "topic": "The Sleuth Kit (TSK): fls",
+        "subtopics": []
+      },
+      {
+        "topic": "The Sleuth Kit (TSK): img_stat",
+        "subtopics": []
+      },
+      {
+        "topic": "The Sleuth Kit (TSK): ffind",
+        "subtopics": []
+      },
+      {
+        "topic": "The Sleuth Kit (TSK): ils",
+        "subtopics": []
+      },
+      {
+        "topic": "File System Timeline Creation and Analysis Using The Sleuth Kit (TSK)",
+        "subtopics": []
+      },
+      {
+        "topic": "MACB Timestamps",
+        "subtopics": []
+      },
+      {
+        "topic": "NTFS Timestamp Rules in Windows and Linux",
+        "subtopics": []
+      },
+      {
+        "topic": "Windows NTFS Timestamp Rules",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Storage Systems",
+        "subtopics": []
+      },
+      {
+        "topic": "RAID Storage System",
+        "subtopics": []
+      },
+      {
+        "topic": "Levels of RAID Storage Systems",
+        "subtopics": []
+      },
+      {
+        "topic": "RAID 0: Disk Striping",
+        "subtopics": []
+      },
+      {
+        "topic": "RAID 1: Disk Mirroring",
+        "subtopics": []
+      },
+      {
+        "topic": "RAID 2",
+        "subtopics": []
+      },
+      {
+        "topic": "RAID 3",
+        "subtopics": []
+      },
+      {
+        "topic": "RAID 5",
+        "subtopics": []
+      },
+      {
+        "topic": "RAID 10",
+        "subtopics": []
+      },
+      {
+        "topic": "RAID 6",
+        "subtopics": []
+      },
+      {
+        "topic": "RAID 1E (Striped Mirroring)",
+        "subtopics": []
+      },
+      {
+        "topic": "RAID 5E",
+        "subtopics": []
+      },
+      {
+        "topic": "RAID 5EE",
+        "subtopics": []
+      },
+      {
+        "topic": "RAID 50 (striping with parity)",
+        "subtopics": []
+      },
+      {
+        "topic": "RAID 60",
+        "subtopics": []
+      },
+      {
+        "topic": "Just a Bunch of Drives/Disks (JBOD)",
+        "subtopics": []
+      },
+      {
+        "topic": "Host-Protected Areas (HPA) and Device Configuration Overlays (DCO)",
+        "subtopics": []
+      },
+      {
+        "topic": "Network-Attached Storage (NAS)",
+        "subtopics": []
+      },
+      {
+        "topic": "Storage Area Network (SAN)",
+        "subtopics": []
+      },
+      {
+        "topic": "Differences between NAS and SAN",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Encoding Standards and Hex Editors",
+        "subtopics": []
+      },
+      {
+        "topic": "Character Encoding Standards",
+        "subtopics": []
+      },
+      {
+        "topic": "American Standard Code for Information Interchange (ASCII)",
+        "subtopics": []
+      },
+      {
+        "topic": "UNICODE",
+        "subtopics": []
+      },
+      {
+        "topic": "OFFSET",
+        "subtopics": []
+      },
+      {
+        "topic": "Understanding Hex Editors",
+        "subtopics": []
+      },
+      {
+        "topic": "Understanding Hexadecimal Notation",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyze Popular File Formats Using Hex Editor",
+        "subtopics": []
+      },
+      {
+        "topic": "Image File Analysis: JPEG",
+        "subtopics": []
+      },
+      {
+        "topic": "Image File Analysis: BMP",
+        "subtopics": []
+      },
+      {
+        "topic": "Hex View of Popular Image File Formats",
+        "subtopics": []
+      },
+      {
+        "topic": "PDF File Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Word File Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "PowerPoint File Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Excel File Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Hex View of Other Popular File Formats",
+        "subtopics": []
+      },
+      {
+        "topic": "Hex View of Popular Video File Formats",
+        "subtopics": []
+      },
+      {
+        "topic": "Hex View of Popular Audio File Formats",
+        "subtopics": []
+      }
+    ]
+  },
+  {
+    "module_number": 4,
+    "module_name": "Data Acquisition and Duplication",
+    "topics": [
+      {
+        "topic": "Understand Data Acquisition Fundamentals",
+        "subtopics": []
+      },
+      {
+        "topic": "Understanding Data Acquisition",
+        "subtopics": []
+      },
+      {
+        "topic": "Live Acquisition",
+        "subtopics": []
+      },
+      {
+        "topic": "Order of Volatility",
+        "subtopics": []
+      },
+      {
+        "topic": "Dead Acquisition",
+        "subtopics": []
+      },
+      {
+        "topic": "Rules of Thumb for Data Acquisition",
+        "subtopics": []
+      },
+      {
+        "topic": "Types of Data Acquisition",
+        "subtopics": []
+      },
+      {
+        "topic": "Logical Acquisition",
+        "subtopics": []
+      },
+      {
+        "topic": "Sparse Acquisition",
+        "subtopics": []
+      },
+      {
+        "topic": "Bitstream Image",
+        "subtopics": []
+      },
+      {
+        "topic": "Determine Data Acquisition Format",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand eDiscovery",
+        "subtopics": []
+      },
+      {
+        "topic": "eDiscovery",
+        "subtopics": []
+      },
+      {
+        "topic": "Electronic Discovery Reference Model (EDRM) Cycle",
+        "subtopics": []
+      },
+      {
+        "topic": "Monitor and Maintain Accurate Metrics and Detailed Tracking Information Related to eDiscovery",
+        "subtopics": []
+      },
+      {
+        "topic": "eDiscovery Collection Methodologies",
+        "subtopics": []
+      },
+      {
+        "topic": "Best Practices for eDiscovery",
+        "subtopics": []
+      },
+      {
+        "topic": "eDiscovery Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Data Acquisition Methodology",
+        "subtopics": []
+      },
+      {
+        "topic": "Data Acquisition Methodology",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 1: Determine the Best Data Acquisition Method",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 2: Select Data Acquisition Tool",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 3: Sanitize Target Media",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 4: Acquire Volatile Data",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 4.1: Acquire Volatile Data from Windows Machine",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 4.2: Acquire Volatile Data from Linux Machine",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 4.2.1: Acquire Volatile Data from Linux Machine Using dd (Local Acquisition)",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 4.2.2: Acquire Volatile Data from Linux Machine Using dd and Netcat (Remote Acquisition)",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 4.2.3. Acquire Volatile Data from Linux Machine Using LiME (Local Acquisition)",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 4.2.4. Acquire Volatile Data from Linux Machine Using LiME and Netcat (Remote Acquisition)",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 4.3: Acquire Volatile Data from Mac Machine",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 5: Enable Write Protection on the Evidence Media",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 6: Acquire Non-volatile Data",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 6.1: Acquire Non-volatile Data (Using Windows Forensic Workstation)",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 6.2: Acquire Non-volatile Data (Using Linux Forensic Workstation)",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 6.3: Acquire Non-volatile Data (Using macOS — Single User Mode)",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 6.4: Acquire Non-volatile Data (Using macOS — Target Disk Mode)",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 6.5: Acquire Non-volatile Data (Using Linux Bootable USB)",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 6.6: Acquire Non-volatile Data on Mac Using Digital Collector",
+        "subtopics": []
+      },
+      {
+        "topic": "Acquiring RAID Disks",
+        "subtopics": []
+      },
+      {
+        "topic": "Identifying RAID Drives in Linux System",
+        "subtopics": []
+      },
+      {
+        "topic": "Identifying RAID Drives in Windows System",
+        "subtopics": []
+      },
+      {
+        "topic": "Rebuilding RAID",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 7: Plan for Contingency",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 8: Validate Data Acquisition",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 8: Validate Data Acquisition – Windows Validation Methods",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 8: Validate Data Acquisition — Linux/Mac Validation Methods",
+        "subtopics": []
+      },
+      {
+        "topic": "Data Acquisition Guidelines and Best Practices",
+        "subtopics": []
+      },
+      {
+        "topic": "Prepare an Image File for Examination",
+        "subtopics": []
+      },
+      {
+        "topic": "Preparing an Image for Examination",
+        "subtopics": []
+      },
+      {
+        "topic": "Scenario 1: Examining Images on Linux Forensic Workstation",
+        "subtopics": []
+      },
+      {
+        "topic": "Scenario 1.1: Converting E01 Image File to dd Image File",
+        "subtopics": []
+      },
+      {
+        "topic": "Scenario 1.2: Converting E01 Image File to Raw Image File",
+        "subtopics": []
+      },
+      {
+        "topic": "Scenario 1.3: Converting dd Image File to VHDX File",
+        "subtopics": []
+      },
+      {
+        "topic": "Scenario 1.4: Examining a dd Image File",
+        "subtopics": []
+      },
+      {
+        "topic": "Scenario 1.5: Examining Physical Hard Disk",
+        "subtopics": []
+      },
+      {
+        "topic": "Scenario 1.6: Examining Mac APFS Image File",
+        "subtopics": []
+      },
+      {
+        "topic": "Scenario 1.7: Examining Disk Image Using PyTSK",
+        "subtopics": []
+      },
+      {
+        "topic": "Scenario 2: Examining Images on Windows Forensic Workstation",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Mac HFS+ Image File",
+        "subtopics": []
+      },
+      {
+        "topic": "Scenario 3: Examining Images on Mac Forensic Workstation",
+        "subtopics": []
+      },
+      {
+        "topic": "Digital Forensic Imaging Tools",
+        "subtopics": []
+      }
+    ]
+  },
+  {
+    "module_number": 5,
+    "module_name": "Defeating Anti-forensics Techniques",
+    "topics": [
+      {
+        "topic": "Understand Anti-forensics Techniques",
+        "subtopics": []
+      },
+      {
+        "topic": "What is Anti-forensics?",
+        "subtopics": []
+      },
+      {
+        "topic": "Anti-forensics Techniques",
+        "subtopics": []
+      },
+      {
+        "topic": "Challenges to Forensics from Anti-Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Discuss Data Deletion and Recycle Bin Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Anti-forensics Technique: Data/File Deletion",
+        "subtopics": []
+      },
+      {
+        "topic": "What Happens When a File is Deleted in Windows?",
+        "subtopics": []
+      },
+      {
+        "topic": "Recycle Bin in Windows",
+        "subtopics": []
+      },
+      {
+        "topic": "Recycle Bin Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Recycle Bin Forensics Using Python",
+        "subtopics": []
+      },
+      {
+        "topic": "Illustrate File Carving Techniques and Ways to Recover Evidence from Deleted Partitions",
+        "subtopics": []
+      },
+      {
+        "topic": "File Carving",
+        "subtopics": []
+      },
+      {
+        "topic": "File Carving on Windows",
+        "subtopics": []
+      },
+      {
+        "topic": "SSD File Carving on Windows File System",
+        "subtopics": []
+      },
+      {
+        "topic": "HDD File Carving on Windows File System",
+        "subtopics": []
+      },
+      {
+        "topic": "File Recovery Tools: Windows",
+        "subtopics": []
+      },
+      {
+        "topic": "File Carving on Linux",
+        "subtopics": []
+      },
+      {
+        "topic": "SSD File Carving on Linux File System",
+        "subtopics": []
+      },
+      {
+        "topic": "File Recovery Tools: Linux",
+        "subtopics": []
+      },
+      {
+        "topic": "File Carving on macOS",
+        "subtopics": []
+      },
+      {
+        "topic": "SSD File Carving on Apple File System",
+        "subtopics": []
+      },
+      {
+        "topic": "Recovering Deleted Files on Mac Machine",
+        "subtopics": []
+      },
+      {
+        "topic": "Recovering Deleted Files from USB on Mac Machine",
+        "subtopics": []
+      },
+      {
+        "topic": "File Recovery Tools: macOS",
+        "subtopics": []
+      },
+      {
+        "topic": "Custom File Carving Signatures",
+        "subtopics": []
+      },
+      {
+        "topic": "Recovering Deleted Partitions",
+        "subtopics": []
+      },
+      {
+        "topic": "Recovering Deleted Partitions: Using R-Studio",
+        "subtopics": []
+      },
+      {
+        "topic": "Partition Recovery Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Recovering ReFS Volumes Using ReFSUtil",
+        "subtopics": []
+      },
+      {
+        "topic": "RAID Recovery Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Explore Password Cracking/Bypassing Techniques",
+        "subtopics": []
+      },
+      {
+        "topic": "Anti-Forensics Technique: Password Protection",
+        "subtopics": []
+      },
+      {
+        "topic": "Tools to Extract the Password Hashes",
+        "subtopics": []
+      },
+      {
+        "topic": "Password Cracking Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Bypassing Passwords on Powered-off Computer",
+        "subtopics": []
+      },
+      {
+        "topic": "Bypassing BIOS Passwords",
+        "subtopics": []
+      },
+      {
+        "topic": "Bypassing BIOS Passwords by Resetting CMOS Using Jumpers",
+        "subtopics": []
+      },
+      {
+        "topic": "Bypassing BIOS Passwords by Removing CMOS Battery",
+        "subtopics": []
+      },
+      {
+        "topic": "Tool to Reset Admin and Local User Password: PassFab 4WinKey",
+        "subtopics": []
+      },
+      {
+        "topic": "Bypassing Windows User Password by Booting Live USB",
+        "subtopics": []
+      },
+      {
+        "topic": "Application Password Cracking Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Detect Steganography, Hidden Data in File System Structures, Trail Obfuscation, and File Extension M",
+        "subtopics": []
+      },
+      {
+        "topic": "Anti-forensics Technique: Steganography",
+        "subtopics": []
+      },
+      {
+        "topic": "Defeating Anti-forensics: Steganalysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Steganalysis Methods on Steganography",
+        "subtopics": []
+      },
+      {
+        "topic": "Detecting Steganography (Text, Image, Audio, and Video Files)",
+        "subtopics": []
+      },
+      {
+        "topic": "Steganography Detection Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Defeating Anti-forensics Technique: Detecting Data Hiding in File System Structures Using OSForensic",
+        "subtopics": []
+      },
+      {
+        "topic": "Anti-forensics Technique: Alternate Data Streams",
+        "subtopics": []
+      },
+      {
+        "topic": "Defeating Anti-forensics Technique: Detecting Alternate Data Streams",
+        "subtopics": []
+      },
+      {
+        "topic": "Defeating Anti-forensics Technique: Tools for Detecting Alternate Data Streams",
+        "subtopics": []
+      },
+      {
+        "topic": "Anti-forensics Technique: Trail Obfuscation",
+        "subtopics": []
+      },
+      {
+        "topic": "Defeating Anti-forensics Technique: Detecting File Extension Mismatch Using Autopsy",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Techniques of Artifact Wiping, Overwritten Data/Metadata Detection, and Encryption",
+        "subtopics": []
+      },
+      {
+        "topic": "Anti-forensics Technique: Artifact Wiping",
+        "subtopics": []
+      },
+      {
+        "topic": "Anti-forensics Technique: Overwriting Data/Metadata",
+        "subtopics": []
+      },
+      {
+        "topic": "Defeating Anti-forensics Technique: Detecting Overwritten Data/Metadata",
+        "subtopics": []
+      },
+      {
+        "topic": "Anti-forensics Technique: Encryption",
+        "subtopics": []
+      },
+      {
+        "topic": "Recover Encrypted Files Using Elcomsoft Forensic Disk Decryptor",
+        "subtopics": []
+      },
+      {
+        "topic": "Detect Program Packers and Footprint Minimizing Techniques",
+        "subtopics": []
+      },
+      {
+        "topic": "Anti-forensics Technique: Program Packers",
+        "subtopics": []
+      },
+      {
+        "topic": "Detecting and Unpacking Program Packers",
+        "subtopics": []
+      },
+      {
+        "topic": "Detecting Program Packers Using Detect it Easy (DiE)",
+        "subtopics": []
+      },
+      {
+        "topic": "Detecting Program Packers Using Exeinfo PE",
+        "subtopics": []
+      },
+      {
+        "topic": "Unpacking Program Packers Using Exeinfo PE",
+        "subtopics": []
+      },
+      {
+        "topic": "Anti-forensics Techniques that Minimize Footprint",
+        "subtopics": []
+      },
+      {
+        "topic": "Defeating Anti-forensics Technique: Detecting USB Devices",
+        "subtopics": []
+      },
+      {
+        "topic": "Artifacts Recorded in Windows Registry",
+        "subtopics": []
+      },
+      {
+        "topic": "Anti-forensics Countermeasures",
+        "subtopics": []
+      }
+    ]
+  },
+  {
+    "module_number": 6,
+    "module_name": "Windows Forensics",
+    "topics": [
+      {
+        "topic": "Understand Windows Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Introduction to Windows Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Windows Forensics Methodology",
+        "subtopics": []
+      },
+      {
+        "topic": "Collect Volatile Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Volatile Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting System Time",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Logged-on Users",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Open Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Network Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Information about Network Connections",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Network Status",
+        "subtopics": []
+      },
+      {
+        "topic": "Process Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Process-to-Port Mapping",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Process Memory",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Print Spool Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Clipboard Contents and Service/Driver Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Clipboard Contents",
+        "subtopics": []
+      },
+      {
+        "topic": "Service/Driver Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Command History and Locally Shared Resource Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Command History Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Locally Shared Resource Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Collect Non-volatile Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Non-volatile Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining File Systems",
+        "subtopics": []
+      },
+      {
+        "topic": "ESE Database File",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining .edb Files Using ESEDatabaseView",
+        "subtopics": []
+      },
+      {
+        "topic": "Windows Search Index Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Detecting Externally Connected Devices to the System",
+        "subtopics": []
+      },
+      {
+        "topic": "Slack Space",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Hidden Partition Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting User Account Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Extracting System Resource Usage Monitor (SRUM) Artifacts",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Windows Thumbnail Cache",
+        "subtopics": []
+      },
+      {
+        "topic": "Auditing Installed Applications",
+        "subtopics": []
+      },
+      {
+        "topic": "Identifying System Updates",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Windows Domain Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Compressed Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Extracting Information from Sticky Notes Using Python",
+        "subtopics": []
+      },
+      {
+        "topic": "Perform Windows Memory Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Windows Memory Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Windows Crash Dump",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Process Memory",
+        "subtopics": []
+      },
+      {
+        "topic": "Memory Forensics: Malware Analysis Using Redline",
+        "subtopics": []
+      },
+      {
+        "topic": "Memory Forensics: Malware Analysis Using Volatility Framework",
+        "subtopics": []
+      },
+      {
+        "topic": "Page File",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Pagefile Using Strings Command",
+        "subtopics": []
+      },
+      {
+        "topic": "Hibernate Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Extracting Data from Hibernation Files Using Hibernation Recon",
+        "subtopics": []
+      },
+      {
+        "topic": "Advanced Memory Forensics Using MemProcFS",
+        "subtopics": []
+      },
+      {
+        "topic": "Remote Memory Analysis Using MemProcFS",
+        "subtopics": []
+      },
+      {
+        "topic": "Memory Analysis Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Process Analysis Using Velociraptor",
+        "subtopics": []
+      },
+      {
+        "topic": "Perform Windows Registry Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Windows Registry Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Windows Registry",
+        "subtopics": []
+      },
+      {
+        "topic": "Windows Registry Data Types",
+        "subtopics": []
+      },
+      {
+        "topic": "Registry Structure within Hive Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Windows Registry: Forensic Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Registry as Log File",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting System Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Last Shutdown Time and Time Zone Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Shares",
+        "subtopics": []
+      },
+      {
+        "topic": "Wireless SSIDs",
+        "subtopics": []
+      },
+      {
+        "topic": "Startup Locations",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining System Bootup and Enumerating Autostart Registry Locations",
+        "subtopics": []
+      },
+      {
+        "topic": "Importance of Volume Shadow Copy Services",
+        "subtopics": []
+      },
+      {
+        "topic": "Accessing Historical Data from Volume Shadow Copies",
+        "subtopics": []
+      },
+      {
+        "topic": "User Login",
+        "subtopics": []
+      },
+      {
+        "topic": "Microsoft Security ID",
+        "subtopics": []
+      },
+      {
+        "topic": "User Activity",
+        "subtopics": []
+      },
+      {
+        "topic": "Registry Settings",
+        "subtopics": []
+      },
+      {
+        "topic": "Registry Last Write Time",
+        "subtopics": []
+      },
+      {
+        "topic": "Recovering Deleted Registry Keys",
+        "subtopics": []
+      },
+      {
+        "topic": "USB Removable Storage Devices",
+        "subtopics": []
+      },
+      {
+        "topic": "Identifying Malicious HID USB Devices",
+        "subtopics": []
+      },
+      {
+        "topic": "Mounted Devices",
+        "subtopics": []
+      },
+      {
+        "topic": "Tracking User Activity",
+        "subtopics": []
+      },
+      {
+        "topic": "UserAssist Keys",
+        "subtopics": []
+      },
+      {
+        "topic": "MRU Lists",
+        "subtopics": []
+      },
+      {
+        "topic": "RunMRU",
+        "subtopics": []
+      },
+      {
+        "topic": "TypedURLs",
+        "subtopics": []
+      },
+      {
+        "topic": "OpenSavePidIMRU",
+        "subtopics": []
+      },
+      {
+        "topic": "FileExts",
+        "subtopics": []
+      },
+      {
+        "topic": "Connecting to Other Systems",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Restore Point Registry Settings",
+        "subtopics": []
+      },
+      {
+        "topic": "Determining Startup Locations",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Amcache and Shimcache",
+        "subtopics": []
+      },
+      {
+        "topic": "Identifying Webcam and Microphone Usage by Illicit Applications",
+        "subtopics": []
+      },
+      {
+        "topic": "Windows Registry Analysis Using Magnet AXIOM",
+        "subtopics": []
+      },
+      {
+        "topic": "Perform Electron Application Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Electron Application Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Electron Application Architecture",
+        "subtopics": []
+      },
+      {
+        "topic": "Local Data Storage for Electron",
+        "subtopics": []
+      },
+      {
+        "topic": "Extracting Data from Microsoft Teams",
+        "subtopics": []
+      },
+      {
+        "topic": "Extracting Data from WhatsApp",
+        "subtopics": []
+      },
+      {
+        "topic": "Extracting Data from Skype",
+        "subtopics": []
+      },
+      {
+        "topic": "Perform Web Browser Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Web Browser Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Cache, Cookie, and History Analysis: Mozilla Firefox",
+        "subtopics": []
+      },
+      {
+        "topic": "SQLite Database Files Created by Mozilla Firefox",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Download History",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Form History",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Session Recovery Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Firefox Extensions",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Firefox Cross-device Synchronization Feature",
+        "subtopics": []
+      },
+      {
+        "topic": "Mozilla Firefox Analysis Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Cache, Cookie, and History Analysis: Google Chrome",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining URLs and Visits Tables",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining History, Page Transition Types, and Preferences Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Web Data",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Shortcuts",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Network Action Predictor Databases",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Chrome Cache Files and Timestamps",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Download History",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Chrome Session Recovery",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Cross-device Chrome Synchronization",
+        "subtopics": []
+      },
+      {
+        "topic": "Google Chrome Analysis Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Cache, Cookie, and History Analysis: Microsoft Edge",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Download History",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Session Recovery",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Microsoft Edge Collections",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Microsoft Edge Extensions",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Browser Data Synchronization",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Multiple User Profiles",
+        "subtopics": []
+      },
+      {
+        "topic": "Microsoft Edge Analysis Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Recovering Private Browsing Data and Browser Artifacts",
+        "subtopics": []
+      },
+      {
+        "topic": "Recovering InPrivate Browser Data",
+        "subtopics": []
+      },
+      {
+        "topic": "Mozilla Firefox Private Browsing",
+        "subtopics": []
+      },
+      {
+        "topic": "Google Chrome Private Browsing",
+        "subtopics": []
+      },
+      {
+        "topic": "Microsoft Edge Private Browsing",
+        "subtopics": []
+      },
+      {
+        "topic": "Carving SQLite Database Files Using FTK® Imager",
+        "subtopics": []
+      },
+      {
+        "topic": "Extracting and Rebuilding Cached Web Pages Using FTK® Imager",
+        "subtopics": []
+      },
+      {
+        "topic": "Extracting and Analyzing Stored Browser Credentials Using FTK® Imager",
+        "subtopics": []
+      },
+      {
+        "topic": "Examine Windows Files and Metadata",
+        "subtopics": []
+      },
+      {
+        "topic": "Windows File Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "System Restore Points (Rp.log Files)",
+        "subtopics": []
+      },
+      {
+        "topic": "System Restore Points (Change.log.x Files)",
+        "subtopics": []
+      },
+      {
+        "topic": "Prefetch Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Prefetch Files Using WinPrefetchView",
+        "subtopics": []
+      },
+      {
+        "topic": "Image Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Understanding EXIF Data",
+        "subtopics": []
+      },
+      {
+        "topic": "Metadata Investigation",
+        "subtopics": []
+      },
+      {
+        "topic": "Understanding Metadata",
+        "subtopics": []
+      },
+      {
+        "topic": "Metadata in Different File Systems",
+        "subtopics": []
+      },
+      {
+        "topic": "FAT 32 File System",
+        "subtopics": []
+      },
+      {
+        "topic": "NTFS",
+        "subtopics": []
+      },
+      {
+        "topic": "Metadata in PDF Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Extracting Metadata from PDF Documents Using Python",
+        "subtopics": []
+      },
+      {
+        "topic": "Metadata in Word Documents",
+        "subtopics": []
+      },
+      {
+        "topic": "Extracting Metadata from Office Documents Using Python",
+        "subtopics": []
+      },
+      {
+        "topic": "Extracting Metadata from Microsoft Word (docx) Documents",
+        "subtopics": []
+      },
+      {
+        "topic": "Extracting Metadata from Microsoft Excel (xlsx) Documents",
+        "subtopics": []
+      },
+      {
+        "topic": "Extracting Metadata from Microsoft PowerPoint (pptx) Documents",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Zone.Identifier Streams",
+        "subtopics": []
+      },
+      {
+        "topic": "Tools to Analyze Zone.Identifier Streams",
+        "subtopics": []
+      },
+      {
+        "topic": "Metadata Analysis Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand ShellBags, LNK Files, and Jump Lists",
+        "subtopics": []
+      },
+      {
+        "topic": "Windows ShellBags",
+        "subtopics": []
+      },
+      {
+        "topic": "Windows ShellBags: Forensic Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Parsing ShellBags",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing LNK Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing LNK Files Using Belkasoft X",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Jump Lists",
+        "subtopics": []
+      },
+      {
+        "topic": "Tools for Analyzing Jump Lists",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Text-based Logs and Windows Event Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Understanding Events",
+        "subtopics": []
+      },
+      {
+        "topic": "Types of Logon Events",
+        "subtopics": []
+      },
+      {
+        "topic": "Event Log File Format",
+        "subtopics": []
+      },
+      {
+        "topic": "Organization of Event Records",
+        "subtopics": []
+      },
+      {
+        "topic": "ELF_LOGFILE_HEADER Structure",
+        "subtopics": []
+      },
+      {
+        "topic": "EventLogRecord Structure",
+        "subtopics": []
+      },
+      {
+        "topic": "Windows 11 Event Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Evaluating Account Management Events",
+        "subtopics": []
+      },
+      {
+        "topic": "Event Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining System Log Entries",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Application Log Entries",
+        "subtopics": []
+      },
+      {
+        "topic": "Searching with Event Viewer",
+        "subtopics": []
+      },
+      {
+        "topic": "Using Event Log Explorer to Examine Log Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Windows Event Log File Internals",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Removable Storage Using Event Viewer",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Microsoft Office Alert Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Last Failed Login Attempts and Login Count",
+        "subtopics": []
+      },
+      {
+        "topic": "Auditing Windows Registry Using Security Audit Event",
+        "subtopics": []
+      },
+      {
+        "topic": "Windows Forensics Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Hashing it Out in PowerShell: Using Get-FileHash",
+        "subtopics": []
+      }
+    ]
+  },
+  {
+    "module_number": 7,
+    "module_name": "Linux and Mac Forensics",
+    "topics": [
+      {
+        "topic": "Collect Volatile Information in Linux",
+        "subtopics": []
+      },
+      {
+        "topic": "Introduction to Linux Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Volatile Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Hostname, Date, and Time",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Uptime Data",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Network Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Viewing Network Routing Tables",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Open Port Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Finding Programs/Processes Associated with a Port",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Open Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Mounted File System Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Finding Loaded Kernel Modules",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting User Events and Reading ELF Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting User Events",
+        "subtopics": []
+      },
+      {
+        "topic": "Reading ELF Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Viewing Running Processes in the System",
+        "subtopics": []
+      },
+      {
+        "topic": "Viewing Linux Services Using systemctl",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Swap Areas and Disk Partition Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Kernel Messages",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Volatile Information Using Freta",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Volatile Information Using Python",
+        "subtopics": []
+      },
+      {
+        "topic": "Collect Non-volatile Information in Linux",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Non-volatile Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting System Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Kernel Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting User Account Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Currently Logged-in Users and Login History Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting System Logs Data",
+        "subtopics": []
+      },
+      {
+        "topic": "Linux Log Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting User History File Information and Viewing Hidden Files and Directories",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Suspicious Information",
+        "subtopics": []
+      },
+      {
+        "topic": "File Signature Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Usage of File and Strings Command",
+        "subtopics": []
+      },
+      {
+        "topic": "Using find Command to Find Writable Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Cron Jobs for Linux",
+        "subtopics": []
+      },
+      {
+        "topic": "Performing Hash Calculations Using Python",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting System Reboot History Using Python",
+        "subtopics": []
+      },
+      {
+        "topic": "Viewing System Log Entries Using Python",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Linux Memory Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Linux Memory Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Listing Open Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Bash Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting System Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Kernel Memory Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Malware Analysis Using Volatility Framework",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Mac Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Introduction to Mac Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Mac Forensics Data",
+        "subtopics": []
+      },
+      {
+        "topic": "Mac Log Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Mac Directories",
+        "subtopics": []
+      },
+      {
+        "topic": "Collect Volatile Information in Mac",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Volatile Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting System Date and Time",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Process Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Network Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Open Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Clipboard Content Using Shell Script",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Locally Shared Resource Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Other Volatile Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Loaded Kernel Modules",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Logged-on Users",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Command History",
+        "subtopics": []
+      },
+      {
+        "topic": "Collect Non-volatile Information in Mac",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Non-volatile Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting System Information and Configuration",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Desktop Artifacts",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Startup Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing macOS Thumbnail Cache",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting User Home Folder and Activities Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Identifying Last Accessed Files and Folders",
+        "subtopics": []
+      },
+      {
+        "topic": "Viewing Log Messages",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Mac Memory Forensics and Mac Forensics Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Mac Memory Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Swap Areas and Disk Partition Information",
+        "subtopics": []
+      },
+      {
+        "topic": "APFS Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Parsing Metadata on Spotlight",
+        "subtopics": []
+      },
+      {
+        "topic": "Mac Forensics Tools",
+        "subtopics": []
+      }
+    ]
+  },
+  {
+    "module_number": 8,
+    "module_name": "Network Forensics",
+    "topics": [
+      {
+        "topic": "Understand Network Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Introduction to Network Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Postmortem and Real-Time Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Network Attacks",
+        "subtopics": []
+      },
+      {
+        "topic": "Indicators of Compromise (IoCs)",
+        "subtopics": []
+      },
+      {
+        "topic": "Where to Look for Evidence",
+        "subtopics": []
+      },
+      {
+        "topic": "Types of Network-based Evidence",
+        "subtopics": []
+      },
+      {
+        "topic": "Summarize Event Correlation Concepts",
+        "subtopics": []
+      },
+      {
+        "topic": "Event Correlation",
+        "subtopics": []
+      },
+      {
+        "topic": "Types of Event Correlation",
+        "subtopics": []
+      },
+      {
+        "topic": "Prerequisites of Event Correlation",
+        "subtopics": []
+      },
+      {
+        "topic": "Event Correlation Approaches",
+        "subtopics": []
+      },
+      {
+        "topic": "Identify Indicators of Compromise (IoCs) from Network Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Log Files as Evidence",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Firewall Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Firewall Logs: Cisco",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Firewall Logs: Check Point",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing IDS Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing IDS Logs: OSSEC",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing IDS Logs: Check Point",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Honeypot Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Router Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Router Logs: Cisco",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Router Logs: Juniper",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing DHCP Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Cisco Switch Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing VPN Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "VPN Log Analysis Using Elastic Stack",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing SSH Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing DNS Server Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Network Log Analysis Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Investigate Network Traffic",
+        "subtopics": []
+      },
+      {
+        "topic": "Why Investigate Network Traffic?",
+        "subtopics": []
+      },
+      {
+        "topic": "Gathering Evidence via Sniffers",
+        "subtopics": []
+      },
+      {
+        "topic": "Sniffing Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Display Filters in Wireshark",
+        "subtopics": []
+      },
+      {
+        "topic": "Additional Wireshark Filters",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyze Traffic for TCP SYN Flood DoS Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyze Traffic for SYN-FIN Flood DoS Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyze Traffic for ICMP Flood Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyze Traffic for UDP Flood Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyze Traffic for HTTP Flood Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyze Traffic for FTP Password Cracking Attempts",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyze Traffic for SMB Password Cracking Attempts",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyze Traffic for Sniffing Attempts",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyze Traffic for MAC Flooding Attempt",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyze Traffic for ARP Poisoning Attempt",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyze Traffic for SMTP HELO Flood Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyze Traffic to Detect Malware Activity",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyze Network Traffic through NetFlow",
+        "subtopics": []
+      },
+      {
+        "topic": "Network Forensic Analysis Using Dshell",
+        "subtopics": []
+      },
+      {
+        "topic": "Tools for Investigating Network Traffic",
+        "subtopics": []
+      },
+      {
+        "topic": "Perform Incident Detection and Examination Using SIEM Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Centralized Logging Using SIEM Solutions",
+        "subtopics": []
+      },
+      {
+        "topic": "SIEM Solutions",
+        "subtopics": []
+      },
+      {
+        "topic": "Examine Brute-force Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Examine DoS Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Examine Malware Activity",
+        "subtopics": []
+      },
+      {
+        "topic": "Examine Data Exfiltration Attempts over FTP",
+        "subtopics": []
+      },
+      {
+        "topic": "Examine Network Scanning Attempts",
+        "subtopics": []
+      },
+      {
+        "topic": "Examine Ransomware Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Detect Rogue DNS Server (DNS Hijacking / DNS Spoofing)",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Wireless Network Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Introduction to Wireless Network Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Wireless Network Forensics Challenges and Risks",
+        "subtopics": []
+      },
+      {
+        "topic": "Types of Wireless Evidence",
+        "subtopics": []
+      },
+      {
+        "topic": "Wireless Network Forensics Process",
+        "subtopics": []
+      },
+      {
+        "topic": "Detect and Investigate Wireless Network Attacks",
+        "subtopics": []
+      },
+      {
+        "topic": "Detect Rogue Access Points",
+        "subtopics": []
+      },
+      {
+        "topic": "Wi-Fi Discovery Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Detect Access Point MAC Address Spoofing Attempts",
+        "subtopics": []
+      },
+      {
+        "topic": "Detect Misconfigured Access Points",
+        "subtopics": []
+      },
+      {
+        "topic": "Tools for Detecting Misconfigured Access Points",
+        "subtopics": []
+      },
+      {
+        "topic": "Detect Wi-Fi Jamming Attempts Using Wireshark",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyze Wireless Packet Captures",
+        "subtopics": []
+      },
+      {
+        "topic": "Examine Client Connections",
+        "subtopics": []
+      },
+      {
+        "topic": "Examine De-authentication Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Examine Disassociation Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Decrypt and Analyze Encrypted Wi-Fi Traffic",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyze Wi-Fi Spectrum",
+        "subtopics": []
+      },
+      {
+        "topic": "Spectrum Analysis using NetSpot WiFi Spectrum Analyzer",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyze the Wireless Network Report",
+        "subtopics": []
+      },
+      {
+        "topic": "Tools for Investigating Wireless Network Traffic",
+        "subtopics": []
+      }
+    ]
+  },
+  {
+    "module_number": 9,
+    "module_name": "Malware Forensics",
+    "topics": [
+      {
+        "topic": "Understand Malware Concepts",
+        "subtopics": []
+      },
+      {
+        "topic": "Introduction to Malware",
+        "subtopics": []
+      },
+      {
+        "topic": "Different Ways for Malware to Enter a System",
+        "subtopics": []
+      },
+      {
+        "topic": "Common Techniques Attackers Use to Distribute Malware across the Web",
+        "subtopics": []
+      },
+      {
+        "topic": "Components of Malware",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Malware Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Introduction to Malware Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Why Analyze Malware?",
+        "subtopics": []
+      },
+      {
+        "topic": "Malware Analysis Challenges",
+        "subtopics": []
+      },
+      {
+        "topic": "Malware Forensic Artifacts",
+        "subtopics": []
+      },
+      {
+        "topic": "Indicators of Malware",
+        "subtopics": []
+      },
+      {
+        "topic": "Prominence of Setting Up a Controlled Malware Analysis Lab",
+        "subtopics": []
+      },
+      {
+        "topic": "Preparing Testbed for Malware Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Malware Analysis Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Documentation Before Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Types of Malware Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Static Malware Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Dynamic Malware Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "System Baselining",
+        "subtopics": []
+      },
+      {
+        "topic": "Host Integrity Monitoring",
+        "subtopics": []
+      },
+      {
+        "topic": "Perform Static Malware Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Static Malware Analysis: File Fingerprinting",
+        "subtopics": []
+      },
+      {
+        "topic": "File Fingerprinting Using Python",
+        "subtopics": []
+      },
+      {
+        "topic": "Static Malware Analysis: Local and Online Malware Scanning",
+        "subtopics": []
+      },
+      {
+        "topic": "Static Malware Analysis: Performing Strings Search",
+        "subtopics": []
+      },
+      {
+        "topic": "Performing Strings Search Using Python",
+        "subtopics": []
+      },
+      {
+        "topic": "Static Malware Analysis: Identifying Packing/Obfuscation Methods",
+        "subtopics": []
+      },
+      {
+        "topic": "Identifying Packing/Obfuscation Method of Executable and Linkable Format (ELF) Malware",
+        "subtopics": []
+      },
+      {
+        "topic": "Static Malware Analysis: Finding the Portable Executables (PE) Information",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing PE Files Using Python",
+        "subtopics": []
+      },
+      {
+        "topic": "Static Malware Analysis: Identifying File Dependencies",
+        "subtopics": []
+      },
+      {
+        "topic": "Identifying File Dependencies Using Python",
+        "subtopics": []
+      },
+      {
+        "topic": "Static Malware Analysis: Malware Disassembly",
+        "subtopics": []
+      },
+      {
+        "topic": "Static Malware Analysis: Analyzing ELF Executable Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Static Malware Analysis: Analyzing Mach-O Executable Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyze Suspicious Documents",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Suspicious MS Office Document",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Suspicious MS Excel Document",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Suspicious PDF Document",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Suspicious PDF Document Using YARA",
+        "subtopics": []
+      },
+      {
+        "topic": "Perform System Behavior Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "System Behavior Analysis: Monitoring Registry Artifacts",
+        "subtopics": []
+      },
+      {
+        "topic": "Windows AutoStart Registry Keys",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Windows AutoStart Registry Keys",
+        "subtopics": []
+      },
+      {
+        "topic": "System Behavior Analysis: Monitoring Processes",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Windows Processes Using Python",
+        "subtopics": []
+      },
+      {
+        "topic": "System Behavior Analysis: Monitoring Windows Services",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Windows Services Using Python",
+        "subtopics": []
+      },
+      {
+        "topic": "System Behavior Analysis: Monitoring Startup Programs",
+        "subtopics": []
+      },
+      {
+        "topic": "Startup Program Monitoring Tool: Autoruns for Windows",
+        "subtopics": []
+      },
+      {
+        "topic": "System Behavior Analysis: Monitoring Windows Event Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Key Event IDs to Monitor",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Windows Event Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "System Behavior Analysis: Monitoring API Calls",
+        "subtopics": []
+      },
+      {
+        "topic": "System Behavior Analysis: Monitoring Device Drivers",
+        "subtopics": []
+      },
+      {
+        "topic": "System Behavior Analysis: Monitoring Installation",
+        "subtopics": []
+      },
+      {
+        "topic": "System Behavior Analysis: Monitoring System Calls",
+        "subtopics": []
+      },
+      {
+        "topic": "System Behavior Analysis: Monitoring Scheduled Tasks",
+        "subtopics": []
+      },
+      {
+        "topic": "System Behavior Analysis: Monitoring Files and Folders",
+        "subtopics": []
+      },
+      {
+        "topic": "Perform Network Behavior Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Network Behavior Analysis: Monitoring Network Activities",
+        "subtopics": []
+      },
+      {
+        "topic": "Monitoring IP Addresses",
+        "subtopics": []
+      },
+      {
+        "topic": "Network Behavior Analysis: Monitoring Port",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Open Ports",
+        "subtopics": []
+      },
+      {
+        "topic": "Port Monitoring Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Network Behavior Analysis: Monitoring DNS",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining DNS Entries",
+        "subtopics": []
+      },
+      {
+        "topic": "DNS Monitoring Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Network Behavior Analysis: Monitoring Browser Activity",
+        "subtopics": []
+      },
+      {
+        "topic": "Perform Ransomware Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Ransomware Analysis - BlackCat (ALPHV)",
+        "subtopics": []
+      },
+      {
+        "topic": "BlackCat (ALPHV) Malware Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "1. Initial Access",
+        "subtopics": []
+      },
+      {
+        "topic": "2. Discovery, Credential Access, and Privilege Escalation",
+        "subtopics": []
+      },
+      {
+        "topic": "3. Defense Evasion, Persistence, and Lateral Movement",
+        "subtopics": []
+      },
+      {
+        "topic": "4. Data Exfiltration and Covering Tracks",
+        "subtopics": []
+      },
+      {
+        "topic": "5. Encrypt and Create Ransom Note",
+        "subtopics": []
+      },
+      {
+        "topic": "BlackCat Toolkit Analysis",
+        "subtopics": []
+      }
+    ]
+  },
+  {
+    "module_number": 10,
+    "module_name": "Investigating Web Attacks",
+    "topics": [
+      {
+        "topic": "Understand Web Application Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Introduction to Web Application Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Challenges in Web Application Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Indicators of a Web Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "OWASP Top 10 Application Security Risks - 2021",
+        "subtopics": []
+      },
+      {
+        "topic": "Web Application Threats",
+        "subtopics": []
+      },
+      {
+        "topic": "Web Attack Investigation Methodology",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Internet Information Services (IIS) Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "IIS Web Server Architecture",
+        "subtopics": []
+      },
+      {
+        "topic": "IIS Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing IIS Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing IIS HTTP Logs Using HttpLogBrowser",
+        "subtopics": []
+      },
+      {
+        "topic": "IIS Log Analysis Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Apache Web Server Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Apache Web Server Architecture",
+        "subtopics": []
+      },
+      {
+        "topic": "Apache Web Server Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Apache Access Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Apache Access Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Apache Error Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Apache Error Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Apache Web Server Logs Using Python",
+        "subtopics": []
+      },
+      {
+        "topic": "Apache Log Analysis Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Detect and Investigate Various Attacks on Web Applications",
+        "subtopics": []
+      },
+      {
+        "topic": "Investigating Cross-Site Scripting (XSS) Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Investigating XSS: Using Regex to Search XSS Strings",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Apache Logs for XSS Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining IIS Logs for XSS Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Snort Alert Logs for XSS Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining WAF Logs for XSS Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining SIEM Logs for XSS Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Web Server Logs for XSS Attack Using Python",
+        "subtopics": []
+      },
+      {
+        "topic": "Investigating SQL Injection Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Investigating SQL Injection Attack: Using Regex",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Apache Logs for SQL Injection Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining IIS Logs for SQL Injection Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Snort Alert Logs for SQL Injection Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining WAF Logs for SQL Injection Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining SIEM Logs for SQL Injection Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Investigating Path/Directory Traversal Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Apache Logs for Path/Directory Traversal Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Web Server Logs for Path/Directory Traversal Attack Using Python",
+        "subtopics": []
+      },
+      {
+        "topic": "Investigating Command Injection Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Apache Logs for Command Injection Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Web Server Logs for Command Injection Attack Using Python",
+        "subtopics": []
+      },
+      {
+        "topic": "Investigating XML External Entity (XXE) Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Apache Log File for XXE Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Investigating Brute-force Attack",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Apache Log File for Brute-force Attack",
+        "subtopics": []
+      }
+    ]
+  },
+  {
+    "module_number": 11,
+    "module_name": "Dark Web Forensics",
+    "topics": [
+      {
+        "topic": "Understand the Dark Web and Dark Web Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Understanding the Dark Web",
+        "subtopics": []
+      },
+      {
+        "topic": "Tor Relays",
+        "subtopics": []
+      },
+      {
+        "topic": "Working of Tor Browser",
+        "subtopics": []
+      },
+      {
+        "topic": "Tor Bridge Node",
+        "subtopics": []
+      },
+      {
+        "topic": "Dark Web Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Dark Web Forensics Challenges",
+        "subtopics": []
+      },
+      {
+        "topic": "Determine How to Identify Traces of Tor Browser during Investigation",
+        "subtopics": []
+      },
+      {
+        "topic": "Identifying Tor Browser Artifacts: Command Prompt",
+        "subtopics": []
+      },
+      {
+        "topic": "Identifying Tor Browser Artifacts: Windows Registry",
+        "subtopics": []
+      },
+      {
+        "topic": "Identifying Tor Browser Artifacts: Prefetch Files",
+        "subtopics": []
+      },
+      {
+        "topic": "Identifying Tor Browser Artifacts: places.sqlite File",
+        "subtopics": []
+      },
+      {
+        "topic": "Perform Tor Browser Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Tor Browser Forensics: Memory Acquisition",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Memory Dumps",
+        "subtopics": []
+      },
+      {
+        "topic": "Memory Dump Analysis: Bulk Extractor",
+        "subtopics": []
+      },
+      {
+        "topic": "Forensic Analysis of Memory Dumps to Examine Email Artifacts (Tor Browser Open)",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 1: Identify the Domain",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 2: Identify the Email IDs",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 3: Search for Composed Emails",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 4: Search for Accessed/Opened Emails",
+        "subtopics": []
+      },
+      {
+        "topic": "Forensic Analysis of Storage to Acquire Email Attachments (Tor Browser Open)",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 5: Retrieve the Uploaded File",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 6: Retrieve the Downloaded File",
+        "subtopics": []
+      },
+      {
+        "topic": "Forensic Analysis of Memory Dumps to Examine Email Artifacts (Tor Browser Closed)",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 1: Identify the Domain",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 2: Identify the Email IDs",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 3: Search for Composed Emails",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 4: Search for Accessed/Opened Emails",
+        "subtopics": []
+      },
+      {
+        "topic": "Forensic Analysis of Storage to Acquire Email Attachments (Tor Browser Closed)",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 5: Retrieve the Uploaded File",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 6: Retrieve the Downloaded File",
+        "subtopics": []
+      },
+      {
+        "topic": "Forensic Analysis: Tor Browser Uninstalled",
+        "subtopics": []
+      }
+    ]
+  },
+  {
+    "module_number": 12,
+    "module_name": "Cloud Forensics",
+    "topics": [
+      {
+        "topic": "Understand Cloud Computing Concepts",
+        "subtopics": []
+      },
+      {
+        "topic": "Introduction to Cloud Computing",
+        "subtopics": []
+      },
+      {
+        "topic": "Types of Cloud Computing Services",
+        "subtopics": []
+      },
+      {
+        "topic": "Separation of Responsibilities in Cloud",
+        "subtopics": []
+      },
+      {
+        "topic": "OWASP Top 10 Cloud Security Risks",
+        "subtopics": []
+      },
+      {
+        "topic": "Cloud Computing Threats",
+        "subtopics": []
+      },
+      {
+        "topic": "Cloud Computing Attacks",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Cloud Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Introduction to Cloud Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Uses of Cloud Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Cyber Crime on Cloud Environment",
+        "subtopics": []
+      },
+      {
+        "topic": "Cloud Forensics: Stakeholders and their Roles",
+        "subtopics": []
+      },
+      {
+        "topic": "Cloud Forensics Challenges",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Amazon Web Services (AWS) Fundamentals",
+        "subtopics": []
+      },
+      {
+        "topic": "Introduction to Amazon Web Services",
+        "subtopics": []
+      },
+      {
+        "topic": "Shared Responsibility Model for AWS",
+        "subtopics": []
+      },
+      {
+        "topic": "Data Storage in AWS",
+        "subtopics": []
+      },
+      {
+        "topic": "AWS Cloud Storage Services",
+        "subtopics": []
+      },
+      {
+        "topic": "Logs in AWS",
+        "subtopics": []
+      },
+      {
+        "topic": "Perform AWS Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Forensic Acquisition of Amazon EC2 Instance: Methodology",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 1: Isolate the Compromised EC2 Instance",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 2: Take a Snapshot of the EC2 Instance",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 3: Provision and Launch a Forensic Workstation",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 4: Create Evidence Volume from the Snapshot",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 5: Attach the Evidence Volume to the Forensic Workstation",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 6: Mount the Evidence Volume on the Forensic Workstation",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Information Using AWS CLI",
+        "subtopics": []
+      },
+      {
+        "topic": "Investigating CloudWatch Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Investigating S3 Server Access Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Investigating AWS CloudTrail for IAM-based Incidents",
+        "subtopics": []
+      },
+      {
+        "topic": "Investigating Amazon VPC Flow Logs Using AWS Management Console",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing AWS Security Incidents Using GuardDuty",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Microsoft Azure Fundamentals",
+        "subtopics": []
+      },
+      {
+        "topic": "Introduction to Microsoft Azure",
+        "subtopics": []
+      },
+      {
+        "topic": "Division of Responsibilities in Azure",
+        "subtopics": []
+      },
+      {
+        "topic": "Data Storage in Azure",
+        "subtopics": []
+      },
+      {
+        "topic": "Azure Data Storage Services",
+        "subtopics": []
+      },
+      {
+        "topic": "Data Redundancy in Azure Storage",
+        "subtopics": []
+      },
+      {
+        "topic": "Logs in Azure",
+        "subtopics": []
+      },
+      {
+        "topic": "Perform Microsoft Azure Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Forensic Acquisition of VMs in Azure: Methodology",
+        "subtopics": []
+      },
+      {
+        "topic": "Forensic Acquisition of VMs in Azure: The Scenario",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 1: Create a Snapshot of the OS Disk of the Affected VM via Azure Portal",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 1: Create a Snapshot of the OS Disk of the Affected VM via Azure CLI",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 2: Copy the Snapshot to a Storage Account under a Different Resource Group",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 3: Delete the Snapshot from the Source Resource Group and Create a Backup Copy",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 4: Mount the Snapshot onto the Forensic Workstation",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyze the Snapshot via Autopsy",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Azure Monitor Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting and Analyzing Logs in Azure AD",
+        "subtopics": []
+      },
+      {
+        "topic": "Investigating Security Incidents Using Microsoft Azure Sentinel",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Google Cloud Fundamentals",
+        "subtopics": []
+      },
+      {
+        "topic": "Introduction to Google Cloud",
+        "subtopics": []
+      },
+      {
+        "topic": "Shared Responsibilities in Google Cloud",
+        "subtopics": []
+      },
+      {
+        "topic": "Google Kubernetes Engine (GKE) Shared Responsibility",
+        "subtopics": []
+      },
+      {
+        "topic": "Data Storage in Google Cloud",
+        "subtopics": []
+      },
+      {
+        "topic": "Google Cloud Storage Classes",
+        "subtopics": []
+      },
+      {
+        "topic": "Google Cloud Data Storage Services",
+        "subtopics": []
+      },
+      {
+        "topic": "Logs in Google Cloud",
+        "subtopics": []
+      },
+      {
+        "topic": "Perform Google Cloud Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Forensic Acquisition of Persistent Disk Volumes in GCP: Methodology",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 1: Create an Instant Snapshot of a Persistent Disk Volume",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 2: View the Instant Snapshots for a Disk",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 3: Copy an Instant Snapshot to a Different Location",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 4: Delete an Instant Snapshot After Creating Long-term Snapshot",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Google Workspace Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Log Data Using Google Cloud Log Analytics",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Google Cloud VPC Flow Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Investigating Google Cloud Security Incidents: Analyzing Access Attempts from Anonymous Proxy",
+        "subtopics": []
+      },
+      {
+        "topic": "Investigating Google Cloud Security Incidents: Analyzing BigQuery Data Exfiltration",
+        "subtopics": []
+      },
+      {
+        "topic": "Investigating Google Cloud Security Incidents: Analyzing SSH Brute Force Attempts",
+        "subtopics": []
+      },
+      {
+        "topic": "Investigating Google Cloud Security Incidents: Analyzing Malware Incident",
+        "subtopics": []
+      },
+      {
+        "topic": "Investigating Google Cloud Security Incidents: Analyzing Persistent Anomalous IAM Grants",
+        "subtopics": []
+      },
+      {
+        "topic": "Investigating Google Cloud Container Security Incidents: Analyzing Malicious Script Executed",
+        "subtopics": []
+      },
+      {
+        "topic": "Investigating Google Cloud Container Security Incidents: Analyzing Reverse Shell",
+        "subtopics": []
+      },
+      {
+        "topic": "Investigating Google Cloud VM-based Security Incidents",
+        "subtopics": []
+      }
+    ]
+  },
+  {
+    "module_number": 13,
+    "module_name": "Email and Social Media Forensics",
+    "topics": [
+      {
+        "topic": "Understand Email Basics",
+        "subtopics": []
+      },
+      {
+        "topic": "Introduction to an Email System",
+        "subtopics": []
+      },
+      {
+        "topic": "Components Involved in Email Communication",
+        "subtopics": []
+      },
+      {
+        "topic": "How Email Communication Works?",
+        "subtopics": []
+      },
+      {
+        "topic": "Understanding the Parts of an Email Message",
+        "subtopics": []
+      },
+      {
+        "topic": "Explain Email Crime Investigation and its Steps",
+        "subtopics": []
+      },
+      {
+        "topic": "Introduction to Email Crime Investigation",
+        "subtopics": []
+      },
+      {
+        "topic": "Types of Email Crimes",
+        "subtopics": []
+      },
+      {
+        "topic": "Steps to Investigate Email Crimes",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 1: Seizing the Computer and Email Accounts",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 2: Acquiring the Email Data",
+        "subtopics": []
+      },
+      {
+        "topic": "Acquiring Email Data from Desktop-based Email Clients",
+        "subtopics": []
+      },
+      {
+        "topic": "Local Email Files in Microsoft Outlook",
+        "subtopics": []
+      },
+      {
+        "topic": "Local Email Files in Mozilla Thunderbird",
+        "subtopics": []
+      },
+      {
+        "topic": "Acquiring Thunderbird Local Email Files via SysTools MailPro+",
+        "subtopics": []
+      },
+      {
+        "topic": "Acquiring Outlook Email Files: .ost to .pst File Conversion",
+        "subtopics": []
+      },
+      {
+        "topic": "Acquiring Outlook .pst File via SysTools MailPro+",
+        "subtopics": []
+      },
+      {
+        "topic": "Acquiring Email Data from Web-based Email Accounts",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 3: Examining Email Messages",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 4: Retrieving Email Headers",
+        "subtopics": []
+      },
+      {
+        "topic": "Retrieving Email Headers in Microsoft Outlook",
+        "subtopics": []
+      },
+      {
+        "topic": "Retrieving Email Headers in Microsoft Outlook.live.com",
+        "subtopics": []
+      },
+      {
+        "topic": "Retrieving Email Headers in AOL",
+        "subtopics": []
+      },
+      {
+        "topic": "Retrieving Email Headers in Apple Mail",
+        "subtopics": []
+      },
+      {
+        "topic": "Retrieving Email Headers in Gmail",
+        "subtopics": []
+      },
+      {
+        "topic": "Retrieving Email Headers in Yahoo Mail",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 5: Analyzing Email Headers",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Email Headers: X-Headers",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Email Headers: Checking Email Authenticity",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Email Headers: Examining the Originating IP Address",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Email Headers: Tracing Email Origin",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Email Headers: Tracing Back Web-based Email",
+        "subtopics": []
+      },
+      {
+        "topic": "Step 6: Recovering Deleted Email Messages",
+        "subtopics": []
+      },
+      {
+        "topic": "Recovering Deleted Email Messages from Outlook .pst Files Using Recover My eMail",
+        "subtopics": []
+      },
+      {
+        "topic": "Recovering Deleted Email Data from Thunderbird Using Thunderbird Forensics Wizard",
+        "subtopics": []
+      },
+      {
+        "topic": "Recovering Deleted Emails from Gmail and Outlook",
+        "subtopics": []
+      },
+      {
+        "topic": "Email Recovery Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand U.S. Laws Against Email Crime",
+        "subtopics": []
+      },
+      {
+        "topic": "U.S. Laws Against Email Crime: CAN-SPAM Act",
+        "subtopics": []
+      },
+      {
+        "topic": "Explain Social Media Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Introduction to Social Media Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Social Media Crimes",
+        "subtopics": []
+      },
+      {
+        "topic": "Social Media Forensics Challenges",
+        "subtopics": []
+      },
+      {
+        "topic": "Manually Collecting Data from Social Media Platforms",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting Evidence from Social Media Platforms Using WebPreserver",
+        "subtopics": []
+      },
+      {
+        "topic": "Extracting Footages from Social Media Platforms",
+        "subtopics": []
+      },
+      {
+        "topic": "Tracking Social Media User Activities Using Social Searcher",
+        "subtopics": []
+      },
+      {
+        "topic": "Constructing and Analyzing Social Network Graphs",
+        "subtopics": []
+      },
+      {
+        "topic": "Social Media Forensics Tools",
+        "subtopics": []
+      }
+    ]
+  },
+  {
+    "module_number": 14,
+    "module_name": "Mobile Forensics",
+    "topics": [
+      {
+        "topic": "Understand Mobile Device Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Mobile Device Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "OWASP Top 10 Mobile Risks - 2016",
+        "subtopics": []
+      },
+      {
+        "topic": "Mobile Attacks",
+        "subtopics": []
+      },
+      {
+        "topic": "Mobile Hardware and Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Mobile OS and Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Mobile Forensics Challenges",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Android and iOS Architecture, Boot Process, and File Systems",
+        "subtopics": []
+      },
+      {
+        "topic": "Mobile Device Architecture",
+        "subtopics": []
+      },
+      {
+        "topic": "Android OS Architecture",
+        "subtopics": []
+      },
+      {
+        "topic": "Android Boot Process",
+        "subtopics": []
+      },
+      {
+        "topic": "iOS Architecture",
+        "subtopics": []
+      },
+      {
+        "topic": "iOS Boot Process",
+        "subtopics": []
+      },
+      {
+        "topic": "DFU Mode Booting",
+        "subtopics": []
+      },
+      {
+        "topic": "Booting iPhone in DFU Mode",
+        "subtopics": []
+      },
+      {
+        "topic": "Booting iPhone in Recovery Mode",
+        "subtopics": []
+      },
+      {
+        "topic": "Android File System",
+        "subtopics": []
+      },
+      {
+        "topic": "iOS File System",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Mobile Forensics Process",
+        "subtopics": []
+      },
+      {
+        "topic": "Mobile Forensics Process",
+        "subtopics": []
+      },
+      {
+        "topic": "Collect the Evidence",
+        "subtopics": []
+      },
+      {
+        "topic": "Document the Evidence",
+        "subtopics": []
+      },
+      {
+        "topic": "Preserve the Evidence",
+        "subtopics": []
+      },
+      {
+        "topic": "Mobile Storage and Evidence Locations",
+        "subtopics": []
+      },
+      {
+        "topic": "Data Acquisition Methods",
+        "subtopics": []
+      },
+      {
+        "topic": "Android Forensics Process",
+        "subtopics": []
+      },
+      {
+        "topic": "iOS Forensics Process",
+        "subtopics": []
+      },
+      {
+        "topic": "Investigate Cellular Network Data",
+        "subtopics": []
+      },
+      {
+        "topic": "Components of Cellular Network",
+        "subtopics": []
+      },
+      {
+        "topic": "Different Cellular Networks",
+        "subtopics": []
+      },
+      {
+        "topic": "Cell Site Analysis: Analyzing Service Provider Data",
+        "subtopics": []
+      },
+      {
+        "topic": "CDR Contents",
+        "subtopics": []
+      },
+      {
+        "topic": "Perform File System Acquisition",
+        "subtopics": []
+      },
+      {
+        "topic": "Subscriber Identity Module (SIM)",
+        "subtopics": []
+      },
+      {
+        "topic": "SIM File System",
+        "subtopics": []
+      },
+      {
+        "topic": "Data Stored in a SIM",
+        "subtopics": []
+      },
+      {
+        "topic": "Integrated Circuit Card Identification (ICCID)",
+        "subtopics": []
+      },
+      {
+        "topic": "International Mobile Equipment Identifier (IMEI)",
+        "subtopics": []
+      },
+      {
+        "topic": "SIM Cloning",
+        "subtopics": []
+      },
+      {
+        "topic": "SIM Data Acquisition Using Oxygen Forensic® Extractor",
+        "subtopics": []
+      },
+      {
+        "topic": "SIM Data Acquisition Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Understand Phone Locks, Rooting, and Jailbreaking of Mobile Devices",
+        "subtopics": []
+      },
+      {
+        "topic": "Phone Locking on Android",
+        "subtopics": []
+      },
+      {
+        "topic": "Bypassing Locked Android Devices",
+        "subtopics": []
+      },
+      {
+        "topic": "Method 1: Unlock Android Device without Password Using DroidKit",
+        "subtopics": []
+      },
+      {
+        "topic": "Method 2: Bypass Android Lock Using Dr.Fone - Screen Unlock (Android)",
+        "subtopics": []
+      },
+      {
+        "topic": "Phone Locking on iOS",
+        "subtopics": []
+      },
+      {
+        "topic": "Rooting of Android Devices",
+        "subtopics": []
+      },
+      {
+        "topic": "Rooting of Android Devices Using KingoRoot",
+        "subtopics": []
+      },
+      {
+        "topic": "Accessing Root Files in Android",
+        "subtopics": []
+      },
+      {
+        "topic": "Jailbreaking of iOS Devices",
+        "subtopics": []
+      },
+      {
+        "topic": "Risks of Jailbreaking",
+        "subtopics": []
+      },
+      {
+        "topic": "Jailbreaking Techniques",
+        "subtopics": []
+      },
+      {
+        "topic": "Jailbreaking iOS Using Hexxa Plus",
+        "subtopics": []
+      },
+      {
+        "topic": "Perform Logical Acquisition on Mobile Devices",
+        "subtopics": []
+      },
+      {
+        "topic": "Logical Acquisition",
+        "subtopics": []
+      },
+      {
+        "topic": "Android Debug Bridge (ADB)",
+        "subtopics": []
+      },
+      {
+        "topic": "Logical Acquisition of Android Devices: Using “adb pull” Command",
+        "subtopics": []
+      },
+      {
+        "topic": "Logical Acquisition of Android Devices: Using Commercial Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Logical Acquisition of iOS Devices: Using Finder",
+        "subtopics": []
+      },
+      {
+        "topic": "Logical Acquisition of iOS Devices: Using Commercial Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Extracting Data from Android Devices Using Magnet ACQUIRE",
+        "subtopics": []
+      },
+      {
+        "topic": "Cloud Data Acquisition on Android and iOS Devices",
+        "subtopics": []
+      },
+      {
+        "topic": "Cloud Data Acquisition: Using Commercial Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Perform Physical Acquisition on Mobile Devices",
+        "subtopics": []
+      },
+      {
+        "topic": "Physical Acquisition",
+        "subtopics": []
+      },
+      {
+        "topic": "Physical Acquisition of Android Devices: Using dd Command",
+        "subtopics": []
+      },
+      {
+        "topic": "Physical Acquisition of Android Devices: Using ADB, Busybox, Netcat",
+        "subtopics": []
+      },
+      {
+        "topic": "Physical Acquisition of Android Devices: Using Commercial Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Physical Acquisition of iOS Devices: Using SSH, Netcat",
+        "subtopics": []
+      },
+      {
+        "topic": "Physical Acquisition of iOS Devices: Using Commercial Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "SQLite Database Extraction",
+        "subtopics": []
+      },
+      {
+        "topic": "SQLite Database Browsing Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "SQLite Forensics Using Belkasoft X",
+        "subtopics": []
+      },
+      {
+        "topic": "JTAG Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Chip-off Forensics",
+        "subtopics": []
+      },
+      {
+        "topic": "Chip-off Forensics Process",
+        "subtopics": []
+      },
+      {
+        "topic": "Chip-off Forensic Equipment",
+        "subtopics": []
+      },
+      {
+        "topic": "Flasher Boxes",
+        "subtopics": []
+      },
+      {
+        "topic": "Perform Android and iOS Forensic Analysis",
+        "subtopics": []
+      },
+      {
+        "topic": "Static Analysis and Dynamic Analysis of Android Package Kit (APK)",
+        "subtopics": []
+      },
+      {
+        "topic": "Static Analysis of an APK Using Mobile Security Framework (MobSF)",
+        "subtopics": []
+      },
+      {
+        "topic": "Dynamic Analysis for an APK Using Mobile Security Framework (MobSF)",
+        "subtopics": []
+      },
+      {
+        "topic": "Android Logs",
+        "subtopics": []
+      },
+      {
+        "topic": "Examining Android Logs Using Logcat",
+        "subtopics": []
+      },
+      {
+        "topic": "Android Log Analysis Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Collecting WhatsApp Artifacts from Android Devices",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing Android Chrome Artifacts",
+        "subtopics": []
+      },
+      {
+        "topic": "Android Forensic Analysis: Using Commercial Tools",
+        "subtopics": []
+      },
+      {
+        "topic": "Extracting iOS Signal Data Using Belkasoft Evidence Center",
+        "subtopics": []
+      },
+      {
+        "topic": "Analyzing iOS Safari Artifacts",
+        "subtopics": []
+      },
+      {
+        "topic": "Decrypting and Analyzing iOS Keychains",
+        "subtopics": []
+      },
+      {
+        "topic": "Types of iOS Keychains",
+        "subtopics": []
+      },
+      {
+        "topic": "iOS Forensic Analysis: Using Commercial Tools",
+        "subtopics": []
+      }
+    ]
+  }
+]

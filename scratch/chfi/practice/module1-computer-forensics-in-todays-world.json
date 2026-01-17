@@ -1,0 +1,1472 @@
+[
+    {
+        "question": "A forensic investigator is called to examine a corporate server suspected of being used in a data exfiltration scheme. The investigation reveals that an employee systematically accessed confidential client databases over a six-month period. According to cybercrime classification, what type of attack does this scenario represent?",
+        "options": [
+            {
+                "value": "External attack with advanced persistent threat characteristics",
+                "isCorrect": false
+            },
+            {
+                "value": "Internal/Insider attack",
+                "isCorrect": true
+            },
+            {
+                "value": "Distributed denial of service attack",
+                "isCorrect": false
+            },
+            {
+                "value": "Man-in-the-middle attack from external threat actor",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "During a criminal investigation, the prosecution presents a printout of an email as evidence. The defense attorney objects, arguing that the original electronic file should be produced instead. Which rule of evidence is the defense invoking?",
+        "options": [
+            {
+                "value": "Hearsay Rule",
+                "isCorrect": false
+            },
+            {
+                "value": "Best Evidence Rule",
+                "isCorrect": true
+            },
+            {
+                "value": "Chain of Custody Rule",
+                "isCorrect": false
+            },
+            {
+                "value": "Authentication Rule",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An organization is developing a forensic readiness plan. Which of the following should be the PRIMARY focus during the initial phase of implementation?",
+        "options": [
+            {
+                "value": "Purchasing the most advanced forensic hardware tools available",
+                "isCorrect": false
+            },
+            {
+                "value": "Hiring external forensic consultants for all investigations",
+                "isCorrect": false
+            },
+            {
+                "value": "Establishing a forensic policy that defines how digital evidence will be identified, preserved, and analyzed",
+                "isCorrect": true
+            },
+            {
+                "value": "Training all employees on advanced malware analysis techniques",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which ISO standard specifically provides guidelines for the identification, collection, acquisition, and preservation of digital evidence?",
+        "options": [
+            {
+                "value": "ISO/IEC 27001",
+                "isCorrect": false
+            },
+            {
+                "value": "ISO/IEC 27037",
+                "isCorrect": true
+            },
+            {
+                "value": "ISO/IEC 27042",
+                "isCorrect": false
+            },
+            {
+                "value": "ISO/IEC 27050",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A multinational corporation discovers that their intellectual property was stolen by a competitor through cyber espionage. The legal team is deciding whether to pursue civil or criminal charges. What is the PRIMARY distinguishing factor between civil and criminal cybercrime investigations?",
+        "options": [
+            {
+                "value": "Civil investigations require more stringent evidence handling procedures",
+                "isCorrect": false
+            },
+            {
+                "value": "Criminal investigations are always conducted by internal corporate teams",
+                "isCorrect": false
+            },
+            {
+                "value": "Civil cases involve disputes between private parties and typically seek monetary damages, while criminal cases are prosecuted by the state and may result in imprisonment",
+                "isCorrect": true
+            },
+            {
+                "value": "Civil investigations cannot use digital evidence in court proceedings",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "According to the ACPO (now NPCC) Principles of Digital Evidence, which principle states that the person in charge of the investigation has overall responsibility for ensuring that law and these principles are adhered to?",
+        "options": [
+            {
+                "value": "Principle 1",
+                "isCorrect": false
+            },
+            {
+                "value": "Principle 2",
+                "isCorrect": false
+            },
+            {
+                "value": "Principle 3",
+                "isCorrect": true
+            },
+            {
+                "value": "Principle 4",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A Security Operations Center (SOC) analyst detects suspicious network activity and escalates it for forensic analysis. In this context, what is the PRIMARY role of computer forensics within SOC operations?",
+        "options": [
+            {
+                "value": "To replace traditional security monitoring tools",
+                "isCorrect": false
+            },
+            {
+                "value": "To provide deep-dive analysis of security incidents, determine root cause, and preserve evidence for potential legal proceedings",
+                "isCorrect": true
+            },
+            {
+                "value": "To automatically block all suspicious traffic without human intervention",
+                "isCorrect": false
+            },
+            {
+                "value": "To manage firewall rules and access control lists",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "During a forensic investigation, an investigator needs to determine the origin of a cyber attack that has been carefully obfuscated through multiple proxy servers and VPNs. This process of identifying the source of an attack is known as:",
+        "options": [
+            {
+                "value": "Digital triage",
+                "isCorrect": false
+            },
+            {
+                "value": "Evidence correlation",
+                "isCorrect": false
+            },
+            {
+                "value": "Cyber attribution",
+                "isCorrect": true
+            },
+            {
+                "value": "Network mapping",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A forensic examiner discovers that a suspect used the Tor network extensively before the alleged crime. What challenge does this present for cyber attribution?",
+        "options": [
+            {
+                "value": "Tor network traffic is always stored in plaintext",
+                "isCorrect": false
+            },
+            {
+                "value": "Anonymization services like Tor make it extremely difficult to trace the true origin of network communications",
+                "isCorrect": true
+            },
+            {
+                "value": "Tor automatically deletes all browser history",
+                "isCorrect": false
+            },
+            {
+                "value": "Tor networks cannot be used for illegal activities",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which of the following is NOT considered a valid source of potential digital evidence?",
+        "options": [
+            {
+                "value": "RAM memory contents from a running system",
+                "isCorrect": false
+            },
+            {
+                "value": "Metadata embedded in digital photographs",
+                "isCorrect": false
+            },
+            {
+                "value": "Verbal testimony from the suspect about their computer activities",
+                "isCorrect": true
+            },
+            {
+                "value": "Network traffic logs from routers and firewalls",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An organization wants to implement AI tools in their forensic processes. According to best practices, what should be the PRIMARY consideration when deploying AI in computer forensics?",
+        "options": [
+            {
+                "value": "AI should completely replace human forensic investigators",
+                "isCorrect": false
+            },
+            {
+                "value": "AI tools should be used to speed up analysis while maintaining human oversight and verification of findings",
+                "isCorrect": true
+            },
+            {
+                "value": "AI findings should never be questioned or validated",
+                "isCorrect": false
+            },
+            {
+                "value": "AI should only be used for non-critical investigations",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A newly hired forensic investigator asks about professional ethics. Which statement BEST describes the Code of Ethics for a forensic investigator?",
+        "options": [
+            {
+                "value": "Investigators should always favor the party that hired them",
+                "isCorrect": false
+            },
+            {
+                "value": "Ethics only apply when the case goes to court",
+                "isCorrect": false
+            },
+            {
+                "value": "Investigators must maintain objectivity, integrity, and confidentiality regardless of who employs them",
+                "isCorrect": true
+            },
+            {
+                "value": "Ethical guidelines are optional and left to individual discretion",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "During an eDiscovery process, a legal team requests all emails related to a specific contract dispute. What is the KEY difference between computer forensics and eDiscovery?",
+        "options": [
+            {
+                "value": "eDiscovery focuses on finding relevant documents for litigation, while computer forensics involves deeper technical analysis to reconstruct events and gather evidence of wrongdoing",
+                "isCorrect": true
+            },
+            {
+                "value": "Computer forensics can only be performed by law enforcement",
+                "isCorrect": false
+            },
+            {
+                "value": "eDiscovery requires specialized hardware while computer forensics does not",
+                "isCorrect": false
+            },
+            {
+                "value": "There is no difference; the terms are interchangeable",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Under the Federal Rules of Evidence (United States), what is required for digital evidence to be considered admissible in court?",
+        "options": [
+            {
+                "value": "The evidence must only be collected by certified law enforcement officers",
+                "isCorrect": false
+            },
+            {
+                "value": "The evidence must be authentic, relevant, and its collection must not violate any legal rights",
+                "isCorrect": true
+            },
+            {
+                "value": "Digital evidence is automatically admissible without any special requirements",
+                "isCorrect": false
+            },
+            {
+                "value": "The evidence must be less than 30 days old",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A company's CISO is implementing forensic readiness procedures and wants to ensure proper host monitoring. Which activity would be MOST appropriate for this purpose?",
+        "options": [
+            {
+                "value": "Disabling all logging to improve system performance",
+                "isCorrect": false
+            },
+            {
+                "value": "Implementing endpoint detection and response (EDR) solutions with detailed audit logging enabled",
+                "isCorrect": true
+            },
+            {
+                "value": "Only monitoring servers and ignoring workstations",
+                "isCorrect": false
+            },
+            {
+                "value": "Conducting forensic analysis only after an incident is reported",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which ISO standard provides guidance on the analysis and interpretation of digital evidence?",
+        "options": [
+            {
+                "value": "ISO/IEC 27037",
+                "isCorrect": false
+            },
+            {
+                "value": "ISO/IEC 27041",
+                "isCorrect": false
+            },
+            {
+                "value": "ISO/IEC 27042",
+                "isCorrect": true
+            },
+            {
+                "value": "ISO/IEC 27043",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An investigator is working on a case where a nation-state actor is suspected of infiltrating critical infrastructure. One of the major challenges in this investigation is that the attacker used sophisticated techniques to hide their tracks. Which of the following represents the MOST significant challenge in cyber attribution for nation-state attacks?",
+        "options": [
+            {
+                "value": "Lack of digital evidence",
+                "isCorrect": false
+            },
+            {
+                "value": "Attackers often use false flags, compromised third-party infrastructure, and advanced obfuscation techniques making definitive attribution extremely difficult",
+                "isCorrect": true
+            },
+            {
+                "value": "Nation-state attacks leave obvious signatures",
+                "isCorrect": false
+            },
+            {
+                "value": "International cooperation in such cases is always readily available",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A forensic investigator is testifying in court about digital evidence. The defense argues that the evidence could have been altered. What documentation is MOST critical to counter this argument?",
+        "options": [
+            {
+                "value": "The investigators resume and certifications",
+                "isCorrect": false
+            },
+            {
+                "value": "A complete chain of custody log documenting every person who handled the evidence and all actions taken",
+                "isCorrect": true
+            },
+            {
+                "value": "Screenshots of the evidence only",
+                "isCorrect": false
+            },
+            {
+                "value": "The suspects confession",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "According to ISO/IEC 27043, what is the correct sequence of digital forensic investigation processes?",
+        "options": [
+            {
+                "value": "Collection, Examination, Analysis, Reporting",
+                "isCorrect": false
+            },
+            {
+                "value": "Identification, Collection, Acquisition, Preservation, Examination, Analysis, Presentation",
+                "isCorrect": true
+            },
+            {
+                "value": "Seizure, Analysis, Collection, Reporting",
+                "isCorrect": false
+            },
+            {
+                "value": "Reporting, Analysis, Collection, Identification",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A financial institution discovers fraudulent transactions totaling $2 million. The internal investigation team wants to involve law enforcement. What type of investigation is MOST appropriate when both organizational policies have been violated and criminal laws have been broken?",
+        "options": [
+            {
+                "value": "Administrative investigation only",
+                "isCorrect": false
+            },
+            {
+                "value": "Civil investigation only",
+                "isCorrect": false
+            },
+            {
+                "value": "A parallel administrative/criminal investigation with proper coordination between internal teams and law enforcement",
+                "isCorrect": true
+            },
+            {
+                "value": "No investigation is necessary if the money can be recovered",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which characteristic of digital evidence makes it particularly challenging to present in court compared to traditional physical evidence?",
+        "options": [
+            {
+                "value": "Digital evidence is always larger in physical size",
+                "isCorrect": false
+            },
+            {
+                "value": "Digital evidence can be easily duplicated, modified, or destroyed without leaving obvious traces",
+                "isCorrect": true
+            },
+            {
+                "value": "Digital evidence cannot be presented in visual format",
+                "isCorrect": false
+            },
+            {
+                "value": "Courts do not accept digital evidence under any circumstances",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A company is implementing forensic readiness as part of their incident response plan. During the planning phase, which of the following should be documented in the forensic policy FIRST?",
+        "options": [
+            {
+                "value": "The specific forensic tools to be used",
+                "isCorrect": false
+            },
+            {
+                "value": "The definition of what constitutes digital evidence and the circumstances under which forensic investigation may be initiated",
+                "isCorrect": true
+            },
+            {
+                "value": "The vendors who supply forensic software",
+                "isCorrect": false
+            },
+            {
+                "value": "The salary structure for forensic investigators",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What role does threat intelligence play in computer forensics investigations?",
+        "options": [
+            {
+                "value": "It replaces the need for technical forensic analysis",
+                "isCorrect": false
+            },
+            {
+                "value": "It provides context about known threat actors, their tactics, techniques, and procedures (TTPs), helping investigators identify patterns and attribute attacks",
+                "isCorrect": true
+            },
+            {
+                "value": "It is only useful for preventing future attacks, not investigating past incidents",
+                "isCorrect": false
+            },
+            {
+                "value": "Threat intelligence should never be used in forensic investigations due to potential bias",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "The ACPO Principle 1 states: \"No action taken by law enforcement agencies, persons employed within those agencies or their agents should change data which may subsequently be relied upon in court.\" In situations where accessing the data will inevitably cause changes, what does Principle 2 require?",
+        "options": [
+            {
+                "value": "The investigation must be abandoned",
+                "isCorrect": false
+            },
+            {
+                "value": "The data should not be accessed under any circumstances",
+                "isCorrect": false
+            },
+            {
+                "value": "The person accessing the data must be competent to do so and able to give evidence explaining the relevance and implications of their actions",
+                "isCorrect": true
+            },
+            {
+                "value": "Only automated tools should be used",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An organization is setting up a computer forensics investigation team. According to best practices for forensic readiness, what is the MINIMUM composition of such a team?",
+        "options": [
+            {
+                "value": "Only IT security personnel",
+                "isCorrect": false
+            },
+            {
+                "value": "A multidisciplinary team including IT security, legal counsel, HR representatives, and management",
+                "isCorrect": true
+            },
+            {
+                "value": "External consultants only to maintain independence",
+                "isCorrect": false
+            },
+            {
+                "value": "One senior IT administrator",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which of the following represents a PRIMARY challenge that cybercrimes pose to forensic investigators?",
+        "options": [
+            {
+                "value": "Digital evidence is always in plain text format",
+                "isCorrect": false
+            },
+            {
+                "value": "Jurisdictional issues when crimes cross international boundaries, combined with rapidly evolving technology and anti-forensic techniques",
+                "isCorrect": true
+            },
+            {
+                "value": "All digital crimes leave permanent traces that cannot be hidden",
+                "isCorrect": false
+            },
+            {
+                "value": "Law enforcement agencies always have adequate resources for cybercrime investigations",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What does ISO/IEC 27041 provide guidance on?",
+        "options": [
+            {
+                "value": "Preservation of digital evidence",
+                "isCorrect": false
+            },
+            {
+                "value": "eDiscovery processes",
+                "isCorrect": false
+            },
+            {
+                "value": "Assuring suitability and adequacy of incident investigative method",
+                "isCorrect": true
+            },
+            {
+                "value": "Network security monitoring",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A forensic investigator is asked to examine a system while maintaining the integrity of potential evidence. According to ENFSI best practices, which approach should be prioritized?",
+        "options": [
+            {
+                "value": "Speed of investigation over evidence integrity",
+                "isCorrect": false
+            },
+            {
+                "value": "Using write-blocking technology and creating forensic copies before any examination",
+                "isCorrect": true
+            },
+            {
+                "value": "Examining the original evidence directly to save time",
+                "isCorrect": false
+            },
+            {
+                "value": "Relying solely on the suspects word about system contents",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "In the context of forensic automation and orchestration, what is the PRIMARY benefit of implementing SOAR (Security Orchestration, Automation, and Response) platforms?",
+        "options": [
+            {
+                "value": "Eliminating the need for human forensic investigators entirely",
+                "isCorrect": false
+            },
+            {
+                "value": "Automating repetitive tasks, standardizing response procedures, and enabling faster initial triage of security incidents",
+                "isCorrect": true
+            },
+            {
+                "value": "Making forensic tools more expensive",
+                "isCorrect": false
+            },
+            {
+                "value": "Reducing the legal admissibility of digital evidence",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which type of digital evidence would be classified as volatile and requires immediate preservation during a live system investigation?",
+        "options": [
+            {
+                "value": "Files stored on the hard drive",
+                "isCorrect": false
+            },
+            {
+                "value": "Contents of RAM, running processes, and network connections",
+                "isCorrect": true
+            },
+            {
+                "value": "System registry files",
+                "isCorrect": false
+            },
+            {
+                "value": "Installed applications list",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A company suspects an employee of corporate espionage. Before terminating the employee, what type of investigation should HR conduct to ensure proper handling of the situation?",
+        "options": [
+            {
+                "value": "Criminal investigation led by local police",
+                "isCorrect": false
+            },
+            {
+                "value": "Administrative investigation to determine if company policies were violated, with forensic evidence properly preserved for potential escalation",
+                "isCorrect": true
+            },
+            {
+                "value": "No investigation is necessary if HR is confident",
+                "isCorrect": false
+            },
+            {
+                "value": "Public announcement followed by termination",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "According to forensic readiness best practices, what should an organization include in their asset inventory for forensic purposes?",
+        "options": [
+            {
+                "value": "Only servers and workstations",
+                "isCorrect": false
+            },
+            {
+                "value": "A comprehensive inventory of all digital assets including hardware, software, network devices, cloud services, and their logging capabilities",
+                "isCorrect": true
+            },
+            {
+                "value": "Only assets that have been involved in previous incidents",
+                "isCorrect": false
+            },
+            {
+                "value": "Employee personal devices are the only priority",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What distinguishes an expert witness from a regular witness in computer forensics court proceedings?",
+        "options": [
+            {
+                "value": "Expert witnesses can only testify about facts they personally observed",
+                "isCorrect": false
+            },
+            {
+                "value": "Expert witnesses are allowed to provide opinions based on their specialized knowledge, training, and experience",
+                "isCorrect": true
+            },
+            {
+                "value": "Expert witnesses do not need to take an oath",
+                "isCorrect": false
+            },
+            {
+                "value": "Regular witnesses are paid more than expert witnesses",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An organization implements network monitoring as part of their forensic readiness procedures. Which data source would provide the MOST comprehensive view of network-based forensic evidence?",
+        "options": [
+            {
+                "value": "Antivirus logs only",
+                "isCorrect": false
+            },
+            {
+                "value": "NetFlow data, full packet captures, DNS query logs, and proxy logs combined",
+                "isCorrect": true
+            },
+            {
+                "value": "User login timestamps only",
+                "isCorrect": false
+            },
+            {
+                "value": "Physical access logs",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "The scope of computer forensics has expanded significantly. Which statement BEST describes the modern scope of computer forensics?",
+        "options": [
+            {
+                "value": "Limited to recovering deleted files from desktop computers",
+                "isCorrect": false
+            },
+            {
+                "value": "Encompasses analysis of computers, mobile devices, IoT devices, cloud environments, and any digital medium that can store or transmit data",
+                "isCorrect": true
+            },
+            {
+                "value": "Only applicable to criminal investigations",
+                "isCorrect": false
+            },
+            {
+                "value": "Restricted to government agencies",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "During a cybercrime investigation, the forensic team discovers evidence that the attacker deliberately planted false evidence pointing to another party. This technique is known as:",
+        "options": [
+            {
+                "value": "Evidence spoliation",
+                "isCorrect": false
+            },
+            {
+                "value": "False flag operation",
+                "isCorrect": true
+            },
+            {
+                "value": "Evidence fabrication by investigators",
+                "isCorrect": false
+            },
+            {
+                "value": "Chain of custody violation",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which of the following scenarios would BEST justify the use of computer forensics in a civil litigation case?",
+        "options": [
+            {
+                "value": "Investigating a murder case",
+                "isCorrect": false
+            },
+            {
+                "value": "A breach of contract dispute where electronic communications may prove that one party did not fulfill their obligations",
+                "isCorrect": true
+            },
+            {
+                "value": "Responding to a natural disaster",
+                "isCorrect": false
+            },
+            {
+                "value": "Routine system maintenance",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "ISO/IEC 27050 specifically addresses which aspect of computer forensics?",
+        "options": [
+            {
+                "value": "Network intrusion analysis",
+                "isCorrect": false
+            },
+            {
+                "value": "Malware reverse engineering",
+                "isCorrect": false
+            },
+            {
+                "value": "Electronic discovery (eDiscovery)",
+                "isCorrect": true
+            },
+            {
+                "value": "Incident response procedures",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A forensic investigator receives a hard drive as evidence. Before beginning examination, what is the FIRST technical step that should be performed?",
+        "options": [
+            {
+                "value": "Boot the system and browse the files",
+                "isCorrect": false
+            },
+            {
+                "value": "Create a forensic image using a write-blocker and verify integrity using cryptographic hashing",
+                "isCorrect": true
+            },
+            {
+                "value": "Delete temporary files to make analysis easier",
+                "isCorrect": false
+            },
+            {
+                "value": "Install forensic software on the evidence drive",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What is the PRIMARY purpose of implementing forensics in the information system life cycle?",
+        "options": [
+            {
+                "value": "To increase system performance",
+                "isCorrect": false
+            },
+            {
+                "value": "To ensure that forensic considerations are built into systems from design through decommissioning, enabling effective evidence collection when needed",
+                "isCorrect": true
+            },
+            {
+                "value": "To reduce software development costs",
+                "isCorrect": false
+            },
+            {
+                "value": "To eliminate the need for security controls",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An incident response team is triaging a suspected security breach. At what point should computer forensics be engaged according to the incident response process flow?",
+        "options": [
+            {
+                "value": "Only after the incident has been fully resolved",
+                "isCorrect": false
+            },
+            {
+                "value": "Forensics should be engaged during the containment and eradication phases to preserve evidence while the incident is being addressed",
+                "isCorrect": true
+            },
+            {
+                "value": "Forensics is not part of incident response",
+                "isCorrect": false
+            },
+            {
+                "value": "Only if law enforcement requests it",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What makes a good computer forensics investigator according to professional standards?",
+        "options": [
+            {
+                "value": "The ability to quickly draw conclusions without thorough analysis",
+                "isCorrect": false
+            },
+            {
+                "value": "Strong technical skills combined with attention to detail, objectivity, documentation abilities, and the capacity to communicate findings clearly",
+                "isCorrect": true
+            },
+            {
+                "value": "Expertise in only one specific forensic tool",
+                "isCorrect": false
+            },
+            {
+                "value": "The willingness to adjust findings based on who hired them",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which of the following represents a privacy concern that forensic investigators must navigate during an investigation?",
+        "options": [
+            {
+                "value": "Forensic investigations have no privacy implications",
+                "isCorrect": false
+            },
+            {
+                "value": "Investigators may encounter personal data of uninvolved parties that must be handled according to data protection regulations",
+                "isCorrect": true
+            },
+            {
+                "value": "Privacy laws do not apply to digital evidence",
+                "isCorrect": false
+            },
+            {
+                "value": "All data on a corporate system can be freely accessed without restrictions",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A forensic team is investigating a suspected ransomware attack. They need to determine the initial infection vector. Which combination of evidence sources would be MOST valuable?",
+        "options": [
+            {
+                "value": "Only the encrypted files",
+                "isCorrect": false
+            },
+            {
+                "value": "Email server logs, web proxy logs, endpoint detection logs, and memory forensics from affected systems",
+                "isCorrect": true
+            },
+            {
+                "value": "Only the ransom note left by attackers",
+                "isCorrect": false
+            },
+            {
+                "value": "User interviews exclusively",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "When managing clients or employers during investigations, what is the forensic investigators PRIMARY ethical obligation?",
+        "options": [
+            {
+                "value": "To provide the findings that the client expects to see",
+                "isCorrect": false
+            },
+            {
+                "value": "To maintain objectivity and report findings accurately, even if they are not favorable to the client",
+                "isCorrect": true
+            },
+            {
+                "value": "To share investigation details with media for transparency",
+                "isCorrect": false
+            },
+            {
+                "value": "To extend the investigation to increase billable hours",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A healthcare organization experiences a data breach affecting patient records. Under HIPAA and other applicable regulations, what role does computer forensics play?",
+        "options": [
+            {
+                "value": "No role since healthcare is exempt from forensic requirements",
+                "isCorrect": false
+            },
+            {
+                "value": "Forensics helps determine the scope of the breach, identify affected records, and provides evidence required for mandatory breach notifications and regulatory investigations",
+                "isCorrect": true
+            },
+            {
+                "value": "Forensics is only needed if patients specifically request it",
+                "isCorrect": false
+            },
+            {
+                "value": "Healthcare organizations should avoid forensic investigations to prevent liability",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which cyber attribution technique involves analyzing the tools, infrastructure, and methods used by attackers to identify patterns associated with known threat actors?",
+        "options": [
+            {
+                "value": "Behavioral attribution based on timing patterns",
+                "isCorrect": false
+            },
+            {
+                "value": "Technical attribution through analysis of TTPs, malware signatures, and infrastructure fingerprints",
+                "isCorrect": true
+            },
+            {
+                "value": "Verbal attribution through suspect interviews",
+                "isCorrect": false
+            },
+            {
+                "value": "Random attribution based on probability",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "During an investigation, a forensic examiner finds that relevant evidence exists in multiple jurisdictions including the United States, the European Union, and Asia. What is the PRIMARY legal challenge this presents?",
+        "options": [
+            {
+                "value": "Evidence from different countries looks different",
+                "isCorrect": false
+            },
+            {
+                "value": "Different data protection laws, evidence admissibility standards, and international cooperation requirements that must all be navigated simultaneously",
+                "isCorrect": true
+            },
+            {
+                "value": "International evidence cannot be used in court",
+                "isCorrect": false
+            },
+            {
+                "value": "Only evidence from the country where trial occurs is admissible",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An organization is developing metrics to measure the effectiveness of their forensic readiness program. Which metric would be MOST valuable?",
+        "options": [
+            {
+                "value": "The number of forensic tools purchased",
+                "isCorrect": false
+            },
+            {
+                "value": "Mean time to collect and analyze forensic evidence during incidents, and the percentage of incidents where digital evidence successfully supported business decisions or legal proceedings",
+                "isCorrect": true
+            },
+            {
+                "value": "The number of employees trained in forensics",
+                "isCorrect": false
+            },
+            {
+                "value": "The budget allocated to forensics",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "According to best practices, when should forensic evidence preservation activities begin in relation to an incident?",
+        "options": [
+            {
+                "value": "After the incident is fully investigated and understood",
+                "isCorrect": false
+            },
+            {
+                "value": "As early as possible once an incident is suspected, to prevent loss of volatile evidence",
+                "isCorrect": true
+            },
+            {
+                "value": "Only when law enforcement arrives",
+                "isCorrect": false
+            },
+            {
+                "value": "After management approves the forensic investigation budget",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A forensic investigator is reviewing access to forensic resources. Which type of resource would be classified as a commercial forensic database?",
+        "options": [
+            {
+                "value": "Open source forensic tools like Autopsy",
+                "isCorrect": false
+            },
+            {
+                "value": "Subscription-based threat intelligence platforms and reference databases like VirusTotal Intelligence or hash databases",
+                "isCorrect": true
+            },
+            {
+                "value": "Academic research papers",
+                "isCorrect": false
+            },
+            {
+                "value": "Training certification materials",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What impact does encryption have on forensic investigations?",
+        "options": [
+            {
+                "value": "Encryption has no impact on modern forensic investigations",
+                "isCorrect": false
+            },
+            {
+                "value": "Encryption can significantly complicate evidence acquisition, requiring additional techniques such as key recovery, memory analysis, or legal compulsion for decryption",
+                "isCorrect": true
+            },
+            {
+                "value": "All encryption can be easily broken with forensic tools",
+                "isCorrect": false
+            },
+            {
+                "value": "Encrypted evidence is automatically inadmissible in court",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "In the context of computer forensics and business continuity, what is the relationship between forensic readiness and incident response?",
+        "options": [
+            {
+                "value": "They are completely separate and unrelated processes",
+                "isCorrect": false
+            },
+            {
+                "value": "Forensic readiness enables effective incident response by ensuring evidence can be collected efficiently without disrupting business operations",
+                "isCorrect": true
+            },
+            {
+                "value": "Incident response replaces the need for forensic readiness",
+                "isCorrect": false
+            },
+            {
+                "value": "Business continuity concerns should override forensic evidence preservation",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A financial institution suspects insider trading based on suspicious trading patterns. What type of digital evidence would be MOST relevant to this investigation?",
+        "options": [
+            {
+                "value": "Server hardware specifications",
+                "isCorrect": false
+            },
+            {
+                "value": "Email communications, instant messages, phone records, trading system logs, and access logs showing correlation between information access and trading activities",
+                "isCorrect": true
+            },
+            {
+                "value": "The organizations marketing materials",
+                "isCorrect": false
+            },
+            {
+                "value": "Public news articles about the stock",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which factor would make digital evidence INADMISSIBLE in court under most legal systems?",
+        "options": [
+            {
+                "value": "The evidence was collected using open source tools",
+                "isCorrect": false
+            },
+            {
+                "value": "The evidence was obtained through an illegal search without proper authorization or warrant",
+                "isCorrect": true
+            },
+            {
+                "value": "The evidence was analyzed by a private investigator",
+                "isCorrect": false
+            },
+            {
+                "value": "The evidence was stored in cloud services",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A forensic examiner is asked about the role of AI in detecting anomalies in large datasets. Which application represents a legitimate use of AI in computer forensics?",
+        "options": [
+            {
+                "value": "AI should replace all human decision-making in forensic investigations",
+                "isCorrect": false
+            },
+            {
+                "value": "Using machine learning to identify patterns in network traffic, detect anomalous behavior, and prioritize evidence for human review",
+                "isCorrect": true
+            },
+            {
+                "value": "AI should never be used in forensics due to reliability concerns",
+                "isCorrect": false
+            },
+            {
+                "value": "AI is only useful for presentation graphics in court",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Under the ISO/IEC 27000 series, which standard specifically focuses on information security management systems (ISMS) that provide the foundation for forensic readiness?",
+        "options": [
+            {
+                "value": "ISO/IEC 27001",
+                "isCorrect": true
+            },
+            {
+                "value": "ISO/IEC 27037",
+                "isCorrect": false
+            },
+            {
+                "value": "ISO/IEC 27042",
+                "isCorrect": false
+            },
+            {
+                "value": "ISO/IEC 27050",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An external attacker compromises an organizations network by exploiting a vulnerability in their web application. This attack would be classified as:",
+        "options": [
+            {
+                "value": "Internal/Insider attack",
+                "isCorrect": false
+            },
+            {
+                "value": "External attack",
+                "isCorrect": true
+            },
+            {
+                "value": "Administrative attack",
+                "isCorrect": false
+            },
+            {
+                "value": "Physical security breach",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "According to forensic readiness procedures, what should an organization do when a key team member with forensic responsibilities leaves the organization?",
+        "options": [
+            {
+                "value": "Ignore the departure since forensics is rarely needed",
+                "isCorrect": false
+            },
+            {
+                "value": "Ensure knowledge transfer, update procedures, and maintain capability through cross-training or replacement hiring",
+                "isCorrect": true
+            },
+            {
+                "value": "Outsource all forensic activities permanently",
+                "isCorrect": false
+            },
+            {
+                "value": "Delete all forensic data the employee had access to",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What is the significance of hash values (MD5, SHA-256) in computer forensics?",
+        "options": [
+            {
+                "value": "Hash values are used to encrypt evidence",
+                "isCorrect": false
+            },
+            {
+                "value": "Hash values provide a cryptographic fingerprint that verifies the integrity of digital evidence and proves it has not been altered",
+                "isCorrect": true
+            },
+            {
+                "value": "Hash values determine the file type",
+                "isCorrect": false
+            },
+            {
+                "value": "Hash values are only used for compressing files",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A digital forensics team is establishing standard operating procedures. According to ENFSI best practices, which principle should guide all forensic examinations?",
+        "options": [
+            {
+                "value": "Speed is more important than accuracy",
+                "isCorrect": false
+            },
+            {
+                "value": "All procedures should be documented, repeatable, and produce consistent results when performed by different competent examiners",
+                "isCorrect": true
+            },
+            {
+                "value": "Each examiner should develop their own unique methods",
+                "isCorrect": false
+            },
+            {
+                "value": "Documentation is only necessary for court cases",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "During an investigation into intellectual property theft, the forensic team discovers that evidence exists on a cloud service provider located in another country. What legal mechanism would typically be required to obtain this evidence?",
+        "options": [
+            {
+                "value": "A simple email request to the provider",
+                "isCorrect": false
+            },
+            {
+                "value": "Mutual Legal Assistance Treaty (MLAT) request or other international legal cooperation mechanisms",
+                "isCorrect": true
+            },
+            {
+                "value": "Direct access without any legal process",
+                "isCorrect": false
+            },
+            {
+                "value": "Cloud evidence cannot be obtained internationally",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "An organization is deciding between building an internal forensic capability versus outsourcing to a third-party firm. What is a PRIMARY advantage of maintaining internal forensic capability?",
+        "options": [
+            {
+                "value": "Internal teams are always more technically skilled",
+                "isCorrect": false
+            },
+            {
+                "value": "Faster response times, better understanding of organizational systems, and ability to integrate forensics into daily security operations",
+                "isCorrect": true
+            },
+            {
+                "value": "Internal teams are always cheaper",
+                "isCorrect": false
+            },
+            {
+                "value": "Internal teams do not need to follow evidence handling procedures",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which statement BEST describes the relationship between digital forensics and the legal system?",
+        "options": [
+            {
+                "value": "Digital forensics operates independently of legal requirements",
+                "isCorrect": false
+            },
+            {
+                "value": "Forensic findings are automatically accepted without challenge",
+                "isCorrect": false
+            },
+            {
+                "value": "Digital forensics must adhere to legal standards for evidence collection, preservation, and presentation to ensure findings are admissible and credible in legal proceedings",
+                "isCorrect": true
+            },
+            {
+                "value": "The legal system does not recognize digital evidence",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A forensic investigator is examining a case where the suspect allegedly used cryptocurrency for illegal transactions. What additional challenge does cryptocurrency present in forensic investigations?",
+        "options": [
+            {
+                "value": "Cryptocurrency transactions are impossible to trace",
+                "isCorrect": false
+            },
+            {
+                "value": "Pseudonymous nature of cryptocurrency addresses requires additional investigative techniques to link transactions to real-world identities",
+                "isCorrect": true
+            },
+            {
+                "value": "Cryptocurrency cannot be used for illegal activities",
+                "isCorrect": false
+            },
+            {
+                "value": "All cryptocurrency transactions are public and easily attributable",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "According to the Federal Rules of Evidence, what standard must be met for expert testimony in computer forensics to be admissible?",
+        "options": [
+            {
+                "value": "The expert must have a specific certification",
+                "isCorrect": false
+            },
+            {
+                "value": "The testimony must be based on sufficient facts, reliable principles and methods, and the expert must have reliably applied those principles to the facts of the case (Daubert standard)",
+                "isCorrect": true
+            },
+            {
+                "value": "The expert must be employed by law enforcement",
+                "isCorrect": false
+            },
+            {
+                "value": "Expert testimony is automatically admissible",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A company experiences a cybersecurity incident and immediately shuts down all systems without preserving evidence. What fundamental principle of forensic readiness did they violate?",
+        "options": [
+            {
+                "value": "Cost optimization principles",
+                "isCorrect": false
+            },
+            {
+                "value": "The principle of preserving volatile evidence before taking containment actions that may destroy it",
+                "isCorrect": true
+            },
+            {
+                "value": "Vendor management principles",
+                "isCorrect": false
+            },
+            {
+                "value": "They followed correct procedures",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "In the context of cybercrime impact at the organizational level, which consequence typically has the LONGEST lasting effect?",
+        "options": [
+            {
+                "value": "Immediate financial losses from the incident",
+                "isCorrect": false
+            },
+            {
+                "value": "Reputational damage leading to loss of customer trust and business opportunities",
+                "isCorrect": true
+            },
+            {
+                "value": "Cost of incident response team",
+                "isCorrect": false
+            },
+            {
+                "value": "Hardware replacement costs",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A forensic investigator needs to explain the concept of digital evidence to a jury with no technical background. Which characteristic should be emphasized to help them understand why special handling is required?",
+        "options": [
+            {
+                "value": "Digital evidence is always accurate",
+                "isCorrect": false
+            },
+            {
+                "value": "Digital evidence is intangible, can be easily modified without leaving obvious traces, and requires specialized tools and techniques to collect and interpret correctly",
+                "isCorrect": true
+            },
+            {
+                "value": "Digital evidence is identical to physical evidence",
+                "isCorrect": false
+            },
+            {
+                "value": "Digital evidence is self-explanatory and needs no expert interpretation",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Which of the following represents a key consideration for legal and IT teams when implementing eDiscovery processes?",
+        "options": [
+            {
+                "value": "Only legal teams should be involved in eDiscovery",
+                "isCorrect": false
+            },
+            {
+                "value": "Collaboration between legal and IT is essential to identify relevant data sources, implement litigation holds, and ensure proper collection and preservation while managing costs",
+                "isCorrect": true
+            },
+            {
+                "value": "eDiscovery only applies to email data",
+                "isCorrect": false
+            },
+            {
+                "value": "IT teams should delete data to reduce eDiscovery scope",
+                "isCorrect": false
+            }
+        ]
+    }
+]

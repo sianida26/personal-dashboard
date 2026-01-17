@@ -1,0 +1,2102 @@
+[
+  {
+    "question": "During a cloud forensic investigation, an analyst needs to preserve evidence from a compromised AWS EC2 instance. What is the FIRST step in the forensic acquisition methodology?",
+    "options": [
+      {
+        "value": "Take a snapshot of the EC2 instance",
+        "isCorrect": false
+      },
+      {
+        "value": "Isolate the compromised EC2 instance",
+        "isCorrect": true
+      },
+      {
+        "value": "Create an evidence volume from the snapshot",
+        "isCorrect": false
+      },
+      {
+        "value": "Mount the evidence volume on the forensic workstation",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which AWS service provides API activity logging that records actions taken by users, roles, or AWS services, and is essential for IAM-based incident investigations?",
+    "options": [
+      {
+        "value": "Amazon CloudWatch",
+        "isCorrect": false
+      },
+      {
+        "value": "AWS CloudTrail",
+        "isCorrect": true
+      },
+      {
+        "value": "Amazon GuardDuty",
+        "isCorrect": false
+      },
+      {
+        "value": "AWS Config",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In the Shared Responsibility Model for AWS, which of the following is the customer's responsibility?",
+    "options": [
+      {
+        "value": "Physical security of data centers",
+        "isCorrect": false
+      },
+      {
+        "value": "Hardware maintenance and patching",
+        "isCorrect": false
+      },
+      {
+        "value": "Data encryption and access management",
+        "isCorrect": true
+      },
+      {
+        "value": "Network infrastructure of AWS regions",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A security team discovers unauthorized API calls in their AWS environment. The calls were made using temporary credentials. Which log source would provide the MOST comprehensive information about who assumed the role and what actions were performed?",
+    "options": [
+      {
+        "value": "VPC Flow Logs",
+        "isCorrect": false
+      },
+      {
+        "value": "CloudTrail logs",
+        "isCorrect": true
+      },
+      {
+        "value": "S3 Access Logs",
+        "isCorrect": false
+      },
+      {
+        "value": "CloudWatch Metrics",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which cloud service model provides the customer with the MOST control over security configurations but also the MOST responsibility?",
+    "options": [
+      {
+        "value": "Software as a Service (SaaS)",
+        "isCorrect": false
+      },
+      {
+        "value": "Platform as a Service (PaaS)",
+        "isCorrect": false
+      },
+      {
+        "value": "Infrastructure as a Service (IaaS)",
+        "isCorrect": true
+      },
+      {
+        "value": "Function as a Service (FaaS)",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During an Azure forensic investigation, an analyst needs to acquire a disk image from a compromised VM. Which Azure CLI command would create a snapshot of the OS disk?",
+    "options": [
+      {
+        "value": "az vm disk create",
+        "isCorrect": false
+      },
+      {
+        "value": "az snapshot create",
+        "isCorrect": true
+      },
+      {
+        "value": "az disk copy",
+        "isCorrect": false
+      },
+      {
+        "value": "az vm capture",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the PRIMARY challenge in cloud forensics related to data acquisition?",
+    "options": [
+      {
+        "value": "Cloud storage is always encrypted",
+        "isCorrect": false
+      },
+      {
+        "value": "Multi-tenancy and data location across jurisdictions",
+        "isCorrect": true
+      },
+      {
+        "value": "Cloud providers do not keep any logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Virtual machines cannot be imaged",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An organization using Google Cloud Platform suspects data exfiltration from their BigQuery datasets. Which GCP service should the forensic analyst examine FIRST?",
+    "options": [
+      {
+        "value": "Cloud Storage access logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Cloud Audit Logs and BigQuery data access logs",
+        "isCorrect": true
+      },
+      {
+        "value": "VPC Flow Logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Cloud Monitoring metrics",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "According to OWASP Top 10 Cloud Security Risks, which risk involves the failure to properly configure cloud resources and services?",
+    "options": [
+      {
+        "value": "Injection flaws",
+        "isCorrect": false
+      },
+      {
+        "value": "Insecure interfaces and APIs",
+        "isCorrect": false
+      },
+      {
+        "value": "System vulnerabilities",
+        "isCorrect": false
+      },
+      {
+        "value": "Misconfiguration and inadequate change control",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "question": "In AWS forensics, what is the purpose of creating an evidence volume from a snapshot rather than analyzing the original volume?",
+    "options": [
+      {
+        "value": "To improve analysis speed",
+        "isCorrect": false
+      },
+      {
+        "value": "To preserve the original evidence and maintain chain of custody",
+        "isCorrect": true
+      },
+      {
+        "value": "To reduce storage costs",
+        "isCorrect": false
+      },
+      {
+        "value": "Because the original volume cannot be accessed",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Azure service provides centralized security management and threat protection across hybrid cloud workloads?",
+    "options": [
+      {
+        "value": "Azure Active Directory",
+        "isCorrect": false
+      },
+      {
+        "value": "Azure Monitor",
+        "isCorrect": false
+      },
+      {
+        "value": "Microsoft Azure Sentinel",
+        "isCorrect": true
+      },
+      {
+        "value": "Azure Key Vault",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During a cloud forensic investigation, an analyst discovers that an attacker used stolen credentials to access S3 buckets. The analyst needs to determine which objects were accessed. Which AWS log would contain this information?",
+    "options": [
+      {
+        "value": "CloudTrail data events",
+        "isCorrect": false
+      },
+      {
+        "value": "S3 Server Access Logs",
+        "isCorrect": true
+      },
+      {
+        "value": "VPC Flow Logs",
+        "isCorrect": false
+      },
+      {
+        "value": "ELB Access Logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the PRIMARY difference between Google Cloud's 'Instant Snapshot' and a regular snapshot?",
+    "options": [
+      {
+        "value": "Instant snapshots are stored in a different region",
+        "isCorrect": false
+      },
+      {
+        "value": "Instant snapshots provide faster creation and are stored locally for quick recovery",
+        "isCorrect": true
+      },
+      {
+        "value": "Instant snapshots are free of charge",
+        "isCorrect": false
+      },
+      {
+        "value": "Instant snapshots cannot be used for forensic purposes",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In cloud forensics, which stakeholder is responsible for providing access to logs and infrastructure for investigation?",
+    "options": [
+      {
+        "value": "Law enforcement",
+        "isCorrect": false
+      },
+      {
+        "value": "Cloud Service Provider (CSP)",
+        "isCorrect": true
+      },
+      {
+        "value": "End users",
+        "isCorrect": false
+      },
+      {
+        "value": "Insurance company",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which type of cloud computing attack involves an attacker exploiting vulnerabilities to access another tenant's data in a shared environment?",
+    "options": [
+      {
+        "value": "Denial of Service attack",
+        "isCorrect": false
+      },
+      {
+        "value": "Side-channel attack or VM escape",
+        "isCorrect": true
+      },
+      {
+        "value": "Phishing attack",
+        "isCorrect": false
+      },
+      {
+        "value": "SQL injection attack",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What AWS service provides intelligent threat detection that continuously monitors for malicious activity and unauthorized behavior?",
+    "options": [
+      {
+        "value": "AWS Shield",
+        "isCorrect": false
+      },
+      {
+        "value": "Amazon GuardDuty",
+        "isCorrect": true
+      },
+      {
+        "value": "AWS WAF",
+        "isCorrect": false
+      },
+      {
+        "value": "Amazon Inspector",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A forensic analyst investigating an Azure incident needs to examine authentication events and sign-in activities. Which Azure service contains this information?",
+    "options": [
+      {
+        "value": "Azure Monitor",
+        "isCorrect": false
+      },
+      {
+        "value": "Azure Active Directory (Azure AD) logs",
+        "isCorrect": true
+      },
+      {
+        "value": "Azure Storage Analytics",
+        "isCorrect": false
+      },
+      {
+        "value": "Azure Network Watcher",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In Google Cloud Platform, which log type captures administrative actions and API calls that modify the configuration or metadata of resources?",
+    "options": [
+      {
+        "value": "Data Access Logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Admin Activity Logs",
+        "isCorrect": true
+      },
+      {
+        "value": "System Event Logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Policy Denied Logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which of the following is NOT a challenge specific to cloud forensics?",
+    "options": [
+      {
+        "value": "Data volatility due to auto-scaling and ephemeral resources",
+        "isCorrect": false
+      },
+      {
+        "value": "Dependency on CSP for log access",
+        "isCorrect": false
+      },
+      {
+        "value": "Lack of physical access to hardware",
+        "isCorrect": false
+      },
+      {
+        "value": "Inability to collect volatile memory from running systems",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "question": "When performing forensic acquisition of an Azure VM, why should the snapshot be copied to a different resource group?",
+    "options": [
+      {
+        "value": "To reduce storage costs",
+        "isCorrect": false
+      },
+      {
+        "value": "To isolate the evidence from the potentially compromised environment",
+        "isCorrect": true
+      },
+      {
+        "value": "Because snapshots cannot exist in the same resource group",
+        "isCorrect": false
+      },
+      {
+        "value": "To enable faster analysis speeds",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which AWS log type would be MOST useful for investigating network-level attacks such as port scanning or unusual traffic patterns?",
+    "options": [
+      {
+        "value": "CloudTrail logs",
+        "isCorrect": false
+      },
+      {
+        "value": "S3 Access Logs",
+        "isCorrect": false
+      },
+      {
+        "value": "VPC Flow Logs",
+        "isCorrect": true
+      },
+      {
+        "value": "CloudWatch Application Logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An organization's GCP environment was compromised through SSH brute force attacks. Which GCP log analysis would reveal the source IPs and timing of these attacks?",
+    "options": [
+      {
+        "value": "BigQuery audit logs",
+        "isCorrect": false
+      },
+      {
+        "value": "VPC Flow Logs combined with Compute Engine audit logs",
+        "isCorrect": true
+      },
+      {
+        "value": "Cloud Storage access logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Cloud Functions logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the PRIMARY purpose of Azure Data Redundancy options (LRS, ZRS, GRS, RA-GRS) from a forensic perspective?",
+    "options": [
+      {
+        "value": "To increase storage costs",
+        "isCorrect": false
+      },
+      {
+        "value": "Understanding where data copies exist may be relevant for evidence collection and jurisdiction",
+        "isCorrect": true
+      },
+      {
+        "value": "To prevent data deletion",
+        "isCorrect": false
+      },
+      {
+        "value": "To encrypt data at rest",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In the context of cloud forensics, what does 'CSA' stand for and what role does it play?",
+    "options": [
+      {
+        "value": "Cloud Security Alliance - provides security guidance and frameworks for cloud",
+        "isCorrect": true
+      },
+      {
+        "value": "Cloud Service Agreement - legal contract between provider and customer",
+        "isCorrect": false
+      },
+      {
+        "value": "Certified Security Analyst - forensic certification",
+        "isCorrect": false
+      },
+      {
+        "value": "Central Security Authority - government oversight body",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Google Cloud storage class is designed for data accessed less than once a year and has the lowest storage cost?",
+    "options": [
+      {
+        "value": "Standard Storage",
+        "isCorrect": false
+      },
+      {
+        "value": "Nearline Storage",
+        "isCorrect": false
+      },
+      {
+        "value": "Coldline Storage",
+        "isCorrect": false
+      },
+      {
+        "value": "Archive Storage",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During an AWS forensic investigation, an analyst needs to collect metadata about an EC2 instance including instance type, security groups, and network interfaces. Which AWS CLI command would provide this information?",
+    "options": [
+      {
+        "value": "aws ec2 describe-instances",
+        "isCorrect": true
+      },
+      {
+        "value": "aws ec2 get-instance-metadata",
+        "isCorrect": false
+      },
+      {
+        "value": "aws ec2 list-instances",
+        "isCorrect": false
+      },
+      {
+        "value": "aws ec2 show-instance-details",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What type of cloud attack involves exploiting weak or stolen credentials to gain unauthorized access to cloud resources?",
+    "options": [
+      {
+        "value": "Denial of Service",
+        "isCorrect": false
+      },
+      {
+        "value": "Account hijacking",
+        "isCorrect": true
+      },
+      {
+        "value": "Malware injection",
+        "isCorrect": false
+      },
+      {
+        "value": "Data exfiltration",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In Azure forensics, which tool can be used to analyze a mounted disk image snapshot on a forensic workstation?",
+    "options": [
+      {
+        "value": "Azure Security Center",
+        "isCorrect": false
+      },
+      {
+        "value": "Autopsy",
+        "isCorrect": true
+      },
+      {
+        "value": "Azure Monitor",
+        "isCorrect": false
+      },
+      {
+        "value": "Azure Sentinel",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which of the following best describes the 'Separation of Responsibilities' concept in cloud computing?",
+    "options": [
+      {
+        "value": "Different cloud services should be deployed in separate regions",
+        "isCorrect": false
+      },
+      {
+        "value": "Security responsibilities are divided between the CSP and the customer based on service model",
+        "isCorrect": true
+      },
+      {
+        "value": "Development and operations teams should work independently",
+        "isCorrect": false
+      },
+      {
+        "value": "Data should be separated between different storage tiers",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the forensic significance of AWS CloudWatch Logs during an investigation?",
+    "options": [
+      {
+        "value": "They only contain billing information",
+        "isCorrect": false
+      },
+      {
+        "value": "They can contain application logs, system metrics, and custom log data from EC2 instances and services",
+        "isCorrect": true
+      },
+      {
+        "value": "They are automatically deleted after 24 hours",
+        "isCorrect": false
+      },
+      {
+        "value": "They cannot be exported for offline analysis",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An analyst discovers that an AWS IAM user's access keys were compromised and used to launch unauthorized EC2 instances. Which CloudTrail event name would indicate the creation of these instances?",
+    "options": [
+      {
+        "value": "CreateInstance",
+        "isCorrect": false
+      },
+      {
+        "value": "RunInstances",
+        "isCorrect": true
+      },
+      {
+        "value": "LaunchInstances",
+        "isCorrect": false
+      },
+      {
+        "value": "StartInstances",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In Google Cloud Platform's Shared Responsibility Model for GKE (Google Kubernetes Engine), who is responsible for securing the container images?",
+    "options": [
+      {
+        "value": "Google Cloud only",
+        "isCorrect": false
+      },
+      {
+        "value": "The customer only",
+        "isCorrect": true
+      },
+      {
+        "value": "Both Google and the customer equally",
+        "isCorrect": false
+      },
+      {
+        "value": "Neither - it's automated",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Azure log category would contain information about resource creation, modification, and deletion events?",
+    "options": [
+      {
+        "value": "Sign-in logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Activity logs",
+        "isCorrect": true
+      },
+      {
+        "value": "Diagnostic logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Metrics logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the PRIMARY reason for isolating a compromised EC2 instance by modifying its security group during AWS forensics?",
+    "options": [
+      {
+        "value": "To reduce AWS costs",
+        "isCorrect": false
+      },
+      {
+        "value": "To prevent the attacker from continuing malicious activities while preserving evidence",
+        "isCorrect": true
+      },
+      {
+        "value": "To improve instance performance",
+        "isCorrect": false
+      },
+      {
+        "value": "Because AWS requires it for all forensic investigations",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In GCP forensics, what is the recommended approach after creating an instant snapshot of a persistent disk for evidence collection?",
+    "options": [
+      {
+        "value": "Immediately delete the original disk",
+        "isCorrect": false
+      },
+      {
+        "value": "Copy the instant snapshot to a different location and create a long-term snapshot",
+        "isCorrect": true
+      },
+      {
+        "value": "Share the snapshot publicly for analysis",
+        "isCorrect": false
+      },
+      {
+        "value": "Convert the snapshot to a standard disk immediately",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During an Azure investigation, an analyst needs to determine which users accessed a storage account and what operations they performed. Which Azure service provides this detailed access logging?",
+    "options": [
+      {
+        "value": "Azure Active Directory",
+        "isCorrect": false
+      },
+      {
+        "value": "Azure Storage Analytics logging",
+        "isCorrect": true
+      },
+      {
+        "value": "Azure Security Center",
+        "isCorrect": false
+      },
+      {
+        "value": "Azure Key Vault",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which of the following is a use case for cloud forensics?",
+    "options": [
+      {
+        "value": "Only internal policy violations",
+        "isCorrect": false
+      },
+      {
+        "value": "Investigating cyber crimes, data breaches, and compliance violations in cloud environments",
+        "isCorrect": true
+      },
+      {
+        "value": "Only hardware failures",
+        "isCorrect": false
+      },
+      {
+        "value": "Performance optimization only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does AWS S3 Server Access Logging capture that CloudTrail S3 data events might not?",
+    "options": [
+      {
+        "value": "API calls made through the AWS CLI",
+        "isCorrect": false
+      },
+      {
+        "value": "Website access logs including GET requests for objects accessed via HTTP",
+        "isCorrect": true
+      },
+      {
+        "value": "IAM role assumptions",
+        "isCorrect": false
+      },
+      {
+        "value": "Bucket policy changes",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In cloud computing, what is a 'hypervisor escape' attack?",
+    "options": [
+      {
+        "value": "An attack that causes the hypervisor to crash",
+        "isCorrect": false
+      },
+      {
+        "value": "An attack where a VM breaks out of its isolation to access the host or other VMs",
+        "isCorrect": true
+      },
+      {
+        "value": "An attack that steals hypervisor credentials",
+        "isCorrect": false
+      },
+      {
+        "value": "An attack that prevents VMs from starting",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A GCP investigation reveals that an attacker created persistent anomalous IAM grants to maintain access. Which GCP security service would have detected this threat?",
+    "options": [
+      {
+        "value": "Cloud Armor",
+        "isCorrect": false
+      },
+      {
+        "value": "Security Command Center",
+        "isCorrect": true
+      },
+      {
+        "value": "Cloud NAT",
+        "isCorrect": false
+      },
+      {
+        "value": "Cloud CDN",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which AWS service provides a managed SIEM capability for security analysis and investigation?",
+    "options": [
+      {
+        "value": "AWS CloudTrail",
+        "isCorrect": false
+      },
+      {
+        "value": "Amazon GuardDuty",
+        "isCorrect": false
+      },
+      {
+        "value": "Amazon Security Lake combined with OpenSearch",
+        "isCorrect": true
+      },
+      {
+        "value": "AWS Config",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the forensic importance of preserving AWS CloudTrail log integrity?",
+    "options": [
+      {
+        "value": "It reduces storage costs",
+        "isCorrect": false
+      },
+      {
+        "value": "Log file integrity validation ensures logs haven't been tampered with, maintaining evidence admissibility",
+        "isCorrect": true
+      },
+      {
+        "value": "It improves query performance",
+        "isCorrect": false
+      },
+      {
+        "value": "It is only required for compliance, not forensics",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In Azure, what is the role of Network Security Groups (NSGs) in forensic isolation of a compromised VM?",
+    "options": [
+      {
+        "value": "NSGs can only be used for load balancing",
+        "isCorrect": false
+      },
+      {
+        "value": "NSGs can be modified to restrict all inbound/outbound traffic while preserving the VM state",
+        "isCorrect": true
+      },
+      {
+        "value": "NSGs automatically delete VMs when breaches are detected",
+        "isCorrect": false
+      },
+      {
+        "value": "NSGs have no role in forensic procedures",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which GCP log type would contain information about a malicious script executed within a container?",
+    "options": [
+      {
+        "value": "Admin Activity logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Container stdout/stderr logs and Security Command Center findings",
+        "isCorrect": true
+      },
+      {
+        "value": "VPC Flow Logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Cloud DNS logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An organization detects unauthorized data transfer from their Azure Blob storage. Which combination of logs would provide the MOST comprehensive view of the incident?",
+    "options": [
+      {
+        "value": "Only Azure AD sign-in logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Storage Analytics logs, Azure Activity logs, and Network Watcher flow logs",
+        "isCorrect": true
+      },
+      {
+        "value": "Only Azure Monitor metrics",
+        "isCorrect": false
+      },
+      {
+        "value": "Only Azure Sentinel alerts",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What information does the AWS CloudTrail 'userIdentity' field provide during forensic analysis?",
+    "options": [
+      {
+        "value": "The physical location of the user",
+        "isCorrect": false
+      },
+      {
+        "value": "Details about the entity that made the request, including type, ARN, and account ID",
+        "isCorrect": true
+      },
+      {
+        "value": "Only the username",
+        "isCorrect": false
+      },
+      {
+        "value": "The user's password hash",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In Azure forensics, what is the significance of the 'correlationId' field in Activity logs?",
+    "options": [
+      {
+        "value": "It indicates the storage account used",
+        "isCorrect": false
+      },
+      {
+        "value": "It links related events together, allowing tracking of a single operation across multiple log entries",
+        "isCorrect": true
+      },
+      {
+        "value": "It represents the user's session ID",
+        "isCorrect": false
+      },
+      {
+        "value": "It shows the geographic region of the event",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A security team discovers that sensitive data was accessed from an unusual location using valid credentials in Google Cloud. Which log should they examine FIRST to understand the access pattern?",
+    "options": [
+      {
+        "value": "VPC Flow Logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Cloud Audit Logs - Data Access logs",
+        "isCorrect": true
+      },
+      {
+        "value": "Cloud Storage bucket logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Load Balancer logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which cloud forensic challenge is directly related to the distributed nature of cloud infrastructure?",
+    "options": [
+      {
+        "value": "Slow network speeds",
+        "isCorrect": false
+      },
+      {
+        "value": "Data may exist across multiple geographic regions and jurisdictions",
+        "isCorrect": true
+      },
+      {
+        "value": "Lack of encryption options",
+        "isCorrect": false
+      },
+      {
+        "value": "No API access",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What AWS feature enables forensic analysts to verify that CloudTrail log files have not been modified after delivery?",
+    "options": [
+      {
+        "value": "S3 versioning",
+        "isCorrect": false
+      },
+      {
+        "value": "CloudTrail log file integrity validation (digest files)",
+        "isCorrect": true
+      },
+      {
+        "value": "AWS KMS encryption",
+        "isCorrect": false
+      },
+      {
+        "value": "IAM access policies",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In the context of cloud attacks, what is 'cryptojacking'?",
+    "options": [
+      {
+        "value": "Stealing cryptocurrency from cloud wallets",
+        "isCorrect": false
+      },
+      {
+        "value": "Unauthorized use of cloud computing resources to mine cryptocurrency",
+        "isCorrect": true
+      },
+      {
+        "value": "Encrypting cloud data for ransom",
+        "isCorrect": false
+      },
+      {
+        "value": "Breaking cloud encryption algorithms",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During an Azure forensic investigation, the analyst needs to examine network traffic patterns. Which Azure service provides flow log data similar to AWS VPC Flow Logs?",
+    "options": [
+      {
+        "value": "Azure Traffic Manager",
+        "isCorrect": false
+      },
+      {
+        "value": "Azure Network Watcher NSG flow logs",
+        "isCorrect": true
+      },
+      {
+        "value": "Azure Load Balancer",
+        "isCorrect": false
+      },
+      {
+        "value": "Azure Firewall Manager",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the PRIMARY purpose of Google Cloud's Log Analytics feature in forensic investigations?",
+    "options": [
+      {
+        "value": "To delete old logs automatically",
+        "isCorrect": false
+      },
+      {
+        "value": "To query and analyze large volumes of log data using SQL-like queries",
+        "isCorrect": true
+      },
+      {
+        "value": "To generate compliance reports only",
+        "isCorrect": false
+      },
+      {
+        "value": "To encrypt logs at rest",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which of the following correctly describes 'data sovereignty' as it relates to cloud forensics?",
+    "options": [
+      {
+        "value": "The cloud provider owns all customer data",
+        "isCorrect": false
+      },
+      {
+        "value": "Data is subject to the laws and governance of the country where it is stored",
+        "isCorrect": true
+      },
+      {
+        "value": "Customers can move data freely between any region",
+        "isCorrect": false
+      },
+      {
+        "value": "Data sovereignty only applies to government clouds",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An AWS environment was compromised via an exposed access key in a public GitHub repository. Which CloudTrail field would help identify if this key was used from unusual IP addresses?",
+    "options": [
+      {
+        "value": "eventName",
+        "isCorrect": false
+      },
+      {
+        "value": "sourceIPAddress",
+        "isCorrect": true
+      },
+      {
+        "value": "userAgent",
+        "isCorrect": false
+      },
+      {
+        "value": "eventVersion",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In GCP, what service provides automated threat detection for anomalous activities such as cryptocurrency mining or data exfiltration?",
+    "options": [
+      {
+        "value": "Cloud Logging",
+        "isCorrect": false
+      },
+      {
+        "value": "Security Command Center - Event Threat Detection",
+        "isCorrect": true
+      },
+      {
+        "value": "Cloud Monitoring",
+        "isCorrect": false
+      },
+      {
+        "value": "Binary Authorization",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the forensic significance of AWS EBS snapshots during an investigation?",
+    "options": [
+      {
+        "value": "They can only be used for disaster recovery",
+        "isCorrect": false
+      },
+      {
+        "value": "They provide point-in-time copies of volumes that can be mounted on forensic workstations for analysis",
+        "isCorrect": true
+      },
+      {
+        "value": "They automatically encrypt all data",
+        "isCorrect": false
+      },
+      {
+        "value": "They delete original volumes when created",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Azure service provides SIEM and SOAR capabilities for security investigations in cloud environments?",
+    "options": [
+      {
+        "value": "Azure Monitor",
+        "isCorrect": false
+      },
+      {
+        "value": "Azure Sentinel",
+        "isCorrect": true
+      },
+      {
+        "value": "Azure Active Directory",
+        "isCorrect": false
+      },
+      {
+        "value": "Azure Security Center",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A forensic analyst needs to investigate a reverse shell established from a GKE container. Which log sources should be examined?",
+    "options": [
+      {
+        "value": "Only BigQuery logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Container logs, VPC Flow Logs, and Security Command Center findings",
+        "isCorrect": true
+      },
+      {
+        "value": "Only Cloud Storage access logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Only Admin Activity logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the difference between IaaS and PaaS from a cloud forensics perspective?",
+    "options": [
+      {
+        "value": "IaaS and PaaS provide identical forensic access",
+        "isCorrect": false
+      },
+      {
+        "value": "IaaS provides more direct access to OS and infrastructure logs, while PaaS may limit access to application-level logs",
+        "isCorrect": true
+      },
+      {
+        "value": "PaaS always provides more forensic data than IaaS",
+        "isCorrect": false
+      },
+      {
+        "value": "Neither IaaS nor PaaS allows any forensic investigation",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the forensic significance of AWS VPC Flow Logs 'ACCEPT' and 'REJECT' actions?",
+    "options": [
+      {
+        "value": "They indicate billing events",
+        "isCorrect": false
+      },
+      {
+        "value": "ACCEPT shows allowed traffic while REJECT shows blocked traffic by security groups or NACLs",
+        "isCorrect": true
+      },
+      {
+        "value": "They show encryption status",
+        "isCorrect": false
+      },
+      {
+        "value": "They indicate data integrity status",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An organization using Google Workspace suspects that an employee exfiltrated confidential documents before leaving. Which log source should be examined?",
+    "options": [
+      {
+        "value": "VPC Flow Logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Google Workspace Admin audit logs and Drive activity logs",
+        "isCorrect": true
+      },
+      {
+        "value": "BigQuery logs",
+        "isCorrect": false
+      },
+      {
+        "value": "GKE container logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In AWS forensics, what is the purpose of provisioning a forensic workstation in the same Availability Zone as the evidence volume?",
+    "options": [
+      {
+        "value": "To comply with AWS requirements",
+        "isCorrect": false
+      },
+      {
+        "value": "To enable attachment of the evidence EBS volume to the forensic instance",
+        "isCorrect": true
+      },
+      {
+        "value": "To reduce investigation costs",
+        "isCorrect": false
+      },
+      {
+        "value": "To improve data encryption",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Azure feature helps maintain chain of custody by preventing accidental deletion of resources during an investigation?",
+    "options": [
+      {
+        "value": "Azure Firewall",
+        "isCorrect": false
+      },
+      {
+        "value": "Resource locks",
+        "isCorrect": true
+      },
+      {
+        "value": "Azure Policy",
+        "isCorrect": false
+      },
+      {
+        "value": "Azure Blueprints",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What type of cloud forensic evidence is most likely to be lost if an auto-scaling event terminates an EC2 instance?",
+    "options": [
+      {
+        "value": "S3 bucket contents",
+        "isCorrect": false
+      },
+      {
+        "value": "Volatile memory and instance store data",
+        "isCorrect": true
+      },
+      {
+        "value": "CloudTrail logs",
+        "isCorrect": false
+      },
+      {
+        "value": "IAM policies",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During a GCP investigation, an analyst discovers traffic to known C2 (Command and Control) IP addresses. Which combination of logs would help trace the source?",
+    "options": [
+      {
+        "value": "Only BigQuery audit logs",
+        "isCorrect": false
+      },
+      {
+        "value": "VPC Flow Logs and Security Command Center threat findings",
+        "isCorrect": true
+      },
+      {
+        "value": "Only Cloud Storage access logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Only Pub/Sub logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the PRIMARY purpose of AWS Config in cloud forensics?",
+    "options": [
+      {
+        "value": "To encrypt data at rest",
+        "isCorrect": false
+      },
+      {
+        "value": "To track configuration changes and maintain a history of resource configurations",
+        "isCorrect": true
+      },
+      {
+        "value": "To block malicious IP addresses",
+        "isCorrect": false
+      },
+      {
+        "value": "To manage user authentication",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In Azure, what information does the 'caller' field in Activity logs provide?",
+    "options": [
+      {
+        "value": "The phone number of the user",
+        "isCorrect": false
+      },
+      {
+        "value": "The identity (user principal name or service principal) that performed the operation",
+        "isCorrect": true
+      },
+      {
+        "value": "The region where the call was made",
+        "isCorrect": false
+      },
+      {
+        "value": "The billing account",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A forensic analyst investigating an AWS breach needs to determine which S3 buckets were accessed and by whom. CloudTrail shows 'ListBuckets' and 'GetObject' events. What does this indicate?",
+    "options": [
+      {
+        "value": "The attacker only viewed bucket names",
+        "isCorrect": false
+      },
+      {
+        "value": "The attacker listed buckets and downloaded objects from them",
+        "isCorrect": true
+      },
+      {
+        "value": "The attacker deleted objects",
+        "isCorrect": false
+      },
+      {
+        "value": "The attacker created new buckets",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which GCP service allows forensic analysts to execute queries against logs using BigQuery SQL syntax?",
+    "options": [
+      {
+        "value": "Cloud Monitoring",
+        "isCorrect": false
+      },
+      {
+        "value": "Cloud Logging with Log Analytics (BigQuery linked dataset)",
+        "isCorrect": true
+      },
+      {
+        "value": "Cloud Trace",
+        "isCorrect": false
+      },
+      {
+        "value": "Cloud Profiler",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is 'tenant isolation' in cloud computing and why is it important for forensics?",
+    "options": [
+      {
+        "value": "Physical separation of cloud data centers",
+        "isCorrect": false
+      },
+      {
+        "value": "Logical separation of customer environments to prevent cross-tenant data access",
+        "isCorrect": true
+      },
+      {
+        "value": "Isolation of backup systems",
+        "isCorrect": false
+      },
+      {
+        "value": "Network isolation for performance",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An Azure AD investigation reveals suspicious sign-in events with 'atypical travel' risk detection. What does this indicate?",
+    "options": [
+      {
+        "value": "The user is on vacation",
+        "isCorrect": false
+      },
+      {
+        "value": "Sign-ins from geographically distant locations in a short timeframe, indicating potential account compromise",
+        "isCorrect": true
+      },
+      {
+        "value": "Network latency issues",
+        "isCorrect": false
+      },
+      {
+        "value": "VPN usage",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the forensic benefit of enabling 'Object Lock' on AWS S3 buckets containing log data?",
+    "options": [
+      {
+        "value": "It improves query performance",
+        "isCorrect": false
+      },
+      {
+        "value": "It prevents log deletion or modification, preserving evidence integrity",
+        "isCorrect": true
+      },
+      {
+        "value": "It reduces storage costs",
+        "isCorrect": false
+      },
+      {
+        "value": "It encrypts the objects",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In GCP, what is the retention period for Admin Activity audit logs by default?",
+    "options": [
+      {
+        "value": "30 days",
+        "isCorrect": false
+      },
+      {
+        "value": "400 days",
+        "isCorrect": true
+      },
+      {
+        "value": "90 days",
+        "isCorrect": false
+      },
+      {
+        "value": "7 days",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During an investigation, an analyst finds that an attacker used an anonymous proxy to access GCP resources. Which Security Command Center finding would flag this?",
+    "options": [
+      {
+        "value": "Malware detection",
+        "isCorrect": false
+      },
+      {
+        "value": "Access from anonymous proxy (Anonymizing Proxy)",
+        "isCorrect": true
+      },
+      {
+        "value": "Brute force attack",
+        "isCorrect": false
+      },
+      {
+        "value": "Data exfiltration",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the purpose of AWS CloudTrail's 'eventSource' field in forensic analysis?",
+    "options": [
+      {
+        "value": "It shows the geographic location of the event",
+        "isCorrect": false
+      },
+      {
+        "value": "It identifies which AWS service the API call was made to",
+        "isCorrect": true
+      },
+      {
+        "value": "It indicates the event's timestamp",
+        "isCorrect": false
+      },
+      {
+        "value": "It shows the user's browser information",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A security team detects that an attacker modified IAM policies to grant themselves admin access in AWS. Which CloudTrail event would show this modification?",
+    "options": [
+      {
+        "value": "CreateUser",
+        "isCorrect": false
+      },
+      {
+        "value": "PutUserPolicy or AttachUserPolicy",
+        "isCorrect": true
+      },
+      {
+        "value": "GetUser",
+        "isCorrect": false
+      },
+      {
+        "value": "ListPolicies",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In Azure, what is the maximum retention period for Activity logs when exported to a Storage Account?",
+    "options": [
+      {
+        "value": "90 days only",
+        "isCorrect": false
+      },
+      {
+        "value": "Indefinite, based on storage account lifecycle policy",
+        "isCorrect": true
+      },
+      {
+        "value": "30 days maximum",
+        "isCorrect": false
+      },
+      {
+        "value": "1 year fixed",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which GCP feature allows you to create immutable backups of persistent disks for forensic preservation?",
+    "options": [
+      {
+        "value": "Cloud CDN",
+        "isCorrect": false
+      },
+      {
+        "value": "Disk snapshots with snapshot locking",
+        "isCorrect": true
+      },
+      {
+        "value": "Cloud Armor",
+        "isCorrect": false
+      },
+      {
+        "value": "Cloud NAT",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During an AWS incident, the forensic team needs to identify all API calls made by a specific IAM role in the last 24 hours. Which CloudTrail feature would be most efficient for this query?",
+    "options": [
+      {
+        "value": "Manual log file review",
+        "isCorrect": false
+      },
+      {
+        "value": "CloudTrail Lake or Athena queries on S3 logs",
+        "isCorrect": true
+      },
+      {
+        "value": "CloudWatch metrics",
+        "isCorrect": false
+      },
+      {
+        "value": "AWS Config rules",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the significance of the 'responseElements' field in AWS CloudTrail logs?",
+    "options": [
+      {
+        "value": "It shows the user's response time",
+        "isCorrect": false
+      },
+      {
+        "value": "It contains the response returned by AWS for the API call, including created resource IDs",
+        "isCorrect": true
+      },
+      {
+        "value": "It shows HTTP response codes only",
+        "isCorrect": false
+      },
+      {
+        "value": "It indicates network latency",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In Azure forensics, which service provides threat intelligence and automated investigation capabilities?",
+    "options": [
+      {
+        "value": "Azure Monitor",
+        "isCorrect": false
+      },
+      {
+        "value": "Microsoft Defender for Cloud",
+        "isCorrect": true
+      },
+      {
+        "value": "Azure Key Vault",
+        "isCorrect": false
+      },
+      {
+        "value": "Azure Storage",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A GCP administrator notices unusual compute instance creation in multiple regions. Which log type would show who created these instances?",
+    "options": [
+      {
+        "value": "Data Access logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Admin Activity audit logs",
+        "isCorrect": true
+      },
+      {
+        "value": "System Event logs",
+        "isCorrect": false
+      },
+      {
+        "value": "VPC Flow logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the forensic importance of AWS CloudTrail 'readOnly' field?",
+    "options": [
+      {
+        "value": "It indicates if the user has read-only access",
+        "isCorrect": false
+      },
+      {
+        "value": "It distinguishes between read operations (like Get, List) and write operations (like Create, Delete)",
+        "isCorrect": true
+      },
+      {
+        "value": "It shows if the log file is read-only",
+        "isCorrect": false
+      },
+      {
+        "value": "It indicates encryption status",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Azure tool can be used to search across multiple log types including Activity logs, Azure AD logs, and diagnostic logs?",
+    "options": [
+      {
+        "value": "Azure Storage Explorer",
+        "isCorrect": false
+      },
+      {
+        "value": "Azure Monitor Log Analytics with KQL (Kusto Query Language)",
+        "isCorrect": true
+      },
+      {
+        "value": "Azure CLI only",
+        "isCorrect": false
+      },
+      {
+        "value": "Azure Portal dashboard",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An organization's GCP environment shows signs of a malware infection on a VM. What should be the FIRST forensic action?",
+    "options": [
+      {
+        "value": "Delete the VM immediately",
+        "isCorrect": false
+      },
+      {
+        "value": "Isolate the VM by modifying firewall rules and take a disk snapshot",
+        "isCorrect": true
+      },
+      {
+        "value": "Reboot the VM",
+        "isCorrect": false
+      },
+      {
+        "value": "Run antivirus software on the VM",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the AWS CloudTrail 'errorCode' field indicate when present in a log entry?",
+    "options": [
+      {
+        "value": "A successful operation with warnings",
+        "isCorrect": false
+      },
+      {
+        "value": "The API call failed and the error type is recorded",
+        "isCorrect": true
+      },
+      {
+        "value": "Network connectivity issues",
+        "isCorrect": false
+      },
+      {
+        "value": "Billing errors",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In cloud forensics, what is the 'chain of custody' challenge specific to cloud environments?",
+    "options": [
+      {
+        "value": "Cloud providers never document evidence handling",
+        "isCorrect": false
+      },
+      {
+        "value": "Proving evidence integrity when physical access is not possible and data passes through CSP systems",
+        "isCorrect": true
+      },
+      {
+        "value": "Cloud evidence cannot be timestamped",
+        "isCorrect": false
+      },
+      {
+        "value": "Evidence in the cloud automatically expires",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During an Azure investigation, an analyst needs to determine if conditional access policies were bypassed. Which log should be examined?",
+    "options": [
+      {
+        "value": "Azure Storage logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Azure AD Sign-in logs with conditional access evaluation details",
+        "isCorrect": true
+      },
+      {
+        "value": "Azure Activity logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Network Watcher logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the relationship between GCP Cloud Audit Logs and BigQuery for forensic analysis?",
+    "options": [
+      {
+        "value": "They are completely separate systems",
+        "isCorrect": false
+      },
+      {
+        "value": "Audit logs can be exported to BigQuery for complex SQL-based forensic analysis",
+        "isCorrect": true
+      },
+      {
+        "value": "BigQuery generates its own audit logs only",
+        "isCorrect": false
+      },
+      {
+        "value": "Cloud Audit Logs cannot be queried",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the primary purpose of using AWS GuardDuty in conjunction with CloudTrail for forensics?",
+    "options": [
+      {
+        "value": "To replace CloudTrail logging",
+        "isCorrect": false
+      },
+      {
+        "value": "To provide automated threat detection and correlation of CloudTrail events",
+        "isCorrect": true
+      },
+      {
+        "value": "To encrypt CloudTrail logs",
+        "isCorrect": false
+      },
+      {
+        "value": "To reduce CloudTrail costs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A Kubernetes cluster in GKE shows unauthorized pod deployments. Which logging source would provide deployment details?",
+    "options": [
+      {
+        "value": "VPC Flow Logs only",
+        "isCorrect": false
+      },
+      {
+        "value": "GKE Audit Logs and Kubernetes API server logs",
+        "isCorrect": true
+      },
+      {
+        "value": "Cloud CDN logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Cloud SQL logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In AWS, what is the forensic significance of the 'userIdentity.sessionContext.sessionIssuer' field in CloudTrail?",
+    "options": [
+      {
+        "value": "It identifies the web browser used",
+        "isCorrect": false
+      },
+      {
+        "value": "It shows the original entity that assumed a role, critical for tracing federated access",
+        "isCorrect": true
+      },
+      {
+        "value": "It indicates the session timeout value",
+        "isCorrect": false
+      },
+      {
+        "value": "It shows geographic location",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is a key forensic limitation when investigating incidents in serverless architectures (Lambda, Cloud Functions, Azure Functions)?",
+    "options": [
+      {
+        "value": "No logs are available",
+        "isCorrect": false
+      },
+      {
+        "value": "Ephemeral execution environments make traditional disk forensics impossible",
+        "isCorrect": true
+      },
+      {
+        "value": "Serverless functions cannot be compromised",
+        "isCorrect": false
+      },
+      {
+        "value": "All serverless activity is encrypted",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An AWS S3 bucket containing sensitive data shows unauthorized access. Which log type would provide detailed object-level access information?",
+    "options": [
+      {
+        "value": "CloudTrail management events only",
+        "isCorrect": false
+      },
+      {
+        "value": "CloudTrail data events for S3 or S3 server access logging",
+        "isCorrect": true
+      },
+      {
+        "value": "VPC Flow Logs",
+        "isCorrect": false
+      },
+      {
+        "value": "AWS Config logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In Azure, what does the 'correlationId' field help achieve in forensic investigation?",
+    "options": [
+      {
+        "value": "It encrypts related events",
+        "isCorrect": false
+      },
+      {
+        "value": "It links multiple log entries that belong to the same operation or request",
+        "isCorrect": true
+      },
+      {
+        "value": "It identifies the data center",
+        "isCorrect": false
+      },
+      {
+        "value": "It shows the billing account",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What cloud forensic tool can be used to create forensically sound images of GCP persistent disks?",
+    "options": [
+      {
+        "value": "Only physical access to Google data centers",
+        "isCorrect": false
+      },
+      {
+        "value": "gcloud compute disks snapshot with immediate snapshot and export to Cloud Storage",
+        "isCorrect": true
+      },
+      {
+        "value": "GCP Console UI only",
+        "isCorrect": false
+      },
+      {
+        "value": "Cloud Shell exclusively",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An organization suspects a cloud administrator is exfiltrating data via AWS CLI. What CloudTrail field helps identify the tool used?",
+    "options": [
+      {
+        "value": "eventVersion",
+        "isCorrect": false
+      },
+      {
+        "value": "userAgent",
+        "isCorrect": true
+      },
+      {
+        "value": "eventType",
+        "isCorrect": false
+      },
+      {
+        "value": "awsRegion",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the recommended approach for preserving volatile evidence in a compromised cloud VM?",
+    "options": [
+      {
+        "value": "Immediately shut down the VM",
+        "isCorrect": false
+      },
+      {
+        "value": "Capture memory dump using cloud-native or agent-based tools before any other action",
+        "isCorrect": true
+      },
+      {
+        "value": "Delete the VM and restore from backup",
+        "isCorrect": false
+      },
+      {
+        "value": "Only capture disk snapshots",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In a multi-cloud forensic investigation, which challenge is most significant?",
+    "options": [
+      {
+        "value": "All cloud providers use identical log formats",
+        "isCorrect": false
+      },
+      {
+        "value": "Different log formats, retention periods, and API structures across providers require specialized knowledge",
+        "isCorrect": true
+      },
+      {
+        "value": "Multi-cloud environments cannot be investigated",
+        "isCorrect": false
+      },
+      {
+        "value": "Evidence from different clouds cannot be correlated",
+        "isCorrect": false
+      }
+    ]
+  }
+]

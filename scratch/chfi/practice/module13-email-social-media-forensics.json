@@ -1,0 +1,1052 @@
+[
+  {
+    "question": "During a corporate email fraud investigation, a forensic examiner needs to understand the basic flow of email communication. Which sequence correctly represents the path an email takes from sender to recipient?",
+    "options": [
+      {
+        "value": "MUA → MTA → Internet → MTA → MDA → MUA",
+        "isCorrect": true
+      },
+      {
+        "value": "MDA → MTA → Internet → MUA → MTA → MDA",
+        "isCorrect": false
+      },
+      {
+        "value": "MTA → MUA → Internet → MDA → MTA → MUA",
+        "isCorrect": false
+      },
+      {
+        "value": "MUA → MDA → Internet → MTA → MDA → MUA",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic investigator is analyzing an email header and finds the following: \"Received: from mail.attacker.com (192.168.1.100) by victim-server.com\". Which component of the email system added this header?",
+    "options": [
+      {
+        "value": "Mail User Agent (MUA)",
+        "isCorrect": false
+      },
+      {
+        "value": "Mail Transfer Agent (MTA)",
+        "isCorrect": true
+      },
+      {
+        "value": "Mail Delivery Agent (MDA)",
+        "isCorrect": false
+      },
+      {
+        "value": "SMTP Client",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the primary function of the Mail Delivery Agent (MDA) in email communication?",
+    "options": [
+      {
+        "value": "Composing and sending emails",
+        "isCorrect": false
+      },
+      {
+        "value": "Routing emails between servers",
+        "isCorrect": false
+      },
+      {
+        "value": "Delivering emails to the recipients mailbox",
+        "isCorrect": true
+      },
+      {
+        "value": "Encrypting email messages",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator receives an email evidence file and notices it contains headers like \"From:\", \"To:\", \"Subject:\", \"Date:\", and \"Message-ID:\". These headers belong to which part of an email message?",
+    "options": [
+      {
+        "value": "Email Body",
+        "isCorrect": false
+      },
+      {
+        "value": "Email Envelope",
+        "isCorrect": false
+      },
+      {
+        "value": "Email Header",
+        "isCorrect": true
+      },
+      {
+        "value": "Email Attachment",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which protocol is primarily used by email clients to retrieve messages from a mail server while keeping a copy of messages on the server?",
+    "options": [
+      {
+        "value": "POP3",
+        "isCorrect": false
+      },
+      {
+        "value": "SMTP",
+        "isCorrect": false
+      },
+      {
+        "value": "IMAP",
+        "isCorrect": true
+      },
+      {
+        "value": "FTP",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During an email spoofing investigation, an analyst discovers that the \"From:\" header shows ceo@company.com but the \"Return-Path:\" header shows attacker@malicious.com. What does this discrepancy indicate?",
+    "options": [
+      {
+        "value": "A legitimate email forwarding setup",
+        "isCorrect": false
+      },
+      {
+        "value": "The email was likely spoofed",
+        "isCorrect": true
+      },
+      {
+        "value": "The email server is misconfigured",
+        "isCorrect": false
+      },
+      {
+        "value": "The recipient email client has a bug",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which of the following is NOT a standard component found in the envelope of an email message?",
+    "options": [
+      {
+        "value": "MAIL FROM address",
+        "isCorrect": false
+      },
+      {
+        "value": "RCPT TO address",
+        "isCorrect": false
+      },
+      {
+        "value": "Message-ID",
+        "isCorrect": true
+      },
+      {
+        "value": "Routing information",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic examiner is investigating a phishing campaign and needs to trace the original sending server. Which email header field would provide the most reliable information about the originating server?",
+    "options": [
+      {
+        "value": "From:",
+        "isCorrect": false
+      },
+      {
+        "value": "Reply-To:",
+        "isCorrect": false
+      },
+      {
+        "value": "The first (bottommost) Received: header",
+        "isCorrect": true
+      },
+      {
+        "value": "X-Mailer:",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does SMTP stand for and what port does it traditionally use for unencrypted communication?",
+    "options": [
+      {
+        "value": "Simple Mail Transfer Protocol, Port 25",
+        "isCorrect": true
+      },
+      {
+        "value": "Secure Mail Transfer Protocol, Port 465",
+        "isCorrect": false
+      },
+      {
+        "value": "Simple Message Transport Protocol, Port 110",
+        "isCorrect": false
+      },
+      {
+        "value": "Standard Mail Transmission Protocol, Port 143",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During a business email compromise investigation, an analyst examines an email and finds the MIME type \"multipart/mixed\". What does this indicate about the email?",
+    "options": [
+      {
+        "value": "The email is encrypted",
+        "isCorrect": false
+      },
+      {
+        "value": "The email contains multiple parts such as text and attachments",
+        "isCorrect": true
+      },
+      {
+        "value": "The email was sent to multiple recipients",
+        "isCorrect": false
+      },
+      {
+        "value": "The email was forwarded multiple times",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which header field uniquely identifies an email message and is crucial for forensic tracking and threading of email conversations?",
+    "options": [
+      {
+        "value": "X-Priority:",
+        "isCorrect": false
+      },
+      {
+        "value": "Content-Type:",
+        "isCorrect": false
+      },
+      {
+        "value": "Message-ID:",
+        "isCorrect": true
+      },
+      {
+        "value": "Date:",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic investigator needs to understand the difference between POP3 and IMAP for evidence acquisition. Which statement correctly describes a key difference?",
+    "options": [
+      {
+        "value": "POP3 synchronizes emails across multiple devices, IMAP downloads and deletes from server",
+        "isCorrect": false
+      },
+      {
+        "value": "POP3 downloads emails and typically removes them from server, IMAP keeps emails on server",
+        "isCorrect": true
+      },
+      {
+        "value": "Both protocols function identically in terms of message handling",
+        "isCorrect": false
+      },
+      {
+        "value": "IMAP uses port 25 while POP3 uses port 587",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the purpose of the \"Received:\" headers in an email message from a forensic perspective?",
+    "options": [
+      {
+        "value": "To show who has read the email",
+        "isCorrect": false
+      },
+      {
+        "value": "To track the path the email took through various mail servers",
+        "isCorrect": true
+      },
+      {
+        "value": "To list all recipients who received the email",
+        "isCorrect": false
+      },
+      {
+        "value": "To indicate the email priority level",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator is tasked with acquiring email evidence from a suspects computer running Microsoft Outlook. Which file extension contains the locally stored emails in offline mode?",
+    "options": [
+      {
+        "value": ".pst",
+        "isCorrect": false
+      },
+      {
+        "value": ".ost",
+        "isCorrect": true
+      },
+      {
+        "value": ".eml",
+        "isCorrect": false
+      },
+      {
+        "value": ".msg",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During a fraud investigation, a forensic examiner needs to acquire email data from Mozilla Thunderbird. Where are the local email files typically stored on a Windows system?",
+    "options": [
+      {
+        "value": "C:\\Program Files\\Mozilla Thunderbird\\Mail",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\Users\\<username>\\AppData\\Roaming\\Thunderbird\\Profiles\\<profile>\\Mail",
+        "isCorrect": true
+      },
+      {
+        "value": "C:\\Users\\<username>\\Documents\\Thunderbird",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\Windows\\System32\\Thunderbird\\Mail",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool can be used to convert Microsoft Outlook .ost files to .pst files for forensic examination?",
+    "options": [
+      {
+        "value": "Wireshark",
+        "isCorrect": false
+      },
+      {
+        "value": "SysTools MailPro+",
+        "isCorrect": true
+      },
+      {
+        "value": "Volatility",
+        "isCorrect": false
+      },
+      {
+        "value": "FTK Imager",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the first step an investigator should take when investigating email crimes according to proper forensic methodology?",
+    "options": [
+      {
+        "value": "Analyze email headers immediately",
+        "isCorrect": false
+      },
+      {
+        "value": "Recover deleted emails first",
+        "isCorrect": false
+      },
+      {
+        "value": "Seize the computer and email accounts",
+        "isCorrect": true
+      },
+      {
+        "value": "Contact the email service provider",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During an email crime investigation, which type of crime involves sending fraudulent emails pretending to be from a legitimate organization to steal credentials?",
+    "options": [
+      {
+        "value": "Email bombing",
+        "isCorrect": false
+      },
+      {
+        "value": "Phishing",
+        "isCorrect": true
+      },
+      {
+        "value": "Mail relaying",
+        "isCorrect": false
+      },
+      {
+        "value": "Chain letter",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator needs to acquire emails from a web-based email account. What approach should be taken to preserve evidence integrity?",
+    "options": [
+      {
+        "value": "Take screenshots of the inbox only",
+        "isCorrect": false
+      },
+      {
+        "value": "Forward all emails to the investigators account",
+        "isCorrect": false
+      },
+      {
+        "value": "Use proper forensic tools or request data directly from the provider with legal authorization",
+        "isCorrect": true
+      },
+      {
+        "value": "Print all emails to PDF",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What file format does Mozilla Thunderbird use to store local email messages?",
+    "options": [
+      {
+        "value": ".pst files",
+        "isCorrect": false
+      },
+      {
+        "value": ".ost files",
+        "isCorrect": false
+      },
+      {
+        "value": "MBOX format files without extension",
+        "isCorrect": true
+      },
+      {
+        "value": ".edb files",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic examiner discovers a suspects computer has Outlook configured with an Exchange server. Which statement is correct about the .ost file?",
+    "options": [
+      {
+        "value": "The .ost file can be opened directly in Outlook on any computer",
+        "isCorrect": false
+      },
+      {
+        "value": "The .ost file is encrypted and tied to the specific Windows profile",
+        "isCorrect": true
+      },
+      {
+        "value": "The .ost file contains only sent emails",
+        "isCorrect": false
+      },
+      {
+        "value": "The .ost file is automatically backed up to the cloud",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which email crime involves overwhelming a targets email server by sending a massive number of emails?",
+    "options": [
+      {
+        "value": "Spear phishing",
+        "isCorrect": false
+      },
+      {
+        "value": "Email bombing",
+        "isCorrect": true
+      },
+      {
+        "value": "Spoofing",
+        "isCorrect": false
+      },
+      {
+        "value": "Vishing",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "When acquiring email data for forensic purposes, why is it important to preserve the email headers along with the message body?",
+    "options": [
+      {
+        "value": "Headers contain the email signature",
+        "isCorrect": false
+      },
+      {
+        "value": "Headers contain metadata crucial for tracing the emails origin and path",
+        "isCorrect": true
+      },
+      {
+        "value": "Headers contain the encryption keys",
+        "isCorrect": false
+      },
+      {
+        "value": "Headers are required for proper email formatting only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator uses SysTools MailPro+ to acquire Outlook .pst files. What is the primary advantage of using this specialized tool?",
+    "options": [
+      {
+        "value": "It can bypass email encryption automatically",
+        "isCorrect": false
+      },
+      {
+        "value": "It preserves metadata and allows forensically sound extraction of email data",
+        "isCorrect": true
+      },
+      {
+        "value": "It automatically decrypts password-protected emails",
+        "isCorrect": false
+      },
+      {
+        "value": "It can intercept live email traffic",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In Microsoft Outlook, where is the default location for .pst files on a Windows 10 system?",
+    "options": [
+      {
+        "value": "C:\\Program Files\\Microsoft Office\\Outlook",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\Users\\<username>\\Documents\\Outlook Files",
+        "isCorrect": true
+      },
+      {
+        "value": "C:\\Windows\\System32\\Outlook",
+        "isCorrect": false
+      },
+      {
+        "value": "C:\\Users\\<username>\\Desktop\\Mail",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During an investigation, you need to differentiate between various email file formats. Which statement correctly describes the difference between .pst and .ost files?",
+    "options": [
+      {
+        "value": ".pst files are for IMAP accounts only, .ost files are for POP3 accounts",
+        "isCorrect": false
+      },
+      {
+        "value": ".pst files are portable personal storage, .ost files are offline cached copies tied to Exchange profiles",
+        "isCorrect": true
+      },
+      {
+        "value": ".pst files are encrypted, .ost files are plain text",
+        "isCorrect": false
+      },
+      {
+        "value": ".pst and .ost files are interchangeable formats",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic analyst is examining email headers and encounters the following: \"Authentication-Results: spf=fail (sender IP is 203.0.113.50) smtp.mailfrom=legitcompany.com\". What does this indicate?",
+    "options": [
+      {
+        "value": "The email passed SPF authentication",
+        "isCorrect": false
+      },
+      {
+        "value": "The sending IP is not authorized to send emails on behalf of the domain",
+        "isCorrect": true
+      },
+      {
+        "value": "The email was encrypted during transmission",
+        "isCorrect": false
+      },
+      {
+        "value": "The receiving server has SPF misconfigured",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "When analyzing email headers, an investigator notices multiple \"Received:\" headers. In what order should these be read to trace the emails path?",
+    "options": [
+      {
+        "value": "Top to bottom - first header shows the originating server",
+        "isCorrect": false
+      },
+      {
+        "value": "Bottom to top - first (bottommost) header shows the originating server",
+        "isCorrect": true
+      },
+      {
+        "value": "The order does not matter as all headers are added simultaneously",
+        "isCorrect": false
+      },
+      {
+        "value": "Only the topmost header is relevant for tracing",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What information does the \"X-Originating-IP\" header typically reveal in an email investigation?",
+    "options": [
+      {
+        "value": "The IP address of the receiving mail server",
+        "isCorrect": false
+      },
+      {
+        "value": "The IP address of the senders device when using webmail",
+        "isCorrect": true
+      },
+      {
+        "value": "The IP address of all intermediate mail servers",
+        "isCorrect": false
+      },
+      {
+        "value": "The encrypted IP address of the sender",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator is analyzing a suspicious email and needs to verify DKIM authentication. Which header should be examined?",
+    "options": [
+      {
+        "value": "X-Mailer:",
+        "isCorrect": false
+      },
+      {
+        "value": "DKIM-Signature:",
+        "isCorrect": true
+      },
+      {
+        "value": "Content-Type:",
+        "isCorrect": false
+      },
+      {
+        "value": "Return-Path:",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "How can an investigator retrieve email headers in Gmail for forensic analysis?",
+    "options": [
+      {
+        "value": "Right-click the email and select Properties",
+        "isCorrect": false
+      },
+      {
+        "value": "Click the three dots menu and select Show original",
+        "isCorrect": true
+      },
+      {
+        "value": "Go to Settings > Headers > View All",
+        "isCorrect": false
+      },
+      {
+        "value": "Press Ctrl+H while viewing the email",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During an email header analysis, an investigator finds the header \"X-Spam-Status: Yes, score=8.5\". What does this indicate?",
+    "options": [
+      {
+        "value": "The email definitely contains malware",
+        "isCorrect": false
+      },
+      {
+        "value": "The email was flagged as potential spam by the receiving servers spam filter",
+        "isCorrect": true
+      },
+      {
+        "value": "The sender intentionally marked the email as spam",
+        "isCorrect": false
+      },
+      {
+        "value": "The email failed to be delivered",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool can be used to recover deleted email messages from Outlook .pst files?",
+    "options": [
+      {
+        "value": "Wireshark",
+        "isCorrect": false
+      },
+      {
+        "value": "Recover My eMail",
+        "isCorrect": true
+      },
+      {
+        "value": "Nmap",
+        "isCorrect": false
+      },
+      {
+        "value": "Burp Suite",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator needs to recover deleted emails from Mozilla Thunderbird. Which forensic tool is specifically designed for this purpose?",
+    "options": [
+      {
+        "value": "EnCase",
+        "isCorrect": false
+      },
+      {
+        "value": "Thunderbird Forensics Wizard",
+        "isCorrect": true
+      },
+      {
+        "value": "Autopsy Email Module",
+        "isCorrect": false
+      },
+      {
+        "value": "X-Ways Email Recovery",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "When examining the \"Received:\" header \"Received: from unknown (HELO mail.suspicious.com) (192.0.2.100) by mx.company.com\", what is significant about \"HELO mail.suspicious.com\"?",
+    "options": [
+      {
+        "value": "It is the greeting protocol version used",
+        "isCorrect": false
+      },
+      {
+        "value": "It shows the hostname the sending server identified itself as during SMTP handshake",
+        "isCorrect": true
+      },
+      {
+        "value": "It indicates the email was sent via secure connection",
+        "isCorrect": false
+      },
+      {
+        "value": "It shows the reverse DNS lookup result",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does SPF (Sender Policy Framework) verify in email authentication?",
+    "options": [
+      {
+        "value": "That the email content has not been modified",
+        "isCorrect": false
+      },
+      {
+        "value": "That the sending mail server is authorized to send on behalf of the domain",
+        "isCorrect": true
+      },
+      {
+        "value": "That the recipient is valid",
+        "isCorrect": false
+      },
+      {
+        "value": "That the email attachments are virus-free",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator analyzing an email finds \"Content-Transfer-Encoding: base64\" in the headers. What does this indicate?",
+    "options": [
+      {
+        "value": "The email is encrypted with AES",
+        "isCorrect": false
+      },
+      {
+        "value": "The email content or attachment is encoded in base64 for safe transmission",
+        "isCorrect": true
+      },
+      {
+        "value": "The email uses a 64-bit encryption standard",
+        "isCorrect": false
+      },
+      {
+        "value": "The email was sent through 64 mail servers",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In Microsoft Outlook desktop client, how can an investigator view the full email headers?",
+    "options": [
+      {
+        "value": "View > Message Source",
+        "isCorrect": false
+      },
+      {
+        "value": "File > Properties > Internet Headers or double-click email then File > Properties",
+        "isCorrect": true
+      },
+      {
+        "value": "Tools > Email Headers",
+        "isCorrect": false
+      },
+      {
+        "value": "Right-click > Inspect Element",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the primary purpose of the CAN-SPAM Act in the United States?",
+    "options": [
+      {
+        "value": "To criminalize all forms of email marketing",
+        "isCorrect": false
+      },
+      {
+        "value": "To establish requirements for commercial email and give recipients the right to opt out",
+        "isCorrect": true
+      },
+      {
+        "value": "To encrypt all email communications",
+        "isCorrect": false
+      },
+      {
+        "value": "To mandate email archiving for all businesses",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic investigator is collecting evidence from social media platforms. What is one of the primary challenges in social media forensics?",
+    "options": [
+      {
+        "value": "Social media data is always encrypted",
+        "isCorrect": false
+      },
+      {
+        "value": "Data volatility and potential for content modification or deletion by users",
+        "isCorrect": true
+      },
+      {
+        "value": "All social media platforms use the same data format",
+        "isCorrect": false
+      },
+      {
+        "value": "Social media evidence is not admissible in court",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool is specifically designed for collecting and preserving evidence from social media platforms with legal defensibility?",
+    "options": [
+      {
+        "value": "Wireshark",
+        "isCorrect": false
+      },
+      {
+        "value": "WebPreserver",
+        "isCorrect": true
+      },
+      {
+        "value": "Nmap",
+        "isCorrect": false
+      },
+      {
+        "value": "Burp Suite",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator needs to track a suspects social media activities across multiple platforms. Which tool can help monitor and search user activities?",
+    "options": [
+      {
+        "value": "Social Searcher",
+        "isCorrect": true
+      },
+      {
+        "value": "Volatility",
+        "isCorrect": false
+      },
+      {
+        "value": "FTK Imager",
+        "isCorrect": false
+      },
+      {
+        "value": "Autopsy",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is a social network graph used for in social media forensics?",
+    "options": [
+      {
+        "value": "To encrypt social media communications",
+        "isCorrect": false
+      },
+      {
+        "value": "To visualize and analyze connections and relationships between users",
+        "isCorrect": true
+      },
+      {
+        "value": "To automatically delete suspicious accounts",
+        "isCorrect": false
+      },
+      {
+        "value": "To compress social media data for storage",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "When manually collecting evidence from a social media platform, what should an investigator document?",
+    "options": [
+      {
+        "value": "Only the text content of posts",
+        "isCorrect": false
+      },
+      {
+        "value": "Screenshots, URLs, timestamps, and metadata along with hash values",
+        "isCorrect": true
+      },
+      {
+        "value": "Only the users profile picture",
+        "isCorrect": false
+      },
+      {
+        "value": "Just the number of followers",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which type of social media crime involves creating a fake profile to deceive others or damage someones reputation?",
+    "options": [
+      {
+        "value": "Phishing",
+        "isCorrect": false
+      },
+      {
+        "value": "Catfishing/Impersonation",
+        "isCorrect": true
+      },
+      {
+        "value": "DDoS attack",
+        "isCorrect": false
+      },
+      {
+        "value": "SQL injection",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator is analyzing email headers and finds \"DMARC: fail\". What does this result indicate?",
+    "options": [
+      {
+        "value": "The email failed both SPF and DKIM authentication aligned with the From domain",
+        "isCorrect": true
+      },
+      {
+        "value": "The email server has a hardware failure",
+        "isCorrect": false
+      },
+      {
+        "value": "The recipients mailbox is full",
+        "isCorrect": false
+      },
+      {
+        "value": "The email was successfully delivered",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During a harassment investigation, an investigator needs to extract video footage from a suspects social media account. What is the recommended forensic approach?",
+    "options": [
+      {
+        "value": "Simply download the videos using right-click save",
+        "isCorrect": false
+      },
+      {
+        "value": "Use forensic tools that preserve metadata and document chain of custody",
+        "isCorrect": true
+      },
+      {
+        "value": "Take photos of the screen with a phone camera",
+        "isCorrect": false
+      },
+      {
+        "value": "Ask the suspect to share the videos directly",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What header field in an email can help identify the email client or software used by the sender?",
+    "options": [
+      {
+        "value": "Content-Type:",
+        "isCorrect": false
+      },
+      {
+        "value": "X-Mailer: or User-Agent:",
+        "isCorrect": true
+      },
+      {
+        "value": "Message-ID:",
+        "isCorrect": false
+      },
+      {
+        "value": "Return-Path:",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator receives a subpoena to collect evidence from Gmail. What is the proper procedure for acquiring this data?",
+    "options": [
+      {
+        "value": "Use password cracking tools to access the account",
+        "isCorrect": false
+      },
+      {
+        "value": "Submit a legal request through Googles Law Enforcement Request System",
+        "isCorrect": true
+      },
+      {
+        "value": "Create a fake login page to capture credentials",
+        "isCorrect": false
+      },
+      {
+        "value": "Hire hackers to breach the account",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In social media forensics, what does the term data volatility refer to?",
+    "options": [
+      {
+        "value": "Data that is encrypted and cannot be read",
+        "isCorrect": false
+      },
+      {
+        "value": "Data that can be easily modified, deleted, or become unavailable quickly",
+        "isCorrect": true
+      },
+      {
+        "value": "Data stored on volatile memory only",
+        "isCorrect": false
+      },
+      {
+        "value": "Data that automatically expires after 24 hours",
+        "isCorrect": false
+      }
+    ]
+  }
+]

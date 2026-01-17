@@ -1,0 +1,2102 @@
+[
+  {
+    "question": "A forensic investigator is analyzing a 1TB hard disk drive. The drive has 500GB of data stored on the outer tracks and 300GB on the inner tracks. Which performance characteristic explains why accessing outer track data is faster?",
+    "options": [
+      {
+        "value": "Outer tracks have higher linear velocity and can store more data per rotation",
+        "isCorrect": true
+      },
+      {
+        "value": "Inner tracks have lower rotational latency",
+        "isCorrect": false
+      },
+      {
+        "value": "Outer tracks use smaller sector sizes",
+        "isCorrect": false
+      },
+      {
+        "value": "Inner tracks have higher areal density",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During a forensic examination, you discover a disk with LBA address 2048. If each sector is 512 bytes, what is the byte offset of this sector from the beginning of the disk?",
+    "options": [
+      {
+        "value": "1,048,576 bytes",
+        "isCorrect": true
+      },
+      {
+        "value": "2,048 bytes",
+        "isCorrect": false
+      },
+      {
+        "value": "524,288 bytes",
+        "isCorrect": false
+      },
+      {
+        "value": "4,096 bytes",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which disk measurement represents the number of tracks per inch (TPI) multiplied by the number of bits per inch (BPI)?",
+    "options": [
+      {
+        "value": "Areal density",
+        "isCorrect": true
+      },
+      {
+        "value": "Track density",
+        "isCorrect": false
+      },
+      {
+        "value": "Bit density",
+        "isCorrect": false
+      },
+      {
+        "value": "Sector density",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator needs to image an enterprise-grade server using a high-performance interface that supports up to 12 Gbps transfer speeds and uses point-to-point connections. Which interface should be used?",
+    "options": [
+      {
+        "value": "Serial Attached SCSI (SAS)",
+        "isCorrect": true
+      },
+      {
+        "value": "SATA III",
+        "isCorrect": false
+      },
+      {
+        "value": "IDE/PATA",
+        "isCorrect": false
+      },
+      {
+        "value": "USB 3.0",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A suspect's computer has an NVMe SSD installed. Which interface does NVMe primarily use to achieve superior performance compared to SATA SSDs?",
+    "options": [
+      {
+        "value": "PCIe (PCI Express)",
+        "isCorrect": true
+      },
+      {
+        "value": "AHCI protocol over SATA",
+        "isCorrect": false
+      },
+      {
+        "value": "SCSI protocol",
+        "isCorrect": false
+      },
+      {
+        "value": "USB 4.0",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "You are examining a modern hard disk that uses 4K sectors (Advanced Format). What is the primary advantage of 4K sectors over traditional 512-byte sectors?",
+    "options": [
+      {
+        "value": "Reduced overhead from fewer ECC bytes and sector headers, improving storage efficiency",
+        "isCorrect": true
+      },
+      {
+        "value": "Faster rotational speed",
+        "isCorrect": false
+      },
+      {
+        "value": "Compatibility with all legacy BIOS systems",
+        "isCorrect": false
+      },
+      {
+        "value": "Lower manufacturing cost",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During disk analysis, you encounter log entries showing IOPS values. What does IOPS measure in disk performance?",
+    "options": [
+      {
+        "value": "Input/Output Operations Per Second",
+        "isCorrect": true
+      },
+      {
+        "value": "Integrated Operating Process Speed",
+        "isCorrect": false
+      },
+      {
+        "value": "Internal Output Processing System",
+        "isCorrect": false
+      },
+      {
+        "value": "Indexed Operation Protocol Standard",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator is imaging a suspect's laptop with an SSD. Compared to traditional HDDs, what characteristic of SSDs makes data recovery of deleted files significantly more challenging?",
+    "options": [
+      {
+        "value": "TRIM command that immediately marks deleted blocks for garbage collection",
+        "isCorrect": true
+      },
+      {
+        "value": "Faster read speeds",
+        "isCorrect": false
+      },
+      {
+        "value": "Lack of magnetic platters",
+        "isCorrect": false
+      },
+      {
+        "value": "Use of NAND flash memory",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "You discover a disk in a RAID array with the following specifications: 7200 RPM, 64MB cache, 6 Gbps interface. The interface speed is most likely which standard?",
+    "options": [
+      {
+        "value": "SATA III",
+        "isCorrect": true
+      },
+      {
+        "value": "SATA II",
+        "isCorrect": false
+      },
+      {
+        "value": "SCSI Ultra320",
+        "isCorrect": false
+      },
+      {
+        "value": "IDE/ATA-6",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic examiner calculates disk capacity using LBA. If a disk has 976,773,168 sectors and each sector is 512 bytes, what is the approximate capacity?",
+    "options": [
+      {
+        "value": "500 GB",
+        "isCorrect": true
+      },
+      {
+        "value": "1 TB",
+        "isCorrect": false
+      },
+      {
+        "value": "250 GB",
+        "isCorrect": false
+      },
+      {
+        "value": "2 TB",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During incident response, you need to acquire data from a high-performance NVMe drive. Which tool command would properly identify the NVMe namespace?",
+    "options": [
+      {
+        "value": "nvme list",
+        "isCorrect": true
+      },
+      {
+        "value": "lsblk --nvme",
+        "isCorrect": false
+      },
+      {
+        "value": "fdisk -l /dev/nvme",
+        "isCorrect": false
+      },
+      {
+        "value": "hdparm -I /dev/nvme0",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In a forensic lab, you are comparing SSD and HDD performance metrics. Which metric would be significantly better for SSDs?",
+    "options": [
+      {
+        "value": "Random read/write access time",
+        "isCorrect": true
+      },
+      {
+        "value": "Sequential write endurance over time",
+        "isCorrect": false
+      },
+      {
+        "value": "Data retention without power",
+        "isCorrect": false
+      },
+      {
+        "value": "Cost per gigabyte",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A suspect's system uses AHCI (Advanced Host Controller Interface). Which disk interface does AHCI primarily support?",
+    "options": [
+      {
+        "value": "SATA",
+        "isCorrect": true
+      },
+      {
+        "value": "NVMe",
+        "isCorrect": false
+      },
+      {
+        "value": "SCSI",
+        "isCorrect": false
+      },
+      {
+        "value": "IDE",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "You are analyzing a disk's geometry and find the following: 16,383 cylinders, 16 heads, and 63 sectors per track. This geometry limitation indicates which addressing method?",
+    "options": [
+      {
+        "value": "CHS (Cylinder-Head-Sector) addressing with BIOS limitations",
+        "isCorrect": true
+      },
+      {
+        "value": "Pure LBA addressing",
+        "isCorrect": false
+      },
+      {
+        "value": "GPT addressing",
+        "isCorrect": false
+      },
+      {
+        "value": "UEFI-based addressing",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An examiner encounters a wear-leveling log on an SSD during forensic analysis. What is the primary purpose of wear leveling in SSDs?",
+    "options": [
+      {
+        "value": "To distribute write and erase cycles evenly across memory cells to extend drive lifespan",
+        "isCorrect": true
+      },
+      {
+        "value": "To improve sequential read performance",
+        "isCorrect": false
+      },
+      {
+        "value": "To encrypt data at rest",
+        "isCorrect": false
+      },
+      {
+        "value": "To compress data for better storage efficiency",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During forensic analysis, you find a file that occupies 5,500 bytes on an NTFS volume with 4KB clusters. How much slack space exists for this file?",
+    "options": [
+      {
+        "value": "2,596 bytes",
+        "isCorrect": true
+      },
+      {
+        "value": "4,096 bytes",
+        "isCorrect": false
+      },
+      {
+        "value": "500 bytes",
+        "isCorrect": false
+      },
+      {
+        "value": "1,500 bytes",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator discovers clusters marked as used in the FAT but not associated with any file. What are these called?",
+    "options": [
+      {
+        "value": "Lost clusters",
+        "isCorrect": true
+      },
+      {
+        "value": "Bad sectors",
+        "isCorrect": false
+      },
+      {
+        "value": "Slack clusters",
+        "isCorrect": false
+      },
+      {
+        "value": "Orphaned inodes",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "You are examining a disk and need to locate the Master Boot Record. At which sector is the MBR always located?",
+    "options": [
+      {
+        "value": "Sector 0 (LBA 0)",
+        "isCorrect": true
+      },
+      {
+        "value": "Sector 1 (LBA 1)",
+        "isCorrect": false
+      },
+      {
+        "value": "Sector 63",
+        "isCorrect": false
+      },
+      {
+        "value": "Sector 2048",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the maximum number of primary partitions that can be defined in a traditional MBR partition table?",
+    "options": [
+      {
+        "value": "4",
+        "isCorrect": true
+      },
+      {
+        "value": "8",
+        "isCorrect": false
+      },
+      {
+        "value": "16",
+        "isCorrect": false
+      },
+      {
+        "value": "128",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic analyst is examining a GPT disk and needs to find the backup GPT header. Where is it typically located?",
+    "options": [
+      {
+        "value": "Last sector of the disk",
+        "isCorrect": true
+      },
+      {
+        "value": "Sector 1",
+        "isCorrect": false
+      },
+      {
+        "value": "Sector 34",
+        "isCorrect": false
+      },
+      {
+        "value": "Middle of the disk",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In an MBR structure, what is the size of the boot code section that contains the bootstrap loader?",
+    "options": [
+      {
+        "value": "446 bytes",
+        "isCorrect": true
+      },
+      {
+        "value": "512 bytes",
+        "isCorrect": false
+      },
+      {
+        "value": "64 bytes",
+        "isCorrect": false
+      },
+      {
+        "value": "2 bytes",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "You discover a GPT partition table during analysis. How many partition entries can GPT support by default?",
+    "options": [
+      {
+        "value": "128",
+        "isCorrect": true
+      },
+      {
+        "value": "4",
+        "isCorrect": false
+      },
+      {
+        "value": "64",
+        "isCorrect": false
+      },
+      {
+        "value": "256",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During forensic examination of a FAT32 volume, where would you find the BIOS Parameter Block (BPB)?",
+    "options": [
+      {
+        "value": "First sector of the partition (Volume Boot Record)",
+        "isCorrect": true
+      },
+      {
+        "value": "Master Boot Record",
+        "isCorrect": false
+      },
+      {
+        "value": "Root directory",
+        "isCorrect": false
+      },
+      {
+        "value": "File Allocation Table",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An examiner is analyzing a GPT-formatted disk. What is the purpose of the protective MBR in GPT?",
+    "options": [
+      {
+        "value": "To prevent GPT-unaware tools from treating the disk as unpartitioned and potentially damaging it",
+        "isCorrect": true
+      },
+      {
+        "value": "To store the primary GPT header",
+        "isCorrect": false
+      },
+      {
+        "value": "To encrypt the partition table",
+        "isCorrect": false
+      },
+      {
+        "value": "To provide backward compatibility with BIOS booting",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "You find evidence of data hiding in slack space. A file of 1,000 bytes is stored on a volume with 4,096-byte clusters. What is the maximum amount of data that could be hidden in the slack space?",
+    "options": [
+      {
+        "value": "3,096 bytes",
+        "isCorrect": true
+      },
+      {
+        "value": "4,096 bytes",
+        "isCorrect": false
+      },
+      {
+        "value": "1,000 bytes",
+        "isCorrect": false
+      },
+      {
+        "value": "5,096 bytes",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In the MBR partition table, what is the signature value at offset 0x1FE that indicates a valid boot sector?",
+    "options": [
+      {
+        "value": "0x55AA",
+        "isCorrect": true
+      },
+      {
+        "value": "0xAA55",
+        "isCorrect": false
+      },
+      {
+        "value": "0x00FF",
+        "isCorrect": false
+      },
+      {
+        "value": "0xFFFF",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator analyzes a GPT disk and finds each partition entry is 128 bytes. How is each partition uniquely identified in GPT?",
+    "options": [
+      {
+        "value": "Using a 128-bit GUID (Globally Unique Identifier)",
+        "isCorrect": true
+      },
+      {
+        "value": "Using a partition number from 1-128",
+        "isCorrect": false
+      },
+      {
+        "value": "Using the starting LBA address",
+        "isCorrect": false
+      },
+      {
+        "value": "Using a 32-bit partition ID",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During analysis, you encounter RAM slack and file slack. Which statement correctly describes RAM slack?",
+    "options": [
+      {
+        "value": "Data from RAM that fills the space between the end of the file and the end of the sector",
+        "isCorrect": true
+      },
+      {
+        "value": "Unused clusters at the end of a file",
+        "isCorrect": false
+      },
+      {
+        "value": "Deleted file fragments",
+        "isCorrect": false
+      },
+      {
+        "value": "Temporary swap space on disk",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "You need to manually parse an MBR partition table entry. Each partition entry in the MBR is how many bytes?",
+    "options": [
+      {
+        "value": "16 bytes",
+        "isCorrect": true
+      },
+      {
+        "value": "32 bytes",
+        "isCorrect": false
+      },
+      {
+        "value": "64 bytes",
+        "isCorrect": false
+      },
+      {
+        "value": "128 bytes",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An examiner is investigating a case where anti-forensic techniques were used. The suspect created multiple hidden partitions. Which tool could help identify all partitions including hidden ones on an MBR disk?",
+    "options": [
+      {
+        "value": "mmls from The Sleuth Kit",
+        "isCorrect": true
+      },
+      {
+        "value": "fsstat",
+        "isCorrect": false
+      },
+      {
+        "value": "istat",
+        "isCorrect": false
+      },
+      {
+        "value": "strings",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During a Windows forensic investigation, you need to understand the boot process. In a UEFI-GPT system, which file is responsible for loading the Windows Boot Manager?",
+    "options": [
+      {
+        "value": "bootmgfw.efi",
+        "isCorrect": true
+      },
+      {
+        "value": "ntldr",
+        "isCorrect": false
+      },
+      {
+        "value": "boot.ini",
+        "isCorrect": false
+      },
+      {
+        "value": "io.sys",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the EFI System Partition (ESP) filesystem type requirement in UEFI-based systems?",
+    "options": [
+      {
+        "value": "NTFS",
+        "isCorrect": false
+      },
+      {
+        "value": "FAT32",
+        "isCorrect": true
+      },
+      {
+        "value": "ext4",
+        "isCorrect": false
+      },
+      {
+        "value": "exFAT",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In the Windows BIOS-MBR boot process, which component is loaded immediately after the MBR code executes?",
+    "options": [
+      {
+        "value": "Windows Kernel (ntoskrnl.exe)",
+        "isCorrect": false
+      },
+      {
+        "value": "Volume Boot Record (VBR)",
+        "isCorrect": true
+      },
+      {
+        "value": "winload.exe",
+        "isCorrect": false
+      },
+      {
+        "value": "hal.dll",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic analyst examining a GPT disk finds that the primary GPT header is corrupted. Where can the backup GPT header be found?",
+    "options": [
+      {
+        "value": "At the second sector of the disk",
+        "isCorrect": false
+      },
+      {
+        "value": "At the last sector of the disk",
+        "isCorrect": true
+      },
+      {
+        "value": "In the EFI System Partition",
+        "isCorrect": false
+      },
+      {
+        "value": "In the MBR protective area",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "When analyzing GPT partition entries, each entry is how many bytes in size?",
+    "options": [
+      {
+        "value": "16 bytes",
+        "isCorrect": false
+      },
+      {
+        "value": "64 bytes",
+        "isCorrect": false
+      },
+      {
+        "value": "128 bytes",
+        "isCorrect": true
+      },
+      {
+        "value": "512 bytes",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In an Intel-based macOS system, which firmware interface replaced the traditional BIOS?",
+    "options": [
+      {
+        "value": "OpenFirmware",
+        "isCorrect": false
+      },
+      {
+        "value": "EFI/UEFI",
+        "isCorrect": true
+      },
+      {
+        "value": "NVRAM",
+        "isCorrect": false
+      },
+      {
+        "value": "CoreBoot",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the boot ROM component in Apple Silicon-based Macs that verifies the integrity of the boot process?",
+    "options": [
+      {
+        "value": "iBoot",
+        "isCorrect": true
+      },
+      {
+        "value": "GRUB",
+        "isCorrect": false
+      },
+      {
+        "value": "boot.efi",
+        "isCorrect": false
+      },
+      {
+        "value": "SecureBoot",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During Linux boot process analysis, which bootloader is most commonly used and stores its configuration in /boot/grub/grub.cfg?",
+    "options": [
+      {
+        "value": "LILO",
+        "isCorrect": false
+      },
+      {
+        "value": "GRUB2",
+        "isCorrect": true
+      },
+      {
+        "value": "Syslinux",
+        "isCorrect": false
+      },
+      {
+        "value": "systemd-boot",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In the Linux boot sequence, which process has PID 1 and is responsible for initializing all other processes?",
+    "options": [
+      {
+        "value": "kernel",
+        "isCorrect": false
+      },
+      {
+        "value": "init/systemd",
+        "isCorrect": true
+      },
+      {
+        "value": "bash",
+        "isCorrect": false
+      },
+      {
+        "value": "grub",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic examiner is analyzing a FAT32 file system. What is the maximum file size limitation of FAT32?",
+    "options": [
+      {
+        "value": "2 GB",
+        "isCorrect": false
+      },
+      {
+        "value": "4 GB minus 1 byte",
+        "isCorrect": true
+      },
+      {
+        "value": "8 GB",
+        "isCorrect": false
+      },
+      {
+        "value": "No file size limit",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In a FAT file system, what does an entry value of 0x00000000 in the File Allocation Table indicate?",
+    "options": [
+      {
+        "value": "Bad cluster",
+        "isCorrect": false
+      },
+      {
+        "value": "Free/unallocated cluster",
+        "isCorrect": true
+      },
+      {
+        "value": "End of file marker",
+        "isCorrect": false
+      },
+      {
+        "value": "Reserved cluster",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which FAT entry value range indicates an end-of-file marker in FAT32?",
+    "options": [
+      {
+        "value": "0x00000000",
+        "isCorrect": false
+      },
+      {
+        "value": "0x0FFFFFF8 - 0x0FFFFFFF",
+        "isCorrect": true
+      },
+      {
+        "value": "0x0FFFFFF7",
+        "isCorrect": false
+      },
+      {
+        "value": "0x00000001",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "When a file is deleted in FAT, what character replaces the first character of the filename in the directory entry?",
+    "options": [
+      {
+        "value": "0x00",
+        "isCorrect": false
+      },
+      {
+        "value": "0xE5",
+        "isCorrect": true
+      },
+      {
+        "value": "0xFF",
+        "isCorrect": false
+      },
+      {
+        "value": "0x05",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which file system was specifically designed for flash drives and SD cards, removing the 4GB file size limitation of FAT32?",
+    "options": [
+      {
+        "value": "FAT16",
+        "isCorrect": false
+      },
+      {
+        "value": "exFAT",
+        "isCorrect": true
+      },
+      {
+        "value": "NTFS",
+        "isCorrect": false
+      },
+      {
+        "value": "UDF",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In NTFS, what is the name of the file that contains metadata about all files and directories on the volume?",
+    "options": [
+      {
+        "value": "$Volume",
+        "isCorrect": false
+      },
+      {
+        "value": "$MFT (Master File Table)",
+        "isCorrect": true
+      },
+      {
+        "value": "$LogFile",
+        "isCorrect": false
+      },
+      {
+        "value": "$Bitmap",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the default size of an MFT entry in NTFS?",
+    "options": [
+      {
+        "value": "512 bytes",
+        "isCorrect": false
+      },
+      {
+        "value": "1024 bytes (1 KB)",
+        "isCorrect": true
+      },
+      {
+        "value": "4096 bytes (4 KB)",
+        "isCorrect": false
+      },
+      {
+        "value": "2048 bytes (2 KB)",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic investigator finds a file with the attribute $DATA but no content visible. The file is 500 bytes. What type of file storage is this in NTFS?",
+    "options": [
+      {
+        "value": "Sparse file",
+        "isCorrect": false
+      },
+      {
+        "value": "Resident file (stored within MFT entry)",
+        "isCorrect": true
+      },
+      {
+        "value": "Compressed file",
+        "isCorrect": false
+      },
+      {
+        "value": "Encrypted file",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which NTFS system file tracks cluster allocation status for the volume?",
+    "options": [
+      {
+        "value": "$MFT",
+        "isCorrect": false
+      },
+      {
+        "value": "$Bitmap",
+        "isCorrect": true
+      },
+      {
+        "value": "$LogFile",
+        "isCorrect": false
+      },
+      {
+        "value": "$AttrDef",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator discovers an alternate data stream attached to a file. Which command would reveal hidden ADS on a Windows system?",
+    "options": [
+      {
+        "value": "dir /a",
+        "isCorrect": false
+      },
+      {
+        "value": "dir /r",
+        "isCorrect": true
+      },
+      {
+        "value": "dir /s",
+        "isCorrect": false
+      },
+      {
+        "value": "dir /h",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the purpose of the $UsnJrnl file in NTFS?",
+    "options": [
+      {
+        "value": "Tracks volume serial number changes",
+        "isCorrect": false
+      },
+      {
+        "value": "Records changes to files and directories (Update Sequence Number Journal)",
+        "isCorrect": true
+      },
+      {
+        "value": "Stores user session information",
+        "isCorrect": false
+      },
+      {
+        "value": "Contains USB device history",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which NTFS journal file records transactional changes to the file system metadata for recovery purposes?",
+    "options": [
+      {
+        "value": "$UsnJrnl",
+        "isCorrect": false
+      },
+      {
+        "value": "$LogFile",
+        "isCorrect": true
+      },
+      {
+        "value": "$MFT",
+        "isCorrect": false
+      },
+      {
+        "value": "$Extend",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In NTFS, which attribute stores the actual file content?",
+    "options": [
+      {
+        "value": "$STANDARD_INFORMATION",
+        "isCorrect": false
+      },
+      {
+        "value": "$FILE_NAME",
+        "isCorrect": false
+      },
+      {
+        "value": "$DATA",
+        "isCorrect": true
+      },
+      {
+        "value": "$ATTRIBUTE_LIST",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic analyst is examining an NTFS volume and finds a file encrypted with EFS. Which key is used to decrypt the File Encryption Key (FEK)?",
+    "options": [
+      {
+        "value": "Volume Master Key",
+        "isCorrect": false
+      },
+      {
+        "value": "User's private key from their certificate",
+        "isCorrect": true
+      },
+      {
+        "value": "Windows product key",
+        "isCorrect": false
+      },
+      {
+        "value": "BitLocker recovery key",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What attribute in the MFT entry indicates that a file has been encrypted with EFS?",
+    "options": [
+      {
+        "value": "$ENCRYPTED",
+        "isCorrect": false
+      },
+      {
+        "value": "$LOGGED_UTILITY_STREAM containing $EFS",
+        "isCorrect": true
+      },
+      {
+        "value": "$SECURITY_DESCRIPTOR",
+        "isCorrect": false
+      },
+      {
+        "value": "$REPARSE_POINT",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Windows file system introduced in Windows Server 2012 provides resilience features like integrity streams and automatic error correction?",
+    "options": [
+      {
+        "value": "NTFS 3.1",
+        "isCorrect": false
+      },
+      {
+        "value": "exFAT",
+        "isCorrect": false
+      },
+      {
+        "value": "ReFS (Resilient File System)",
+        "isCorrect": true
+      },
+      {
+        "value": "FAT64",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In Linux, which directory according to FHS contains variable data like logs and spool files?",
+    "options": [
+      {
+        "value": "/usr",
+        "isCorrect": false
+      },
+      {
+        "value": "/var",
+        "isCorrect": true
+      },
+      {
+        "value": "/opt",
+        "isCorrect": false
+      },
+      {
+        "value": "/etc",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the primary purpose of an inode in Linux file systems like ext4?",
+    "options": [
+      {
+        "value": "Store the file content",
+        "isCorrect": false
+      },
+      {
+        "value": "Store metadata about the file including permissions, timestamps, and data block pointers",
+        "isCorrect": true
+      },
+      {
+        "value": "Store the filename",
+        "isCorrect": false
+      },
+      {
+        "value": "Store user account information",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic examiner is analyzing an ext4 file system. Which feature distinguishes ext4 from ext3?",
+    "options": [
+      {
+        "value": "Journaling support",
+        "isCorrect": false
+      },
+      {
+        "value": "Extents-based allocation and larger volume/file size support",
+        "isCorrect": true
+      },
+      {
+        "value": "Basic file permissions",
+        "isCorrect": false
+      },
+      {
+        "value": "Directory support",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In ext2/ext3/ext4 file systems, what does the superblock contain?",
+    "options": [
+      {
+        "value": "Individual file metadata",
+        "isCorrect": false
+      },
+      {
+        "value": "Critical file system information like total blocks, inodes, and mount state",
+        "isCorrect": true
+      },
+      {
+        "value": "Boot loader code",
+        "isCorrect": false
+      },
+      {
+        "value": "User password hashes",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What feature introduced in ext3 helps protect against data corruption during system crashes?",
+    "options": [
+      {
+        "value": "RAID support",
+        "isCorrect": false
+      },
+      {
+        "value": "Journaling",
+        "isCorrect": true
+      },
+      {
+        "value": "Encryption",
+        "isCorrect": false
+      },
+      {
+        "value": "Compression",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "When a file is deleted in ext4, which structure retains the deletion timestamp?",
+    "options": [
+      {
+        "value": "The directory entry",
+        "isCorrect": false
+      },
+      {
+        "value": "The inode (dtime field)",
+        "isCorrect": true
+      },
+      {
+        "value": "The superblock",
+        "isCorrect": false
+      },
+      {
+        "value": "The journal",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which macOS file system was the default before APFS was introduced?",
+    "options": [
+      {
+        "value": "UFS",
+        "isCorrect": false
+      },
+      {
+        "value": "HFS+ (Hierarchical File System Plus)",
+        "isCorrect": true
+      },
+      {
+        "value": "ext4",
+        "isCorrect": false
+      },
+      {
+        "value": "ZFS",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What key feature of APFS makes forensic acquisition timing-critical for deleted file recovery?",
+    "options": [
+      {
+        "value": "Strong encryption by default",
+        "isCorrect": false
+      },
+      {
+        "value": "Space sharing and TRIM support can quickly overwrite deleted data",
+        "isCorrect": true
+      },
+      {
+        "value": "Journaling prevents data recovery",
+        "isCorrect": false
+      },
+      {
+        "value": "Mandatory access controls",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which APFS feature allows multiple volumes to share the same underlying storage pool?",
+    "options": [
+      {
+        "value": "Cloning",
+        "isCorrect": false
+      },
+      {
+        "value": "Space Sharing (Container)",
+        "isCorrect": true
+      },
+      {
+        "value": "Snapshots",
+        "isCorrect": false
+      },
+      {
+        "value": "Encryption",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic examiner needs to analyze an NTFS file system using The Sleuth Kit. Which command displays file system statistics including volume label and cluster size?",
+    "options": [
+      {
+        "value": "fls",
+        "isCorrect": false
+      },
+      {
+        "value": "fsstat",
+        "isCorrect": true
+      },
+      {
+        "value": "istat",
+        "isCorrect": false
+      },
+      {
+        "value": "mmls",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Using The Sleuth Kit, which command would display the metadata details of a specific inode/MFT entry?",
+    "options": [
+      {
+        "value": "fls",
+        "isCorrect": false
+      },
+      {
+        "value": "fsstat",
+        "isCorrect": false
+      },
+      {
+        "value": "istat",
+        "isCorrect": true
+      },
+      {
+        "value": "ffind",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Sleuth Kit command lists files and directories including deleted entries (marked with * prefix)?",
+    "options": [
+      {
+        "value": "ils",
+        "isCorrect": false
+      },
+      {
+        "value": "fls",
+        "isCorrect": true
+      },
+      {
+        "value": "istat",
+        "isCorrect": false
+      },
+      {
+        "value": "blkstat",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does the TSK command 'ffind' do?",
+    "options": [
+      {
+        "value": "Finds files by content",
+        "isCorrect": false
+      },
+      {
+        "value": "Finds the filename associated with a given inode/MFT entry number",
+        "isCorrect": true
+      },
+      {
+        "value": "Finds free space on the disk",
+        "isCorrect": false
+      },
+      {
+        "value": "Finds file system errors",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which TSK command extracts details about an image file format?",
+    "options": [
+      {
+        "value": "fsstat",
+        "isCorrect": false
+      },
+      {
+        "value": "img_stat",
+        "isCorrect": true
+      },
+      {
+        "value": "mmls",
+        "isCorrect": false
+      },
+      {
+        "value": "icat",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In MACB timestamps used in forensic timelines, what does the 'C' represent?",
+    "options": [
+      {
+        "value": "Creation time",
+        "isCorrect": false
+      },
+      {
+        "value": "Change time (metadata change in Unix) or Creation time (in Windows)",
+        "isCorrect": true
+      },
+      {
+        "value": "Copy time",
+        "isCorrect": false
+      },
+      {
+        "value": "Completion time",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "When creating a forensic timeline using fls and mactime from TSK, which output format is generated?",
+    "options": [
+      {
+        "value": "JSON timeline",
+        "isCorrect": false
+      },
+      {
+        "value": "Body file format that mactime converts to human-readable timeline",
+        "isCorrect": true
+      },
+      {
+        "value": "CSV spreadsheet",
+        "isCorrect": false
+      },
+      {
+        "value": "XML report",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In NTFS timestamp analysis, if you copy a file from one NTFS volume to another, what happens to the file's creation timestamp?",
+    "options": [
+      {
+        "value": "It remains the same as the original file",
+        "isCorrect": false
+      },
+      {
+        "value": "It gets updated to the time of the copy operation",
+        "isCorrect": true
+      },
+      {
+        "value": "It becomes blank/null",
+        "isCorrect": false
+      },
+      {
+        "value": "It inherits the parent folder's timestamp",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which RAID level provides disk striping without any redundancy, offering best performance but no fault tolerance?",
+    "options": [
+      {
+        "value": "RAID 1",
+        "isCorrect": false
+      },
+      {
+        "value": "RAID 0",
+        "isCorrect": true
+      },
+      {
+        "value": "RAID 5",
+        "isCorrect": false
+      },
+      {
+        "value": "RAID 6",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which RAID level uses disk mirroring, writing identical data to two drives?",
+    "options": [
+      {
+        "value": "RAID 0",
+        "isCorrect": false
+      },
+      {
+        "value": "RAID 1",
+        "isCorrect": true
+      },
+      {
+        "value": "RAID 5",
+        "isCorrect": false
+      },
+      {
+        "value": "RAID 3",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic examiner encounters a RAID 5 array. What is the minimum number of drives required for RAID 5?",
+    "options": [
+      {
+        "value": "2",
+        "isCorrect": false
+      },
+      {
+        "value": "3",
+        "isCorrect": true
+      },
+      {
+        "value": "4",
+        "isCorrect": false
+      },
+      {
+        "value": "5",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which RAID level can survive the failure of two drives due to double distributed parity?",
+    "options": [
+      {
+        "value": "RAID 5",
+        "isCorrect": false
+      },
+      {
+        "value": "RAID 6",
+        "isCorrect": true
+      },
+      {
+        "value": "RAID 1",
+        "isCorrect": false
+      },
+      {
+        "value": "RAID 10",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is RAID 10 (RAID 1+0)?",
+    "options": [
+      {
+        "value": "Striping with single parity",
+        "isCorrect": false
+      },
+      {
+        "value": "Mirroring combined with striping",
+        "isCorrect": true
+      },
+      {
+        "value": "Double parity across all drives",
+        "isCorrect": false
+      },
+      {
+        "value": "Ten drives in a single array",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "An investigator discovers a disk with a hidden area that is not visible to the operating system but can be detected with specialized tools. What is this area called?",
+    "options": [
+      {
+        "value": "Slack space",
+        "isCorrect": false
+      },
+      {
+        "value": "Host Protected Area (HPA)",
+        "isCorrect": true
+      },
+      {
+        "value": "Unallocated space",
+        "isCorrect": false
+      },
+      {
+        "value": "Bad sector region",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the difference between Host Protected Area (HPA) and Device Configuration Overlay (DCO)?",
+    "options": [
+      {
+        "value": "HPA is for SSDs only, DCO is for HDDs",
+        "isCorrect": false
+      },
+      {
+        "value": "DCO can hide the existence of an HPA and is more persistent; HPA is detectable via ATA commands",
+        "isCorrect": true
+      },
+      {
+        "value": "They are the same thing with different names",
+        "isCorrect": false
+      },
+      {
+        "value": "HPA provides encryption, DCO provides compression",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which command can be used to detect a Host Protected Area on a Linux system?",
+    "options": [
+      {
+        "value": "fdisk -l",
+        "isCorrect": false
+      },
+      {
+        "value": "hdparm -N /dev/sda",
+        "isCorrect": true
+      },
+      {
+        "value": "lsblk",
+        "isCorrect": false
+      },
+      {
+        "value": "df -h",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the primary characteristic that distinguishes NAS from SAN?",
+    "options": [
+      {
+        "value": "NAS provides file-level access while SAN provides block-level access",
+        "isCorrect": true
+      },
+      {
+        "value": "NAS is faster than SAN",
+        "isCorrect": false
+      },
+      {
+        "value": "SAN uses Ethernet while NAS uses Fibre Channel",
+        "isCorrect": false
+      },
+      {
+        "value": "NAS requires special HBA cards",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which protocol is commonly used by NAS devices for file sharing in Windows environments?",
+    "options": [
+      {
+        "value": "iSCSI",
+        "isCorrect": false
+      },
+      {
+        "value": "SMB/CIFS",
+        "isCorrect": true
+      },
+      {
+        "value": "Fibre Channel",
+        "isCorrect": false
+      },
+      {
+        "value": "FCoE",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In ASCII encoding, what is the hexadecimal value for the uppercase letter 'A'?",
+    "options": [
+      {
+        "value": "0x40",
+        "isCorrect": false
+      },
+      {
+        "value": "0x41",
+        "isCorrect": true
+      },
+      {
+        "value": "0x61",
+        "isCorrect": false
+      },
+      {
+        "value": "0x31",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which encoding standard uses variable-length encoding (1-4 bytes) and is backward compatible with ASCII?",
+    "options": [
+      {
+        "value": "UTF-16",
+        "isCorrect": false
+      },
+      {
+        "value": "UTF-8",
+        "isCorrect": true
+      },
+      {
+        "value": "UTF-32",
+        "isCorrect": false
+      },
+      {
+        "value": "EBCDIC",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "When examining a file in a hex editor, what does the term 'offset' refer to?",
+    "options": [
+      {
+        "value": "The file size in bytes",
+        "isCorrect": false
+      },
+      {
+        "value": "The position or distance from the beginning of the file",
+        "isCorrect": true
+      },
+      {
+        "value": "The number of sectors used",
+        "isCorrect": false
+      },
+      {
+        "value": "The checksum value",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic analyst opens a file in a hex editor and sees the bytes 'FF D8 FF E0' at offset 0. What file type is this?",
+    "options": [
+      {
+        "value": "PNG image",
+        "isCorrect": false
+      },
+      {
+        "value": "JPEG image",
+        "isCorrect": true
+      },
+      {
+        "value": "GIF image",
+        "isCorrect": false
+      },
+      {
+        "value": "BMP image",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the file signature (magic bytes) for a PNG image file?",
+    "options": [
+      {
+        "value": "FF D8 FF",
+        "isCorrect": false
+      },
+      {
+        "value": "89 50 4E 47 0D 0A 1A 0A",
+        "isCorrect": true
+      },
+      {
+        "value": "47 49 46 38",
+        "isCorrect": false
+      },
+      {
+        "value": "42 4D",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the file header signature for a PDF document?",
+    "options": [
+      {
+        "value": "50 4B 03 04",
+        "isCorrect": false
+      },
+      {
+        "value": "25 50 44 46 (%PDF)",
+        "isCorrect": true
+      },
+      {
+        "value": "D0 CF 11 E0",
+        "isCorrect": false
+      },
+      {
+        "value": "4D 5A",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic examiner encounters a file starting with bytes '50 4B 03 04'. What type of file could this be?",
+    "options": [
+      {
+        "value": "PDF document",
+        "isCorrect": false
+      },
+      {
+        "value": "ZIP archive, DOCX, XLSX, PPTX, or other Office Open XML format",
+        "isCorrect": true
+      },
+      {
+        "value": "Windows executable",
+        "isCorrect": false
+      },
+      {
+        "value": "RAR archive",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What file signature indicates an older Microsoft Office document (Word .doc, Excel .xls, PowerPoint .ppt)?",
+    "options": [
+      {
+        "value": "50 4B 03 04",
+        "isCorrect": false
+      },
+      {
+        "value": "D0 CF 11 E0 A1 B1 1A E1 (OLE Compound File)",
+        "isCorrect": true
+      },
+      {
+        "value": "25 50 44 46",
+        "isCorrect": false
+      },
+      {
+        "value": "7B 5C 72 74 66",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which hex signature identifies an MP4 video file?",
+    "options": [
+      {
+        "value": "52 49 46 46",
+        "isCorrect": false
+      },
+      {
+        "value": "00 00 00 xx 66 74 79 70 (ftyp atom)",
+        "isCorrect": true
+      },
+      {
+        "value": "1A 45 DF A3",
+        "isCorrect": false
+      },
+      {
+        "value": "47 49 46 38",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During an investigation, you find a file with mismatched extension and header. The file is named 'document.txt' but has header bytes 'FF D8 FF'. What should you conclude?",
+    "options": [
+      {
+        "value": "The file is corrupted",
+        "isCorrect": false
+      },
+      {
+        "value": "The file extension was changed to hide a JPEG image",
+        "isCorrect": true
+      },
+      {
+        "value": "The file is a valid text file",
+        "isCorrect": false
+      },
+      {
+        "value": "The operating system mislabeled the file",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which forensic tool provides a graphical interface for file system analysis, timeline creation, keyword searching, and hash analysis?",
+    "options": [
+      {
+        "value": "The Sleuth Kit",
+        "isCorrect": false
+      },
+      {
+        "value": "Autopsy",
+        "isCorrect": true
+      },
+      {
+        "value": "dd",
+        "isCorrect": false
+      },
+      {
+        "value": "grep",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "When using Autopsy for file system analysis, which feature helps identify files by their content rather than extension?",
+    "options": [
+      {
+        "value": "Keyword search",
+        "isCorrect": false
+      },
+      {
+        "value": "File type identification by signature (magic bytes)",
+        "isCorrect": true
+      },
+      {
+        "value": "Timeline analysis",
+        "isCorrect": false
+      },
+      {
+        "value": "Hash lookup",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A case involves a suspect who claims to have deleted incriminating files weeks ago from an SSD. Why might file recovery be more difficult compared to an HDD?",
+    "options": [
+      {
+        "value": "SSDs use stronger encryption",
+        "isCorrect": false
+      },
+      {
+        "value": "The TRIM command may have already zeroed out the deleted data blocks",
+        "isCorrect": true
+      },
+      {
+        "value": "SSDs don't support forensic imaging",
+        "isCorrect": false
+      },
+      {
+        "value": "SSDs store files in a different format",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "In a corporate espionage investigation, you discover that the suspect used an alternate data stream to hide a file containing stolen trade secrets. The main file is 'notes.txt'. Which command would extract the hidden stream named 'secret' on Windows?",
+    "options": [
+      {
+        "value": "type notes.txt > secret.txt",
+        "isCorrect": false
+      },
+      {
+        "value": "more < notes.txt:secret > secret.txt",
+        "isCorrect": true
+      },
+      {
+        "value": "copy notes.txt secret.txt",
+        "isCorrect": false
+      },
+      {
+        "value": "extract notes.txt -stream secret",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "A forensic investigator needs to determine if a suspect's hard drive has been tampered with to hide storage capacity. Which ATA command can reveal the true maximum addressable sectors including any HPA?",
+    "options": [
+      {
+        "value": "IDENTIFY DEVICE",
+        "isCorrect": false
+      },
+      {
+        "value": "READ NATIVE MAX ADDRESS",
+        "isCorrect": true
+      },
+      {
+        "value": "READ SECTORS",
+        "isCorrect": false
+      },
+      {
+        "value": "SMART READ DATA",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "You are analyzing log entries in a forensic investigation. The system log shows: 'EXT4-fs (sda1): mounted filesystem with ordered data mode'. What journaling mode is being used?",
+    "options": [
+      {
+        "value": "Journal mode - all data and metadata journaled",
+        "isCorrect": false
+      },
+      {
+        "value": "Ordered mode - metadata journaled, data written before metadata commit",
+        "isCorrect": true
+      },
+      {
+        "value": "Writeback mode - only metadata journaled, no ordering",
+        "isCorrect": false
+      },
+      {
+        "value": "No journaling enabled",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "During forensic analysis of an NTFS volume, you notice $STANDARD_INFORMATION and $FILE_NAME attributes have different timestamps for the same file. What could this indicate?",
+    "options": [
+      {
+        "value": "Normal behavior - these attributes are always different",
+        "isCorrect": false
+      },
+      {
+        "value": "Possible timestamp manipulation (timestomping) as $STANDARD_INFORMATION is easier to modify",
+        "isCorrect": true
+      },
+      {
+        "value": "The file system is corrupted",
+        "isCorrect": false
+      },
+      {
+        "value": "The file was compressed",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "You encounter a JBOD (Just a Bunch of Disks) configuration during an investigation. Which statement about JBOD is correct?",
+    "options": [
+      {
+        "value": "JBOD provides redundancy through parity",
+        "isCorrect": false
+      },
+      {
+        "value": "JBOD concatenates drives without striping or redundancy, treating them as one logical volume",
+        "isCorrect": true
+      },
+      {
+        "value": "JBOD mirrors data across all drives",
+        "isCorrect": false
+      },
+      {
+        "value": "JBOD requires a minimum of 3 drives",
+        "isCorrect": false
+      }
+    ]
+  }
+]

@@ -1,0 +1,1052 @@
+[
+  {
+    "question": "What is the PRIMARY purpose of the Tor network?",
+    "options": [
+      {
+        "value": "To increase internet speed",
+        "isCorrect": false
+      },
+      {
+        "value": "To provide anonymous communication by routing traffic through multiple relays",
+        "isCorrect": true
+      },
+      {
+        "value": "To block malicious websites",
+        "isCorrect": false
+      },
+      {
+        "value": "To encrypt files on the hard drive",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which layer of the internet is the dark web considered part of?",
+    "options": [
+      {
+        "value": "Surface web",
+        "isCorrect": false
+      },
+      {
+        "value": "Deep web (specifically the darknet portion)",
+        "isCorrect": true
+      },
+      {
+        "value": "Clear web",
+        "isCorrect": false
+      },
+      {
+        "value": "Public web",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "How many relays does Tor typically use to route traffic?",
+    "options": [
+      {
+        "value": "One relay",
+        "isCorrect": false
+      },
+      {
+        "value": "Two relays",
+        "isCorrect": false
+      },
+      {
+        "value": "Three relays (entry, middle, exit)",
+        "isCorrect": true
+      },
+      {
+        "value": "Five relays",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator needs to access a .onion website for evidence collection. What browser must be used?",
+    "options": [
+      {
+        "value": "Google Chrome with VPN",
+        "isCorrect": false
+      },
+      {
+        "value": "Tor Browser or a Tor-enabled browser",
+        "isCorrect": true
+      },
+      {
+        "value": "Microsoft Edge with proxy",
+        "isCorrect": false
+      },
+      {
+        "value": "Firefox with incognito mode",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the function of a Tor entry node (guard node)?",
+    "options": [
+      {
+        "value": "To decrypt the final layer of encryption",
+        "isCorrect": false
+      },
+      {
+        "value": "To be the first point of contact that knows the users real IP address",
+        "isCorrect": true
+      },
+      {
+        "value": "To connect directly to the destination website",
+        "isCorrect": false
+      },
+      {
+        "value": "To store user browsing history",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Tor relay can see the actual destination website being accessed?",
+    "options": [
+      {
+        "value": "Entry node",
+        "isCorrect": false
+      },
+      {
+        "value": "Middle node",
+        "isCorrect": false
+      },
+      {
+        "value": "Exit node",
+        "isCorrect": true
+      },
+      {
+        "value": "Bridge node",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is a Tor bridge node used for?",
+    "options": [
+      {
+        "value": "To increase browsing speed",
+        "isCorrect": false
+      },
+      {
+        "value": "To help users bypass Tor blocking in censored regions",
+        "isCorrect": true
+      },
+      {
+        "value": "To log all user traffic",
+        "isCorrect": false
+      },
+      {
+        "value": "To directly connect to .onion sites",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: A forensic analyst discovers that a suspect accessed the dark web from a country that blocks Tor. How might the suspect have circumvented this?",
+    "options": [
+      {
+        "value": "Using a standard VPN only",
+        "isCorrect": false
+      },
+      {
+        "value": "Using Tor bridge nodes or pluggable transports",
+        "isCorrect": true
+      },
+      {
+        "value": "Using Internet Explorer",
+        "isCorrect": false
+      },
+      {
+        "value": "Disabling the firewall",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What type of top-level domain (TLD) is used for Tor hidden services?",
+    "options": [
+      {
+        "value": ".dark",
+        "isCorrect": false
+      },
+      {
+        "value": ".onion",
+        "isCorrect": true
+      },
+      {
+        "value": ".tor",
+        "isCorrect": false
+      },
+      {
+        "value": ".hidden",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which encryption model does Tor use to protect traffic through multiple relays?",
+    "options": [
+      {
+        "value": "End-to-end encryption only",
+        "isCorrect": false
+      },
+      {
+        "value": "Layered encryption (onion routing)",
+        "isCorrect": true
+      },
+      {
+        "value": "Symmetric encryption only",
+        "isCorrect": false
+      },
+      {
+        "value": "No encryption",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the PRIMARY challenge in dark web forensics?",
+    "options": [
+      {
+        "value": "Slow internet connection",
+        "isCorrect": false
+      },
+      {
+        "value": "Anonymity and encryption making it difficult to trace users and activities",
+        "isCorrect": true
+      },
+      {
+        "value": "Lack of available tools",
+        "isCorrect": false
+      },
+      {
+        "value": "Small file sizes",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which of the following is NOT a characteristic of the dark web?",
+    "options": [
+      {
+        "value": "Accessible only through special software like Tor",
+        "isCorrect": false
+      },
+      {
+        "value": "Uses .onion addresses",
+        "isCorrect": false
+      },
+      {
+        "value": "Indexed by standard search engines like Google",
+        "isCorrect": true
+      },
+      {
+        "value": "Provides anonymity to users",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Windows artifact can indicate that Tor Browser was executed on a system?",
+    "options": [
+      {
+        "value": "System.evtx",
+        "isCorrect": false
+      },
+      {
+        "value": "Prefetch files (e.g., TORBROWSER.EXE-*.pf)",
+        "isCorrect": true
+      },
+      {
+        "value": "hosts file",
+        "isCorrect": false
+      },
+      {
+        "value": "boot.ini",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator finds a file named firefox.exe-XXXXXXXX.pf in the Prefetch folder within a Tor Browser directory. What does this indicate?",
+    "options": [
+      {
+        "value": "Firefox was installed separately",
+        "isCorrect": false
+      },
+      {
+        "value": "Tor Browser was executed (since Tor uses a modified Firefox)",
+        "isCorrect": true
+      },
+      {
+        "value": "The system has malware",
+        "isCorrect": false
+      },
+      {
+        "value": "Firefox crashed recently",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which SQLite database file in the Tor Browser stores browsing history and bookmarks?",
+    "options": [
+      {
+        "value": "cookies.sqlite",
+        "isCorrect": false
+      },
+      {
+        "value": "places.sqlite",
+        "isCorrect": true
+      },
+      {
+        "value": "formhistory.sqlite",
+        "isCorrect": false
+      },
+      {
+        "value": "permissions.sqlite",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What information can be extracted from the places.sqlite file in Tor Browser forensics?",
+    "options": [
+      {
+        "value": "Encryption keys only",
+        "isCorrect": false
+      },
+      {
+        "value": "Visited URLs, bookmarks, and download history",
+        "isCorrect": true
+      },
+      {
+        "value": "User passwords",
+        "isCorrect": false
+      },
+      {
+        "value": "Email attachments",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which registry key might contain evidence of Tor Browser installation on Windows?",
+    "options": [
+      {
+        "value": "HKLM\\\\HARDWARE",
+        "isCorrect": false
+      },
+      {
+        "value": "NTUSER.DAT\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Explorer\\\\UserAssist",
+        "isCorrect": true
+      },
+      {
+        "value": "HKLM\\\\SAM",
+        "isCorrect": false
+      },
+      {
+        "value": "HKCR\\\\*",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator needs to prove that a suspect used Tor Browser. Which command can reveal Tor-related network connections?",
+    "options": [
+      {
+        "value": "ipconfig /all",
+        "isCorrect": false
+      },
+      {
+        "value": "netstat -ano (looking for connections to Tor entry nodes)",
+        "isCorrect": true
+      },
+      {
+        "value": "dir /s",
+        "isCorrect": false
+      },
+      {
+        "value": "systeminfo",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the default port that Tor uses for SOCKS proxy connections?",
+    "options": [
+      {
+        "value": "80",
+        "isCorrect": false
+      },
+      {
+        "value": "443",
+        "isCorrect": false
+      },
+      {
+        "value": "9050 or 9150",
+        "isCorrect": true
+      },
+      {
+        "value": "8080",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which artifact would show the last execution time of Tor Browser on Windows?",
+    "options": [
+      {
+        "value": "hosts file",
+        "isCorrect": false
+      },
+      {
+        "value": "Prefetch files timestamp or UserAssist registry key",
+        "isCorrect": true
+      },
+      {
+        "value": "pagefile.sys",
+        "isCorrect": false
+      },
+      {
+        "value": "hiberfil.sys only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During investigation, an analyst finds cached Tor relay information. Where is this typically stored?",
+    "options": [
+      {
+        "value": "Windows registry only",
+        "isCorrect": false
+      },
+      {
+        "value": "Tor Browser Data/Tor directory (cached-certs, cached-consensus)",
+        "isCorrect": true
+      },
+      {
+        "value": "System32 folder",
+        "isCorrect": false
+      },
+      {
+        "value": "Temp folder only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What challenge does Tor Browsers security setting present to forensic investigators?",
+    "options": [
+      {
+        "value": "It speeds up analysis",
+        "isCorrect": false
+      },
+      {
+        "value": "It may disable JavaScript and clear data on exit, reducing available artifacts",
+        "isCorrect": true
+      },
+      {
+        "value": "It creates more log files",
+        "isCorrect": false
+      },
+      {
+        "value": "It makes files larger",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which file in Tor Browser contains the configuration settings?",
+    "options": [
+      {
+        "value": "config.sys",
+        "isCorrect": false
+      },
+      {
+        "value": "torrc",
+        "isCorrect": true
+      },
+      {
+        "value": "settings.ini",
+        "isCorrect": false
+      },
+      {
+        "value": "preferences.xml",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What does finding tor.exe process in memory indicate during live forensics?",
+    "options": [
+      {
+        "value": "The system is infected with malware",
+        "isCorrect": false
+      },
+      {
+        "value": "Tor network connection is currently active or was recently active",
+        "isCorrect": true
+      },
+      {
+        "value": "The system needs an update",
+        "isCorrect": false
+      },
+      {
+        "value": "Firefox browser is running",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator discovers a folder named Browser within a Tor Browser installation. What important forensic data might this contain?",
+    "options": [
+      {
+        "value": "Operating system files",
+        "isCorrect": false
+      },
+      {
+        "value": "Firefox profile data including cache, history, and cookies databases",
+        "isCorrect": true
+      },
+      {
+        "value": "Windows system logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Antivirus definitions",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which tool is commonly used for extracting artifacts like email addresses and URLs from memory dumps in dark web forensics?",
+    "options": [
+      {
+        "value": "Autopsy",
+        "isCorrect": false
+      },
+      {
+        "value": "Bulk Extractor",
+        "isCorrect": true
+      },
+      {
+        "value": "FTK Imager",
+        "isCorrect": false
+      },
+      {
+        "value": "EnCase",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the PRIMARY advantage of memory forensics in Tor Browser investigations?",
+    "options": [
+      {
+        "value": "Memory is always preserved after shutdown",
+        "isCorrect": false
+      },
+      {
+        "value": "Volatile data like decrypted content, URLs, and credentials may be recoverable from RAM",
+        "isCorrect": true
+      },
+      {
+        "value": "Memory analysis is faster than disk analysis",
+        "isCorrect": false
+      },
+      {
+        "value": "Memory contains more permanent data",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator performs memory acquisition while Tor Browser is still running. What type of evidence is MOST likely to be found?",
+    "options": [
+      {
+        "value": "Only system configuration",
+        "isCorrect": false
+      },
+      {
+        "value": "Decrypted page content, email text, session data, and visited .onion URLs",
+        "isCorrect": true
+      },
+      {
+        "value": "Encrypted data only",
+        "isCorrect": false
+      },
+      {
+        "value": "Hardware information only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Bulk Extractor output file would contain discovered email addresses from a memory dump?",
+    "options": [
+      {
+        "value": "domain.txt",
+        "isCorrect": false
+      },
+      {
+        "value": "email.txt",
+        "isCorrect": true
+      },
+      {
+        "value": "url.txt",
+        "isCorrect": false
+      },
+      {
+        "value": "ip.txt",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the significance of analyzing memory dumps when Tor Browser is closed versus when its open?",
+    "options": [
+      {
+        "value": "No difference in available evidence",
+        "isCorrect": false
+      },
+      {
+        "value": "Open browser yields more volatile data; closed browser may still have residual data in RAM until overwritten",
+        "isCorrect": true
+      },
+      {
+        "value": "Closed browser provides more data",
+        "isCorrect": false
+      },
+      {
+        "value": "Memory dumps are useless for Tor forensics",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An analyst uses Bulk Extractor and finds .onion URLs in the memory dump. What does this confirm?",
+    "options": [
+      {
+        "value": "The user installed Tor but never used it",
+        "isCorrect": false
+      },
+      {
+        "value": "The user accessed dark web hidden services",
+        "isCorrect": true
+      },
+      {
+        "value": "The system has network issues",
+        "isCorrect": false
+      },
+      {
+        "value": "The URLs are from regular websites",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which memory acquisition tool is commonly used to capture RAM contents for forensic analysis?",
+    "options": [
+      {
+        "value": "Wireshark",
+        "isCorrect": false
+      },
+      {
+        "value": "FTK Imager, Magnet RAM Capture, or DumpIt",
+        "isCorrect": true
+      },
+      {
+        "value": "Process Monitor",
+        "isCorrect": false
+      },
+      {
+        "value": "Autoruns",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What type of artifacts can be extracted from memory when analyzing dark web email access?",
+    "options": [
+      {
+        "value": "Only sender addresses",
+        "isCorrect": false
+      },
+      {
+        "value": "Email content, email IDs, composed emails, attachments, and accessed emails",
+        "isCorrect": true
+      },
+      {
+        "value": "Only timestamps",
+        "isCorrect": false
+      },
+      {
+        "value": "Only email server names",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During Tor Browser forensics, an investigator finds strings like mail2tor in memory. What does this indicate?",
+    "options": [
+      {
+        "value": "Standard email service was used",
+        "isCorrect": false
+      },
+      {
+        "value": "A dark web email service was accessed",
+        "isCorrect": true
+      },
+      {
+        "value": "The system has email malware",
+        "isCorrect": false
+      },
+      {
+        "value": "Outlook was configured",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which Volatility plugin can help identify running processes including Tor Browser in a memory dump?",
+    "options": [
+      {
+        "value": "filescan",
+        "isCorrect": false
+      },
+      {
+        "value": "pslist or pstree",
+        "isCorrect": true
+      },
+      {
+        "value": "hivelist",
+        "isCorrect": false
+      },
+      {
+        "value": "connections",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the recommended approach for memory acquisition in dark web forensics?",
+    "options": [
+      {
+        "value": "Shutdown the computer first, then acquire memory",
+        "isCorrect": false
+      },
+      {
+        "value": "Acquire memory while the system is still running (live acquisition)",
+        "isCorrect": true
+      },
+      {
+        "value": "Only acquire disk images",
+        "isCorrect": false
+      },
+      {
+        "value": "Wait 24 hours before acquisition",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator needs to search for composed but unsent emails in a Tor-accessed webmail. Where might this data reside?",
+    "options": [
+      {
+        "value": "Only on the email server",
+        "isCorrect": false
+      },
+      {
+        "value": "In browser memory or RAM dump if the browser was open during acquisition",
+        "isCorrect": true
+      },
+      {
+        "value": "In the Windows registry",
+        "isCorrect": false
+      },
+      {
+        "value": "In the BIOS",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which regular expression pattern might be useful for finding .onion URLs in a memory dump?",
+    "options": [
+      {
+        "value": "*.exe",
+        "isCorrect": false
+      },
+      {
+        "value": "[a-z2-7]{16,56}\\\\.onion",
+        "isCorrect": true
+      },
+      {
+        "value": "http://www.*",
+        "isCorrect": false
+      },
+      {
+        "value": "*.dll",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: Tor Browser has been uninstalled from a suspects computer. Where might residual evidence still exist?",
+    "options": [
+      {
+        "value": "Nowhere - uninstallation removes all traces",
+        "isCorrect": false
+      },
+      {
+        "value": "Prefetch files, registry entries, pagefile, volume shadow copies, and unallocated disk space",
+        "isCorrect": true
+      },
+      {
+        "value": "Only in the Recycle Bin",
+        "isCorrect": false
+      },
+      {
+        "value": "Only on external drives",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What forensic challenge exists when Tor Browser is run from a USB drive?",
+    "options": [
+      {
+        "value": "It leaves more artifacts",
+        "isCorrect": false
+      },
+      {
+        "value": "Minimal artifacts on the host system since its portable and self-contained",
+        "isCorrect": true
+      },
+      {
+        "value": "USB drives are easier to analyze",
+        "isCorrect": false
+      },
+      {
+        "value": "It creates more registry entries",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which file carving technique can help recover deleted Tor Browser artifacts?",
+    "options": [
+      {
+        "value": "Registry editing",
+        "isCorrect": false
+      },
+      {
+        "value": "Searching unallocated space and slack space for file signatures and strings",
+        "isCorrect": true
+      },
+      {
+        "value": "Changing file extensions",
+        "isCorrect": false
+      },
+      {
+        "value": "Compressing the drive",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator finds evidence that files were downloaded through Tor Browser. Where would download artifacts typically be stored?",
+    "options": [
+      {
+        "value": "System32 folder",
+        "isCorrect": false
+      },
+      {
+        "value": "The default Downloads folder or location specified in Tor Browser preferences",
+        "isCorrect": true
+      },
+      {
+        "value": "Windows folder only",
+        "isCorrect": false
+      },
+      {
+        "value": "BIOS memory",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What can the torrc configuration file reveal to investigators?",
+    "options": [
+      {
+        "value": "User passwords",
+        "isCorrect": false
+      },
+      {
+        "value": "Custom Tor settings like bridge configurations, proxy settings, and exit node preferences",
+        "isCorrect": true
+      },
+      {
+        "value": "Windows activation key",
+        "isCorrect": false
+      },
+      {
+        "value": "Hardware specifications",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An investigator needs to recover email attachments that were uploaded through Tor. Where should they search?",
+    "options": [
+      {
+        "value": "Windows registry only",
+        "isCorrect": false
+      },
+      {
+        "value": "Browser cache, temp files, original file location, and memory dumps",
+        "isCorrect": true
+      },
+      {
+        "value": "BIOS settings",
+        "isCorrect": false
+      },
+      {
+        "value": "Device Manager",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What challenge does Tors private browsing mode present to forensic investigators?",
+    "options": [
+      {
+        "value": "It creates more artifacts",
+        "isCorrect": false
+      },
+      {
+        "value": "It may clear browsing data on exit and use memory-only storage for session data",
+        "isCorrect": true
+      },
+      {
+        "value": "It makes files easier to recover",
+        "isCorrect": false
+      },
+      {
+        "value": "It speeds up analysis",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Which artifact can prove a user downloaded files from a specific .onion site?",
+    "options": [
+      {
+        "value": "System boot logs",
+        "isCorrect": false
+      },
+      {
+        "value": "Download history in places.sqlite combined with Zone.Identifier ADS if preserved",
+        "isCorrect": true
+      },
+      {
+        "value": "Windows activation status",
+        "isCorrect": false
+      },
+      {
+        "value": "Hardware serial number",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: An analyst discovers cached consensus files in the Tor data directory. What do these files contain?",
+    "options": [
+      {
+        "value": "User passwords",
+        "isCorrect": false
+      },
+      {
+        "value": "Information about Tor network relays and their status",
+        "isCorrect": true
+      },
+      {
+        "value": "Downloaded files",
+        "isCorrect": false
+      },
+      {
+        "value": "Email messages",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What is the forensic significance of the Browser/TorBrowser/Data/Tor/state file?",
+    "options": [
+      {
+        "value": "It contains user credentials",
+        "isCorrect": false
+      },
+      {
+        "value": "It stores Tor circuit information and entry guard selections",
+        "isCorrect": true
+      },
+      {
+        "value": "It contains downloaded files",
+        "isCorrect": false
+      },
+      {
+        "value": "It stores Windows settings",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "Case Scenario: During forensic analysis, an investigator finds that Tor Browser was used at 3 AM. Which artifacts could establish this timeline?",
+    "options": [
+      {
+        "value": "Desktop wallpaper",
+        "isCorrect": false
+      },
+      {
+        "value": "Prefetch timestamps, browser history timestamps, and Windows event logs",
+        "isCorrect": true
+      },
+      {
+        "value": "Screen resolution settings",
+        "isCorrect": false
+      },
+      {
+        "value": "Sound settings",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "question": "What evidence might persist in Windows pagefile.sys related to Tor usage?",
+    "options": [
+      {
+        "value": "Complete Tor Browser installation",
+        "isCorrect": false
+      },
+      {
+        "value": "Fragments of memory including URLs, content, and session data swapped to disk",
+        "isCorrect": true
+      },
+      {
+        "value": "Only encrypted data",
+        "isCorrect": false
+      },
+      {
+        "value": "Nothing related to Tor",
+        "isCorrect": false
+      }
+    ]
+  }
+]
