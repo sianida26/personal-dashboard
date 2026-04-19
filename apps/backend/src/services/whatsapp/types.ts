@@ -90,6 +90,8 @@ export interface WhatsAppWebhookPayload {
 		hasMedia: boolean;
 		/** Message acknowledgment status */
 		ack?: number;
+		/** ID of the message being replied to (if this is a reply) */
+		replyTo?: string;
 		/** Additional metadata */
 		_data?: {
 			/** Sender's display name */
@@ -116,6 +118,8 @@ export interface WhatsAppMessageContext {
 	hasMedia: boolean;
 	/** Sender's display name */
 	senderName?: string;
+	/** ID of the message being replied to (if this is a reply) */
+	replyTo?: string;
 	/** WAHA session name */
 	session: string;
 	/** Allow arbitrary additional properties for flexibility */

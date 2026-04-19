@@ -14,6 +14,10 @@ export const moneyAnalyticsSummarySchema = z.object({
 	totalExpense: z.number(),
 	netFlow: z.number(),
 	transactionCount: z.number(),
+	savingsRate: z.number(),
+	expenseRatio: z.number(),
+	averageDailyIncome: z.number(),
+	averageDailyExpense: z.number(),
 });
 
 // Daily trend item

@@ -147,6 +147,7 @@ export class WhatsAppService {
 			fromMe: payload.payload.fromMe,
 			hasMedia: payload.payload.hasMedia,
 			senderName: payload.payload._data?.notifyName,
+			replyTo: payload.payload.replyTo,
 			session: payload.session,
 		};
 

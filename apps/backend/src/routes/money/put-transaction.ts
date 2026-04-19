@@ -42,6 +42,23 @@ const putTransactionRoute = createHonoRoute()
 				notFound({ message: "Transaction not found" });
 			}
 
+			// Validate account if accountId is being updated
+			if (data.accountId !== undefined) {
+				const account = await db.query.moneyAccounts.findFirst({
+					where: and(
+						eq(moneyAccounts.id, data.accountId),
+						eq(moneyAccounts.userId, uid),
+					),
+					columns: { id: true },
+				});
+				if (!account) {
+					badRequest({
+						message: "Account not found",
+						formErrors: { accountId: "Account not found" },
+					});
+				}
+			}
+
 			// Validate category if provided
 			if (data.categoryId !== undefined && data.categoryId !== null) {
 				const category = await db.query.moneyCategories.findFirst({
@@ -72,10 +89,13 @@ const putTransactionRoute = createHonoRoute()
 				}
 			}
 
-			// Calculate amount difference if amount is being updated
 			const oldAmount = Number(existingTransaction?.amount);
 			const newAmount = data.amount ?? oldAmount;
-			const amountDiff = newAmount - oldAmount;
+			const oldAccountId = existingTransaction?.accountId;
+			const newAccountId = data.accountId ?? oldAccountId;
+			const accountChanged = Boolean(
+				data.accountId && data.accountId !== oldAccountId,
+			);
 
 			// Use a database transaction to ensure atomicity
 			await db.transaction(async (tx) => {
@@ -86,6 +106,8 @@ const putTransactionRoute = createHonoRoute()
 
 				if (data.amount !== undefined)
 					updateData.amount = String(data.amount);
+				if (data.accountId !== undefined)
+					updateData.accountId = data.accountId;
 				if (data.categoryId !== undefined)
 					updateData.categoryId = data.categoryId;
 				if (data.date !== undefined) updateData.date = data.date;
@@ -102,63 +124,91 @@ const putTransactionRoute = createHonoRoute()
 					.set(updateData)
 					.where(eq(moneyTransactions.id, id));
 
-				// Update account balances if amount changed
-				if (amountDiff !== 0) {
-					if (existingTransaction?.type === "income") {
-						// Adjust account balance
-						await tx
-							.update(moneyAccounts)
-							.set({
-								balance: sql`${moneyAccounts.balance} + ${amountDiff}`,
-								updatedAt: new Date(),
-							})
-							.where(
-								eq(
-									moneyAccounts.id,
-									existingTransaction?.accountId,
-								),
-							);
-					} else if (existingTransaction?.type === "expense") {
-						// Adjust account balance (negative for expense)
-						await tx
-							.update(moneyAccounts)
-							.set({
-								balance: sql`${moneyAccounts.balance} - ${amountDiff}`,
-								updatedAt: new Date(),
-							})
-							.where(
-								eq(
-									moneyAccounts.id,
-									existingTransaction?.accountId,
-								),
-							);
-					} else if (existingTransaction?.type === "transfer") {
-						// Adjust source account (decrease by diff)
-						await tx
-							.update(moneyAccounts)
-							.set({
-								balance: sql`${moneyAccounts.balance} - ${amountDiff}`,
-								updatedAt: new Date(),
-							})
-							.where(
-								eq(
-									moneyAccounts.id,
-									existingTransaction?.accountId,
-								),
-							);
+				const shouldRecalculateBalance =
+					newAmount !== oldAmount || accountChanged;
 
-						// Adjust destination account (increase by diff)
+				if (shouldRecalculateBalance && oldAccountId && newAccountId) {
+					if (existingTransaction?.type === "income") {
+						// Reverse old effect on old account
+						await tx
+							.update(moneyAccounts)
+							.set({
+								balance: sql`${moneyAccounts.balance} - ${oldAmount}`,
+								updatedAt: new Date(),
+							})
+							.where(eq(moneyAccounts.id, oldAccountId));
+
+						// Apply new effect on new account
+						await tx
+							.update(moneyAccounts)
+							.set({
+								balance: sql`${moneyAccounts.balance} + ${newAmount}`,
+								updatedAt: new Date(),
+							})
+							.where(eq(moneyAccounts.id, newAccountId));
+					} else if (existingTransaction?.type === "expense") {
+						// Reverse old effect on old account
+						await tx
+							.update(moneyAccounts)
+							.set({
+								balance: sql`${moneyAccounts.balance} + ${oldAmount}`,
+								updatedAt: new Date(),
+							})
+							.where(eq(moneyAccounts.id, oldAccountId));
+
+						// Apply new effect on new account
+						await tx
+							.update(moneyAccounts)
+							.set({
+								balance: sql`${moneyAccounts.balance} - ${newAmount}`,
+								updatedAt: new Date(),
+							})
+							.where(eq(moneyAccounts.id, newAccountId));
+					} else if (existingTransaction?.type === "transfer") {
+						// Reverse old transfer effect
+						await tx
+							.update(moneyAccounts)
+							.set({
+								balance: sql`${moneyAccounts.balance} + ${oldAmount}`,
+								updatedAt: new Date(),
+							})
+							.where(eq(moneyAccounts.id, oldAccountId));
+
 						if (existingTransaction?.toAccountId) {
 							await tx
 								.update(moneyAccounts)
 								.set({
-									balance: sql`${moneyAccounts.balance} + ${amountDiff}`,
+									balance: sql`${moneyAccounts.balance} - ${oldAmount}`,
 									updatedAt: new Date(),
 								})
 								.where(
 									eq(
 										moneyAccounts.id,
-										existingTransaction?.toAccountId,
+										existingTransaction.toAccountId,
+									),
+								);
+						}
+
+						// Apply new transfer effect
+						await tx
+							.update(moneyAccounts)
+							.set({
+								balance: sql`${moneyAccounts.balance} - ${newAmount}`,
+								updatedAt: new Date(),
+							})
+							.where(eq(moneyAccounts.id, newAccountId));
+
+						if (existingTransaction?.toAccountId) {
+							await tx
+								.update(moneyAccounts)
+								.set({
+									balance: sql`${moneyAccounts.balance} + ${newAmount}`,
+									updatedAt: new Date(),
+								})
+								.where(
+									eq(
+										moneyAccounts.id,
+										existingTransaction.toAccountId,
 									),
 								);
 						}

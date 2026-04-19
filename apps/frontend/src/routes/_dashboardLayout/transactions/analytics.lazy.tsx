@@ -71,6 +71,12 @@ const formatShortCurrency = (value: number) => {
 	return value.toString();
 };
 
+const formatPercentage = (value: number) =>
+	`${new Intl.NumberFormat("id-ID", {
+		minimumFractionDigits: 1,
+		maximumFractionDigits: 1,
+	}).format(value)}%`;
+
 // Quick date range options
 const DATE_RANGE_OPTIONS = [
 	{ value: "7d", label: "7 Hari Terakhir" },
@@ -648,7 +654,7 @@ export default function AnalyticsPage() {
 					</div>
 
 					{/* Summary Cards */}
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 						<SummaryCard
 							title="Total Pemasukan"
 							value={data?.summary.totalIncome ?? 0}
@@ -685,6 +691,32 @@ export default function AnalyticsPage() {
 							isLoading={isLoading}
 							variant="neutral"
 							isCurrency={false}
+						/>
+						<SummaryCard
+							title="Rasio Menabung"
+							value={data?.summary.savingsRate ?? 0}
+							icon={TbTrendingUp}
+							isLoading={isLoading}
+							variant={
+								(data?.summary.savingsRate ?? 0) >= 20
+									? "income"
+									: "neutral"
+							}
+							isCurrency={false}
+							formatter={formatPercentage}
+						/>
+						<SummaryCard
+							title="Rasio Pengeluaran"
+							value={data?.summary.expenseRatio ?? 0}
+							icon={TbTrendingDown}
+							isLoading={isLoading}
+							variant={
+								(data?.summary.expenseRatio ?? 0) > 80
+									? "expense"
+									: "neutral"
+							}
+							isCurrency={false}
+							formatter={formatPercentage}
 						/>
 					</div>
 
@@ -1464,6 +1496,7 @@ interface SummaryCardProps {
 	isLoading: boolean;
 	variant: "income" | "expense" | "neutral";
 	isCurrency?: boolean;
+	formatter?: (value: number) => string;
 }
 
 function SummaryCard({
@@ -1473,6 +1506,7 @@ function SummaryCard({
 	isLoading,
 	variant,
 	isCurrency = true,
+	formatter,
 }: SummaryCardProps) {
 	const variantStyles = {
 		income: "text-green-600 bg-green-50 dark:bg-green-950/30",
@@ -1490,9 +1524,11 @@ function SummaryCard({
 							<Skeleton className="h-8 w-24" />
 						) : (
 							<p className="text-2xl font-bold">
-								{isCurrency
-									? formatCurrency(value)
-									: value.toLocaleString("id-ID")}
+								{formatter
+									? formatter(value)
+									: isCurrency
+										? formatCurrency(value)
+										: value.toLocaleString("id-ID")}
 							</p>
 						)}
 					</div>

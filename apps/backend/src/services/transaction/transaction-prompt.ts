@@ -1,5 +1,6 @@
 import { eq } from "drizzle-orm";
 import db from "../../drizzle";
+import { moneyAccounts } from "../../drizzle/schema/moneyAccounts";
 import { moneyCategories } from "../../drizzle/schema/moneyCategories";
 
 /**
@@ -32,6 +33,20 @@ async function getCategories(userId: string) {
 	return { incomeCategories, expenseCategories };
 }
 
+async function getAccountNames(userId: string) {
+	const accounts = await db.query.moneyAccounts.findMany({
+		where: eq(moneyAccounts.userId, userId),
+		columns: {
+			name: true,
+			isActive: true,
+		},
+	});
+
+	return accounts
+		.filter((account) => account.isActive)
+		.map((account) => account.name);
+}
+
 /**
  * Builds the transaction extraction prompt with the input message
  * @param input - The message to extract transactions from
@@ -43,12 +58,16 @@ export async function buildTransactionPrompt(
 	userId: string,
 ): Promise<string> {
 	const { incomeCategories, expenseCategories } = await getCategories(userId);
+	const accountNames = await getAccountNames(userId);
 
 	return `You are a transaction extractor for Indonesian users. Extract transaction details from the input and return ONLY a JSON array. If the input is not a transaction record, return an empty array [].
 
 CATEGORIES:
 - Income: ${incomeCategories.join(", ")}
 - Expense: ${expenseCategories.join(", ")}
+
+ACCOUNTS:
+- ${accountNames.length > 0 ? accountNames.join(", ") : "No active account configured"}
 
 INDONESIAN CULTURE CONTEXT:
 - "buwuh", "kondangan", "sumbangan nikahan" = giving money at weddings → category "Hadiah" (expense, you give money)
@@ -77,6 +96,7 @@ IMPORTANT RULES:
 2. Amounts should be numeric (no currency symbols)
 3. Choose the most appropriate category from the lists above
 4. Each transaction must have: name, amount, currency, type, category
+4b. Optional field: accountName (use one of ACCOUNTS when message clearly mentions it)
 5. **DEFAULT TO EXPENSE** if you're unsure whether it's income or expense
 6. Only classify as INCOME if you're 90%+ confident (e.g., "gaji", "dapat hadiah", "terima transferan", "bonus", "THR", "menang arisan")
 7. Common income indicators: "gaji", "dapat", "terima", "dapet", "dikasih", "menang", "bonus"
@@ -84,6 +104,7 @@ IMPORTANT RULES:
 9. **CRITICAL**: When an item name is followed by an amount (e.g., "pringles 30k"), this is ALWAYS a transaction, even without explicit verbs like "beli"
 10. Multi-line inputs with "item + amount" pattern should each be treated as separate expense transactions
 11. Amount formats: "30k" = 30000, "1.5jt" or "1.5juta" = 1500000, "500rb" or "500ribu" = 500000
+12. If the last line of input is an account label (example: "bca chesa", "gopay later chesa"), apply it as accountName for all extracted transactions unless overridden by line-specific account info
 
 OUTPUT FORMAT (array of transactions):
 [
@@ -92,7 +113,8 @@ OUTPUT FORMAT (array of transactions):
     "amount": 50000,
     "currency": "IDR",
     "type": "expense",
-    "category": "Makanan dan Minuman"
+    "category": "Makanan dan Minuman",
+    "accountName": "BCA Chesa"
   }
 ]
 
@@ -132,4 +154,89 @@ Output: []
 
 Now extract from this input:
 ${input}`;
+}
+
+interface ExistingTransaction {
+	id: string;
+	name: string;
+	amount: number;
+	type: "income" | "expense";
+	category: string;
+}
+
+/**
+ * Builds the revision prompt for correcting existing transactions
+ * @param revisionInstruction - The user's revision/correction message
+ * @param existingTransactions - Current transactions to revise
+ * @param userId - The user ID to fetch categories for
+ * @returns Complete prompt for the AI model
+ */
+export async function buildRevisionPrompt(
+	revisionInstruction: string,
+	existingTransactions: ExistingTransaction[],
+	userId: string,
+): Promise<string> {
+	const { incomeCategories, expenseCategories } = await getCategories(userId);
+
+	const txList = existingTransactions
+		.map(
+			(tx, i) =>
+				`${i + 1}. [id: "${tx.id}"] ${tx.name} - ${tx.type === "income" ? "Pemasukan" : "Pengeluaran"} ${tx.amount} IDR (Kategori: ${tx.category})`,
+		)
+		.join("\n");
+
+	return `You are a transaction revision assistant for Indonesian users. Given existing transactions and a correction instruction, return the updated transactions as a JSON array. Only include transactions that need to be changed.
+
+AVAILABLE CATEGORIES:
+- Income: ${incomeCategories.join(", ")}
+- Expense: ${expenseCategories.join(", ")}
+
+EXISTING TRANSACTIONS:
+${txList}
+
+RULES:
+1. Only return transactions that are MODIFIED by the instruction.
+2. Each returned object must include the "id" field from the existing transaction.
+3. Fields: id, name, amount, currency, type, category
+4. If the instruction says to DELETE a transaction, return it with "delete": true
+5. Amount formats: "30k" = 30000, "1.5jt" = 1500000, "500rb" = 500000
+6. Default currency is IDR unless specified
+7. If the instruction is unclear which transaction to modify, use context clues (name similarity, amount proximity)
+
+OUTPUT FORMAT:
+[
+  {
+    "id": "existing-transaction-id",
+    "name": "updated name",
+    "amount": 50000,
+    "currency": "IDR",
+    "type": "expense",
+    "category": "Makanan dan Minuman"
+  }
+]
+
+Or for deletion:
+[
+  {
+    "id": "existing-transaction-id",
+    "delete": true
+  }
+]
+
+EXAMPLES:
+Existing: 1. [id: "abc"] Bakso - Pengeluaran 15000 IDR (Kategori: Makanan dan Minuman)
+Instruction: "harusnya 20k"
+Output: [{"id":"abc","name":"Bakso","amount":20000,"currency":"IDR","type":"expense","category":"Makanan dan Minuman"}]
+
+Existing: 1. [id: "abc"] Bakso - Pengeluaran 15000 IDR (Kategori: Makanan dan Minuman)
+         2. [id: "def"] Es Teh - Pengeluaran 5000 IDR (Kategori: Makanan dan Minuman)
+Instruction: "yang bakso harusnya 20k"
+Output: [{"id":"abc","name":"Bakso","amount":20000,"currency":"IDR","type":"expense","category":"Makanan dan Minuman"}]
+
+Existing: 1. [id: "abc"] Ojol - Pengeluaran 15000 IDR (Kategori: Makanan dan Minuman)
+Instruction: "kategorinya transportasi"
+Output: [{"id":"abc","name":"Ojol","amount":15000,"currency":"IDR","type":"expense","category":"Transportasi"}]
+
+Now process this revision:
+Instruction: ${revisionInstruction}`;
 }

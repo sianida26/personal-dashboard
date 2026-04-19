@@ -14,6 +14,7 @@ import { transactionCreateSchema } from "@repo/validation";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { zodResolver } from "mantine-form-zod-resolver";
+import type { ClientResponse } from "hono/client";
 import { toast } from "sonner";
 import type { z } from "zod";
 import ModalFormTemplate from "@/components/ModalFormTemplate";
@@ -36,7 +37,7 @@ function RouteComponent() {
 		initialValues: {
 			type: "expense",
 			amount: 0,
-			accountId: "",
+			accountId: undefined,
 			categoryId: undefined,
 			date: new Date(),
 			description: "",
@@ -68,11 +69,8 @@ function RouteComponent() {
 	const { data: accountsResponse } = useQuery({
 		queryKey: ["accounts"],
 		queryFn: async () => {
-			// For now, we'll need accounts endpoint - let's check if it exists
-			// If not, we'll mock it or adjust
 			try {
 				const res = await fetchRPC(
-					// @ts-expect-error - might not exist yet
 					client.money.accounts.$get({
 						query: {},
 					}),
@@ -89,11 +87,10 @@ function RouteComponent() {
 	const { data: labelsResponse } = useQuery({
 		queryKey: ["transaction-labels"],
 		queryFn: async () => {
-			try {
-				const res = await fetchRPC(
-					// @ts-expect-error - endpoint might not exist yet
-					client.money.transactions.labels.$get(),
-				);
+				try {
+					const res = await fetchRPC(
+						client.money.transactions.labels.$get(),
+					);
 				return res;
 			} catch {
 				return { data: [] };
@@ -109,18 +106,18 @@ function RouteComponent() {
 		<ModalFormTemplate
 			form={form}
 			onSubmit={async () => {
-				try {
-					await fetchRPC(
-						client.money.transactions.$post({
-							json: {
-								...form.values,
-								date: form.values.date,
-								categoryId: form.values.categoryId || undefined,
-								toAccountId:
-									form.values.toAccountId || undefined,
-							},
-						}),
-					);
+					try {
+						await fetchRPC(
+							client.money.transactions.$post({
+								json: {
+									...form.values,
+									date: form.values.date,
+									categoryId: form.values.categoryId || undefined,
+									toAccountId:
+										form.values.toAccountId || undefined,
+								},
+							}) as Promise<ClientResponse<unknown>>,
+						);
 					toast.success("Transaksi berhasil dibuat", {
 						description: "Data transaksi telah disimpan.",
 					});
@@ -217,15 +214,29 @@ function RouteComponent() {
 				<div className="space-y-2">
 					<Label htmlFor="accountId">Akun</Label>
 					<NativeSelect
-						value={form.values.accountId}
+						value={
+							form.values.type === "transfer"
+								? (form.values.accountId ?? "")
+								: (form.values.accountId ?? "__default__")
+						}
 						onValueChange={(value) =>
-							form.setFieldValue("accountId", value)
+							form.setFieldValue(
+								"accountId",
+								value === "__default__"
+									? undefined
+									: (value || undefined),
+							)
 						}
 					>
 						<SelectTrigger>
-							<SelectValue placeholder="Pilih akun" />
+							<SelectValue placeholder="Default (otomatis)" />
 						</SelectTrigger>
 						<SelectContent>
+							{form.values.type !== "transfer" && (
+								<SelectItem value="__default__">
+									Default (otomatis)
+								</SelectItem>
+							)}
 							{accounts.map(
 								(account: { id: string; name: string }) => (
 									<SelectItem

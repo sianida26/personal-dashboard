@@ -1,0 +1,1 @@
+ALTER TABLE "money_transactions" ADD COLUMN "wa_bot_reply_id" text;

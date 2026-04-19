@@ -51,6 +51,7 @@ export const moneyTransactions = pgTable(
 		labels: jsonb("labels").$type<string[]>(),
 		attachmentUrl: text("attachment_url"),
 		waMessageId: text("wa_message_id"),
+		waBotReplyId: text("wa_bot_reply_id"),
 		createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
 		updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
 	},

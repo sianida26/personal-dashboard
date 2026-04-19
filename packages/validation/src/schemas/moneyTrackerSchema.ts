@@ -52,7 +52,7 @@ export const transactionCreateSchema = z
 	.object({
 		type: transactionTypeSchema,
 		amount: z.coerce.number().positive("Amount must be positive"),
-		accountId: z.string().min(1, "Account is required"),
+		accountId: z.string().optional(),
 		categoryId: z.string().optional(),
 		date: z.coerce.date(),
 		description: z.string().max(500, "Description is too long").optional(),
@@ -67,13 +67,21 @@ export const transactionCreateSchema = z
 			.optional(),
 		attachmentUrl: z.string().url("Invalid URL").optional(),
 	})
-	.refine((data) => data.type !== "transfer" || data.toAccountId, {
-		message: "Destination account is required for transfer",
-		path: ["toAccountId"],
-	})
 	.refine(
 		(data) =>
-			data.type !== "transfer" || data.accountId !== data.toAccountId,
+			data.type !== "transfer" ||
+			(Boolean(data.accountId) && Boolean(data.toAccountId)),
+		{
+			message: "Destination account is required for transfer",
+			path: ["toAccountId"],
+		},
+	)
+	.refine(
+		(data) =>
+			data.type !== "transfer" ||
+			!data.accountId ||
+			!data.toAccountId ||
+			data.accountId !== data.toAccountId,
 		{
 			message: "Cannot transfer to the same account",
 			path: ["toAccountId"],
@@ -82,6 +90,7 @@ export const transactionCreateSchema = z
 
 export const transactionUpdateSchema = z.object({
 	amount: z.coerce.number().positive("Amount must be positive").optional(),
+	accountId: z.string().optional(),
 	categoryId: z.string().nullable().optional(),
 	date: z.coerce.date().optional(),
 	description: z
@@ -121,6 +130,54 @@ export const transactionExportSchema = z.object({
 	endDate: z.coerce.date().optional(),
 });
 
+// ==================== ACCOUNT SCHEMAS ====================
+
+export const accountTypeSchema = z.enum([
+	"cash",
+	"bank",
+	"e_wallet",
+	"credit_card",
+	"investment",
+]);
+
+export const accountCreateSchema = z.object({
+	name: z.string().min(1, "Name is required").max(255, "Name is too long"),
+	type: accountTypeSchema,
+	balance: z.coerce.number().default(0),
+	currency: z.string().length(3).default("IDR"),
+	icon: z.string().max(50, "Icon name is too long").optional(),
+	color: z
+		.string()
+		.regex(/^#[0-9A-Fa-f]{6}$/, "Invalid hex color format")
+		.optional(),
+});
+
+export const accountUpdateSchema = z.object({
+	name: z
+		.string()
+		.min(1, "Name is required")
+		.max(255, "Name is too long")
+		.optional(),
+	type: accountTypeSchema.optional(),
+	balance: z.coerce.number().optional(),
+	currency: z.string().length(3).optional(),
+	icon: z.string().max(50, "Icon name is too long").nullable().optional(),
+	color: z
+		.string()
+		.regex(/^#[0-9A-Fa-f]{6}$/, "Invalid hex color format")
+		.nullable()
+		.optional(),
+	isActive: z.boolean().optional(),
+});
+
+export const accountQuerySchema = z.object({
+	type: accountTypeSchema.optional(),
+	includeInactive: z
+		.string()
+		.optional()
+		.transform((v) => v?.toLowerCase() === "true"),
+});
+
 // ==================== TYPE EXPORTS ====================
 
 export type CategoryType = z.infer<typeof categoryTypeSchema>;
@@ -133,3 +190,8 @@ export type TransactionCreate = z.infer<typeof transactionCreateSchema>;
 export type TransactionUpdate = z.infer<typeof transactionUpdateSchema>;
 export type TransactionQuery = z.infer<typeof transactionQuerySchema>;
 export type TransactionExport = z.infer<typeof transactionExportSchema>;
+
+export type AccountType = z.infer<typeof accountTypeSchema>;
+export type AccountCreate = z.infer<typeof accountCreateSchema>;
+export type AccountUpdate = z.infer<typeof accountUpdateSchema>;
+export type AccountQuery = z.infer<typeof accountQuerySchema>;

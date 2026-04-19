@@ -1,5 +1,21 @@
-import { Badge, Button, Card } from "@repo/ui";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+	Badge,
+	Button,
+	Card,
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	Input,
+	Label,
+	NativeSelect,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@repo/ui";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
 	createLazyFileRoute,
 	Link,
@@ -7,8 +23,14 @@ import {
 	useMatches,
 	useNavigate,
 } from "@tanstack/react-router";
-import { useMemo } from "react";
-import { TbChartBar, TbPencil, TbPlus, TbTrash } from "react-icons/tb";
+import { useMemo, useState } from "react";
+import {
+	TbChartBar,
+	TbPencil,
+	TbPlus,
+	TbTrash,
+	TbWallet,
+} from "react-icons/tb";
 import { toast } from "sonner";
 import type { AdaptiveColumnDef } from "@/components/AdaptiveTable";
 import ServerDataTable from "@/components/ServerDataTable";
@@ -60,10 +82,25 @@ interface Transaction {
 	} | null;
 }
 
+interface Account {
+	id: string;
+	name: string;
+	type: "cash" | "bank" | "e_wallet" | "credit_card" | "investment";
+	balance: string;
+	currency: string;
+	isActive: boolean;
+}
+
 export default function TransactionsPage() {
 	const navigate = useNavigate();
 	const queryClient = useQueryClient();
 	const matches = useMatches();
+	const [accountsDialogOpen, setAccountsDialogOpen] = useState(false);
+	const [newAccountName, setNewAccountName] = useState("");
+	const [newAccountType, setNewAccountType] = useState<
+		"cash" | "bank" | "e_wallet" | "credit_card" | "investment"
+	>("cash");
+	const [newAccountBalance, setNewAccountBalance] = useState("0");
 
 	// Check if we're on a child route (analytics, create, edit, delete)
 	const isChildRoute = matches.some(
@@ -97,9 +134,79 @@ export default function TransactionsPage() {
 			return res;
 		},
 	});
+	const { data: allAccountsResponse } = useQuery({
+		queryKey: ["accounts", "all"],
+		queryFn: async () => {
+			const res = await fetchRPC(
+				client.money.accounts.$get({
+					query: { includeInactive: "true" },
+				}),
+			);
+			return res;
+		},
+	});
 
 	const categories = categoriesResponse?.data ?? [];
 	const accounts = accountsResponse?.data ?? [];
+	const allAccounts = (allAccountsResponse?.data as Account[]) ?? [];
+
+	const createAccountMutation = useMutation({
+		mutationKey: ["create-account"],
+		mutationFn: async () => {
+			await fetchRPC(
+				client.money.accounts.$post({
+					json: {
+						name: newAccountName,
+						type: newAccountType,
+						balance: Number(newAccountBalance || 0),
+						currency: "IDR",
+					},
+				}),
+			);
+		},
+		onSuccess: () => {
+			toast.success("Akun berhasil dibuat");
+			setNewAccountName("");
+			setNewAccountType("cash");
+			setNewAccountBalance("0");
+			queryClient.invalidateQueries({ queryKey: ["accounts"] });
+			queryClient.invalidateQueries({ queryKey: ["transactions"] });
+		},
+		onError: (error) => {
+			toast.error("Gagal membuat akun", {
+				description:
+					error instanceof Error ? error.message : "Terjadi kesalahan.",
+			});
+		},
+	});
+
+	const toggleAccountMutation = useMutation({
+		mutationKey: ["toggle-account-status"],
+		mutationFn: async ({
+			id,
+			isActive,
+		}: {
+			id: string;
+			isActive: boolean;
+		}) => {
+			await fetchRPC(
+				client.money.accounts[":id"].$put({
+					param: { id },
+					json: { isActive: !isActive },
+				}),
+			);
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["accounts"] });
+			queryClient.invalidateQueries({ queryKey: ["transactions"] });
+		},
+		onError: (error) => {
+			toast.error("Gagal mengubah status akun", {
+				description:
+					error instanceof Error ? error.message : "Terjadi kesalahan.",
+			});
+		},
+	});
 
 	// Handler untuk update transaksi
 	const handleUpdateTransaction = async (
@@ -429,6 +536,15 @@ export default function TransactionsPage() {
 						}}
 						headerActions={
 							<div className="flex gap-2">
+								<Button
+									variant="outline"
+									leftSection={<TbWallet />}
+									onClick={() =>
+										setAccountsDialogOpen(true)
+									}
+								>
+									Kelola Akun
+								</Button>
 								<Link to="/transactions/analytics">
 									<Button
 										variant="outline"
@@ -452,6 +568,161 @@ export default function TransactionsPage() {
 			)}
 
 			<Outlet />
+
+			<Dialog
+				open={accountsDialogOpen}
+				onOpenChange={setAccountsDialogOpen}
+			>
+				<DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
+					<DialogHeader>
+						<DialogTitle>Kelola Akun</DialogTitle>
+						<DialogDescription>
+							Tambah akun sumber dana, termasuk akun paylater
+							dan pinjaman.
+						</DialogDescription>
+					</DialogHeader>
+
+					<div className="space-y-3 p-3 border rounded-lg bg-muted/30">
+						<p className="text-sm font-medium">Tambah Akun Baru</p>
+						<div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+							<div className="space-y-1">
+								<Label htmlFor="new-account-name">Nama</Label>
+								<Input
+									id="new-account-name"
+									placeholder="Contoh: BCA Chesa"
+									value={newAccountName}
+									onChange={(e) =>
+										setNewAccountName(e.target.value)
+									}
+								/>
+							</div>
+							<div className="space-y-1">
+								<Label htmlFor="new-account-type">Tipe</Label>
+								<NativeSelect
+									value={newAccountType}
+									onValueChange={(value) =>
+										setNewAccountType(
+											value as
+												| "cash"
+												| "bank"
+												| "e_wallet"
+												| "credit_card"
+												| "investment",
+										)
+									}
+								>
+									<SelectTrigger id="new-account-type">
+										<SelectValue placeholder="Pilih tipe" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value="cash">
+											Cash
+										</SelectItem>
+										<SelectItem value="bank">
+											Bank
+										</SelectItem>
+										<SelectItem value="e_wallet">
+											E-Wallet
+										</SelectItem>
+										<SelectItem value="credit_card">
+											Credit/Paylater
+										</SelectItem>
+										<SelectItem value="investment">
+											Investment
+										</SelectItem>
+									</SelectContent>
+								</NativeSelect>
+							</div>
+							<div className="space-y-1">
+								<Label htmlFor="new-account-balance">
+									Saldo Awal
+								</Label>
+								<Input
+									id="new-account-balance"
+									type="number"
+									value={newAccountBalance}
+									onChange={(e) =>
+										setNewAccountBalance(e.target.value)
+									}
+								/>
+							</div>
+						</div>
+						<Button
+							onClick={() => createAccountMutation.mutate()}
+							disabled={
+								createAccountMutation.isPending ||
+								!newAccountName.trim()
+							}
+							leftSection={<TbPlus />}
+						>
+							{createAccountMutation.isPending
+								? "Menyimpan..."
+								: "Tambah Akun"}
+						</Button>
+					</div>
+
+					<div className="space-y-2">
+						<p className="text-sm font-medium">Daftar Akun</p>
+						<div className="space-y-2">
+							{allAccounts.length === 0 && (
+								<div className="text-sm text-muted-foreground border rounded-lg p-3">
+									Belum ada akun.
+								</div>
+							)}
+							{allAccounts.map((account) => (
+								<div
+									key={account.id}
+									className="flex items-center justify-between border rounded-lg p-3"
+								>
+									<div className="space-y-1">
+										<div className="flex items-center gap-2">
+											<p className="font-medium">
+												{account.name}
+											</p>
+											<Badge variant="outline">
+												{account.type}
+											</Badge>
+											{!account.isActive && (
+												<Badge variant="secondary">
+													Nonaktif
+												</Badge>
+											)}
+										</div>
+										<p className="text-sm text-muted-foreground">
+											{new Intl.NumberFormat("id-ID", {
+												style: "currency",
+												currency:
+													account.currency || "IDR",
+												maximumFractionDigits: 0,
+											}).format(
+												Number(account.balance || 0),
+											)}
+										</p>
+									</div>
+
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={() =>
+											toggleAccountMutation.mutate({
+												id: account.id,
+												isActive: account.isActive,
+											})
+										}
+										disabled={
+											toggleAccountMutation.isPending
+										}
+									>
+										{account.isActive
+											? "Nonaktifkan"
+											: "Aktifkan"}
+									</Button>
+								</div>
+							))}
+						</div>
+					</div>
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 }

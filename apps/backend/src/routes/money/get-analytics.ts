@@ -33,6 +33,16 @@ const getAnalyticsRoute = createHonoRoute()
 
 			const effectiveStartDate = startDate ?? defaultStartDate;
 			const effectiveEndDate = endDate ?? defaultEndDate;
+			const roundTwoDecimals = (value: number) =>
+				Math.round(value * 100) / 100;
+			const totalDays = Math.max(
+				1,
+				Math.ceil(
+					(effectiveEndDate.getTime() -
+						effectiveStartDate.getTime()) /
+						(24 * 60 * 60 * 1000),
+				) + 1,
+			);
 
 			// Build base where conditions
 			const baseConditions = [
@@ -264,6 +274,26 @@ const getAnalyticsRoute = createHonoRoute()
 					totalExpense,
 					netFlow: totalIncome - totalExpense,
 					transactionCount,
+					savingsRate:
+						totalIncome > 0
+							? roundTwoDecimals(
+									((totalIncome - totalExpense) /
+										totalIncome) *
+										100,
+								)
+							: 0,
+					expenseRatio:
+						totalIncome > 0
+							? roundTwoDecimals(
+									(totalExpense / totalIncome) * 100,
+								)
+							: 0,
+					averageDailyIncome: roundTwoDecimals(
+						totalIncome / totalDays,
+					),
+					averageDailyExpense: roundTwoDecimals(
+						totalExpense / totalDays,
+					),
 				},
 				dailyTrends,
 				monthlyTrends,

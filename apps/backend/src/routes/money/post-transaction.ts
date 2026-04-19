@@ -9,6 +9,34 @@ import authInfo from "../../middlewares/authInfo";
 import { createHonoRoute } from "../../utils/createHonoRoute";
 import requestValidator from "../../utils/requestValidator";
 
+async function getOrCreateDefaultAccount(userId: string): Promise<string> {
+	const existingAccount = await db.query.moneyAccounts.findFirst({
+		where: and(
+			eq(moneyAccounts.userId, userId),
+			eq(moneyAccounts.isActive, true),
+		),
+		columns: { id: true },
+	});
+
+	if (existingAccount) return existingAccount.id;
+
+	const [newAccount] = await db
+		.insert(moneyAccounts)
+		.values({
+			userId,
+			name: "Kas",
+			type: "cash",
+			currency: "IDR",
+		})
+		.returning({ id: moneyAccounts.id });
+
+	if (!newAccount) {
+		throw badRequest({ message: "Failed to create default account" });
+	}
+
+	return newAccount.id;
+}
+
 /**
  * POST /money/transactions - Create a new transaction
  */
@@ -18,24 +46,36 @@ const postTransactionRoute = createHonoRoute()
 		const uid = c.get("uid");
 		if (!uid) throw unauthorized();
 		const data = c.req.valid("json");
+		const effectiveAccountId =
+			data.accountId || (await getOrCreateDefaultAccount(uid));
 
 		// Validate account belongs to user
 		const account = await db.query.moneyAccounts.findFirst({
 			where: and(
-				eq(moneyAccounts.id, data.accountId),
+				eq(moneyAccounts.id, effectiveAccountId),
 				eq(moneyAccounts.userId, uid),
 			),
 		});
-
 		if (!account) {
-			badRequest({
+			throw badRequest({
 				message: "Account not found",
 				formErrors: { accountId: "Account not found" },
 			});
 		}
 
 		// Validate toAccount for transfer
-		if (data.type === "transfer" && data.toAccountId) {
+		if (data.type === "transfer") {
+			if (!data.accountId || !data.toAccountId) {
+				throw badRequest({
+					message:
+						"Transfer requires source and destination account",
+					formErrors: {
+						accountId: "Source account is required",
+						toAccountId: "Destination account is required",
+					},
+				});
+			}
+
 			const toAccount = await db.query.moneyAccounts.findFirst({
 				where: and(
 					eq(moneyAccounts.id, data.toAccountId),
@@ -44,7 +84,7 @@ const postTransactionRoute = createHonoRoute()
 			});
 
 			if (!toAccount) {
-				badRequest({
+				throw badRequest({
 					message: "Destination account not found",
 					formErrors: {
 						toAccountId: "Destination account not found",
@@ -63,7 +103,7 @@ const postTransactionRoute = createHonoRoute()
 			});
 
 			if (!category) {
-				badRequest({
+				throw badRequest({
 					message: "Category not found",
 					formErrors: { categoryId: "Category not found" },
 				});
@@ -71,7 +111,7 @@ const postTransactionRoute = createHonoRoute()
 
 			// Category type must match transaction type (for income/expense)
 			if (data.type !== "transfer" && category?.type !== data.type) {
-				badRequest({
+				throw badRequest({
 					message: "Category type must match transaction type",
 					formErrors: {
 						categoryId: `Category must be of type '${data.type}'`,
@@ -87,7 +127,7 @@ const postTransactionRoute = createHonoRoute()
 				.insert(moneyTransactions)
 				.values({
 					userId: uid,
-					accountId: data.accountId,
+					accountId: effectiveAccountId,
 					categoryId: data.categoryId,
 					type: data.type,
 					amount: String(data.amount),
@@ -110,7 +150,7 @@ const postTransactionRoute = createHonoRoute()
 						balance: sql`${moneyAccounts.balance} + ${data.amount}`,
 						updatedAt: new Date(),
 					})
-					.where(eq(moneyAccounts.id, data.accountId));
+					.where(eq(moneyAccounts.id, effectiveAccountId));
 			} else if (data.type === "expense") {
 				// Subtract from account balance
 				await tx
@@ -119,7 +159,7 @@ const postTransactionRoute = createHonoRoute()
 						balance: sql`${moneyAccounts.balance} - ${data.amount}`,
 						updatedAt: new Date(),
 					})
-					.where(eq(moneyAccounts.id, data.accountId));
+					.where(eq(moneyAccounts.id, effectiveAccountId));
 			} else if (data.type === "transfer" && data.toAccountId) {
 				// Subtract from source account
 				await tx
@@ -128,7 +168,7 @@ const postTransactionRoute = createHonoRoute()
 						balance: sql`${moneyAccounts.balance} - ${data.amount}`,
 						updatedAt: new Date(),
 					})
-					.where(eq(moneyAccounts.id, data.accountId));
+					.where(eq(moneyAccounts.id, effectiveAccountId));
 
 				// Add to destination account
 				await tx

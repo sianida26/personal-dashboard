@@ -15,6 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { useEffect } from "react";
+import type { ClientResponse } from "hono/client";
 import { toast } from "sonner";
 import type { z } from "zod";
 import ModalFormTemplate from "@/components/ModalFormTemplate";
@@ -37,12 +38,26 @@ function RouteComponent() {
 		validate: zodResolver(transactionUpdateSchema),
 		initialValues: {
 			amount: undefined,
+			accountId: undefined,
 			categoryId: undefined,
 			date: undefined,
 			description: undefined,
 			tags: undefined,
 			labels: undefined,
 			attachmentUrl: undefined,
+		},
+	});
+
+	// Fetch accounts
+	const { data: accountsResponse } = useQuery({
+		queryKey: ["accounts", "all"],
+		queryFn: async () => {
+			const res = await fetchRPC(
+				client.money.accounts.$get({
+					query: { includeInactive: "true" },
+				}),
+			);
+			return res;
 		},
 	});
 
@@ -84,11 +99,10 @@ function RouteComponent() {
 	const { data: labelsResponse } = useQuery({
 		queryKey: ["transaction-labels"],
 		queryFn: async () => {
-			try {
-				const res = await fetchRPC(
-					// @ts-expect-error - endpoint might not exist yet
-					client.money.transactions.labels.$get(),
-				);
+				try {
+					const res = await fetchRPC(
+						client.money.transactions.labels.$get(),
+					);
 				return res;
 			} catch {
 				return { data: [] };
@@ -101,6 +115,7 @@ function RouteComponent() {
 		if (transactionData) {
 			form.setValues({
 				amount: Number(transactionData.amount),
+				accountId: transactionData.accountId,
 				categoryId: transactionData.categoryId ?? undefined,
 				date: transactionData.date
 					? new Date(transactionData.date)
@@ -114,6 +129,7 @@ function RouteComponent() {
 	}, [transactionData]);
 
 	const categories = categoriesResponse?.data ?? [];
+	const accounts = accountsResponse?.data ?? [];
 	const existingLabels = (labelsResponse?.data as string[]) ?? [];
 
 	if (isLoading) {
@@ -124,19 +140,20 @@ function RouteComponent() {
 		<ModalFormTemplate
 			form={form}
 			onSubmit={async () => {
-				try {
-					await fetchRPC(
-						client.money.transactions[":id"].$put({
-							param: { id: transactionId },
-							json: {
+					try {
+						await fetchRPC(
+							client.money.transactions[":id"].$put({
+								param: { id: transactionId },
+								json: {
 								...form.values,
 								amount: form.values.amount,
+								accountId: form.values.accountId,
 								date: form.values.date,
-								categoryId: form.values.categoryId,
-								description: form.values.description,
-							},
-						}),
-					);
+									categoryId: form.values.categoryId,
+									description: form.values.description,
+								},
+							}) as Promise<ClientResponse<unknown>>,
+						);
 					toast.success("Transaksi berhasil diperbarui", {
 						description: "Perubahan telah disimpan.",
 					});
@@ -194,6 +211,48 @@ function RouteComponent() {
 					{form.errors.amount && (
 						<p className="text-sm text-destructive">
 							{form.errors.amount}
+						</p>
+					)}
+				</div>
+
+				{/* Account */}
+				<div className="space-y-2">
+					<Label htmlFor="accountId">Akun</Label>
+					<NativeSelect
+						value={form.values.accountId ?? ""}
+						onValueChange={(value) =>
+							form.setFieldValue(
+								"accountId",
+								value || undefined,
+							)
+						}
+					>
+						<SelectTrigger>
+							<SelectValue placeholder="Pilih akun" />
+						</SelectTrigger>
+						<SelectContent>
+							{accounts.map(
+								(account: {
+									id: string;
+									name: string;
+									isActive?: boolean;
+								}) => (
+									<SelectItem
+										key={account.id}
+										value={account.id}
+									>
+										{account.name}
+										{account.isActive === false
+											? " (Nonaktif)"
+											: ""}
+									</SelectItem>
+								),
+							)}
+						</SelectContent>
+					</NativeSelect>
+					{form.errors.accountId && (
+						<p className="text-sm text-destructive">
+							{form.errors.accountId}
 						</p>
 					)}
 				</div>
