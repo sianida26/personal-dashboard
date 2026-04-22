@@ -32,7 +32,7 @@ interface Transaction {
 	userId: string;
 	accountId: string;
 	categoryId: string | null;
-	type: "income" | "expense" | "transfer";
+	type: "income" | "expense" | "transfer" | "reconcile";
 	amount: string;
 	description: string | null;
 	date: string;
@@ -137,6 +137,10 @@ function RouteComponent() {
 							label: "Transfer",
 							className: "bg-blue-100 text-blue-700",
 						},
+						reconcile: {
+							label: "Rekonsiliasi",
+							className: "bg-amber-100 text-amber-700",
+						},
 					};
 					const config = typeMap[type as keyof typeof typeMap];
 					return (
@@ -150,6 +154,7 @@ function RouteComponent() {
 					{ label: "Pemasukan", value: "income" },
 					{ label: "Pengeluaran", value: "expense" },
 					{ label: "Transfer", value: "transfer" },
+					{ label: "Rekonsiliasi", value: "reconcile" },
 				],
 				sortable: true,
 				size: 120,
@@ -174,7 +179,9 @@ function RouteComponent() {
 				cell: (info) => {
 					const row = info.row.original;
 					const amount = Number(info.getValue());
-					const isNegative = row.type === "expense";
+					const isNegative =
+						row.type === "expense" ||
+						(row.type === "reconcile" && amount < 0);
 					return (
 						<span
 							className={

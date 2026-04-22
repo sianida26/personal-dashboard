@@ -42,6 +42,13 @@ const putTransactionRoute = createHonoRoute()
 				notFound({ message: "Transaction not found" });
 			}
 
+			if (existingTransaction?.type === "reconcile") {
+				throw badRequest({
+					message:
+						"Reconcile transaction cannot be edited. Create a new reconciliation instead.",
+				});
+			}
+
 			// Validate account if accountId is being updated
 			if (data.accountId !== undefined) {
 				const account = await db.query.moneyAccounts.findFirst({
@@ -212,6 +219,22 @@ const putTransactionRoute = createHonoRoute()
 									),
 								);
 						}
+					} else if (existingTransaction?.type === "reconcile") {
+						await tx
+							.update(moneyAccounts)
+							.set({
+								balance: sql`${moneyAccounts.balance} - ${oldAmount}`,
+								updatedAt: new Date(),
+							})
+							.where(eq(moneyAccounts.id, oldAccountId));
+
+						await tx
+							.update(moneyAccounts)
+							.set({
+								balance: sql`${moneyAccounts.balance} + ${newAmount}`,
+								updatedAt: new Date(),
+							})
+							.where(eq(moneyAccounts.id, newAccountId));
 					}
 				}
 			});

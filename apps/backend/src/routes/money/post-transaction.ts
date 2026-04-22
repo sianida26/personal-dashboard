@@ -46,6 +46,15 @@ const postTransactionRoute = createHonoRoute()
 		const uid = c.get("uid");
 		if (!uid) throw unauthorized();
 		const data = c.req.valid("json");
+		if (data.type === "reconcile") {
+			throw badRequest({
+				message:
+					"Manual reconcile transaction is not allowed. Use account reconcile endpoint.",
+				formErrors: {
+					type: "Use /money/accounts/:id/reconcile for reconciliation",
+				},
+			});
+		}
 		const effectiveAccountId =
 			data.accountId || (await getOrCreateDefaultAccount(uid));
 

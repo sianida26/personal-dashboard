@@ -15,7 +15,6 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { useEffect } from "react";
-import type { ClientResponse } from "hono/client";
 import { toast } from "sonner";
 import type { z } from "zod";
 import ModalFormTemplate from "@/components/ModalFormTemplate";
@@ -81,7 +80,11 @@ function RouteComponent() {
 	const { data: categoriesResponse } = useQuery({
 		queryKey: ["categories", transactionData?.type],
 		queryFn: async () => {
-			if (!transactionData || transactionData.type === "transfer")
+			if (
+				!transactionData ||
+				(transactionData.type !== "income" &&
+					transactionData.type !== "expense")
+			)
 				return { data: [] };
 			const res = await fetchRPC(
 				client.money.categories.$get({
@@ -92,17 +95,20 @@ function RouteComponent() {
 			);
 			return res;
 		},
-		enabled: !!transactionData && transactionData.type !== "transfer",
+		enabled:
+			!!transactionData &&
+			(transactionData.type === "income" ||
+				transactionData.type === "expense"),
 	});
 
 	// Fetch existing labels for autocomplete
 	const { data: labelsResponse } = useQuery({
 		queryKey: ["transaction-labels"],
 		queryFn: async () => {
-				try {
-					const res = await fetchRPC(
-						client.money.transactions.labels.$get(),
-					);
+			try {
+				const res = await fetchRPC(
+					client.money.transactions.labels.$get(),
+				);
 				return res;
 			} catch {
 				return { data: [] };
@@ -140,20 +146,20 @@ function RouteComponent() {
 		<ModalFormTemplate
 			form={form}
 			onSubmit={async () => {
-					try {
-						await fetchRPC(
-							client.money.transactions[":id"].$put({
-								param: { id: transactionId },
-								json: {
+				try {
+					await fetchRPC(
+						client.money.transactions[":id"].$put({
+							param: { id: transactionId },
+							json: {
 								...form.values,
 								amount: form.values.amount,
 								accountId: form.values.accountId,
 								date: form.values.date,
-									categoryId: form.values.categoryId,
-									description: form.values.description,
-								},
-							}) as Promise<ClientResponse<unknown>>,
-						);
+								categoryId: form.values.categoryId,
+								description: form.values.description,
+							},
+						}),
+					);
 					toast.success("Transaksi berhasil diperbarui", {
 						description: "Perubahan telah disimpan.",
 					});
@@ -184,7 +190,9 @@ function RouteComponent() {
 								? "Pemasukan"
 								: transactionData?.type === "expense"
 									? "Pengeluaran"
-									: "Transfer"
+									: transactionData?.type === "transfer"
+										? "Transfer"
+										: "Rekonsiliasi"
 						}
 						disabled
 						className="bg-muted"
@@ -285,7 +293,8 @@ function RouteComponent() {
 				</div>
 
 				{/* Category (for non-transfers) */}
-				{transactionData?.type !== "transfer" && (
+				{(transactionData?.type === "income" ||
+					transactionData?.type === "expense") && (
 					<div className="space-y-2">
 						<Label htmlFor="categoryId">Kategori</Label>
 						<NativeSelect

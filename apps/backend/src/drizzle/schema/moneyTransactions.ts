@@ -17,6 +17,7 @@ export const transactionTypeEnum = pgEnum("transaction_type", [
 	"income",
 	"expense",
 	"transfer",
+	"reconcile",
 ]);
 
 export const transactionSourceEnum = pgEnum("transaction_source", [

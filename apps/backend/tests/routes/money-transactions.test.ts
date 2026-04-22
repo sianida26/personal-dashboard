@@ -328,6 +328,123 @@ describe("Money Tracker - Transactions API", () => {
 			// Missing auth returns 401 or 500 depending on middleware
 			expect([401, 500]).toContain(response.status);
 		});
+
+		test("should reject manual reconcile creation from transactions endpoint", async () => {
+			const response = await client.money.transactions.$post(
+				{
+					json: {
+						type: "reconcile",
+						amount: 100,
+						accountId: testAccountId,
+						date: new Date().toISOString(),
+					},
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${testUser.accessToken}`,
+					},
+				},
+			);
+
+			expect(response.status).toBe(400);
+		});
+	});
+
+	describe("POST /money/accounts/:id/reconcile", () => {
+		test("should create reconcile transaction for positive delta", async () => {
+			const before = await db.query.moneyAccounts.findFirst({
+				where: eq(moneyAccounts.id, testAccountId),
+			});
+			const currentBalance = Number(before?.balance ?? 0);
+			const actualBalance = currentBalance + 321;
+
+			const response = await client.money.accounts[":id"].reconcile.$post(
+				{
+					param: { id: testAccountId },
+					json: { actualBalance },
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${testUser.accessToken}`,
+					},
+				},
+			);
+
+			expect(response.status).toBe(200);
+			const result = await response.json();
+			expect(result.data.noOp).toBe(false);
+			expect(result.data.delta).toBe(321);
+			expect(result.data.transaction.type).toBe("reconcile");
+
+			createdTransactionIds.push(result.data.transaction.id);
+
+			const after = await db.query.moneyAccounts.findFirst({
+				where: eq(moneyAccounts.id, testAccountId),
+			});
+			expect(Number(after?.balance)).toBe(actualBalance);
+		});
+
+		test("should create reconcile transaction for negative delta", async () => {
+			const before = await db.query.moneyAccounts.findFirst({
+				where: eq(moneyAccounts.id, testAccountId),
+			});
+			const currentBalance = Number(before?.balance ?? 0);
+			const actualBalance = currentBalance - 123;
+
+			const response = await client.money.accounts[":id"].reconcile.$post(
+				{
+					param: { id: testAccountId },
+					json: { actualBalance },
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${testUser.accessToken}`,
+					},
+				},
+			);
+
+			expect(response.status).toBe(200);
+			const result = await response.json();
+			expect(result.data.noOp).toBe(false);
+			expect(result.data.delta).toBe(-123);
+			expect(result.data.transaction.type).toBe("reconcile");
+
+			createdTransactionIds.push(result.data.transaction.id);
+
+			const after = await db.query.moneyAccounts.findFirst({
+				where: eq(moneyAccounts.id, testAccountId),
+			});
+			expect(Number(after?.balance)).toBe(actualBalance);
+		});
+
+		test("should return no-op when delta is zero", async () => {
+			const before = await db.query.moneyAccounts.findFirst({
+				where: eq(moneyAccounts.id, testAccountId),
+			});
+			const currentBalance = Number(before?.balance ?? 0);
+
+			const response = await client.money.accounts[":id"].reconcile.$post(
+				{
+					param: { id: testAccountId },
+					json: { actualBalance: currentBalance },
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${testUser.accessToken}`,
+					},
+				},
+			);
+
+			expect(response.status).toBe(200);
+			const result = await response.json();
+			expect(result.data.noOp).toBe(true);
+			expect(result.data.transaction).toBeNull();
+
+			const after = await db.query.moneyAccounts.findFirst({
+				where: eq(moneyAccounts.id, testAccountId),
+			});
+			expect(Number(after?.balance)).toBe(currentBalance);
+		});
 	});
 
 	describe("GET /money/transactions", () => {
@@ -543,6 +660,26 @@ describe("Money Tracker - Transactions API", () => {
 			);
 
 			expect(response.status).toBe(404);
+		});
+	});
+
+	describe("PUT /money/accounts/:id", () => {
+		test("should reject manual account balance override", async () => {
+			const response = await client.money.accounts[":id"].$put(
+				{
+					param: { id: testAccountId },
+					json: {
+						balance: 999999,
+					},
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${testUser.accessToken}`,
+					},
+				},
+			);
+
+			expect(response.status).toBe(400);
 		});
 	});
 

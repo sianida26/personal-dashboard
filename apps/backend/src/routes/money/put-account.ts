@@ -3,7 +3,11 @@ import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import db from "../../drizzle";
 import { moneyAccounts } from "../../drizzle/schema/moneyAccounts";
-import { notFound, unauthorized } from "../../errors/DashboardError";
+import {
+	badRequest,
+	notFound,
+	unauthorized,
+} from "../../errors/DashboardError";
 import authInfo from "../../middlewares/authInfo";
 import { createHonoRoute } from "../../utils/createHonoRoute";
 import requestValidator from "../../utils/requestValidator";
@@ -22,6 +26,15 @@ const putAccountRoute = createHonoRoute()
 			if (!uid) throw unauthorized();
 			const { id } = c.req.valid("param");
 			const data = c.req.valid("json");
+			if (data.balance !== undefined) {
+				throw badRequest({
+					message:
+						"Manual account balance update is disabled. Use account reconciliation instead.",
+					formErrors: {
+						balance: "Use /money/accounts/:id/reconcile",
+					},
+				});
+			}
 
 			const existing = await db.query.moneyAccounts.findFirst({
 				where: and(
@@ -39,7 +52,6 @@ const putAccountRoute = createHonoRoute()
 			};
 			if (data.name !== undefined) updateData.name = data.name;
 			if (data.type !== undefined) updateData.type = data.type;
-			if (data.balance !== undefined) updateData.balance = String(data.balance);
 			if (data.currency !== undefined)
 				updateData.currency = data.currency.toUpperCase();
 			if (data.icon !== undefined) updateData.icon = data.icon;

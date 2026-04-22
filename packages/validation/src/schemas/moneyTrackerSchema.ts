@@ -46,7 +46,12 @@ export const categoryQuerySchema = z.object({
 
 // ==================== TRANSACTION SCHEMAS ====================
 
-export const transactionTypeSchema = z.enum(["income", "expense", "transfer"]);
+export const transactionTypeSchema = z.enum([
+	"income",
+	"expense",
+	"transfer",
+	"reconcile",
+]);
 
 export const transactionCreateSchema = z
 	.object({
@@ -178,6 +183,12 @@ export const accountQuerySchema = z.object({
 		.transform((v) => v?.toLowerCase() === "true"),
 });
 
+export const accountReconcileSchema = z.object({
+	actualBalance: z.coerce
+		.number()
+		.refine((v) => Number.isFinite(v), "Actual balance must be a number"),
+});
+
 // ==================== TYPE EXPORTS ====================
 
 export type CategoryType = z.infer<typeof categoryTypeSchema>;
@@ -195,3 +206,4 @@ export type AccountType = z.infer<typeof accountTypeSchema>;
 export type AccountCreate = z.infer<typeof accountCreateSchema>;
 export type AccountUpdate = z.infer<typeof accountUpdateSchema>;
 export type AccountQuery = z.infer<typeof accountQuerySchema>;
+export type AccountReconcile = z.infer<typeof accountReconcileSchema>;

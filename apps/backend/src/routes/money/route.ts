@@ -14,6 +14,7 @@ import getTransactionLabelsRoute from "./get-transaction-labels";
 import getTransactionsRoute from "./get-transactions";
 import getTransactionsExportRoute from "./get-transactions-export";
 import postAccountRoute from "./post-account";
+import postAccountReconcileRoute from "./post-account-reconcile";
 import postCategoryRoute from "./post-category";
 import postTransactionRoute from "./post-transaction";
 import putAccountRoute from "./put-account";
@@ -26,6 +27,7 @@ const moneyRoute = new Hono<HonoEnv>()
 	// Account routes
 	.route("/accounts", getAccountsRoute)
 	.route("/accounts", postAccountRoute)
+	.route("/accounts", postAccountReconcileRoute)
 	.route("/accounts", getAccountByIdRoute) // Must come before putAccountRoute due to :id path matching
 	.route("/accounts", putAccountRoute)
 	.route("/accounts", deleteAccountRoute)

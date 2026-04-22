@@ -98,6 +98,20 @@ const deleteTransactionRoute = createHonoRoute()
 								),
 							);
 					}
+				} else if (existingTransaction?.type === "reconcile") {
+					// Revert reconciliation effect (amount can be positive or negative)
+					await tx
+						.update(moneyAccounts)
+						.set({
+							balance: sql`${moneyAccounts.balance} - ${amount}`,
+							updatedAt: new Date(),
+						})
+						.where(
+							eq(
+								moneyAccounts.id,
+								existingTransaction?.accountId,
+							),
+						);
 				}
 
 				// Delete transaction

@@ -23,7 +23,7 @@ COPY --from=installer /node/ ./
 ARG VITE_BACKEND_BASE_URL
 RUN echo "VITE_BACKEND_BASE_URL=${VITE_BACKEND_BASE_URL}" > apps/frontend/.env
 
-RUN NODE_OPTIONS="--max-old-space-size=768" bunx turbo build --filter=frontend
+RUN bun run --cwd apps/frontend build
 
 FROM caddy:2-alpine AS production
 

@@ -28,6 +28,7 @@ import {
 	TbChartBar,
 	TbPencil,
 	TbPlus,
+	TbRefresh,
 	TbTrash,
 	TbWallet,
 } from "react-icons/tb";
@@ -47,7 +48,7 @@ interface Transaction {
 	userId: string;
 	accountId: string;
 	categoryId: string | null;
-	type: "income" | "expense" | "transfer";
+	type: "income" | "expense" | "transfer" | "reconcile";
 	amount: string;
 	description: string | null;
 	date: string;
@@ -101,6 +102,9 @@ export default function TransactionsPage() {
 		"cash" | "bank" | "e_wallet" | "credit_card" | "investment"
 	>("cash");
 	const [newAccountBalance, setNewAccountBalance] = useState("0");
+	const [reconcileDialogOpen, setReconcileDialogOpen] = useState(false);
+	const [reconcileAccount, setReconcileAccount] = useState<Account | null>(null);
+	const [reconcileActualBalance, setReconcileActualBalance] = useState("");
 
 	// Check if we're on a child route (analytics, create, edit, delete)
 	const isChildRoute = matches.some(
@@ -208,6 +212,54 @@ export default function TransactionsPage() {
 		},
 	});
 
+	const reconcileAccountMutation = useMutation({
+		mutationKey: ["reconcile-account"],
+		mutationFn: async ({
+			accountId,
+			actualBalance,
+		}: {
+			accountId: string;
+			actualBalance: number;
+		}) => {
+			return fetchRPC<{
+				data: {
+					noOp: boolean;
+					message?: string;
+					accountId: string;
+					accountBalance: number;
+					systemBalance: number;
+					actualBalance: number;
+					delta: number;
+					transaction: { id: string; type: string } | null;
+				};
+			}>(
+				client.money.accounts[":id"].reconcile.$post({
+					param: { id: accountId },
+					json: { actualBalance },
+				}),
+			);
+		},
+		onSuccess: (result) => {
+			queryClient.invalidateQueries({ queryKey: ["accounts"] });
+			queryClient.invalidateQueries({ queryKey: ["accounts", "all"] });
+			queryClient.invalidateQueries({ queryKey: ["transactions"] });
+			if (result?.data?.noOp) {
+				toast.success("Saldo sudah sinkron, tidak ada perubahan.");
+			} else {
+				toast.success("Rekonsiliasi berhasil disimpan.");
+			}
+			setReconcileDialogOpen(false);
+			setReconcileAccount(null);
+			setReconcileActualBalance("");
+		},
+		onError: (error) => {
+			toast.error("Gagal melakukan rekonsiliasi", {
+				description:
+					error instanceof Error ? error.message : "Terjadi kesalahan.",
+			});
+		},
+	});
+
 	// Handler untuk update transaksi
 	const handleUpdateTransaction = async (
 		transactionId: string,
@@ -287,6 +339,10 @@ export default function TransactionsPage() {
 							label: "Transfer",
 							className: "bg-blue-100 text-blue-700",
 						},
+						reconcile: {
+							label: "Rekonsiliasi",
+							className: "bg-amber-100 text-amber-700",
+						},
 					};
 					const config = typeMap[type as keyof typeof typeMap];
 					return (
@@ -300,6 +356,7 @@ export default function TransactionsPage() {
 					{ label: "Pemasukan", value: "income" },
 					{ label: "Pengeluaran", value: "expense" },
 					{ label: "Transfer", value: "transfer" },
+					{ label: "Rekonsiliasi", value: "reconcile" },
 				],
 				sortable: true,
 				size: 120,
@@ -415,7 +472,9 @@ export default function TransactionsPage() {
 				cell: (info) => {
 					const row = info.row.original;
 					const amount = Number(info.getValue());
-					const isNegative = row.type === "expense";
+					const isNegative =
+						row.type === "expense" ||
+						(row.type === "reconcile" && amount < 0);
 					return (
 						<span
 							className={
@@ -661,8 +720,8 @@ export default function TransactionsPage() {
 						</Button>
 					</div>
 
-					<div className="space-y-2">
-						<p className="text-sm font-medium">Daftar Akun</p>
+						<div className="space-y-2">
+							<p className="text-sm font-medium">Daftar Akun</p>
 						<div className="space-y-2">
 							{allAccounts.length === 0 && (
 								<div className="text-sm text-muted-foreground border rounded-lg p-3">
@@ -700,27 +759,167 @@ export default function TransactionsPage() {
 										</p>
 									</div>
 
-									<Button
-										variant="outline"
-										size="sm"
-										onClick={() =>
-											toggleAccountMutation.mutate({
-												id: account.id,
-												isActive: account.isActive,
-											})
-										}
-										disabled={
-											toggleAccountMutation.isPending
-										}
-									>
-										{account.isActive
-											? "Nonaktifkan"
-											: "Aktifkan"}
-									</Button>
+									<div className="flex items-center gap-2">
+										<Button
+											variant="outline"
+											size="sm"
+											leftSection={<TbRefresh />}
+											onClick={() => {
+												setReconcileAccount(account);
+												setReconcileActualBalance(
+													String(
+														Number(
+															account.balance || 0,
+														),
+													),
+												);
+												setReconcileDialogOpen(true);
+											}}
+											disabled={!account.isActive}
+										>
+											Rekonsiliasi
+										</Button>
+										<Button
+											variant="outline"
+											size="sm"
+											onClick={() =>
+												toggleAccountMutation.mutate({
+													id: account.id,
+													isActive: account.isActive,
+												})
+											}
+											disabled={
+												toggleAccountMutation.isPending
+											}
+										>
+											{account.isActive
+												? "Nonaktifkan"
+												: "Aktifkan"}
+										</Button>
+									</div>
 								</div>
 							))}
 						</div>
 					</div>
+				</DialogContent>
+			</Dialog>
+
+			<Dialog
+				open={reconcileDialogOpen}
+				onOpenChange={(open) => {
+					setReconcileDialogOpen(open);
+					if (!open) {
+						setReconcileAccount(null);
+						setReconcileActualBalance("");
+					}
+				}}
+			>
+				<DialogContent className="sm:max-w-md">
+					<DialogHeader>
+						<DialogTitle>Rekonsiliasi Saldo</DialogTitle>
+						<DialogDescription>
+							Sinkronkan saldo akun dengan saldo aktual.
+						</DialogDescription>
+					</DialogHeader>
+					{reconcileAccount && (
+						<div className="space-y-4">
+							<div className="rounded-lg border p-3 space-y-2">
+								<p className="text-sm text-muted-foreground">
+									Akun
+								</p>
+								<p className="font-medium">
+									{reconcileAccount.name}
+								</p>
+								<p className="text-sm text-muted-foreground">
+									Saldo Sistem:{" "}
+									{new Intl.NumberFormat("id-ID", {
+										style: "currency",
+										currency:
+											reconcileAccount.currency || "IDR",
+										maximumFractionDigits: 0,
+									}).format(
+										Number(reconcileAccount.balance || 0),
+									)}
+								</p>
+							</div>
+
+							<div className="space-y-1">
+								<Label htmlFor="actual-balance">
+									Saldo Aktual
+								</Label>
+								<Input
+									id="actual-balance"
+									type="number"
+									value={reconcileActualBalance}
+									onChange={(e) =>
+										setReconcileActualBalance(
+											e.target.value,
+										)
+									}
+								/>
+							</div>
+
+							<div className="rounded-lg border p-3 text-sm">
+								{(() => {
+									const system = Number(
+										reconcileAccount.balance || 0,
+									);
+									const actual = Number(
+										reconcileActualBalance || 0,
+									);
+									const delta = actual - system;
+									const deltaLabel = new Intl.NumberFormat(
+										"id-ID",
+										{
+											style: "currency",
+											currency:
+												reconcileAccount.currency ||
+												"IDR",
+											maximumFractionDigits: 0,
+										},
+									).format(delta);
+									return (
+										<p>
+											Selisih:{" "}
+											<span
+												className={
+													delta > 0
+														? "text-green-700 font-medium"
+														: delta < 0
+															? "text-red-700 font-medium"
+															: "text-muted-foreground font-medium"
+												}
+											>
+												{deltaLabel}
+											</span>
+										</p>
+									);
+								})()}
+							</div>
+
+							<Button
+								className="w-full"
+								leftSection={<TbRefresh />}
+								disabled={
+									reconcileAccountMutation.isPending ||
+									reconcileActualBalance.trim() === ""
+								}
+								onClick={() => {
+									if (!reconcileAccount) return;
+									reconcileAccountMutation.mutate({
+										accountId: reconcileAccount.id,
+										actualBalance: Number(
+											reconcileActualBalance,
+										),
+									});
+								}}
+							>
+								{reconcileAccountMutation.isPending
+									? "Menyimpan..."
+									: "Simpan Rekonsiliasi"}
+							</Button>
+						</div>
+					)}
 				</DialogContent>
 			</Dialog>
 		</div>

@@ -169,6 +169,13 @@
       "when": 1774310400000,
       "tag": "0023_wa_bot_reply_id",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1776891594226,
+      "tag": "0024_dusty_black_queen",
+      "breakpoints": true
     }
   ]
 }

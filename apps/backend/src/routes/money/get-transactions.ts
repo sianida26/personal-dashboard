@@ -81,7 +81,8 @@ const getTransactionsRoute = createHonoRoute()
 						if (
 							filter.value === "income" ||
 							filter.value === "expense" ||
-							filter.value === "transfer"
+							filter.value === "transfer" ||
+							filter.value === "reconcile"
 						) {
 							whereConditions.push(
 								eq(moneyTransactions.type, filter.value),
