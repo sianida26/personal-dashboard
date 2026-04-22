@@ -4,39 +4,36 @@ on:
     push:
         branches:
             - main
+    workflow_dispatch:
+
+concurrency:
+    group: production-deployment
+    cancel-in-progress: true
 
 jobs:
     build-and-deploy:
         runs-on: pc-chesa
+        timeout-minutes: 45
         steps:
             - name: Checkout code
               uses: actions/checkout@v5
 
-            - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@v3
-              with:
-                  driver-opts: network=host
-                  buildkitd-config-inline: |
-                      [registry."localhost:5001"]
-                        http = true
-
             - name: Build and push backend image
-              uses: docker/build-push-action@v6
-              with:
-                  context: .
-                  file: apps/backend/dockerfile
-                  push: true
-                  tags: localhost:5001/personal-dashboard/backend:latest
+              run: |
+                  docker build \
+                  -f apps/backend/dockerfile \
+                  -t localhost:5001/personal-dashboard/backend:latest \
+                  .
+                  docker push localhost:5001/personal-dashboard/backend:latest
 
             - name: Build and push frontend image
-              uses: docker/build-push-action@v6
-              with:
-                  context: .
-                  file: apps/frontend/dockerfile
-                  push: true
-                  build-args: |
-                      VITE_BACKEND_BASE_URL=http://api.dashboard.lan
-                  tags: localhost:5001/personal-dashboard/frontend:latest
+              run: |
+                  docker build \
+                  -f apps/frontend/dockerfile \
+                  --build-arg VITE_BACKEND_BASE_URL=http://api.dashboard.lan \
+                  -t localhost:5001/personal-dashboard/frontend:latest \
+                  .
+                  docker push localhost:5001/personal-dashboard/frontend:latest
 
             - name: Deploy backend to Dokploy
               run: |
