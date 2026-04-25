@@ -26,7 +26,10 @@ const getAccountsRoute = createHonoRoute()
 
 		const accounts = await db.query.moneyAccounts.findMany({
 			where: and(...whereConditions),
-			orderBy: (table, { desc }) => [desc(table.updatedAt)],
+			orderBy: (table, { desc }) => [
+				desc(table.isDefault),
+				desc(table.updatedAt),
+			],
 		});
 
 		return c.json({ data: accounts });

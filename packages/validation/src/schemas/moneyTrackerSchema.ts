@@ -142,6 +142,7 @@ export const accountTypeSchema = z.enum([
 	"bank",
 	"e_wallet",
 	"credit_card",
+	"paylater",
 	"investment",
 ]);
 
@@ -155,6 +156,7 @@ export const accountCreateSchema = z.object({
 		.string()
 		.regex(/^#[0-9A-Fa-f]{6}$/, "Invalid hex color format")
 		.optional(),
+	isDefault: z.boolean().optional(),
 });
 
 export const accountUpdateSchema = z.object({
@@ -173,6 +175,7 @@ export const accountUpdateSchema = z.object({
 		.nullable()
 		.optional(),
 	isActive: z.boolean().optional(),
+	isDefault: z.boolean().optional(),
 });
 
 export const accountQuerySchema = z.object({

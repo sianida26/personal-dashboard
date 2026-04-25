@@ -86,7 +86,13 @@ interface Transaction {
 interface Account {
 	id: string;
 	name: string;
-	type: "cash" | "bank" | "e_wallet" | "credit_card" | "investment";
+	type:
+		| "cash"
+		| "bank"
+		| "e_wallet"
+		| "credit_card"
+		| "paylater"
+		| "investment";
 	balance: string;
 	currency: string;
 	isActive: boolean;
@@ -99,7 +105,12 @@ export default function TransactionsPage() {
 	const [accountsDialogOpen, setAccountsDialogOpen] = useState(false);
 	const [newAccountName, setNewAccountName] = useState("");
 	const [newAccountType, setNewAccountType] = useState<
-		"cash" | "bank" | "e_wallet" | "credit_card" | "investment"
+		| "cash"
+		| "bank"
+		| "e_wallet"
+		| "credit_card"
+		| "paylater"
+		| "investment"
 	>("cash");
 	const [newAccountBalance, setNewAccountBalance] = useState("0");
 	const [reconcileDialogOpen, setReconcileDialogOpen] = useState(false);
@@ -666,6 +677,7 @@ export default function TransactionsPage() {
 												| "bank"
 												| "e_wallet"
 												| "credit_card"
+												| "paylater"
 												| "investment",
 										)
 									}
@@ -684,7 +696,10 @@ export default function TransactionsPage() {
 											E-Wallet
 										</SelectItem>
 										<SelectItem value="credit_card">
-											Credit/Paylater
+											Credit Card
+										</SelectItem>
+										<SelectItem value="paylater">
+											Paylater
 										</SelectItem>
 										<SelectItem value="investment">
 											Investment

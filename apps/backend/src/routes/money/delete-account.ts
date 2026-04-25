@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, asc, eq, ne } from "drizzle-orm";
 import { z } from "zod";
 import db from "../../drizzle";
 import { moneyAccounts } from "../../drizzle/schema/moneyAccounts";
@@ -30,7 +30,7 @@ const deleteAccountRoute = createHonoRoute()
 					eq(moneyAccounts.id, id),
 					eq(moneyAccounts.userId, uid),
 				),
-				columns: { id: true },
+				columns: { id: true, isDefault: true },
 			});
 			if (!account) throw notFound({ message: "Account not found" });
 
@@ -48,13 +48,44 @@ const deleteAccountRoute = createHonoRoute()
 				});
 			}
 
-			await db
-				.update(moneyAccounts)
-				.set({
-					isActive: false,
-					updatedAt: new Date(),
-				})
-				.where(eq(moneyAccounts.id, id));
+			await db.transaction(async (tx) => {
+				await tx
+					.update(moneyAccounts)
+					.set({
+						isActive: false,
+						isDefault: false,
+						updatedAt: new Date(),
+					})
+					.where(eq(moneyAccounts.id, id));
+
+				if (account.isDefault) {
+					const [fallbackAccount] = await tx
+						.select({ id: moneyAccounts.id })
+						.from(moneyAccounts)
+						.where(
+							and(
+								eq(moneyAccounts.userId, uid),
+								eq(moneyAccounts.isActive, true),
+								ne(moneyAccounts.id, id),
+							),
+						)
+						.orderBy(
+							asc(moneyAccounts.createdAt),
+							asc(moneyAccounts.id),
+						)
+						.limit(1);
+
+					if (fallbackAccount) {
+						await tx
+							.update(moneyAccounts)
+							.set({
+								isDefault: true,
+								updatedAt: new Date(),
+							})
+							.where(eq(moneyAccounts.id, fallbackAccount.id));
+					}
+				}
+			});
 
 			return c.json({ message: "Account deleted successfully" });
 		},

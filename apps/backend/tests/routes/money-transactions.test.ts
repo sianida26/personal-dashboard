@@ -15,6 +15,8 @@ describe("Money Tracker - Transactions API", () => {
 	let testUser: TestUserData;
 	let testAccountId: string;
 	let testAccount2Id: string;
+	let paylaterAccountId: string | undefined;
+	let explicitDefaultAccountId: string | undefined;
 	let expenseCategoryId: string;
 	let incomeCategoryId: string;
 	const createdTransactionIds: string[] = [];
@@ -96,6 +98,16 @@ describe("Money Tracker - Transactions API", () => {
 		await db
 			.delete(moneyAccounts)
 			.where(eq(moneyAccounts.id, testAccount2Id));
+		if (paylaterAccountId) {
+			await db
+				.delete(moneyAccounts)
+				.where(eq(moneyAccounts.id, paylaterAccountId));
+		}
+		if (explicitDefaultAccountId) {
+			await db
+				.delete(moneyAccounts)
+				.where(eq(moneyAccounts.id, explicitDefaultAccountId));
+		}
 
 		await cleanupTestUser(testUser.user.id);
 	});
@@ -347,6 +359,130 @@ describe("Money Tracker - Transactions API", () => {
 			);
 
 			expect(response.status).toBe(400);
+		});
+
+		test("should use deterministic default account when accountId is omitted", async () => {
+			const response = await client.money.transactions.$post(
+				{
+					json: {
+						type: "expense",
+						amount: 123,
+						categoryId: expenseCategoryId,
+						date: new Date().toISOString(),
+						description: "No account in payload",
+					},
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${testUser.accessToken}`,
+					},
+				},
+			);
+
+			expect(response.status).toBe(201);
+			const result = await response.json();
+			expect(result.data.accountId).toBe(testAccountId);
+			createdTransactionIds.push(result.data.id);
+
+			const account1 = await db.query.moneyAccounts.findFirst({
+				where: eq(moneyAccounts.id, testAccountId),
+			});
+			const account2 = await db.query.moneyAccounts.findFirst({
+				where: eq(moneyAccounts.id, testAccount2Id),
+			});
+			expect(account1?.isDefault).toBe(true);
+			expect(account2?.isDefault).toBe(false);
+		});
+	});
+
+	describe("POST /money/accounts", () => {
+		test("should create a paylater account", async () => {
+			const response = await client.money.accounts.$post(
+				{
+					json: {
+						name: "Test Paylater Account",
+						type: "paylater",
+						balance: 0,
+						currency: "IDR",
+					},
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${testUser.accessToken}`,
+					},
+				},
+			);
+
+			expect(response.status).toBe(201);
+			const result = await response.json();
+			expect(result.data.type).toBe("paylater");
+			paylaterAccountId = result.data.id;
+		});
+
+		test("should create expense transaction on paylater account", async () => {
+			expect(paylaterAccountId).toBeDefined();
+
+			const before = await db.query.moneyAccounts.findFirst({
+				where: eq(moneyAccounts.id, paylaterAccountId as string),
+			});
+
+			const response = await client.money.transactions.$post(
+				{
+					json: {
+						type: "expense",
+						amount: 250,
+						accountId: paylaterAccountId as string,
+						categoryId: expenseCategoryId,
+						date: new Date().toISOString(),
+						description: "Test paylater expense",
+					},
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${testUser.accessToken}`,
+					},
+				},
+			);
+
+			expect(response.status).toBe(201);
+			const result = await response.json();
+			expect(result.data.accountId).toBe(paylaterAccountId);
+			createdTransactionIds.push(result.data.id);
+
+			const after = await db.query.moneyAccounts.findFirst({
+				where: eq(moneyAccounts.id, paylaterAccountId as string),
+			});
+
+			expect(Number(after?.balance)).toBe(Number(before?.balance) - 250);
+		});
+
+		test("should allow creating a new explicit default account", async () => {
+			const response = await client.money.accounts.$post(
+				{
+					json: {
+						name: "Test Explicit Default",
+						type: "bank",
+						balance: 0,
+						currency: "IDR",
+						isDefault: true,
+					},
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${testUser.accessToken}`,
+					},
+				},
+			);
+
+			expect(response.status).toBe(201);
+			const result = await response.json();
+			explicitDefaultAccountId = result.data.id;
+			expect(result.data.isDefault).toBe(true);
+
+			const previousDefault = await db.query.moneyAccounts.findFirst({
+				where: eq(moneyAccounts.id, testAccountId),
+			});
+			expect(previousDefault?.isDefault).toBe(false);
 		});
 	});
 

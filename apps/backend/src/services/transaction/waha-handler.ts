@@ -7,10 +7,17 @@ import { moneyAccounts } from "../../drizzle/schema/moneyAccounts";
 import { moneyCategories } from "../../drizzle/schema/moneyCategories";
 import { moneyTransactions } from "../../drizzle/schema/moneyTransactions";
 import { users } from "../../drizzle/schema/users";
+import {
+	getOrCreateDeterministicDefaultAccount,
+	NEEDS_ACCOUNT_REVIEW_LABEL,
+} from "../money/default-account";
 import appLogger from "../../utils/logger";
 import type { WhatsAppMessageContext } from "../whatsapp/types";
 import whatsappService from "../whatsapp/whatsapp-service";
-import { buildRevisionPrompt, buildTransactionPrompt } from "./transaction-prompt";
+import {
+	buildRevisionPrompt,
+	buildTransactionPrompt,
+} from "./transaction-prompt";
 
 const TARGET_CHAT_ID = "120363266486054443@g.us";
 
@@ -35,43 +42,6 @@ async function getUserIdByUsername(username: string): Promise<string | null> {
 }
 
 /**
- * Get a default account for the user (first active account, or create one if none exists)
- * @param userId - The user ID to get/create account for
- * @returns Account ID
- */
-async function getOrCreateDefaultAccount(userId: string): Promise<string> {
-	// Try to find an existing active account
-	const existingAccount = await db.query.moneyAccounts.findFirst({
-		where: and(
-			eq(moneyAccounts.userId, userId),
-			eq(moneyAccounts.isActive, true),
-		),
-		columns: { id: true },
-	});
-
-	if (existingAccount) {
-		return existingAccount.id;
-	}
-
-	// Create a default cash account
-	const [newAccount] = await db
-		.insert(moneyAccounts)
-		.values({
-			userId,
-			name: "Kas",
-			type: "cash",
-			currency: "IDR",
-		})
-		.returning({ id: moneyAccounts.id });
-
-	if (!newAccount) {
-		throw new Error("Failed to create default account");
-	}
-
-	return newAccount.id;
-}
-
-/**
  * Find category ID by name for a user
  * @param userId - The user ID
  * @param categoryName - The category name to find
@@ -81,7 +51,7 @@ async function getOrCreateDefaultAccount(userId: string): Promise<string> {
 async function findCategoryId(
 	userId: string,
 	categoryName: string,
-	type: string,
+	type: "income" | "expense" | "transfer",
 ): Promise<string | null> {
 	if (type === "transfer") return null;
 
@@ -348,7 +318,9 @@ export async function transactionWahaHandler(
 		);
 
 		// Get or create default account
-		const defaultAccountId = await getOrCreateDefaultAccount(userId);
+		const defaultAccount =
+			await getOrCreateDeterministicDefaultAccount(userId);
+		const defaultAccountId = defaultAccount.id;
 
 		// Use current server time for transaction date
 		const transactionDate = new Date();
@@ -365,17 +337,22 @@ export async function transactionWahaHandler(
 								normalizeAccountName(tx.accountName || ""),
 						)
 					: null;
+				const usedFallbackDefault =
+					!explicitAccount && !detectedTrailingAccount;
 				const effectiveAccountId =
 					explicitAccount?.id ||
 					detectedTrailingAccount?.account.id ||
 					defaultAccountId;
+				const labels = usedFallbackDefault
+					? [NEEDS_ACCOUNT_REVIEW_LABEL]
+					: undefined;
 
 				// Find category ID
-					const categoryId = await findCategoryId(
-						userId,
-						tx.category,
-						tx.type as "income" | "expense",
-					);
+				const categoryId = await findCategoryId(
+					userId,
+					tx.category,
+					tx.type as "income" | "expense",
+				);
 
 				if (!categoryId) {
 					appLogger.info(
@@ -396,6 +373,7 @@ export async function transactionWahaHandler(
 						date: transactionDate,
 						source: "import",
 						waMessageId: context.messageId,
+						labels,
 					});
 
 					// Update account balance
@@ -414,7 +392,9 @@ export async function transactionWahaHandler(
 				const effectiveAccountName =
 					accountNameById.get(effectiveAccountId) ||
 					detectedTrailingAccount?.account.name ||
-					(effectiveAccountId === defaultAccountId ? "Kas" : undefined);
+					(effectiveAccountId === defaultAccountId
+						? defaultAccount.name
+						: undefined);
 				const lastStoredTransaction = storedTransactions.at(-1);
 				if (lastStoredTransaction) {
 					lastStoredTransaction.accountName = effectiveAccountName;
@@ -474,13 +454,20 @@ export async function transactionWahaHandler(
 				);
 
 				// Store bot reply message ID for revision tracking
-				const replyData = replyResult.data as { id?: { _serialized?: string } };
+				const replyData = replyResult.data as {
+					id?: { _serialized?: string };
+				};
 				const botReplyId = replyData?.id?._serialized;
 				if (botReplyId) {
 					await db
 						.update(moneyTransactions)
 						.set({ waBotReplyId: botReplyId })
-						.where(eq(moneyTransactions.waMessageId, context.messageId));
+						.where(
+							eq(
+								moneyTransactions.waMessageId,
+								context.messageId,
+							),
+						);
 					appLogger.info(
 						`[Transaction] Stored bot reply ID: ${botReplyId}`,
 					);
@@ -593,7 +580,11 @@ async function handleRevision(
 	// AI revision
 	const { text } = await generateText({
 		model: openai("gpt-5-mini"),
-		prompt: await buildRevisionPrompt(context.body, existingForPrompt, userId),
+		prompt: await buildRevisionPrompt(
+			context.body,
+			existingForPrompt,
+			userId,
+		),
 		temperature: 0.1,
 	});
 
@@ -622,7 +613,9 @@ async function handleRevision(
 		revisions = JSON.parse(cleanedText);
 	} catch {
 		appLogger.error(
-			new Error(`[Transaction] Failed to parse revision AI response: ${text}`),
+			new Error(
+				`[Transaction] Failed to parse revision AI response: ${text}`,
+			),
 		);
 		await whatsappService.sendText({
 			chatId: context.chatId,
@@ -643,7 +636,9 @@ async function handleRevision(
 	for (const rev of revisions) {
 		const existingTx = linkedTransactions.find((tx) => tx.id === rev.id);
 		if (!existingTx) {
-			appLogger.info(`[Transaction] Revision: transaction ${rev.id} not found, skipping`);
+			appLogger.info(
+				`[Transaction] Revision: transaction ${rev.id} not found, skipping`,
+			);
 			continue;
 		}
 
@@ -707,8 +702,12 @@ async function handleRevision(
 					});
 					if (fullTx) {
 						// Reverse old, apply new
-						const oldBalanceEffect = existingTx.type === "income" ? oldAmount : -oldAmount;
-						const newBalanceEffect = txType === "income" ? newAmount : -newAmount;
+						const oldBalanceEffect =
+							existingTx.type === "income"
+								? oldAmount
+								: -oldAmount;
+						const newBalanceEffect =
+							txType === "income" ? newAmount : -newAmount;
 						const balanceDiff = newBalanceEffect - oldBalanceEffect;
 
 						await db.transaction(async (dbTx) => {
@@ -732,7 +731,8 @@ async function handleRevision(
 						.where(eq(moneyTransactions.id, rev.id));
 				}
 
-				const displayName = rev.name || existingTx.description || "Unknown";
+				const displayName =
+					rev.name || existingTx.description || "Unknown";
 				const displayAmount = rev.amount || Number(existingTx.amount);
 				results.push(
 					`✏️ *${displayName}*: ${formatCurrency(displayAmount)}`,
@@ -741,7 +741,9 @@ async function handleRevision(
 		} catch (err) {
 			const errMsg = err instanceof Error ? err.message : "Unknown error";
 			appLogger.error(
-				new Error(`[Transaction] Revision failed for ${rev.id}: ${errMsg}`),
+				new Error(
+					`[Transaction] Revision failed for ${rev.id}: ${errMsg}`,
+				),
 			);
 			results.push(`❌ Gagal revisi: ${errMsg}`);
 		}

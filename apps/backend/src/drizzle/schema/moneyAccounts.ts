@@ -18,6 +18,7 @@ export const accountTypeEnum = pgEnum("account_type", [
 	"bank",
 	"e_wallet",
 	"credit_card",
+	"paylater",
 	"investment",
 ]);
 
@@ -39,12 +40,17 @@ export const moneyAccounts = pgTable(
 		icon: varchar("icon", { length: 50 }),
 		color: varchar("color", { length: 7 }),
 		isActive: boolean("is_active").notNull().default(true),
+		isDefault: boolean("is_default").notNull().default(false),
 		createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
 		updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
 	},
 	(table) => ({
 		userIdIdx: index("idx_money_accounts_user_id").on(table.userId),
 		isActiveIdx: index("idx_money_accounts_is_active").on(table.isActive),
+		isDefaultIdx: index("idx_money_accounts_is_default").on(
+			table.userId,
+			table.isDefault,
+		),
 	}),
 );
 

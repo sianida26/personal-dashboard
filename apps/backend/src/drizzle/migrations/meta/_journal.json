@@ -176,6 +176,20 @@
       "when": 1776891594226,
       "tag": "0024_dusty_black_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1776897000000,
+      "tag": "0025_add_paylater_account_type",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1776897600000,
+      "tag": "0026_account_default_flag",
+      "breakpoints": true
     }
   ]
 }

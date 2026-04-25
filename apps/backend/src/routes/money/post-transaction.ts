@@ -6,36 +6,9 @@ import { moneyCategories } from "../../drizzle/schema/moneyCategories";
 import { moneyTransactions } from "../../drizzle/schema/moneyTransactions";
 import { badRequest, unauthorized } from "../../errors/DashboardError";
 import authInfo from "../../middlewares/authInfo";
+import { getOrCreateDeterministicDefaultAccount } from "../../services/money/default-account";
 import { createHonoRoute } from "../../utils/createHonoRoute";
 import requestValidator from "../../utils/requestValidator";
-
-async function getOrCreateDefaultAccount(userId: string): Promise<string> {
-	const existingAccount = await db.query.moneyAccounts.findFirst({
-		where: and(
-			eq(moneyAccounts.userId, userId),
-			eq(moneyAccounts.isActive, true),
-		),
-		columns: { id: true },
-	});
-
-	if (existingAccount) return existingAccount.id;
-
-	const [newAccount] = await db
-		.insert(moneyAccounts)
-		.values({
-			userId,
-			name: "Kas",
-			type: "cash",
-			currency: "IDR",
-		})
-		.returning({ id: moneyAccounts.id });
-
-	if (!newAccount) {
-		throw badRequest({ message: "Failed to create default account" });
-	}
-
-	return newAccount.id;
-}
 
 /**
  * POST /money/transactions - Create a new transaction
@@ -56,7 +29,8 @@ const postTransactionRoute = createHonoRoute()
 			});
 		}
 		const effectiveAccountId =
-			data.accountId || (await getOrCreateDefaultAccount(uid));
+			data.accountId ||
+			(await getOrCreateDeterministicDefaultAccount(uid)).id;
 
 		// Validate account belongs to user
 		const account = await db.query.moneyAccounts.findFirst({
@@ -76,8 +50,7 @@ const postTransactionRoute = createHonoRoute()
 		if (data.type === "transfer") {
 			if (!data.accountId || !data.toAccountId) {
 				throw badRequest({
-					message:
-						"Transfer requires source and destination account",
+					message: "Transfer requires source and destination account",
 					formErrors: {
 						accountId: "Source account is required",
 						toAccountId: "Destination account is required",

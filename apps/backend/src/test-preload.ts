@@ -90,6 +90,12 @@ import seeder from "./drizzle/seed";
 // Create a migration client
 const migrationClient = postgres(process.env.DATABASE_URL, { max: 1 });
 
+// Ensure test runs always start from a clean schema so migrations and seeders
+// are deterministic even when the remote test DB was left in a partial state.
+await migrationClient.unsafe("DROP SCHEMA IF EXISTS public CASCADE;");
+await migrationClient.unsafe("DROP SCHEMA IF EXISTS drizzle CASCADE;");
+await migrationClient.unsafe("CREATE SCHEMA public;");
+
 // Run migrations
 await migrate(drizzle(migrationClient), {
 	migrationsFolder: "./src/drizzle/migrations",
